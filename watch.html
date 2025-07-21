@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Watch Episode</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header><h1>Watch Episode</h1></header>
+  <main>
+    <div id="episode-container"></div>
+  </main>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const series = urlParams.get('series');
+    fetch('links.json')
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('episode-container');
+        if (data[series]) {
+          for (const season in data[series]) {
+            const seasonEpisodes = data[series][season];
+            const sDiv = document.createElement('div');
+            sDiv.innerHTML = '<h2>' + season.replace('-', ' ') + '</h2>';
+            seasonEpisodes.forEach(ep => {
+              const eDiv = document.createElement('div');
+              eDiv.innerHTML = \`
+                <h3>\${ep.title}</h3>
+                <iframe src="\${ep.stream}" frameborder="0" width="100%" height="315" allowfullscreen></iframe>
+                <p><a href="\${ep.download}" target="_blank">Download</a></p>
+              \`;
+              sDiv.appendChild(eDiv);
+            });
+            container.appendChild(sDiv);
+          }
+        } else {
+          container.innerHTML = '<p>No episodes found.</p>';
+        }
+      });
+  </script>
+</body>
+</html>

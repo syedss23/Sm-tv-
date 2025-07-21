@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Turkish Series</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
+    <h1>Turkish Series</h1>
+    <select onchange="changeLanguage(this.value)">
+      <option value="en">English</option>
+      <option value="hi">Hindi</option>
+      <option value="ur">Urdu</option>
+    </select>
+  </header>
+
+  <aside class="sidebar" id="sidebar">
+    <nav>
+      <a href="index.html">Series</a>
+      <a href="links.html">Links</a>
+    </nav>
+  </aside>
+
+  <main id="series-container"></main>
+
+  <script src="script.js"></script>
+</body>
+</html>
