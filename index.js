@@ -1,4 +1,11 @@
 let lang = localStorage.getItem('lang') || 'en';
+let allSeries = [];
+
+function highlightText(text, term) {
+  if (!term) return text;
+  const pattern = new RegExp('(' + term.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + ')', 'ig');
+  return text.replace(pattern, '<span class="marked">$1</span>');
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   const langSelect = document.getElementById('langSelect');
@@ -11,7 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  renderGrid();
+  fetch('series.json')
+    .then(r => r.json())
+    .then(data => {
+      allSeries = data;
+      renderGrid();
+    });
+
   loadAd();
 
   const sidebarToggle = document.getElementById('sidebarToggle');
@@ -21,27 +34,53 @@ document.addEventListener('DOMContentLoaded', () => {
       sidebar.classList.toggle('open');
     });
   }
-  // Sidebar close (×) button
   const sidebarClose = document.getElementById('sidebarClose');
   if (sidebarClose && sidebar) {
     sidebarClose.addEventListener('click', () => {
       sidebar.classList.remove('open');
     });
   }
+
+  // Accessible/professional search bar
+  const searchInput = document.getElementById('seriesSearch');
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      renderGrid(this.value.trim());
+    });
+    searchInput.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        this.value = '';
+        renderGrid('');
+        this.blur();
+      }
+    });
+  }
 });
 
-async function renderGrid() {
-  const response = await fetch('series.json');
-  const seriesList = await response.json();
+function renderGrid(searchTerm = '') {
   const grid = document.getElementById('series-grid');
+  let filteredSeries = allSeries;
+  const q = searchTerm.trim().toLowerCase();
+  if (q.length > 0) {
+    filteredSeries = allSeries.filter(series =>
+      series.title.toLowerCase().includes(q)
+    );
+  }
   grid.innerHTML = '';
-  seriesList.forEach(series => {
+  if (filteredSeries.length === 0) {
+    grid.innerHTML = '<div style="padding:2em; color:#ff6565; text-align:center;">No series found.</div>';
+    return;
+  }
+  filteredSeries.forEach(series => {
+    const highlightTitle = searchTerm
+      ? highlightText(series.title, searchTerm)
+      : series.title;
     const item = document.createElement('div');
     item.className = 'poster-item';
     item.innerHTML = `
       <a href="series.html?slug=${series.slug}">
         <img src="${series.poster}" alt="${series.title}">
-        <div class="title">${series.title}</div>
+        <div class="title">${highlightTitle}</div>
       </a>
     `;
     grid.appendChild(item);
