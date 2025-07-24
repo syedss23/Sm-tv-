@@ -22,9 +22,19 @@
     </nav>
   </div>
   <div id="main-content">
-    <header>
+    <header style="display:flex;align-items:center;gap:1.2em;">
       <button id="sidebarToggle">&#9776;</button>
-      <h1>Turkish Series</h1>
+      <h1 style="margin:0;">Turkish Series</h1>
+      <div class="searchbar-container">
+        <span class="search-icon">&#128269;</span>
+        <input
+          type="text"
+          id="seriesSearch"
+          placeholder="Search for a series..."
+          autocomplete="off"
+          aria-label="Search series by name"
+        />
+      </div>
     </header>
     <div class="ad-space" id="adSpace"></div>
     <section id="series-grid" class="poster-grid"></section>
