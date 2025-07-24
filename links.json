@@ -29,6 +29,22 @@
           "embed": "<iframe src='https://yourstreamingsite.com/embed/alp_arslan_e1' frameborder='0' allowfullscreen></iframe>",
           "download": "https://terabox.com/alp-arslan-e1"
         }
+      ],
+      "2": [
+        {
+          "ep": 1,
+          "title": "Episode 1",
+          "thumb": "assets/posters/alp_arslan_s2e1.jpg",
+          "embed": "<iframe src='https://yourstreamingsite.com/embed/alp_arslan_s2e1' frameborder='0' allowfullscreen></iframe>",
+          "download": "https://terabox.com/alp-arslan-s2e1"
+        },
+        {
+          "ep": 2,
+          "title": "Episode 2",
+          "thumb": "assets/posters/alp_arslan_s2e2.jpg",
+          "embed": "<iframe src='https://yourstreamingsite.com/embed/alp_arslan_s2e2' frameborder='0' allowfullscreen></iframe>",
+          "download": "https://terabox.com/alp-arslan-s2e2"
+        }
       ]
     }
   },
@@ -42,6 +58,22 @@
           "embed": "<iframe src='https://yourstreamingsite.com/embed/mehmet_fatih_e1' frameborder='0' allowfullscreen></iframe>",
           "download": "https://terabox.com/mehmet-fatih-e1"
         }
+      ],
+      "2": [
+        {
+          "ep": 1,
+          "title": "Episode 1",
+          "thumb": "assets/posters/mehmet_fatih_s2e1.jpg",
+          "embed": "<iframe src='https://yourstreamingsite.com/embed/mehmet_fatih_s2e1' frameborder='0' allowfullscreen></iframe>",
+          "download": "https://terabox.com/mehmet-fatih-s2e1"
+        },
+        {
+          "ep": 2,
+          "title": "Episode 2",
+          "thumb": "assets/posters/mehmet_fatih_s2e2.jpg",
+          "embed": "<iframe src='https://yourstreamingsite.com/embed/mehmet_fatih_s2e2' frameborder='0' allowfullscreen></iframe>",
+          "download": "https://terabox.com/mehmet-fatih-s2e2"
+        }
       ]
     }
   },
@@ -54,6 +86,22 @@
           "thumb": "assets/posters/salauddin_ayyubi_e1.jpg",
           "embed": "<iframe src='https://yourstreamingsite.com/embed/salauddin_ayyubi_e1' frameborder='0' allowfullscreen></iframe>",
           "download": "https://terabox.com/salauddin-ayyubi-e1"
+        }
+      ],
+      "2": [
+        {
+          "ep": 1,
+          "title": "Episode 1",
+          "thumb": "assets/posters/salauddin_ayyubi_s2e1.jpg",
+          "embed": "<iframe src='https://yourstreamingsite.com/embed/salauddin_ayyubi_s2e1' frameborder='0' allowfullscreen></iframe>",
+          "download": "https://terabox.com/salauddin-ayyubi-s2e1"
+        },
+        {
+          "ep": 2,
+          "title": "Episode 2",
+          "thumb": "assets/posters/salauddin_ayyubi_s2e2.jpg",
+          "embed": "<iframe src='https://yourstreamingsite.com/embed/salauddin_ayyubi_s2e2' frameborder='0' allowfullscreen></iframe>",
+          "download": "https://terabox.com/salauddin-ayyubi-s2e2"
         }
       ]
     }
@@ -80,6 +128,42 @@
           "thumb": "assets/posters/rumi_e1.jpg",
           "embed": "<iframe src='https://yourstreamingsite.com/embed/rumi_e1' frameborder='0' allowfullscreen></iframe>",
           "download": "https://terabox.com/rumi-e1"
+        }
+      ]
+    }
+  },
+  "barbarossa": {
+    "seasons": {
+      "1": [
+        {
+          "ep": 1,
+          "title": "Episode 1",
+          "thumb": "assets/posters/barbarossa_s1e1.jpg",
+          "embed": "<iframe src='https://yourstreamingsite.com/embed/barbarossa_s1e1' frameborder='0' allowfullscreen></iframe>",
+          "download": "https://terabox.com/barbarossa-s1e1"
+        },
+        {
+          "ep": 2,
+          "title": "Episode 2",
+          "thumb": "assets/posters/barbarossa_s1e2.jpg",
+          "embed": "<iframe src='https://yourstreamingsite.com/embed/barbarossa_s1e2' frameborder='0' allowfullscreen></iframe>",
+          "download": "https://terabox.com/barbarossa-s1e2"
+        }
+      ],
+      "2": [
+        {
+          "ep": 1,
+          "title": "Episode 1",
+          "thumb": "assets/posters/barbarossa_s2e1.jpg",
+          "embed": "<iframe src='https://yourstreamingsite.com/embed/barbarossa_s2e1' frameborder='0' allowfullscreen></iframe>",
+          "download": "https://terabox.com/barbarossa-s2e1"
+        },
+        {
+          "ep": 2,
+          "title": "Episode 2",
+          "thumb": "assets/posters/barbarossa_s2e2.jpg",
+          "embed": "<iframe src='https://yourstreamingsite.com/embed/barbarossa_s2e2' frameborder='0' allowfullscreen></iframe>",
+          "download": "https://terabox.com/barbarossa-s2e2"
         }
       ]
     }
