@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <title>Series Detail</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Montserrat font for premium look -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script defer src="series.js"></script>
 </head>
@@ -28,8 +30,10 @@
     </header>
     <div class="ad-space" id="adSpace"></div>
     <section id="series-detail"></section>
-    <section id="season-selector"></section>
-    <div id="episodes-section" class="poster-grid"></div>
+    <div id="season-episodes-wrapper">
+      <div class="seasons-bar" id="seasonsBar"></div>
+      <div id="episodes-section" class="poster-grid"></div>
+    </div>
   </div>
 </body>
 </html>
