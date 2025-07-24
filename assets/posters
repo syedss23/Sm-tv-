@@ -1,1 +1,9 @@
+project-root/
+├── assets/
+│   └── posters/
+│       ├── osman.jpg
+│       ├── osman_s7e1.jpg
+│       ├── alp_arslan.jpg
+│       ├── alp_arslan_e1.jpg
+│       └── ...etc...
 
