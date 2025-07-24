@@ -2,20 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Series Detail</title>
+  <title>SM-TV – Series Details</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Montserrat font for premium look -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script defer src="series.js"></script>
 </head>
 <body>
+  <!-- Sidebar -->
   <div id="sidebar" class="sidebar">
     <button id="sidebarClose" class="sidebar-close-btn">&times;</button>
     <div class="brand">SeriesHub</div>
     <nav>
       <a href="index.html">Series</a>
-      <a href="#">Links</a>
+      <a href="https://t.me/smtv_official1" target="_blank" rel="noopener">Join Telegram Channel</a>
+      <div class="lang-label">Language</div>
       <select id="langSelect">
         <option value="en">English</option>
         <option value="hi">Hindi</option>
@@ -23,13 +24,13 @@
       </select>
     </nav>
   </div>
+
   <div id="main-content">
     <header>
       <button id="sidebarToggle">&#9776;</button>
-      <h1 id="seriesTitle"></h1>
+      <h1 id="seriesTitle">Series Title</h1>
     </header>
-    <div class="ad-space" id="adSpace"></div>
-    <section id="series-detail"></section>
+    <div class="ad-space" id="adSpace">Ad Area</div>
     <div id="season-episodes-wrapper">
       <div class="seasons-bar" id="seasonsBar"></div>
       <div id="episodes-section" class="poster-grid"></div>
