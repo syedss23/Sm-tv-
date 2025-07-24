@@ -6,7 +6,8 @@ body {
 }
 .sidebar {
   position: fixed;
-  left: 0; top: 0; bottom: 0;
+  left: -240px;
+  top: 0; bottom: 0;
   width: 220px;
   background: #121212;
   display: flex;
@@ -14,7 +15,10 @@ body {
   padding: 1em;
   z-index: 2;
   transition: left 0.2s;
-  overflow: hidden; /* Prevents any content/shadows peeking out */
+  overflow: hidden;
+}
+.sidebar.open {
+  left: 0 !important;
 }
 .brand {
   font-size: 1.6em;
@@ -43,9 +47,10 @@ body {
   color: #e50914;
 }
 #main-content {
-  margin-left: 220px;
+  margin-left: 0;
   padding: 1em;
   min-height: 100vh;
+  transition: margin-left 0.2s;
 }
 header {
   display: flex;
@@ -53,7 +58,7 @@ header {
   gap: 1em;
 }
 #sidebarToggle {
-  display: none;
+  display: inline;
   background: none;
   border: none;
   color: #fff;
@@ -130,7 +135,7 @@ button#downloadBtn:hover {
   background: #b00610;
 }
 .sidebar-close-btn {
-  display: none;
+  display: block;
   background: none;
   border: none;
   color: #fff;
@@ -144,34 +149,21 @@ button#downloadBtn:hover {
 
 /* Responsive adjustments for tablets */
 @media (max-width: 900px) {
-  .sidebar {
-    width: 72px;
-    padding: 0.7em 0.45em;
-  }
-  .sidebar nav a,
-  .sidebar nav select {
-    font-size: 0.95em;
-    margin-bottom: 0.6em;
-  }
-  #main-content {
-    margin-left: 72px;
-    padding: 1em;
-  }
   .brand {
     font-size: 1em;
     margin-bottom: 1em;
   }
 }
 
-/* Updated mobile sidebar — 100% hidden */
-@media (max-width: 600px) {
+/* Mobile and tablet toggling: sidebar overlays all content */
+@media (max-width: 1200px) {
   .sidebar {
     position: fixed;
-    left: -240px;      /* Pushes sidebar fully (inc. shadow/padding) off-screen */
+    left: -240px;      /* Side bar fully hidden with extra space for shadow, padding, or border */
     top: 0; bottom: 0;
     width: 220px;
     transition: left 0.18s;
-    box-shadow: none;  /* Remove any shadow peeking out */
+    box-shadow: none;
     overflow: hidden;
   }
   .sidebar.open {
@@ -180,6 +172,7 @@ button#downloadBtn:hover {
   #main-content {
     margin-left: 0;
     padding: 1em 0.4em;
+    transition: margin-left 0.18s;
   }
   #sidebarToggle {
     display: inline;
@@ -187,8 +180,5 @@ button#downloadBtn:hover {
   .poster-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 13px;
-  }
-  .sidebar-close-btn {
-    display: block;
   }
 }
