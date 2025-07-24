@@ -18,8 +18,6 @@ body {
   z-index: 1000;
   transition: left 0.2s cubic-bezier(.4,0,.2,1);
   overflow: hidden;
-  box-shadow: none !important;
-  border-right: none !important;
 }
 .sidebar.open {
   left: 0 !important;
@@ -81,49 +79,112 @@ header {
   align-items: center;
   gap: 1em;
 }
-
-/* Search bar styling */
-.searchbar-container {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  background: #222;
-  border-radius: 7px;
-  padding: 0.15em 0.5em;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  min-width: 215px;
-  max-width: 270px;
-  width: 100%;
-  position: relative;
-}
-.search-icon {
-  color: #888;
-  font-size: 1.27em;
-  margin-right: 0.45em;
-  pointer-events: none;
-}
-#seriesSearch {
-  background: transparent;
+h1, h2, h3 {
+  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
   color: #fff;
+  font-weight: 700;
+}
+.ad-space {
+  background: #222;
+  color: #ffdd59;
+  margin: 16px 0;
+  padding: 16px;
+  text-align: center;
+  border-radius: 7px;
+  font-size: 1.1em;
+  min-height: 32px;
+}
+#downloadBtn, .download-btn {
+  display: block;
+  margin: 2em auto 0 auto;
+  background: #e50914;
+  color: #fff;
+  font-size: 1.14em;
+  padding: 0.75em 2em;
   border: none;
-  outline: none;
-  width: 100%;
-  padding: 0.5em 0.2em 0.5em 0;
-  font-size: 1.03em;
-  letter-spacing: 0.02em;
+  border-radius: 6px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  box-shadow: 0 3px 7px rgba(229,9,20,0.06);
+  transition: background 0.18s;
+  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+  font-weight: 700;
 }
-#seriesSearch::placeholder {
-  color: #aaa;
-  opacity: 1;
-}
-.marked {
-  background: #ffe74c;
-  color: #1a1a1a !important;
-  border-radius: 4px;
-  padding: 0 2px;
+#downloadBtn:hover, .download-btn:hover {
+  background: #b00610;
 }
 
-/* Seasons bar and episode styling */
+/* Clean, responsive video player area */
+.video-container {
+  width: 100%;
+  max-width: 770px;
+  margin: 1.2em auto 1.5em auto;
+  background: #252525;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 14px rgba(0,0,0,0.15);
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.video-container iframe {
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16/9;
+  min-height: 180px;
+  border: none;
+  display: block;
+  background: #000;
+  border-radius: 0;
+}
+@media (max-width: 700px) {
+  .video-container iframe {
+    min-height: 160px;
+  }
+}
+
+/* Poster grid/season styling (for listing/other screens) */
+.poster-grid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(164px, 1fr));
+  margin-top: 1.5em;
+}
+.poster-item,
+.episode-thumb {
+  background: #252525;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 2px 7px rgba(0,0,0,0.21);
+  transition: transform 0.17s, box-shadow 0.17s;
+}
+.poster-item:hover,
+.episode-thumb:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(229,9,20,0.22);
+}
+.poster-item img,
+.episode-thumb img {
+  width: 100%;
+  display: block;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+}
+.poster-item .title,
+.episode-thumb .title {
+  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 1.13em;
+  letter-spacing: 0.02em;
+  color: #fff;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.35);
+  padding: 0.74em 0.9em;
+  background: none;
+  border-radius: 0 0 10px 10px;
+}
+
 .seasons-bar {
   display: flex;
   gap: 0.7em;
@@ -169,89 +230,7 @@ header {
   box-shadow: 0 2px 8px rgba(0,0,0,0.16);
 }
 
-/* Grid, posters, and modern Montserrat titles */
-.poster-grid {
-  display: grid;
-  gap: 24px;
-  grid-template-columns: repeat(auto-fill, minmax(164px, 1fr));
-  margin-top: 1.5em;
-}
-.poster-item,
-.episode-thumb {
-  background: #252525;
-  border-radius: 8px;
-  overflow: hidden;
-  cursor: pointer;
-  box-shadow: 0 2px 7px rgba(0,0,0,0.21);
-  transition: transform 0.17s, box-shadow 0.17s;
-}
-.poster-item:hover,
-.episode-thumb:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 16px rgba(229,9,20,0.22);
-}
-.poster-item img,
-.episode-thumb img {
-  width: 100%;
-  display: block;
-  aspect-ratio: 2/3;
-  object-fit: cover;
-}
-.poster-item .title,
-.episode-thumb .title {
-  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
-  font-weight: 700;
-  font-size: 1.13em;
-  letter-spacing: 0.02em;
-  color: #fff;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.35);
-  padding: 0.74em 0.9em;
-  background: none;
-  border-radius: 0 0 10px 10px;
-}
-h1, h2, h3 {
-  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
-  color: #fff;
-  font-weight: 700;
-}
-.ad-space {
-  background: #222;
-  color: #ffdd59;
-  margin: 16px 0;
-  padding: 16px;
-  text-align: center;
-  border-radius: 7px;
-  font-size: 1.1em;
-  min-height: 32px;
-}
-.video-container {
-  width: 100%;
-  max-width: 770px;
-  margin: 2em auto;
-  background: #252525;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 14px rgba(0,0,0,0.15);
-}
-button#downloadBtn {
-  display: block;
-  margin: 1.5em auto;
-  background: #e50914;
-  color: #fff;
-  font-size: 1.14em;
-  padding: 0.75em 2em;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  letter-spacing: 1px;
-  box-shadow: 0 3px 7px rgba(229,9,20,0.06);
-  transition: background 0.18s;
-}
-button#downloadBtn:hover {
-  background: #b00610;
-}
-
-/* Responsive styles for mobile/tablet */
+/* Responsive styles for mobile */
 @media (max-width: 900px) {
   .brand {
     font-size: 1em;
@@ -263,18 +242,6 @@ button#downloadBtn:hover {
   }
 }
 @media (max-width: 600px) {
-  .searchbar-container {
-    min-width: 0;
-    max-width: 100%;
-    width: 100%;
-    margin-right: 0;
-    margin-left: 0.3em;
-    padding: 0.13em 0.3em;
-  }
-  #seriesSearch {
-    font-size: 0.98em;
-    padding: 0.42em 0.2em 0.42em 0;
-  }
   .poster-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
