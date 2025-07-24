@@ -139,7 +139,7 @@
           "ep": 1,
           "title": "Episode 1",
           "thumb": "assets/posters/barbarossa_s1e1.jpg",
-          "embed": "<iframe src='https://yourstreamingsite.com/embed/barbarossa_s1e1' frameborder='0' allowfullscreen></iframe>",
+          "embed": "<script src='https://geo.dailymotion.com/player/xiwxn.js' data-video='x90dcqo'></script>",
           "download": "https://terabox.com/barbarossa-s1e1"
         },
         {
