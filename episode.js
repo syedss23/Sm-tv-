@@ -61,12 +61,13 @@ async function loadEpisode() {
   document.getElementById('episodeTitle').innerText =
     `${series.title} - ${episode.title}`;
 
-  // Set video and poster
-  const videoPlayer = document.getElementById('videoPlayer');
-  const mp4Src = document.getElementById('mp4Src');
-  videoPlayer.poster = episode.thumb;
-  mp4Src.src = episode.video;
-  videoPlayer.load();
+  // Inject embed code if available
+  const embedDiv = document.getElementById('embedContainer');
+  if (episode.embed) {
+    embedDiv.innerHTML = episode.embed;
+  } else {
+    embedDiv.innerHTML = "<div style='color:#e50914;text-align:center;padding:2em'>No streaming source available.</div>";
+  }
 
   // Download button
   const dlBtn = document.getElementById('downloadBtn');
