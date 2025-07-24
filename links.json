@@ -6,17 +6,17 @@
           "ep": 1,
           "title": "Bolum 1",
           "thumb": "assets/posters/osman_s7e1.jpg",
-          "video": "videos/osman_s7e1.mp4",
+          "embed": "<iframe src='https://yourstreamingsite.com/embed/osman_s7e1' frameborder='0' allowfullscreen></iframe>",
           "download": "https://terabox.com/kurulus-osman-s7e1"
         },
         {
           "ep": 2,
           "title": "Bolum 2",
           "thumb": "assets/posters/osman_s7e2.jpg",
-          "video": "videos/osman_s7e2.mp4",
+          "embed": "<iframe src='https://yourstreamingsite.com/embed/osman_s7e2' frameborder='0' allowfullscreen></iframe>",
           "download": "https://terabox.com/kurulus-osman-s7e2"
         }
-        // Add more episodes as needed
+        // Add more episodes for season 7 as needed
       ]
     }
   },
@@ -27,10 +27,10 @@
           "ep": 1,
           "title": "Episode 1",
           "thumb": "assets/posters/alp_arslan_e1.jpg",
-          "video": "videos/alp_arslan_e1.mp4",
+          "embed": "<iframe src='https://yourstreamingsite.com/embed/alp_arslan_e1' frameborder='0' allowfullscreen></iframe>",
           "download": "https://terabox.com/alp-arslan-e1"
         }
-        // Add more episodes as needed
+        // Add more episodes for season 1 as needed
       ]
     }
   },
@@ -41,10 +41,10 @@
           "ep": 1,
           "title": "Episode 1",
           "thumb": "assets/posters/mehmet_fatih_e1.jpg",
-          "video": "videos/mehmet_fatih_e1.mp4",
+          "embed": "<iframe src='https://yourstreamingsite.com/embed/mehmet_fatih_e1' frameborder='0' allowfullscreen></iframe>",
           "download": "https://terabox.com/mehmet-fatih-e1"
         }
-        // Add more episodes as needed
+        // Add more episodes for season 1 as needed
       ]
     }
   },
@@ -55,10 +55,10 @@
           "ep": 1,
           "title": "Episode 1",
           "thumb": "assets/posters/salauddin_ayyubi_e1.jpg",
-          "video": "videos/salauddin_ayyubi_e1.mp4",
+          "embed": "<iframe src='https://yourstreamingsite.com/embed/salauddin_ayyubi_e1' frameborder='0' allowfullscreen></iframe>",
           "download": "https://terabox.com/salauddin-ayyubi-e1"
         }
-        // Add more episodes as needed
+        // Add more episodes for season 1 as needed
       ]
     }
   },
@@ -69,10 +69,10 @@
           "ep": 1,
           "title": "Episode 1",
           "thumb": "assets/posters/great_seljuk_e1.jpg",
-          "video": "videos/great_seljuk_e1.mp4",
+          "embed": "<iframe src='https://yourstreamingsite.com/embed/great_seljuk_e1' frameborder='0' allowfullscreen></iframe>",
           "download": "https://terabox.com/great-seljuk-e1"
         }
-        // Add more episodes as needed
+        // Add more episodes for season 1 as needed
       ]
     }
   },
@@ -83,10 +83,10 @@
           "ep": 1,
           "title": "Episode 1",
           "thumb": "assets/posters/rumi_e1.jpg",
-          "video": "videos/rumi_e1.mp4",
+          "embed": "<iframe src='https://yourstreamingsite.com/embed/rumi_e1' frameborder='0' allowfullscreen></iframe>",
           "download": "https://terabox.com/rumi-e1"
         }
-        // Add more episodes as needed
+        // Add more episodes for season 1 as needed
       ]
     }
   }
