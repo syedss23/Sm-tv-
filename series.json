@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "title": "Kuruluş: Osman",
+    "slug": "kurulus-osman",
+    "poster": "assets/posters/osman.jpg",
+    "desc": {
+      "en": "The journey of Osman Bey, founder of the Ottoman Empire.",
+      "hi": "ऑटोमन साम्राज्य के संस्थापक उस्मान बेय की यात्रा।",
+      "ur": "عثمانی سلطنت کے بانی عثمان بے کا سفر۔"
+    },
+    "seasons": 7
+  },
+  {
+    "id": 2,
+    "title": "Alp Arslan",
+    "slug": "alp-arslan",
+    "poster": "assets/posters/alp_arslan.jpg",
+    "desc": {
+      "en": "Story of Alp Arslan, the victorious Sultan of the Seljuk Empire.",
+      "hi": "सेल्ज़ुक साम्राज्य के विजयी सुलतान अल्प अर्सलान की कहानी।",
+      "ur": "سلجوقی سلطنت کے فاتح سلطان البرسلان کی کہانی۔"
+    },
+    "seasons": 1
+  },
+  {
+    "id": 3,
+    "title": "Sultan Mehmet Fatih",
+    "slug": "sultan-mehmet-fatih",
+    "poster": "assets/posters/mehmet_fatih.jpg",
+    "desc": {
+      "en": "Life and conquests of Sultan Mehmet the Conqueror.",
+      "hi": "सुल्तान मेहमत فاتح के जीवन और विजय।",
+      "ur": "زندگی اور فتوحات سلطان مہمت فاتح۔"
+    },
+    "seasons": 1
+  },
+  {
+    "id": 4,
+    "title": "Salauddin Ayyubi",
+    "slug": "salauddin-ayyubi",
+    "poster": "assets/posters/salauddin_ayyubi.jpg",
+    "desc": {
+      "en": "Epic tale of Salauddin Ayyubi and the Crusades.",
+      "hi": "स्लेडीन अय्यूबी और क्रूसेड्स की महागाथा।",
+      "ur": "سلاہدین ایوبی اور صلیبیوں کی رزمیہ داستان۔"
+    },
+    "seasons": 1
+  },
+  {
+    "id": 5,
+    "title": "The Great Seljuk",
+    "slug": "the-great-seljuk",
+    "poster": "assets/posters/great_seljuk.jpg",
+    "desc": {
+      "en": "Drama on the rise and fall of the Seljuk Empire.",
+      "hi": "सेल्ज़ुक साम्राज्य के उत्थान और पतन पर नाटक।",
+      "ur": "سلجوقی سلطنت کے عروج و زوال پر ڈرامہ۔"
+    },
+    "seasons": 1
+  },
+  {
+    "id": 6,
+    "title": "Moulana Jalaluddin Rumi",
+    "slug": "moulana-jalaluddin-rumi",
+    "poster": "assets/posters/rumi.jpg",
+    "desc": {
+      "en": "The life and poetry of the famous Sufi mystic, Jalaluddin Rumi.",
+      "hi": "प्रसिद्ध सूफ़ी रहस्यवादी जलालुद्दीन रूमी का जीवन और कविता।",
+      "ur": "مشہور صوفی شاعر جلال الدین رومی کی زندگی اور شاعری۔"
+    },
+    "seasons": 1
+  }
+]
