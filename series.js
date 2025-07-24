@@ -21,6 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
       sidebar.classList.toggle('open');
     });
   }
+  // Sidebar close button support
+  const sidebarClose = document.getElementById('sidebarClose');
+  if (sidebarClose && sidebar) {
+    sidebarClose.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+    });
+  }
 });
 
 async function loadAd() {
@@ -42,7 +49,8 @@ function getQueryParam(param) {
 async function loadSeries() {
   const slug = getQueryParam('slug');
   if (!slug) return;
-  // Load series info
+
+  // Load data
   const [seriesRes, linksRes] = await Promise.all([
     fetch('series.json'),
     fetch('links.json')
@@ -60,30 +68,33 @@ async function loadSeries() {
     <div style="clear:both"></div>
   `;
 
-  // Season selector
-  const seasons = series.seasons;
+  // Only show seasons as found in links.json
+  const linksData = await linksRes.json();
+  const availableSeasons = Object.keys((linksData[slug] || {}).seasons || {});
   const selector = document.getElementById('season-selector');
   selector.innerHTML = '';
-  for (let i = 1; i <= seasons; i++) {
+  availableSeasons.forEach(seasonNum => {
     const btn = document.createElement('button');
-    btn.innerText = 'Season ' + i;
+    btn.innerText = 'Season ' + seasonNum;
     btn.className = 'season-btn';
     btn.addEventListener('click', () => {
-      renderEpisodes(slug, i, linksRes);
-      highlightSelected(i);
+      renderEpisodes(slug, seasonNum, linksRes);
+      highlightSelected(Number(seasonNum));
     });
     selector.appendChild(btn);
+  });
+  // Load the first available season by default
+  if (availableSeasons.length) {
+    renderEpisodes(slug, availableSeasons[0], linksRes);
+    highlightSelected(Number(availableSeasons[0]));
   }
-  // Load first season by default
-  renderEpisodes(slug, 1, linksRes);
-  highlightSelected(1);
 }
 
 function highlightSelected(selected) {
   const buttons = document.querySelectorAll('.season-btn');
   buttons.forEach((btn, idx) => {
-    btn.style.background = (idx + 1 === selected) ? "#e50914" : "#222";
-    btn.style.color = (idx + 1 === selected) ? "#fff" : "#bbb";
+    btn.style.background = (btn.innerText.endsWith(selected)) ? "#e50914" : "#222";
+    btn.style.color = (btn.innerText.endsWith(selected)) ? "#fff" : "#bbb";
   });
 }
 
