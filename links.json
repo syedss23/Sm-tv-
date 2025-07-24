@@ -1,0 +1,93 @@
+{
+  "kurulus-osman": {
+    "seasons": {
+      "7": [
+        {
+          "ep": 1,
+          "title": "Bolum 1",
+          "thumb": "assets/posters/osman_s7e1.jpg",
+          "video": "videos/osman_s7e1.mp4",
+          "download": "https://terabox.com/kurulus-osman-s7e1"
+        },
+        {
+          "ep": 2,
+          "title": "Bolum 2",
+          "thumb": "assets/posters/osman_s7e2.jpg",
+          "video": "videos/osman_s7e2.mp4",
+          "download": "https://terabox.com/kurulus-osman-s7e2"
+        }
+        // Add more episodes as needed
+      ]
+    }
+  },
+  "alp-arslan": {
+    "seasons": {
+      "1": [
+        {
+          "ep": 1,
+          "title": "Episode 1",
+          "thumb": "assets/posters/alp_arslan_e1.jpg",
+          "video": "videos/alp_arslan_e1.mp4",
+          "download": "https://terabox.com/alp-arslan-e1"
+        }
+        // Add more episodes as needed
+      ]
+    }
+  },
+  "sultan-mehmet-fatih": {
+    "seasons": {
+      "1": [
+        {
+          "ep": 1,
+          "title": "Episode 1",
+          "thumb": "assets/posters/mehmet_fatih_e1.jpg",
+          "video": "videos/mehmet_fatih_e1.mp4",
+          "download": "https://terabox.com/mehmet-fatih-e1"
+        }
+        // Add more episodes as needed
+      ]
+    }
+  },
+  "salauddin-ayyubi": {
+    "seasons": {
+      "1": [
+        {
+          "ep": 1,
+          "title": "Episode 1",
+          "thumb": "assets/posters/salauddin_ayyubi_e1.jpg",
+          "video": "videos/salauddin_ayyubi_e1.mp4",
+          "download": "https://terabox.com/salauddin-ayyubi-e1"
+        }
+        // Add more episodes as needed
+      ]
+    }
+  },
+  "the-great-seljuk": {
+    "seasons": {
+      "1": [
+        {
+          "ep": 1,
+          "title": "Episode 1",
+          "thumb": "assets/posters/great_seljuk_e1.jpg",
+          "video": "videos/great_seljuk_e1.mp4",
+          "download": "https://terabox.com/great-seljuk-e1"
+        }
+        // Add more episodes as needed
+      ]
+    }
+  },
+  "moulana-jalaluddin-rumi": {
+    "seasons": {
+      "1": [
+        {
+          "ep": 1,
+          "title": "Episode 1",
+          "thumb": "assets/posters/rumi_e1.jpg",
+          "video": "videos/rumi_e1.mp4",
+          "download": "https://terabox.com/rumi-e1"
+        }
+        // Add more episodes as needed
+      ]
+    }
+  }
+}
