@@ -111,11 +111,6 @@ header {
   overflow: hidden;
   box-shadow: 0 2px 14px rgba(0,0,0,0.15);
 }
-video {
-  width: 100%;
-  background: #000;
-}
-
 button#downloadBtn {
   display: block;
   margin: 1.5em auto;
@@ -133,8 +128,18 @@ button#downloadBtn {
 button#downloadBtn:hover {
   background: #b00610;
 }
-
-/* Responsive Design */
+.sidebar-close-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 2em;
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  cursor: pointer;
+  z-index: 10;
+}
 @media (max-width: 900px) {
   .sidebar {
     width: 72px;
@@ -154,7 +159,6 @@ button#downloadBtn:hover {
     margin-bottom: 1em;
   }
 }
-
 @media (max-width: 600px) {
   .sidebar {
     position: absolute;
@@ -177,5 +181,8 @@ button#downloadBtn:hover {
   .poster-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 13px;
+  }
+  .sidebar-close-btn {
+    display: block;
   }
 }
