@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Turkish Series Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="index.js"></script>
+</head>
+<body>
+  <div id="sidebar" class="sidebar">
+    <div class="brand">SeriesHub</div>
+    <nav>
+      <a href="index.html">Series</a>
+      <a href="#">Links</a>
+      <select id="langSelect">
+        <option value="en">English</option>
+        <option value="hi">Hindi</option>
+        <option value="ur">Urdu</option>
+      </select>
+    </nav>
+  </div>
+  <div id="main-content">
+    <header>
+      <button id="sidebarToggle">&#9776;</button>
+      <h1>Turkish Series</h1>
+    </header>
+    <div class="ad-space" id="adSpace"></div>
+    <section id="series-grid" class="poster-grid">
+      <!-- Posters will be dynamically loaded here -->
+    </section>
+  </div>
+</body>
+</html>
