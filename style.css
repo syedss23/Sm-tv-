@@ -5,19 +5,19 @@ body {
   font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-/* SIDEBAR: Hidden by default, overlay when open */
+/* SIDEBAR: Hidden by default, overlays when open */
 .sidebar {
   position: fixed;
   top: 0;
   bottom: 0;
-  left: -300px;            /* Absolutely hides even with shadows or borders */
+  left: -300px;           /* Hide far off-screen (much more negative than width) */
   width: 220px;
   background: #121212;
   display: flex;
   flex-direction: column;
   padding: 1em;
   z-index: 1000;
-  transition: left 0.2s;
+  transition: left 0.2s cubic-bezier(.4,0,.2,1);
   overflow: hidden;
   box-shadow: none !important;
   border-right: none !important;
@@ -51,8 +51,6 @@ body {
 .sidebar nav a:hover {
   color: #e50914;
 }
-
-/* SIDEBAR CONTROLS */
 #sidebarToggle {
   display: inline;
   background: none;
@@ -73,7 +71,6 @@ body {
   cursor: pointer;
   z-index: 10;
 }
-
 #main-content {
   margin-left: 0;
   padding: 1em;
@@ -85,6 +82,49 @@ header {
   align-items: center;
   gap: 1em;
 }
+
+/* --- Professional Search Bar --- */
+.searchbar-container {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  background: #222;
+  border-radius: 7px;
+  padding: 0.15em 0.5em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  min-width: 215px;
+  max-width: 270px;
+  width: 100%;
+  position: relative;
+}
+.search-icon {
+  color: #888;
+  font-size: 1.27em;
+  margin-right: 0.45em;
+  pointer-events: none;
+}
+#seriesSearch {
+  background: transparent;
+  color: #fff;
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 0.5em 0.2em 0.5em 0;
+  font-size: 1.03em;
+  letter-spacing: 0.02em;
+}
+#seriesSearch::placeholder {
+  color: #aaa;
+  opacity: 1;
+}
+.marked {
+  background: #ffe74c;
+  color: #1a1a1a !important;
+  border-radius: 4px;
+  padding: 0 2px;
+}
+
+/* Grid, posters, general layout */
 .poster-grid {
   display: grid;
   gap: 24px;
@@ -167,6 +207,18 @@ button#downloadBtn:hover {
   }
 }
 @media (max-width: 600px) {
+  .searchbar-container {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    margin-right: 0;
+    margin-left: 0.3em;
+    padding: 0.13em 0.3em;
+  }
+  #seriesSearch {
+    font-size: 0.98em;
+    padding: 0.42em 0.2em 0.42em 0;
+  }
   .poster-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
