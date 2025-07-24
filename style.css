@@ -1,0 +1,181 @@
+body {
+  background: #181818;
+  color: #fff;
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+.sidebar {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: 220px;
+  background: #121212;
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+  z-index: 2;
+  transition: left 0.2s;
+}
+.brand {
+  font-size: 1.6em;
+  font-weight: bold;
+  margin-bottom: 2em;
+  color: #e50914;
+  letter-spacing: 1px;
+}
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25em;
+}
+.sidebar nav a,
+.sidebar nav select {
+  color: #fff;
+  background: none;
+  border: none;
+  font-size: 1em;
+  margin-bottom: 0.8em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.sidebar nav a:hover {
+  color: #e50914;
+}
+#main-content {
+  margin-left: 220px;
+  padding: 1em;
+  min-height: 100vh;
+}
+header {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+#sidebarToggle {
+  display: none;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.9em;
+  cursor: pointer;
+}
+.poster-grid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(164px, 1fr));
+  margin-top: 1.5em;
+}
+.poster-item,
+.episode-thumb {
+  background: #252525;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 2px 7px rgba(0,0,0,0.21);
+  transition: transform 0.17s, box-shadow 0.17s;
+}
+.poster-item:hover,
+.episode-thumb:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(229,9,20,0.22);
+}
+.poster-item img,
+.episode-thumb img {
+  width: 100%;
+  display: block;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+}
+.poster-item .title,
+.episode-thumb .title {
+  padding: 0.7em 0.8em;
+  font-size: 1.02em;
+  font-weight: bold;
+}
+.ad-space {
+  background: #222;
+  color: #ffdd59;
+  margin: 16px 0;
+  padding: 16px;
+  text-align: center;
+  border-radius: 7px;
+  font-size: 1.1em;
+  min-height: 32px;
+}
+.video-container {
+  width: 100%;
+  max-width: 770px;
+  margin: 2em auto;
+  background: #252525;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 14px rgba(0,0,0,0.15);
+}
+video {
+  width: 100%;
+  background: #000;
+}
+
+button#downloadBtn {
+  display: block;
+  margin: 1.5em auto;
+  background: #e50914;
+  color: #fff;
+  font-size: 1.14em;
+  padding: 0.75em 2em;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  box-shadow: 0 3px 7px rgba(229,9,20,0.06);
+  transition: background 0.18s;
+}
+button#downloadBtn:hover {
+  background: #b00610;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .sidebar {
+    width: 72px;
+    padding: 0.7em 0.45em;
+  }
+  .sidebar nav a,
+  .sidebar nav select {
+    font-size: 0.95em;
+    margin-bottom: 0.6em;
+  }
+  #main-content {
+    margin-left: 72px;
+    padding: 1em;
+  }
+  .brand {
+    font-size: 1em;
+    margin-bottom: 1em;
+  }
+}
+
+@media (max-width: 600px) {
+  .sidebar {
+    position: absolute;
+    left: -220px;
+    top: 0; bottom: 0;
+    width: 220px;
+    transition: left 0.18s;
+    box-shadow: 0 5px 19px rgba(0,0,0,0.25);
+  }
+  .sidebar.open {
+    left: 0;
+  }
+  #main-content {
+    margin-left: 0;
+    padding: 1em 0.4em;
+  }
+  #sidebarToggle {
+    display: inline;
+  }
+  .poster-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 13px;
+  }
+}
