@@ -14,6 +14,7 @@ body {
   padding: 1em;
   z-index: 2;
   transition: left 0.2s;
+  overflow: hidden; /* Prevents any content/shadows peeking out */
 }
 .brand {
   font-size: 1.6em;
@@ -140,6 +141,8 @@ button#downloadBtn:hover {
   cursor: pointer;
   z-index: 10;
 }
+
+/* Responsive adjustments for tablets */
 @media (max-width: 900px) {
   .sidebar {
     width: 72px;
@@ -159,18 +162,20 @@ button#downloadBtn:hover {
     margin-bottom: 1em;
   }
 }
+
+/* Updated mobile sidebar — 100% hidden */
 @media (max-width: 600px) {
   .sidebar {
-    position: absolute;
-    left: -222px; /* Hides sidebar fully off-screen w/ 2px buffer for shadows, borders, etc. */
+    position: fixed;
+    left: -240px;      /* Pushes sidebar fully (inc. shadow/padding) off-screen */
     top: 0; bottom: 0;
     width: 220px;
     transition: left 0.18s;
-    box-shadow: 0 5px 19px rgba(0,0,0,0.25);
+    box-shadow: none;  /* Remove any shadow peeking out */
     overflow: hidden;
   }
   .sidebar.open {
-    left: 0;
+    left: 0 !important;
   }
   #main-content {
     margin-left: 0;
