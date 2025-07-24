@@ -5,12 +5,11 @@ body {
   font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-/* SIDEBAR: Hidden by default, overlays when open */
 .sidebar {
   position: fixed;
   top: 0;
   bottom: 0;
-  left: -300px;           /* Hide far off-screen (much more negative than width) */
+  left: -300px;
   width: 220px;
   background: #121212;
   display: flex;
@@ -83,7 +82,7 @@ header {
   gap: 1em;
 }
 
-/* --- Professional Search Bar --- */
+/* Search bar styling */
 .searchbar-container {
   margin-left: auto;
   display: flex;
@@ -124,7 +123,53 @@ header {
   padding: 0 2px;
 }
 
-/* Grid, posters, general layout */
+/* Seasons bar and episode styling */
+.seasons-bar {
+  display: flex;
+  gap: 0.7em;
+  flex-wrap: wrap;
+  margin: 2em 0 1em 0;
+  justify-content: flex-start;
+}
+.season-btn {
+  background: #181818;
+  color: #fff;
+  border: 2px solid #353535;
+  border-radius: 22px;
+  padding: 0.5em 1.2em;
+  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+  font-size: 1.02em;
+  margin-bottom: 0.3em;
+  cursor: pointer;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  transition: background .17s, color .17s, border-color .17s;
+}
+.season-btn.active, .season-btn:hover {
+  background: #e50914;
+  color: #fff;
+  border-color: #e50914;
+}
+.episode-thumb {
+  position: relative;
+}
+.ep-label {
+  position: absolute;
+  top: 7px; left: 7px;
+  background: #111c;
+  color: #ffe74c;
+  padding: 0.22em 0.85em;
+  font-size: 0.97em;
+  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+  font-weight: 700;
+  border-radius: 7px;
+  z-index: 1;
+  letter-spacing: 0.01em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.16);
+}
+
+/* Grid, posters, and modern Montserrat titles */
 .poster-grid {
   display: grid;
   gap: 24px;
@@ -152,7 +197,6 @@ header {
   aspect-ratio: 2/3;
   object-fit: cover;
 }
-/* -- PREMIUM FONT FOR SERIES NAMES -- */
 .poster-item .title,
 .episode-thumb .title {
   font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
@@ -206,7 +250,8 @@ button#downloadBtn {
 button#downloadBtn:hover {
   background: #b00610;
 }
-/* Responsive grid/tablet */
+
+/* Responsive styles for mobile/tablet */
 @media (max-width: 900px) {
   .brand {
     font-size: 1em;
