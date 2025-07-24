@@ -21,6 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
       sidebar.classList.toggle('open');
     });
   }
+  // Sidebar close (×) button
+  const sidebarClose = document.getElementById('sidebarClose');
+  if (sidebarClose && sidebar) {
+    sidebarClose.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+    });
+  }
 });
 
 async function renderGrid() {
