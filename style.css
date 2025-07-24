@@ -162,11 +162,12 @@ button#downloadBtn:hover {
 @media (max-width: 600px) {
   .sidebar {
     position: absolute;
-    left: -220px;
+    left: -222px; /* Hides sidebar fully off-screen w/ 2px buffer for shadows, borders, etc. */
     top: 0; bottom: 0;
     width: 220px;
     transition: left 0.18s;
     box-shadow: 0 5px 19px rgba(0,0,0,0.25);
+    overflow: hidden;
   }
   .sidebar.open {
     left: 0;
