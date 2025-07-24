@@ -94,6 +94,56 @@ h1, h2, h3 {
   font-size: 1.1em;
   min-height: 32px;
 }
+
+/* --- Professional search bar --- */
+.searchbar-container {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  background: #222;
+  border-radius: 7px;
+  padding: 0.15em 0.5em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  min-width: 215px;
+  max-width: 270px;
+  width: 100%;
+  position: relative;
+}
+.search-icon {
+  color: #888;
+  font-size: 1.27em;
+  margin-right: 0.45em;
+  pointer-events: none;
+}
+#seriesSearch {
+  background: transparent;
+  color: #fff;
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 0.5em 0.2em 0.5em 0;
+  font-size: 1.03em;
+  letter-spacing: 0.02em;
+}
+#seriesSearch::placeholder {
+  color: #aaa;
+  opacity: 1;
+}
+@media (max-width: 600px) {
+  .searchbar-container {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    margin-left: 0.3em;
+    padding: 0.13em 0.3em;
+  }
+  #seriesSearch {
+    font-size: 0.98em;
+    padding: 0.42em 0.2em 0.42em 0;
+  }
+}
+
+/* --- Download Button --- */
 #downloadBtn, .download-btn {
   display: block;
   margin: 2em auto 0 auto;
@@ -114,7 +164,7 @@ h1, h2, h3 {
   background: #b00610;
 }
 
-/* Clean, responsive video player area */
+/* --- Clean, responsive video player area --- */
 .video-container {
   width: 100%;
   max-width: 770px;
@@ -144,7 +194,7 @@ h1, h2, h3 {
   }
 }
 
-/* Poster grid/season styling (for listing/other screens) */
+/* --- Poster grid/season styling (for listing/other screens) --- */
 .poster-grid {
   display: grid;
   gap: 24px;
@@ -230,7 +280,6 @@ h1, h2, h3 {
   box-shadow: 0 2px 8px rgba(0,0,0,0.16);
 }
 
-/* Responsive styles for mobile */
 @media (max-width: 900px) {
   .brand {
     font-size: 1em;
