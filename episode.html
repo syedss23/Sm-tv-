@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Watch Episode</title>
+  <title>Barbarossa - Episode 1</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script defer src="episode.js"></script>
 </head>
@@ -14,22 +15,15 @@
     <nav>
       <a href="index.html">Series</a>
       <a href="#">Links</a>
-      <select id="langSelect">
-        <option value="en">English</option>
-        <option value="hi">Hindi</option>
-        <option value="ur">Urdu</option>
-      </select>
     </nav>
   </div>
   <div id="main-content">
     <header>
       <button id="sidebarToggle">&#9776;</button>
-      <h1 id="episodeTitle">Episode</h1>
+      <h1 id="episodeTitle"></h1>
     </header>
     <div class="ad-space" id="adSpace"></div>
-    <div class="video-container">
-      <div id="embedContainer"></div>
-    </div>
+    <div class="video-container" id="videoContainer"></div>
     <button id="downloadBtn">Download Episode</button>
   </div>
 </body>
