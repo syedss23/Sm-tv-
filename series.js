@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
       sidebar.classList.toggle('open');
     });
   }
-  // Sidebar close button support
   const sidebarClose = document.getElementById('sidebarClose');
   if (sidebarClose && sidebar) {
     sidebarClose.addEventListener('click', () => {
@@ -56,11 +55,14 @@ async function loadSeries() {
     fetch('links.json')
   ]);
   const seriesList = await seriesRes.json();
+  const linksData = await linksRes.json();
   const series = seriesList.find(s => s.slug === slug);
   if (!series) return;
 
+  // Series title
   document.getElementById('seriesTitle').innerText = series.title;
 
+  // Series description & poster
   const detail = document.getElementById('series-detail');
   detail.innerHTML = `
     <img src="${series.poster}" alt="${series.title}" style="max-width:180px;float:left;margin-right:2em;border-radius:6px;margin-bottom:1em">
@@ -68,47 +70,59 @@ async function loadSeries() {
     <div style="clear:both"></div>
   `;
 
-  // Only show seasons as found in links.json
-  const linksData = await linksRes.json();
-  const availableSeasons = Object.keys((linksData[slug] || {}).seasons || {});
-  const selector = document.getElementById('season-selector');
-  selector.innerHTML = '';
-  availableSeasons.forEach(seasonNum => {
-    const btn = document.createElement('button');
-    btn.innerText = 'Season ' + seasonNum;
-    btn.className = 'season-btn';
-    btn.addEventListener('click', () => {
-      renderEpisodes(slug, seasonNum, linksRes);
-      highlightSelected(Number(seasonNum));
-    });
-    selector.appendChild(btn);
-  });
-  // Load the first available season by default
-  if (availableSeasons.length) {
-    renderEpisodes(slug, availableSeasons[0], linksRes);
-    highlightSelected(Number(availableSeasons[0]));
+  // Detect seasons from linksData
+  const seasonMap = (linksData[slug] && linksData[slug].seasons) ? linksData[slug].seasons : {};
+  const allSeasons = Object.keys(seasonMap).sort((a,b)=>Number(a)-Number(b));
+  if (!allSeasons.length) {
+    document.getElementById('episodes-section').innerHTML = '<div style="padding:2em;color:#ff6565;text-align:center;">No seasons/episodes available.</div>';
+    document.getElementById('seasonsBar').innerHTML = '';
+    return;
   }
+
+  // Render season buttons
+  const seasonsBar = document.getElementById('seasonsBar');
+  seasonsBar.innerHTML = '';
+  allSeasons.forEach(seasonNum => {
+    const btn = document.createElement('button');
+    btn.innerText = `Season ${seasonNum}`;
+    btn.className = 'season-btn';
+    btn.onclick = () => {
+      renderEpisodes(slug, seasonNum, seasonMap[seasonNum]);
+      highlightSelected(seasonNum);
+    };
+    seasonsBar.appendChild(btn);
+  });
+
+  // Show the first available season by default
+  renderEpisodes(slug, allSeasons[0], seasonMap[allSeasons[0]]);
+  highlightSelected(allSeasons[0]);
 }
 
-function highlightSelected(selected) {
+function highlightSelected(selectedSeason) {
   const buttons = document.querySelectorAll('.season-btn');
-  buttons.forEach((btn, idx) => {
-    btn.style.background = (btn.innerText.endsWith(selected)) ? "#e50914" : "#222";
-    btn.style.color = (btn.innerText.endsWith(selected)) ? "#fff" : "#bbb";
+  buttons.forEach(btn => {
+    if (btn.innerText.endsWith(selectedSeason)) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
   });
 }
 
-async function renderEpisodes(slug, season, linksRes) {
-  const linksData = await linksRes.json();
-  const episodes = ((linksData[slug] || {}).seasons || {})[season] || [];
+function renderEpisodes(slug, seasonNum, episodesArr) {
   const section = document.getElementById('episodes-section');
+  if (!episodesArr || episodesArr.length === 0) {
+    section.innerHTML = '<div style="padding:1.4em; color:#ff6565; text-align:center;">No episodes found for this season.</div>';
+    return;
+  }
   section.innerHTML = '';
-  episodes.forEach(ep => {
+  episodesArr.forEach(ep => {
     const epDiv = document.createElement('div');
     epDiv.className = "episode-thumb";
     epDiv.innerHTML = `
-      <a href="episode.html?slug=${slug}&season=${season}&ep=${ep.ep}">
+      <a href="episode.html?slug=${slug}&season=${seasonNum}&ep=${ep.ep}">
         <img src="${ep.thumb}" alt="Episode ${ep.ep}">
+        <div class="ep-label">Ep ${ep.ep}</div>
         <div class="title">${ep.title}</div>
       </a>
     `;
