@@ -58,7 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function renderGrid(searchTerm = '') {
-  const grid = document.getElementById('series-grid');
+  // Fixed element ID!
+  const grid = document.getElementById('seriesGrid');
   let filteredSeries = allSeries;
   const q = searchTerm.trim().toLowerCase();
   if (q.length > 0) {
