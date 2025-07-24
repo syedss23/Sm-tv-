@@ -62,7 +62,7 @@ async function loadEpisode() {
     `${series.title} - ${episode.title}`;
 
   // Inject embed code if available
-  const embedDiv = document.getElementById('embedContainer');
+  const embedDiv = document.getElementById('videoContainer');
   if (episode.embed) {
     embedDiv.innerHTML = episode.embed;
   } else {
