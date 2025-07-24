@@ -2,18 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Turkish Series Hub</title>
+  <title>SM-TV – Series List</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script defer src="index.js"></script>
 </head>
 <body>
+  <!-- Sidebar -->
   <div id="sidebar" class="sidebar">
     <button id="sidebarClose" class="sidebar-close-btn">&times;</button>
     <div class="brand">SeriesHub</div>
     <nav>
       <a href="index.html">Series</a>
-      <a href="#">Links</a>
+      <a href="https://t.me/smtv_official1" target="_blank" rel="noopener">Join Telegram Channel</a>
+      <div class="lang-label">Language</div>
       <select id="langSelect">
         <option value="en">English</option>
         <option value="hi">Hindi</option>
@@ -21,23 +24,18 @@
       </select>
     </nav>
   </div>
+
   <div id="main-content">
-    <header style="display:flex;align-items:center;gap:1.2em;">
+    <header>
       <button id="sidebarToggle">&#9776;</button>
-      <h1 style="margin:0;">Turkish Series</h1>
+      <h1>Browse Series</h1>
       <div class="searchbar-container">
         <span class="search-icon">&#128269;</span>
-        <input
-          type="text"
-          id="seriesSearch"
-          placeholder="Search for a series..."
-          autocomplete="off"
-          aria-label="Search series by name"
-        />
+        <input type="text" id="seriesSearch" placeholder="Search series...">
       </div>
     </header>
-    <div class="ad-space" id="adSpace"></div>
-    <section id="series-grid" class="poster-grid"></section>
+    <div class="ad-space" id="adSpace">Ad Area</div>
+    <div id="seriesGrid" class="poster-grid"></div>
   </div>
 </body>
 </html>
