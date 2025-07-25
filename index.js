@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (state.page === 'series')
         renderSeriesDetails(state.slug);
       else if (state.page === 'episode')
-        playClassicEpisode(state.slug, String(state.season), state.epi, seriesList.find(s=>s.slug===state.slug));
+        playProEpisode(state.slug, String(state.season), state.epi, seriesList.find(s=>s.slug===state.slug));
     };
   });
 });
@@ -60,7 +60,6 @@ function renderSeriesList(search = "") {
   });
 }
 
-// --- Classic series detail card/page ---
 function renderSeriesDetails(slug) {
   showOnly('spa-series-details');
   const meta = seriesList.find(s => s.slug === slug);
@@ -120,13 +119,12 @@ function renderClassicEpisodesList(slug, seasonNumber) {
       `).join('');
   }
   document.getElementById('classic-episodes-list').innerHTML = out;
-  // For SPA navigation:
   window._spaPlayEpisode = (slug, seasonKey, epNum) =>
-    playClassicEpisode(slug, seasonKey, epNum, seriesList.find(s=>s.slug===slug));
+    playProEpisode(slug, seasonKey, epNum, seriesList.find(s=>s.slug===slug));
 }
 
-// --- Classic episode streaming page/modal ---
-function playClassicEpisode(slug, season, epi, meta) {
+// Professional streaming-style episode view
+function playProEpisode(slug, season, epi, meta) {
   const seasonKey = String(season);
   const sData = seriesEpisodesData[slug];
   const episodes = sData && sData.seasons ? sData.seasons[seasonKey] || [] : [];
@@ -137,14 +135,15 @@ function playClassicEpisode(slug, season, epi, meta) {
     return;
   }
   container.innerHTML = `
-    <div class="classic-episode-modal">
-      <button class="classic-ep-back" onclick="renderSeriesDetails('${slug}')">&larr; Back to episodes</button>
-      <h2 class="classic-ep-title">${meta ? meta.title : ''} – ${ep.title ? ep.title : `Episode ${ep.ep}`}</h2>
-      <div class="classic-ep-embed">${ep.embed || '<div style="padding:38px 0;color:#ccc;">No streaming available</div>'}</div>
-      <a class="classic-download-btn" href="${ep.download || '#'}" download>⬇️ Download</a>
+    <div class="pro-episode-view">
+      <div class="pro-episode-header">
+        <button class="pro-episode-back" onclick="renderSeriesDetails('${slug}')">&larr; Back to episodes</button>
+        <h2 class="pro-episode-title">${meta ? meta.title : ''} – <span>${ep.title ? ep.title : `Episode ${ep.ep}`}</span></h2>
+      </div>
+      <div class="pro-episode-embed">${ep.embed || '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'}</div>
+      <a class="pro-download-btn" href="${ep.download || '#'}" download>⬇️ Download Episode</a>
     </div>
   `;
-  // Set state for browser navigation
   history.pushState({page: 'episode', slug, season: seasonKey, epi: ep.ep}, '', `#series-${slug}-s${seasonKey}-ep${ep.ep}`);
 }
 
@@ -152,7 +151,6 @@ function showOnly(id) {
   ['spa-series-list', 'spa-series-details'].forEach(hid =>
     document.getElementById(hid) && document.getElementById(hid).classList.toggle('hide', hid !== id)
   );
-  // Episode modal now shares the same container, so nothing else to hide
 }
 
 function goHome() {
@@ -167,7 +165,7 @@ function handlePopstate(e) {
   } else if (state.page === 'series') {
     renderSeriesDetails(state.slug);
   } else if (state.page === 'episode') {
-    playClassicEpisode(
+    playProEpisode(
       state.slug,
       String(state.season),
       state.epi,
