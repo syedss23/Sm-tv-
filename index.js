@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (state.page === 'series')
         renderSeriesDetails(state.slug);
       else if (state.page === 'episode')
-        playProEpisode(state.slug, String(state.season), state.epi, seriesList.find(s=>s.slug===state.slug));
+        playEpisodeWithMonetagAd(state.slug, String(state.season), state.epi, seriesList.find(s=>s.slug===state.slug));
     };
   });
 });
@@ -123,7 +123,29 @@ function renderProEpisodesRow(slug, seasonNumber) {
   }
   document.getElementById('pro-episodes-row-wrap').innerHTML = row;
   window._spaPlayEpisode = (slug, seasonKey, epNum) =>
-    playProEpisode(slug, seasonKey, epNum, seriesList.find(s=>s.slug===slug));
+    playEpisodeWithMonetagAd(slug, seasonKey, epNum, seriesList.find(s=>s.slug===slug));
+}
+
+/**
+ * Shows the Monetag in-app interstitial ad, then immediately loads the episode player.
+ * The ad will overlay on top (per Monetag design), so the content still loads behind.
+ */
+function playEpisodeWithMonetagAd(slug, season, epi, meta) {
+  // Show Monetag interstitial ad
+  if (typeof show_9623557 === "function") {
+    show_9623557({
+      type: 'inApp',
+      inAppSettings: {
+        frequency: 2,
+        capping: 0.1,
+        interval: 30,
+        timeout: 5,
+        everyPage: false
+      }
+    });
+  }
+  // Immediately load the episode page (ad overlays automatically)
+  playProEpisode(slug, season, epi, meta);
 }
 
 function playProEpisode(slug, season, epi, meta) {
@@ -167,7 +189,7 @@ function handlePopstate(e) {
   } else if (state.page === 'series') {
     renderSeriesDetails(state.slug);
   } else if (state.page === 'episode') {
-    playProEpisode(
+    playEpisodeWithMonetagAd(
       state.slug,
       String(state.season),
       state.epi,
