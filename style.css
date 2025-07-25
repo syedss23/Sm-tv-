@@ -34,73 +34,179 @@ header { padding: 20px 10px 8px 10px; border-bottom: 1px solid #292a2f; position
   #main-content { margin-left: 0;}
   .sidebar { width: 90vw;}
 }
-/* --- Ad Area --- */
 .ad-space {
   margin: 24px 0 10px 0; text-align: center; min-height: 60px;
   background: #191a23; border-radius: 10px;
 }
 
-/* --- Grid (Series & Episodes) --- */
-.poster-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px,1fr));
-  gap: 20px;
-  padding: 18px;
-  background: transparent;
-}
-.poster-item {
-  background: #20222b; color: #fff; box-shadow: 0 1px 5px #0007;
-  border-radius: 8px; overflow: hidden; text-align: center; cursor: pointer;
-  transition: box-shadow .2s, transform .2s;
-}
-.poster-item:hover { box-shadow: 0 3px 12px #000a; transform: translateY(-2px) scale(1.02);}
-.poster-item img { width: 100%; height: 200px; object-fit: cover; border-bottom: 1px solid #23242a;}
-.poster-item .title { color: #fafafa; font-size: 1em; font-weight: 600; margin: 12px 0; text-shadow: 0 2px 8px #0008;}
-.hide { display: none !important; }
-button, input[type="button"], input[type="submit"] {
-  background: #23242a; color: #fff; border: 1px solid #333;
-  border-radius: 6px; padding: 7px 18px; font-size: 1em;
-}
-button:hover { background: #272838; }
-
-/* --- Series Details Layout --- */
-#spa-series-details > div {
+/* --- Modern Series Card / Details --- */
+.series-details-card {
   display: flex;
-  gap: 24px;
   align-items: flex-start;
+  gap: 36px;
+  margin: 32px 0;
+  background: #191a23;
+  border-radius: 16px;
+  box-shadow: 0 4px 32px #000a;
+  padding: 25px 27px 22px 22px;
   flex-wrap: wrap;
 }
-#spa-series-details img {
-  width: 160px; border-radius: 8px;
+@media (max-width: 700px) {
+  .series-details-card {
+    flex-direction: column;
+    align-items: center;
+    padding: 18px 4vw;
+    text-align: center;
+  }
 }
-#spa-series-details h2 { margin-top:0; }
-#spa-episode-view { margin-top: 32px; }
-.ep-embed { margin-top:18px; margin-bottom:12px; text-align:center; }
-/* --- Seasons Bar --- */
-#seasons-bar { margin-bottom: 14px; }
+.series-big-poster {
+  width: 210px;
+  aspect-ratio: 2/3;
+  max-width: 91vw;
+  border-radius: 11px;
+  box-shadow: 0 3px 16px #0008;
+  background: #15171c;
+  margin-bottom: 9px;
+}
+
+/* --- Professional Seasons Bar --- */
+#seasons-bar {
+  margin: 0.9em 0 1em 0;
+  display: flex;
+  gap: 11px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
 .season-btn {
-  margin-right:6px; padding:6px 18px; border-radius:7px;
-  background:#222; color:#fff; border:1px solid #333; cursor:pointer;
+  background: #242641;
+  color: #fff;
+  border: 0;
+  border-radius: 1.3em;
+  padding: 8px 26px;
+  font-size: 1em;
+  margin: 0 0 8px 0;
+  box-shadow: 0 2px 7px #16172533;
   font-weight: 600;
+  opacity: 0.92;
+  transition: background .15s, opacity .2s;
+  cursor: pointer;
 }
 .season-btn.active, .season-btn:focus {
-  background: #515cf7 !important;
+  background: #515cf7!important;
   color: #fff;
-  border-color: #3240ac !important;
+  opacity: 1;
 }
-/* --- Download Button --- */
-.download-btn {
-  display:inline-block; background: #13d178; color: #fff;
-  padding: 9px 18px; border-radius: 8px; margin-top: 4px;
-  font-weight: bold; text-decoration: none; border: 0;
-  transition: background .15s;
+
+/* --- Episodes Grid --- */
+.poster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(170px,1fr));
+  gap: 18px;
+  padding: 18px;
 }
-.download-btn:hover { background: #0ac969; }
-/* --- Responsive Video/Embed --- */
-.ep-embed iframe, .ep-embed video {
-  max-width: 99vw;
-  width: 100%;
-  max-height: 420px;
+.episode-item {
+  background: #232439;
+  border-radius: 11px;
+  box-shadow: 0 2px 8px #0a0f1f12;
+  overflow: hidden;
+  cursor: pointer;
+  transition:.2s;
+  display: flex; flex-direction: column;
+}
+.episode-item:hover {
+  box-shadow: 0 4px 18px #28317977;
+  background: #313356;
+  transform:translateY(-2px) scale(1.03);
+}
+.episode-thumb {
+  width: 100%; aspect-ratio: 16 / 9;
+  background: #252431;
+  object-fit: cover;
+  border-bottom: 1px solid #242641;
+  margin-bottom: 0;
+  display: block;
+}
+.episode-title {
+  color: #fafbff;
+  font-size: 1em;
+  font-weight: 600;
+  padding: 13px 7px 11px 11px;
+  text-align: left;
+  letter-spacing: .015em;
+}
+
+/* --- Modern Episode Streaming View --- */
+#spa-episode-view {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(22,24,31,0.94);
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  backdrop-filter: blur(5px);
+  padding: 8vh 4vw 6vh 4vw;
+}
+#spa-episode-view .stream-content {
+  background: #20233b;
+  border-radius: 16px;
+  max-width: min(520px,98vw);
+  box-shadow: 0 6px 30px #1c1e3599;
+  padding: 24px 14px 23px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#spa-episode-view .ep-title {
+  font-size: 1.25em;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 15px;
+  letter-spacing: .01em;
+  text-align: center;
+}
+#spa-episode-view .ep-embed {
   border-radius: 10px;
-  box-shadow: 0 3px 24px #0009;
+  overflow: hidden;
+  width: 100%;
+  max-width: 99vw;
+  max-height: 365px;
+  background: #191a23;
+  margin-bottom: 17px;
+  box-shadow: 0 2px 12px #03062044;
+  text-align: center;
 }
+#spa-episode-view .download-btn {
+  display: inline-block;
+  background: linear-gradient(92deg, #14e08b,#26a5ff 90%);
+  font-weight: 600; font-size: 1.02em;
+  color: #fff;
+  padding: 11px 35px;
+  border-radius: 8px;
+  margin-top: 8px;
+  box-shadow: 0 2px 14px #101c3422;
+  text-decoration: none;
+  border: none;
+  transition: background .18s, box-shadow .15s;
+  cursor: pointer;
+}
+#spa-episode-view .download-btn:hover { background:linear-gradient(92deg, #24c097,#1483e0 95%);}
+#spa-episode-view .close-btn {
+  position: absolute; right: 23px; top: 18px;
+  font-size: 2.1em; color: #fcfcfc; background: none; border: none; cursor: pointer;
+  opacity: 0.76; transition:.12s;
+}
+#spa-episode-view .close-btn:hover {opacity: 1;}
+#spa-episode-view.hide { display: none !important; }
+@media (max-width:570px) {
+  #spa-episode-view .ep-embed iframe, #spa-episode-view .ep-embed video {
+    max-height: 33vh;
+  }
+}
+.hide { display: none !important;}
+button, input[type="button"], input[type="submit"] {
+  background: #23242a; color: #fff; border: 1px solid #333; border-radius: 6px; padding: 7px 18px; font-size: 1em;
+}
+button:hover { background: #272838; }
