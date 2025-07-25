@@ -67,6 +67,7 @@ function renderSeriesDetails(slug) {
   if (!meta || !sData) return renderSeriesList();
   document.getElementById('mainTitle').textContent = meta.title;
   let desc = (meta.desc && (meta.desc[currentLang] || meta.desc['en'])) || '';
+  // Make sure all season keys are strings
   const seasonNums = Object.keys(sData.seasons).map(n => String(Number(n))).sort((a, b) => Number(a) - Number(b));
   let defaultSeason = seasonNums[0];
   let details = document.getElementById('spa-series-details');
@@ -125,7 +126,7 @@ function renderSeasonEpisodes(slug, seasonNumber) {
         '',
         `#series-${slug}-s${seasonKey}-ep${ep.ep}`
       );
-      renderFullPageEpisode(slug, seasonKey, ep.ep, seriesList.find(s=>s.slug===slug));
+      renderFullPageEpisode(slug, seasonKey, ep.ep, seriesList.find(s => s.slug === slug));
     };
     episGrid.appendChild(div);
   });
@@ -197,7 +198,7 @@ function handlePopstate(e) {
       state.slug,
       String(state.season),
       state.epi,
-      seriesList.find(s=>s.slug===state.slug)
+      seriesList.find(s => s.slug === state.slug)
     );
   }
 }
