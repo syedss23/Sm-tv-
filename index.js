@@ -26,11 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!state.page || state.page === 'list') renderSeriesList(document.getElementById('seriesSearch').value.trim());
       else if (state.page === 'series') renderSeriesDetails(state.slug);
       else if (state.page === 'episode') {
-        const sData = seriesEpisodesData[state.slug];
-        if (sData) {
-          const epis = (sData.seasons[state.season] || []).find(e => String(e.ep) === String(state.epi));
-          if (epis) renderFullPageEpisode(state.slug, state.season, epis, seriesList.find(s=>s.slug===state.slug));
-        }
+        renderFullPageEpisode(state.slug, state.season, state.epi, seriesList.find(s=>s.slug===state.slug));
       }
     };
   });
@@ -123,18 +119,27 @@ function renderSeasonEpisodes(slug, seasonNumber) {
     `;
     div.onclick = () => {
       history.pushState({page: 'episode', slug, season: seasonNumber, epi: ep.ep}, '', `#series-${slug}-s${seasonNumber}-ep${ep.ep}`);
-      renderFullPageEpisode(slug, seasonNumber, ep, seriesList.find(s=>s.slug===slug));
+      renderFullPageEpisode(slug, seasonNumber, ep.ep, seriesList.find(s=>s.slug===slug));
     };
     episGrid.appendChild(div);
   });
 }
 
-function renderFullPageEpisode(slug, season, ep, meta) {
+function renderFullPageEpisode(slug, season, epi, meta) {
+  // Always look up episode object by ep number
+  const sData = seriesEpisodesData[slug];
+  const episodes = sData && sData.seasons && sData.seasons[season] ? sData.seasons[season] : [];
+  const ep = episodes.find(e => String(e.ep) === String(epi));
   let existing = document.getElementById('spa-full-episode-view');
   if (!existing) {
     existing = document.createElement('div');
     existing.id = "spa-full-episode-view";
     document.body.appendChild(existing);
+  }
+  if (!ep) {
+    existing.classList.remove('hide');
+    existing.innerHTML = "<div style='color:#fff;padding:40px;'>Episode not found.</div>";
+    return;
   }
   showOnly(null); // Hide all
   existing.classList.remove('hide');
@@ -178,10 +183,6 @@ function handlePopstate(e) {
   } else if (state.page === 'series') {
     renderSeriesDetails(state.slug);
   } else if (state.page === 'episode') {
-    const sData = seriesEpisodesData[state.slug];
-    if (sData) {
-      const epis = (sData.seasons[state.season] || []).find(e => String(e.ep) === String(state.epi));
-      if (epis) renderFullPageEpisode(state.slug, state.season, epis, seriesList.find(s=>s.slug===state.slug));
-    }
+    renderFullPageEpisode(state.slug, state.season, state.epi, seriesList.find(s=>s.slug===state.slug));
   }
 }
