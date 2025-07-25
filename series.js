@@ -128,25 +128,28 @@ function renderEpisodes(slug, seasonNum, episodesArr) {
       </div>
     `;
     epDiv.querySelector('.episode-card-link').addEventListener('click', function () {
-      let redirected = false;
+      let redirected = false; // Reset for each click!
       if (window.show_9623557) {
         show_9623557({
           type: 'inApp',
           onClose: function() {
-            redirected = true;
-            console.log('Monetag ad closed! Redirecting to episode...');
-            window.location.href = `episode.html?slug=${slug}&season=${seasonNum}&ep=${ep.ep}`;
+            if (!redirected) {
+              redirected = true;
+              console.log('Monetag ad closed! Redirecting to episode...');
+              window.location.href = `episode.html?slug=${slug}&season=${seasonNum}&ep=${ep.ep}`;
+            }
           },
           inAppSettings: {
             frequency: 2,
-            capping: 0.5,  // 30 minutes window
-            interval: 60, // 1 minute between ads
-            timeout: 0, // show ad instantly
+            capping: 0.5,   // Extended window: 2 ads/30min
+            interval: 60,   // 1 min between ads
+            timeout: 0,     // Instant ad
             everyPage: false
           }
         });
         setTimeout(function() {
           if (!redirected) {
+            redirected = true;
             console.log('Fallback: Redirecting due to Monetag not firing onClose.');
             window.location.href = `episode.html?slug=${slug}&season=${seasonNum}&ep=${ep.ep}`;
           }
