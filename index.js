@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const sData = seriesEpisodesData[state.slug];
         if (sData) {
           const epis = (sData.seasons[state.season] || []).find(e => String(e.ep) === String(state.epi));
-          if (epis) renderEpisodeView(state.slug, state.season, epis);
+          if (epis) renderFullPageEpisode(state.slug, state.season, epis, seriesList.find(s=>s.slug===state.slug));
         }
       }
     };
@@ -74,8 +74,8 @@ function renderSeriesDetails(slug) {
   let defaultSeason = String(seasonNums[0]);
   let details = document.getElementById('spa-series-details');
   details.innerHTML = `
-    <button id="backToList" class="close-btn" style="position:static;float:right;margin-bottom:19px;">&larr; Back</button>
     <div class="series-details-layout">
+      <button class="series-back-btn" id="backToList" title="Go Back">&larr; Back</button>
       <img class="series-big-poster" src="${meta.poster}" alt="${meta.title}">
       <div class="series-meta">
         <h2>${meta.title}</h2>
@@ -84,7 +84,7 @@ function renderSeriesDetails(slug) {
         <div id="season-episodes" class="poster-grid"></div>
       </div>
     </div>
-    <div id="spa-episode-view" class="hide"></div>
+    <div id="spa-full-episode-view" class="hide"></div>
   `;
   document.getElementById('backToList').onclick = () => { goHome(); };
   renderSeasonBar(slug, seasonNums, defaultSeason);
@@ -108,13 +108,12 @@ function renderSeasonBar(slug, seasonNums, activeSeason) {
 function renderSeasonEpisodes(slug, seasonNumber) {
   const sData = seriesEpisodesData[slug];
   const episodes = sData.seasons[seasonNumber] || [];
-  episodViewHide();
   let episGrid = document.getElementById('season-episodes');
+  episGrid.innerHTML = '';
   if (!episodes.length) {
     episGrid.innerHTML = "<div style='color:#fff;'>No episodes.</div>";
     return;
   }
-  episGrid.innerHTML = '';
   episodes.forEach(ep => {
     let div = document.createElement('div');
     div.className = 'episode-item';
@@ -124,36 +123,52 @@ function renderSeasonEpisodes(slug, seasonNumber) {
     `;
     div.onclick = () => {
       history.pushState({page: 'episode', slug, season: seasonNumber, epi: ep.ep}, '', `#series-${slug}-s${seasonNumber}-ep${ep.ep}`);
-      renderEpisodeView(slug, seasonNumber, ep);
+      renderFullPageEpisode(slug, seasonNumber, ep, seriesList.find(s=>s.slug===slug));
     };
     episGrid.appendChild(div);
   });
 }
 
-function renderEpisodeView(slug, season, ep) {
-  let overlay = document.getElementById('spa-episode-view');
-  overlay.classList.remove('hide');
-  overlay.innerHTML = `
-    <button class="close-btn" id="closeEpisodeView" title="Close">&times;</button>
-    <div class="stream-content">
-      <div class="ep-title">${ep.title ? ep.title : `Episode ${ep.ep}`}</div>
-      <div class="ep-embed">${ep.embed || '<div style="padding:50px 0;color:#ccc;">No streaming available</div>'}</div>
-      <a class="download-btn" href="${ep.download||'#'}" download>⬇️ Download</a>
+function renderFullPageEpisode(slug, season, ep, meta) {
+  let existing = document.getElementById('spa-full-episode-view');
+  if (!existing) {
+    existing = document.createElement('div');
+    existing.id = "spa-full-episode-view";
+    document.body.appendChild(existing);
+  }
+  showOnly(null); // Hide all
+  existing.classList.remove('hide');
+  existing.innerHTML = `
+    <div class="ep-full-header">
+      <button class="ep-full-back-btn" id="episodePageBack" title="Back">&larr;</button>
+      <h2>${meta ? meta.title : ''} – <span style="font-weight:600;">${ep.title ? ep.title : `Episode ${ep.ep}`}</span></h2>
+      <span style="width:36px;"></span>
+    </div>
+    <div class="ep-full-embed-block">
+      <div class="ep-full-embed">${ep.embed || '<div style="padding:50px 0;color:#ccc;">No streaming available</div>'}</div>
+      <a class="ep-full-download-btn" href="${ep.download || '#'}" download>⬇️ Download</a>
     </div>
   `;
-  document.getElementById('closeEpisodeView').onclick = () => {
-    overlay.classList.add('hide');
-    history.pushState({page:'series', slug}, '', `#series-${slug}`);
+  document.getElementById('episodePageBack').onclick = () => {
+    existing.classList.add('hide');
     renderSeriesDetails(slug);
     renderSeasonBar(slug, Object.keys(seriesEpisodesData[slug].seasons).map(Number).sort((a,b)=>a-b), season);
     renderSeasonEpisodes(slug, season);
+    history.pushState({page:'series', slug}, '', `#series-${slug}`);
   };
 }
 
-function episodViewShow(){}
-function episodViewHide(){
-  const el = document.getElementById('spa-episode-view');
-  if (el) el.classList.add('hide');
+function showOnly(id) {
+  ['spa-series-list','spa-series-details'].forEach(hid =>
+    document.getElementById(hid) && document.getElementById(hid).classList.toggle('hide', hid !== id)
+  );
+  let epView = document.getElementById('spa-full-episode-view');
+  if (epView) epView.classList.add('hide');
+}
+
+function goHome() {
+  history.pushState({page:'list'}, '', '#');
+  renderSeriesList(document.getElementById('seriesSearch').value.trim());
 }
 
 function handlePopstate(e) {
@@ -166,17 +181,7 @@ function handlePopstate(e) {
     const sData = seriesEpisodesData[state.slug];
     if (sData) {
       const epis = (sData.seasons[state.season] || []).find(e => String(e.ep) === String(state.epi));
-      if (epis) renderEpisodeView(state.slug, state.season, epis);
+      if (epis) renderFullPageEpisode(state.slug, state.season, epis, seriesList.find(s=>s.slug===state.slug));
     }
   }
-}
-
-function showOnly(id) {
-  ['spa-series-list','spa-series-details','spa-episode-details'].forEach(hid =>
-    document.getElementById(hid) && document.getElementById(hid).classList.toggle('hide', hid !== id)
-  );
-}
-function goHome() {
-  history.pushState({page:'list'}, '', '#');
-  renderSeriesList(document.getElementById('seriesSearch').value.trim());
 }
