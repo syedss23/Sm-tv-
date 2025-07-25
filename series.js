@@ -72,7 +72,7 @@ async function loadSeries() {
 
   // Detect seasons from linksData
   const seasonMap = (linksData[slug] && linksData[slug].seasons) ? linksData[slug].seasons : {};
-  const allSeasons = Object.keys(seasonMap).sort((a,b)=>Number(a)-Number(b));
+  const allSeasons = Object.keys(seasonMap).sort((a, b) => Number(a) - Number(b));
   if (!allSeasons.length) {
     document.getElementById('episodes-section').innerHTML = '<div style="padding:2em;color:#ff6565;text-align:center;">No seasons/episodes available.</div>';
     document.getElementById('seasonsBar').innerHTML = '';
@@ -119,7 +119,7 @@ function renderEpisodes(slug, seasonNum, episodesArr) {
   episodesArr.forEach(ep => {
     const epDiv = document.createElement('div');
     epDiv.className = "episode-thumb";
-    // Make the entire card clickable, trigger ad, then navigate
+    // Fully clickable card for Monetag ad + redirect
     epDiv.innerHTML = `
       <div class="episode-card-link" style="cursor:pointer;">
         <img src="${ep.thumb}" alt="Episode ${ep.ep}">
@@ -128,10 +128,13 @@ function renderEpisodes(slug, seasonNum, episodesArr) {
       </div>
     `;
     epDiv.querySelector('.episode-card-link').addEventListener('click', function () {
+      let redirected = false;
       if (window.show_9623557) {
         show_9623557({
           type: 'inApp',
           onClose: function() {
+            redirected = true;
+            console.log('Monetag ad closed! Redirecting to episode...');
             window.location.href = `episode.html?slug=${slug}&season=${seasonNum}&ep=${ep.ep}`;
           },
           inAppSettings: {
@@ -142,6 +145,12 @@ function renderEpisodes(slug, seasonNum, episodesArr) {
             everyPage: false
           }
         });
+        setTimeout(function() {
+          if (!redirected) {
+            console.log('Fallback: Redirecting due to Monetag not firing onClose.');
+            window.location.href = `episode.html?slug=${slug}&season=${seasonNum}&ep=${ep.ep}`;
+          }
+        }, 15000); // 15s fallback in case onClose does not fire
       } else {
         window.location.href = `episode.html?slug=${slug}&season=${seasonNum}&ep=${ep.ep}`;
       }
