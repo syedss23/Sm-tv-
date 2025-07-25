@@ -1,3 +1,4 @@
+alert('index.js is loaded and running!');
 let seriesList = [];
 let seriesEpisodesData = {};
 let currentLang = 'en';
