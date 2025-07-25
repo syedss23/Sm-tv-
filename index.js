@@ -1,27 +1,24 @@
-let seriesList = [];             // Array of all series (posters, slugs, etc)
-let seriesEpisodesData = {};     // Detailed episode/season object (keyed by slug)
-let currentLang = 'en';          // Default language
+let seriesList = [];
+let seriesEpisodesData = {};
+let currentLang = 'en'; // adjusts for desc
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Fetch both the overall list and the episodes data object
   Promise.all([
     fetch('series.json').then(r => r.json()),
-    fetch('links.json').then(r => r.json()) // Be sure this matches your poster!
+    fetch('links.json').then(r => r.json()) // if your "episodes-by-series" is in links.json, else update this line to match your filename!
   ]).then(([listArr, episodesObj]) => {
-    // If your series.json is the array and links.json is the big object, use as:
     seriesList = listArr;
     seriesEpisodesData = episodesObj;
     renderSeriesList();
     window.addEventListener('popstate', handlePopstate);
 
-    // Sidebar toggle
     document.getElementById('sidebarToggle').onclick = () =>
       document.getElementById('sidebar').classList.toggle('open');
     document.getElementById('sidebarClose').onclick = () =>
       document.getElementById('sidebar').classList.remove('open');
     document.getElementById('navHome').onclick = (e) => { e.preventDefault(); goHome(); };
 
-    // Search bar
+    // Search
     document.getElementById('seriesSearch').addEventListener('input', e => {
       renderSeriesList(e.target.value.trim());
     });
@@ -29,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Language picker
     document.getElementById('langSelect').onchange = function () {
       currentLang = this.value;
-      // Force rerender visible SPA view
       const state = history.state || {};
       if (!state.page || state.page === 'list') renderSeriesList(document.getElementById('seriesSearch').value.trim());
       else if (state.page === 'series') renderSeriesDetails(state.slug);
@@ -44,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// --- SERIES LIST (home page) ---
+// SHOW ALL SERIES (grid view)
 function renderSeriesList(search = "") {
   showOnly('spa-series-list');
   document.getElementById('mainTitle').textContent = "Turkish Series";
@@ -53,7 +49,7 @@ function renderSeriesList(search = "") {
   let grid = list.querySelector('.poster-grid');
   let filtered = seriesList;
   if (search) filtered = seriesList.filter(s => s.title.toLowerCase().includes(search.toLowerCase()));
-  if (filtered.length === 0) {
+  if (!filtered.length) {
     grid.innerHTML = `<div style="color:#fff;font-size:1.1em;padding:1.5em;">No series found.</div>`;
     return;
   }
@@ -72,20 +68,17 @@ function renderSeriesList(search = "") {
   });
 }
 
-// --- SERIES DETAILS ---
+// SERIES DETAILS: poster, desc, season bar, grid of episode thumbs
 function renderSeriesDetails(slug) {
   showOnly('spa-series-details');
   const meta = seriesList.find(s => s.slug === slug);
   const sData = seriesEpisodesData[slug];
   if (!meta || !sData) return renderSeriesList();
   document.getElementById('mainTitle').textContent = meta.title;
+  let desc = (meta.desc && (meta.desc[currentLang] || meta.desc['en'])) || '';
 
-  // Language desc fallback
-  let desc = meta.desc && (meta.desc[currentLang] || meta.desc['en'] || '');
-
-  // Find available seasons (sorted numerically)
-  const seasonNums = Object.keys(sData.seasons).sort((a, b) => parseInt(a) - parseInt(b));
-  let defaultSeason = seasonNums[0];
+  const seasonNums = Object.keys(sData.seasons).map(Number).sort((a, b) => a - b);
+  let defaultSeason = String(seasonNums[0]);
 
   let details = document.getElementById('spa-series-details');
   details.innerHTML = `
@@ -103,11 +96,12 @@ function renderSeriesDetails(slug) {
   `;
   document.getElementById('backToList').onclick = () => { goHome(); };
 
-  // Render season bar and (by default) first season
+  // Render season bar and (by default) the first season
   renderSeasonBar(slug, seasonNums, defaultSeason);
   renderSeasonEpisodes(slug, defaultSeason);
 }
 
+// Season bar (tabs for 1/2/3...)
 function renderSeasonBar(slug, seasonNums, activeSeason) {
   let bar = document.getElementById('seasons-bar');
   bar.innerHTML = seasonNums.map(season =>
@@ -115,7 +109,6 @@ function renderSeasonBar(slug, seasonNums, activeSeason) {
   ).join("");
   bar.querySelectorAll(".season-btn").forEach(btn => {
     btn.onclick = () => {
-      // Reactivate bar, rerender grid
       bar.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       renderSeasonEpisodes(slug, btn.dataset.season);
@@ -123,6 +116,7 @@ function renderSeasonBar(slug, seasonNums, activeSeason) {
   });
 }
 
+// Render all episodes for a single season, as grid/thumbs
 function renderSeasonEpisodes(slug, seasonNumber) {
   const sData = seriesEpisodesData[slug];
   const episodes = sData.seasons[seasonNumber] || [];
@@ -148,7 +142,7 @@ function renderSeasonEpisodes(slug, seasonNumber) {
   });
 }
 
-// --- EPISODE POPUP VIEW ---
+// Main episode popup (embed + download button)
 function renderEpisodeView(slug, season, ep) {
   episodViewShow();
   let box = document.getElementById('spa-episode-view');
@@ -163,12 +157,12 @@ function renderEpisodeView(slug, season, ep) {
   document.getElementById('closeEpisodeView').onclick = () => {
     history.pushState({page:'series', slug}, '', `#series-${slug}`);
     renderSeriesDetails(slug);
-    renderSeasonBar(slug, Object.keys(seriesEpisodesData[slug].seasons).sort((a,b)=>parseInt(a)-parseInt(b)), season);
+    renderSeasonBar(slug, Object.keys(seriesEpisodesData[slug].seasons).map(Number).sort((a,b)=>a-b), season);
     renderSeasonEpisodes(slug, season);
   };
 }
 
-// --- Show/hide helpers ---
+// Hide/show helpers
 function episodViewShow(){
   document.getElementById('spa-episode-view').classList.remove('hide');
   document.getElementById('season-episodes').classList.add('hide');
@@ -180,7 +174,7 @@ function episodViewHide(){
   document.getElementById('seasons-bar').classList.remove('hide');
 }
 
-// --- SPA navigation / Telegram back ---
+// SPA/Telegram/WB back/forward support
 function handlePopstate(e) {
   const state = e.state || {};
   if (!state.page || state.page === 'list') {
@@ -202,8 +196,7 @@ function showOnly(id) {
   );
 }
 
-// SPA "home"
 function goHome() {
   history.pushState({page:'list'}, '', '#');
   renderSeriesList(document.getElementById('seriesSearch').value.trim());
-  }
+}
