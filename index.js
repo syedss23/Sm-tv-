@@ -96,8 +96,8 @@ function renderGrid(searchTerm = '') {
           },
           inAppSettings: {
             frequency: 2,
-            capping: 0.1,
-            interval: 30,
+            capping: 0.5,  // 30 minutes window
+            interval: 60, // 1 minute between ads
             timeout: 0, // show ad instantly
             everyPage: false
           }
