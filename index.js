@@ -64,7 +64,7 @@ function renderSeriesList(search = "") {
   });
 }
 
-// SERIES DETAILS: Pro layout, big poster, description, season bar, episode grid
+// SERIES DETAILS: Pro layout, compact big poster, description, season bar, episode grid
 function renderSeriesDetails(slug) {
   showOnly('spa-series-details');
   const meta = seriesList.find(s => s.slug === slug);
@@ -80,9 +80,9 @@ function renderSeriesDetails(slug) {
     <button id="backToList" class="close-btn" style="position:static;float:right;margin-bottom:23px;">&larr; Back</button>
     <div class="series-details-card">
       <img class="series-big-poster" src="${meta.poster}" alt="${meta.title}">
-      <div style="flex:1;min-width:180px">
-        <h2 style="margin-top:0;font-size:1.5em;">${meta.title}</h2>
-        <div style="margin-bottom:1.12em;line-height:1.55;color:#efefef;">${desc}</div>
+      <div style="flex:1;min-width:130px">
+        <h2 style="margin-top:0;font-size:1.2em;">${meta.title}</h2>
+        <div style="margin-bottom:1em;line-height:1.5;color:#efefef;">${desc}</div>
         <div id="seasons-bar"></div>
         <div id="season-episodes" class="poster-grid"></div>
       </div>
@@ -95,7 +95,7 @@ function renderSeriesDetails(slug) {
   renderSeasonEpisodes(slug, defaultSeason);
 }
 
-// SEASONS BAR as pro tabs/buttons
+// SEASONS BAR
 function renderSeasonBar(slug, seasonNums, activeSeason) {
   let bar = document.getElementById('seasons-bar');
   bar.innerHTML = seasonNums.map(season =>
@@ -110,7 +110,7 @@ function renderSeasonBar(slug, seasonNums, activeSeason) {
   });
 }
 
-// Episodes grid for season
+// Tighter episode grid for season
 function renderSeasonEpisodes(slug, seasonNumber) {
   const sData = seriesEpisodesData[slug];
   const episodes = sData.seasons[seasonNumber] || [];
@@ -126,7 +126,7 @@ function renderSeasonEpisodes(slug, seasonNumber) {
     div.className = 'episode-item';
     div.innerHTML = `
       <img class="episode-thumb" src="${ep.thumb || 'default-thumb.jpg'}" alt="Ep ${ep.ep}">
-      <div class="episode-title">Ep ${ep.ep}: ${ep.title}</div>
+      <div class="episode-title">${ep.title ? ep.title : `Episode ${ep.ep}`}</div>
     `;
     div.onclick = () => {
       history.pushState({page: 'episode', slug, season: seasonNumber, epi: ep.ep}, '', `#series-${slug}-s${seasonNumber}-ep${ep.ep}`);
@@ -136,7 +136,7 @@ function renderSeasonEpisodes(slug, seasonNumber) {
   });
 }
 
-// Modern, centered streaming popup
+// Centered streaming popup
 function renderEpisodeView(slug, season, ep) {
   const overlay = document.getElementById('spa-episode-view');
   overlay.classList.remove('hide');
