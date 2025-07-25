@@ -58,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function renderGrid(searchTerm = '') {
-  // Fixed element ID!
   const grid = document.getElementById('seriesGrid');
   let filteredSeries = allSeries;
   const q = searchTerm.trim().toLowerCase();
@@ -78,12 +77,32 @@ function renderGrid(searchTerm = '') {
       : series.title;
     const item = document.createElement('div');
     item.className = 'poster-item';
+    // Change to clickable div for ad show and navigation
     item.innerHTML = `
-      <a href="series.html?slug=${series.slug}">
+      <div class="series-card-link" style="cursor:pointer;">
         <img src="${series.poster}" alt="${series.title}">
         <div class="title">${highlightTitle}</div>
-      </a>
+      </div>
     `;
+    item.querySelector('.series-card-link').addEventListener('click', function () {
+      if (window.show_9623557) {
+        show_9623557({
+          type: 'inApp',
+          onClose: function() {
+            window.location.href = 'series.html?slug=' + series.slug;
+          },
+          inAppSettings: {
+            frequency: 2,
+            capping: 0.1,
+            interval: 30,
+            timeout: 5,
+            everyPage: false
+          }
+        });
+      } else {
+        window.location.href = 'series.html?slug=' + series.slug;
+      }
+    });
     grid.appendChild(item);
   });
 }
