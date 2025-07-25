@@ -59,36 +59,68 @@ header { padding: 20px 10px 8px 10px; border-bottom: 1px solid #292a2f; position
   .poster-grid { grid-template-columns: repeat(2, 1fr); }
   .poster-item img { min-height:80px; max-height:110px; }
 }
-/* --- Series Details Card (was old spa details grid, now replaced by classic) --- */
-.series-details-layout { display:none; }
 
-/* --- Classic Details/Episode Grid --- */
-.classic-details-card {
-  background: #191a23;
-  border-radius: 15px;
-  box-shadow: 0 1px 10px #0005;
-  display: flex;
-  align-items: flex-start;
-  gap: 18px;
-  margin: 18px 0 13px 0;
-  padding: 14px 12px;
-  flex-wrap: wrap;
+/* --- Professional Details (series) --- */
+.pro-details-header {
+  display: flex; align-items: flex-start; gap: 22px;
+  margin: 24px 0 0 0; background: #15171c;
+  border-radius: 1em;
 }
-.classic-details-card img.series-big-poster { width: 115px; border-radius: 9px; }
-.classic-details-card .series-desc { flex:1; color:#fff; }
-.classic-seasons-bar { margin-bottom: 12px; text-align:left; }
-.classic-episodes-list { margin-bottom:24px; }
-.classic-ep-row {
-  display: flex; align-items: center; gap: 14px; border-radius: 7px;
-  background: #23253a; margin-bottom: 9px; padding: 7px 9px; cursor: pointer;
-  transition: background .14s;
+.series-detail-poster {
+  width: 115px; border-radius: 11px; box-shadow: 0 2px 14px #0008;
+  min-width: 78px; margin-bottom: 0;
 }
-.classic-ep-row:hover { background: #2c2e54; }
-.classic-ep-thumb { width: 50px; height:32px; object-fit: cover; border-radius: 4px; }
-.classic-ep-title { color:#fff; font-weight:600; }
+.series-detail-meta { flex:1; }
+.series-detail-meta h2 {
+  font-size: 1.32em; margin: 0 0 12px 0; color: #fff;
+}
+.series-desc { color: #e2eaf5; margin-bottom: 0; font-size:1em; }
+/* --- Professional Seasons Tabs --- */
+.pro-seasons-tabs {
+  margin: 28px 0 10px 4px; display: flex; gap: 10px; flex-wrap: wrap;
+}
+.pro-season-tab {
+  background:#222232; border: none; color: #fff; font-size: 1em;
+  padding: 6px 18px; border-radius: 16px; cursor:pointer; font-weight:600;
+  letter-spacing:.01em; transition: background .16s, color .16s;
+}
+.pro-season-tab.active, .pro-season-tab:focus {
+  background: #0882ff; color: #fff;
+}
+/* --- Professional Horizontal Episodes Row --- */
+.pro-episodes-row-wrap { width:100%; overflow-x:auto; }
+.pro-episodes-row {
+  display: flex; gap: 17px; margin: 0 0 12px 0; overflow-x:auto; padding-bottom: 7px;
+}
+.pro-episode-card {
+  background: #232938; border-radius: 9px; min-width: 137px; max-width: 145px;
+  box-shadow: 0 2.5px 13px #0a0d2044; cursor: pointer; display:flex; flex-direction: column;
+  align-items: center; padding: 0 0 13px 0; transition: box-shadow .16s, transform .12s;
+}
+.pro-episode-card:hover { box-shadow: 0 7px 24px #0144ff38; transform: scale(1.04);}
+.pro-ep-thumb-wrap { position: relative; width: 100%; }
+.pro-ep-thumb {
+  width: 100%; aspect-ratio:16/9; border-radius: 8px 8px 0 0; object-fit: cover; background: #101019;
+  min-height: 72px; max-height: 120px;
+}
+.pro-ep-num {
+  position: absolute; right: 10px; top: 9px; background: #0c339e;
+  color: #fff; font-size: .89em; font-weight:700; padding: 2px 10px 2px 8px; border-radius: 17px;
+  box-shadow:0 1.5px 8px #035; letter-spacing:.01em;
+}
+.pro-ep-title {
+  width: 98%; color:#fff; font-weight:600; font-size: 1em; text-align:center;
+  margin: 12px 0 0 0; line-height:1.25;
+  word-break:break-word;
+}
+@media (max-width: 800px) {
+  .pro-details-header { flex-direction: column; align-items: center; gap:10px; }
+  .series-detail-poster { width:75px; }
+}
 @media (max-width: 600px) {
-  .classic-details-card { flex-direction: column; align-items: center; padding:10px 4vw; }
-  .classic-details-card img { width: 82px; }
+  .pro-episodes-row { gap:10px; }
+  .pro-episode-card { min-width: 108px; max-width:123px; }
+  .series-detail-poster { width:55px;}
 }
 
 /* --- Professional Episode Streaming Page --- */
@@ -168,12 +200,19 @@ header { padding: 20px 10px 8px 10px; border-bottom: 1px solid #292a2f; position
   .pro-episode-embed { min-height: 110px; }
 }
 
-/* --- Hide old spa full-episode layout, grid, and card style if not used --- */
+/* --- Hide unused (old) classic/SPA episode grid and modals --- */
 .series-details-layout,
 #spa-full-episode-view,
 .episode-item,
 .episode-thumb,
-.episode-title {
+.episode-title,
+.classic-details-card,
+.classic-seasons-bar,
+.classic-episodes-list,
+.classic-ep-row,
+.classic-ep-thumb,
+.classic-ep-title,
+.classic-episode-modal {
   display: none !important;
 }
 .hide { display:none !important; }
