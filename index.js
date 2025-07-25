@@ -91,7 +91,7 @@ function renderSeriesDetails(slug) {
 function renderSeasonBar(slug, seasonNums, activeSeason) {
   let bar = document.getElementById('seasons-bar');
   bar.innerHTML = seasonNums.map(season =>
-    `<button data-season="${season}" class="season-btn${season==activeSeason?' active':''}">Season ${season}</button>`
+    `<button data-season="${season}" class="season-btn${season == activeSeason ? ' active' : ''}">Season ${season}</button>`
   ).join("");
   bar.querySelectorAll(".season-btn").forEach(btn => {
     btn.onclick = () => {
@@ -122,7 +122,8 @@ function renderSeasonEpisodes(slug, seasonNumber) {
     div.onclick = () => {
       history.pushState(
         {page: 'episode', slug, season: seasonKey, epi: ep.ep},
-        '', `#series-${slug}-s${seasonKey}-ep${ep.ep}`
+        '',
+        `#series-${slug}-s${seasonKey}-ep${ep.ep}`
       );
       renderFullPageEpisode(slug, seasonKey, ep.ep, seriesList.find(s=>s.slug===slug));
     };
