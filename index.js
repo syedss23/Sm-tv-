@@ -60,7 +60,6 @@ function renderSeriesList(search = "") {
   });
 }
 
-// --- Classic series detail card/page ---
 function renderSeriesDetails(slug) {
   showOnly('spa-series-details');
   const meta = seriesList.find(s => s.slug === slug);
@@ -72,59 +71,61 @@ function renderSeriesDetails(slug) {
   let defaultSeason = seasonNums[0];
   let details = document.getElementById('spa-series-details');
   details.innerHTML = `
-    <div class="classic-details-card">
+    <div class="pro-details-header">
       <button class="series-back-btn" id="backToList" title="Go Back">&larr; Back</button>
-      <img class="series-big-poster" src="${meta.poster}" alt="${meta.title}">
-      <div class="series-desc">
+      <img class="series-detail-poster" src="${meta.poster}" alt="${meta.title}">
+      <div class="series-detail-meta">
         <h2>${meta.title}</h2>
-        <p>${desc}</p>
+        <div class="series-desc">${desc}</div>
       </div>
     </div>
-    <div class="classic-seasons-bar" id="classic-seasons-bar"></div>
-    <div class="classic-episodes-list" id="classic-episodes-list"></div>
+    <div class="pro-seasons-tabs" id="pro-seasons-tabs"></div>
+    <div class="pro-episodes-row-wrap" id="pro-episodes-row-wrap"></div>
   `;
   document.getElementById('backToList').onclick = () => { goHome(); };
-  renderClassicSeasonBar(slug, seasonNums, defaultSeason);
-  renderClassicEpisodesList(slug, defaultSeason);
+  renderProSeasonsTabs(slug, seasonNums, defaultSeason);
+  renderProEpisodesRow(slug, defaultSeason);
 }
 
-function renderClassicSeasonBar(slug, seasonNums, activeSeason) {
-  let bar = document.getElementById('classic-seasons-bar');
+function renderProSeasonsTabs(slug, seasonNums, activeSeason) {
+  let bar = document.getElementById('pro-seasons-tabs');
   bar.innerHTML =
-    seasonNums.map(season => `
-      <button data-season="${season}" class="season-btn${season == activeSeason ? ' active' : ''}">Season ${season}</button>
-    `).join('');
-  bar.querySelectorAll('.season-btn').forEach(btn => {
+    seasonNums.map(season =>
+      `<button data-season="${season}" class="pro-season-tab${season == activeSeason ? ' active' : ''}">Season ${season}</button>`
+    ).join('');
+  bar.querySelectorAll('.pro-season-tab').forEach(btn => {
     btn.onclick = () => {
-      bar.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
+      bar.querySelectorAll('.pro-season-tab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      renderClassicEpisodesList(slug, btn.dataset.season);
+      renderProEpisodesRow(slug, btn.dataset.season);
     };
   });
 }
 
-function renderClassicEpisodesList(slug, seasonNumber) {
+function renderProEpisodesRow(slug, seasonNumber) {
   const sData = seriesEpisodesData[slug];
   const seasonKey = String(seasonNumber);
   const episodes = sData && sData.seasons && sData.seasons[seasonKey] ? sData.seasons[seasonKey] : [];
-  let out = '';
+  let row = '';
   if (!episodes.length) {
-    out = `<div style='color:#fff;padding:18px;'>No episodes for this season.</div>`;
+    row = `<div style='color:#fff;padding:22px 0 0 0;'>No episodes for this season.</div>`;
   } else {
-    out = episodes
-      .map(ep => `
-        <div class="classic-ep-row" onclick="window._spaPlayEpisode && window._spaPlayEpisode('${slug}','${seasonKey}','${ep.ep}')">
-          <img src="${ep.thumb || 'default-thumb.jpg'}" class="classic-ep-thumb" alt="Ep ${ep.ep}" />
-          <span class="classic-ep-title">${ep.title ? ep.title : `Episode ${ep.ep}`}</span>
+    row = `<div class="pro-episodes-row">` +
+      episodes.map(ep => `
+        <div class="pro-episode-card" onclick="window._spaPlayEpisode && window._spaPlayEpisode('${slug}','${seasonKey}','${ep.ep}')">
+          <div class="pro-ep-thumb-wrap">
+            <img src="${ep.thumb || 'default-thumb.jpg'}" class="pro-ep-thumb" alt="Ep ${ep.ep}">
+            <span class="pro-ep-num">Ep ${ep.ep}</span>
+          </div>
+          <div class="pro-ep-title">${ep.title ? ep.title : `Episode ${ep.ep}`}</div>
         </div>
-      `).join('');
+      `).join('') + '</div>';
   }
-  document.getElementById('classic-episodes-list').innerHTML = out;
+  document.getElementById('pro-episodes-row-wrap').innerHTML = row;
   window._spaPlayEpisode = (slug, seasonKey, epNum) =>
     playProEpisode(slug, seasonKey, epNum, seriesList.find(s=>s.slug===slug));
 }
 
-// Professional streaming-style episode view
 function playProEpisode(slug, season, epi, meta) {
   const seasonKey = String(season);
   const sData = seriesEpisodesData[slug];
