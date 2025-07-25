@@ -130,3 +130,51 @@ header { padding: 20px 10px 8px 10px; border-bottom: 1px solid #292a2f; position
 .hide { display:none !important; }
 button, input[type="button"], input[type="submit"] { background:#23242a; color:#fff; border:1px solid #333; border-radius:6px; padding:7px 18px; font-size:1em;}
 button:hover { background:#272838; }
+.classic-details-card {
+  background: #191a23;
+  border-radius: 15px;
+  box-shadow: 0 1px 10px #0005;
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  margin: 18px 0 13px 0;
+  padding: 14px 12px;
+  flex-wrap: wrap;
+}
+.classic-details-card img.series-big-poster { width: 115px; border-radius: 9px; }
+.classic-details-card .series-desc { flex:1; color:#fff; }
+.classic-seasons-bar { margin-bottom: 12px; text-align:left; }
+.classic-episodes-list { margin-bottom:24px; }
+.classic-ep-row {
+  display: flex; align-items: center; gap: 14px; border-radius: 7px;
+  background: #23253a; margin-bottom: 9px; padding: 7px 9px; cursor: pointer;
+  transition: background .14s;
+}
+.classic-ep-row:hover { background: #2c2e54; }
+.classic-ep-thumb { width: 50px; height:32px; object-fit: cover; border-radius: 4px; }
+.classic-ep-title { color:#fff; font-weight:600; }
+.classic-episode-modal {
+  background: #181920;
+  border-radius: 11px;
+  padding: 17px 9px 18px 9px;
+  margin: 18px auto 25px;
+  box-shadow: 0 1.5px 10px #0008;
+  max-width: 420px;
+}
+.classic-ep-back {
+  background: none; border: none; color: #41adff; font-size: 1.1em; cursor: pointer; margin-bottom: 7px; display: block;
+}
+.classic-ep-title { margin: 9px 0 15px 0; font-size:1.12em; color: #fff; font-weight:700; text-align:center; }
+.classic-ep-embed { margin: 0 0 18px 0; border-radius:7px; overflow: hidden; background:#10121d; }
+.classic-download-btn {
+  display: block; margin: 0 auto; background: #2b8be8; color: #fff;
+  font-weight: 700; padding: 10px 20px; border-radius: 7px; text-align:center;
+  text-decoration: none; box-shadow:0 1.5px 8px #021a33; font-size:1em;
+}
+.classic-download-btn:hover { background: #198ad0; }
+@media (max-width: 600px) {
+  .classic-details-card { flex-direction: column; align-items: center; padding:10px 4vw; }
+  .classic-details-card img { width: 82px; }
+  .classic-episode-modal { max-width:95vw; padding: 10px 3vw 14px; }
+}
+
