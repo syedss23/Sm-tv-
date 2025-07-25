@@ -1,132 +1,110 @@
-// Note: You must move/adapt your series fetching, language, rendering,
-// and episode fetching logic to this file, as all views load here!
-
+// SPA Router & Classic Grid View
 let allSeries = [];
-let seriesData = {}; // Cache series info
+let episodesCache = {};
 
-document.addEventListener('DOMContentLoaded', () => {
-  fetch('series.json')
-    .then(r => r.json())
-    .then(data => {
-      allSeries = data;
-      seriesData = {};
-      data.forEach(s => seriesData[s.slug] = s);
-      renderSeriesList();
+document.addEventListener('DOMContentLoaded', ()=>{
+  fetch('series.json').then(r=>r.json()).then(series=>{
+    allSeries = series;
+    renderSeriesList();
+    window.addEventListener('popstate', handlePopstate);
+    document.getElementById('seriesSearch').addEventListener('input', e=>{
+      renderSeriesList(e.target.value.trim());
     });
-
-  // Navigation
-  document.getElementById('navHome').addEventListener('click', (e) => {
-    e.preventDefault(); goHome();
-  });
-  window.onpopstate = handlePopstate;
-
-  // Example: sidebar code remains same
-  document.getElementById('sidebarToggle')?.addEventListener('click', () => {
-    document.getElementById('sidebar').classList.toggle('open');
-  });
-  document.getElementById('sidebarClose')?.addEventListener('click', () => {
-    document.getElementById('sidebar').classList.remove('open');
   });
 });
 
-function renderSeriesList() {
-  document.getElementById('mainTitle').textContent = 'Turkish Series';
-  hideAllViews();
-  let div = document.getElementById('app-view-series-list');
-  div.style.display = '';
-  div.innerHTML = '';
-  allSeries.forEach(series => {
-    const el = document.createElement('div');
-    el.className = 'poster-item';
-    el.innerHTML = `
-      <div class="series-card-link" style="cursor:pointer;" data-slug="${series.slug}">
-        <img src="${series.poster}" alt="${series.title}">
-        <div class="title">${series.title}</div>
-      </div>
-    `;
-    el.querySelector('.series-card-link').onclick = (e) => {
-      e.preventDefault();
-      renderSeriesDetails(series.slug);
-      history.pushState({page: 'series', slug: series.slug}, '', `#series/${series.slug}`);
-    };
-    div.appendChild(el);
-  });
-}
-
-function renderSeriesDetails(slug) {
-  let s = seriesData[slug];
-  if (!s) return goHome();
-  document.getElementById('mainTitle').textContent = s.title;
-  hideAllViews();
-  let div = document.getElementById('app-view-series-details');
-  div.style.display = '';
-  div.innerHTML = `
-    <button id="backToList">&larr; Back</button>
-    <h2>${s.title}</h2>
-    <img src="${s.poster}" alt="${s.title}" style="max-width:200px;"><br>
-    <div>${s.description || ''}</div>
-    <h3>Episodes</h3>
-    <div id="episodesList"></div>
-  `;
-  div.querySelector('#backToList').onclick = () => {
-    goHome();
-    history.pushState({page: 'home'}, '', '#');
-  };
-  // Example: Replace with real episode logic/fetch
-  renderEpisodeList(s.slug, div.querySelector('#episodesList'));
-}
-
-function renderEpisodeList(slug, container) {
-  // Replace with real episode JSON fetch! Example dummy code:
-  fetch(`episodes-${slug}.json`).then(r=>r.json()).then(episodes => {
-    container.innerHTML = '';
-    episodes.forEach(ep => {
-      let epEl = document.createElement('button');
-      epEl.textContent = ep.title;
-      epEl.onclick = () => {
-        renderEpisodeDetails(slug, ep.id);
-        history.pushState({page: 'episode', slug: slug, ep: ep.id}, '', `#series/${slug}/ep/${ep.id}`);
-      };
-      container.appendChild(epEl);
-    });
-  }).catch(()=>{ container.innerHTML = 'Episodes missing.' });
-}
-
-function renderEpisodeDetails(slug, epId) {
-  // Replace with AJAX fetch from episode JSON file
-  fetch(`episodes-${slug}.json`).then(r=>r.json()).then(episodes => {
-    let ep = episodes.find(e => e.id == epId);
-    if(!ep) return renderSeriesDetails(slug);
-    document.getElementById('mainTitle').textContent = ep.title;
-    hideAllViews();
-    let div = document.getElementById('app-view-episode-details');
-    div.style.display = '';
+function renderSeriesList(search = "") {
+  showOnly('spa-series-list');
+  document.getElementById('mainTitle').textContent = "Turkish Series";
+  let list = document.getElementById('spa-series-list');
+  list.innerHTML = `<div class="poster-grid"></div>`;
+  let grid = list.querySelector('.poster-grid');
+  let filtered = allSeries;
+  if (search) filtered = allSeries.filter(s=>s.title.toLowerCase().includes(search.toLowerCase()));
+  filtered.forEach(series=>{
+    let div = document.createElement('div');
+    div.className = 'poster-item';
     div.innerHTML = `
-      <button id="backToSeries">&larr; Back</button>
-      <h2>${ep.title}</h2>
-      <video src="${ep.link}" controls style="width:100%"></video>
+      <img src="${series.poster}" alt="${series.title}">
+      <div class="title">${series.title}</div>
     `;
-    div.querySelector('#backToSeries').onclick = () => {
-      renderSeriesDetails(slug); // go back to series info, NOT home yet
-      history.pushState({page: 'series', slug: slug}, '', `#series/${slug}`);
+    div.onclick = ()=>{
+      history.pushState({page: 'series', slug: series.slug}, '', '#series-' + series.slug);
+      renderSeriesDetails(series.slug);
     };
+    grid.appendChild(div);
   });
 }
-
-function goHome() {
-  history.pushState({page: 'home'}, '', '#');
-  renderSeriesList();
+function renderSeriesDetails(slug) {
+  showOnly('spa-series-details');
+  let s = allSeries.find(ss=>ss.slug===slug);
+  if (!s) return renderSeriesList();
+  document.getElementById('mainTitle').textContent = s.title;
+  let details = document.getElementById('spa-series-details');
+  details.innerHTML = `<button id="backToList">&larr; Back</button>
+    <div style="display:flex;gap:24px;align-items:start;">
+      <img src="${s.poster}" alt="${s.title}" style="width:160px;border-radius:8px">
+      <div>
+        <h2>${s.title}</h2>
+        <div>${s.description||''}</div>
+        <h3 style="margin:1em 0 0.5em">Episodes</h3>
+        <div id="epis-grid" class="poster-grid"></div>
+      </div>
+    </div>
+  `;
+  document.getElementById('backToList').onclick = ()=>{ history.pushState({page:'list'}, '', '#'); renderSeriesList(); };
+  // Load episodes
+  loadEpisodesForSeries(slug);
+}
+function loadEpisodesForSeries(slug) {
+  let grid = document.getElementById('epis-grid');
+  grid.innerHTML = "Loading...";
+  (episodesCache[slug]
+    ? Promise.resolve(episodesCache[slug])
+    : fetch(`episodes-${slug}.json`).then(r=>r.json()).then(eps=>{episodesCache[slug]=eps; return eps;}))
+    .then(episodes=>{
+      grid.innerHTML = '';
+      episodes.forEach(ep=>{
+        let div = document.createElement('div');
+        div.className = 'poster-item';
+        div.innerHTML = `<div class="title">Ep ${ep.id}: ${ep.title}</div>`;
+        div.onclick = ()=>{
+          history.pushState({page:'episode', slug, epi: ep.id}, '', `#series-${slug}-ep${ep.id}`);
+          renderEpisodeDetails(slug, ep.id);
+        };
+        grid.appendChild(div);
+      });
+    })
+    .catch(()=>{grid.innerHTML="No episodes."});
+}
+function renderEpisodeDetails(slug, eid) {
+  showOnly('spa-episode-details');
+  let details = document.getElementById('spa-episode-details');
+  let s = allSeries.find(s=>s.slug===slug);
+  details.innerHTML = `<button id="backToSeries">&larr; Back</button><h2>Episode ${eid}</h2><div id="video"></div>`;
+  document.getElementById('backToSeries').onclick = ()=>{
+    history.pushState({page:'series',slug}, '', '#series-'+slug);
+    renderSeriesDetails(slug);
+  };
+  // Load/Show episode video
+  let load = episodesCache[slug]
+    ? Promise.resolve(episodesCache[slug])
+    : fetch(`episodes-${slug}.json`).then(r=>r.json()).then(eps=>(episodesCache[slug]=eps,eps));
+  load.then(eps=>{
+    let ep = (eps||[]).find(e=>e.id===eid||String(e.id)===String(eid));
+    if (ep && ep.link) details.querySelector('#video').innerHTML = `<video src="${ep.link}" controls style="width:100%;max-width:600px"></video>`;
+    else details.querySelector('#video').innerHTML = "Not found.";
+  });
+}
+function handlePopstate(e) {
+  const state = e.state||{};
+  if (!state.page || state.page==='list') renderSeriesList();
+  else if (state.page==='series') renderSeriesDetails(state.slug);
+  else if (state.page==='episode') renderEpisodeDetails(state.slug, state.epi);
 }
 
-function handlePopstate(event) {
-  const st = event.state || {};
-  if (!st.page || st.page === 'home') renderSeriesList();
-  else if (st.page === 'series') renderSeriesDetails(st.slug);
-  else if (st.page === 'episode') renderEpisodeDetails(st.slug, st.ep);
-}
-
-function hideAllViews() {
-  document.getElementById('app-view-series-list').style.display = 'none';
-  document.getElementById('app-view-series-details').style.display = 'none';
-  document.getElementById('app-view-episode-details').style.display = 'none';
+function showOnly(id) {
+  ['spa-series-list','spa-series-details','spa-episode-details'].forEach(hid=>
+    document.getElementById(hid).classList.toggle('hide',hid!==id)
+  );
 }
