@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
     document.getElementById('seriesSearch').addEventListener('input', e=>{
       renderSeriesList(e.target.value.trim());
     });
+    // Optional: language select change handler (add your logic here)
+    document.getElementById('langSelect').onchange = function(){};
   });
 });
 
@@ -25,6 +27,10 @@ function renderSeriesList(search = "") {
   let grid = list.querySelector('.poster-grid');
   let filtered = allSeries;
   if (search) filtered = allSeries.filter(s=>s.title.toLowerCase().includes(search.toLowerCase()));
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div style="color:#fff;font-size:1.1em;padding:1.5em;">No series found.</div>`;
+    return;
+  }
   filtered.forEach(series=>{
     let div = document.createElement('div');
     div.className = 'poster-item';
@@ -67,6 +73,10 @@ function loadEpisodesForSeries(slug) {
     : fetch(`episodes-${slug}.json`).then(r=>r.json()).then(eps=>{episodesCache[slug]=eps; return eps;}))
     .then(episodes=>{
       grid.innerHTML = '';
+      if (!episodes || episodes.length === 0) {
+        grid.innerHTML = `<div style="color:#fff;padding:1em;">No episodes found.</div>`;
+        return;
+      }
       episodes.forEach(ep=>{
         let div = document.createElement('div');
         div.className = 'poster-item';
@@ -78,21 +88,21 @@ function loadEpisodesForSeries(slug) {
         grid.appendChild(div);
       });
     })
-    .catch(()=>{grid.innerHTML="No episodes."});
+    .catch(()=>{grid.innerHTML="<div style='color:#fff;padding:1em;'>No episodes.</div>";});
 }
 function renderEpisodeDetails(slug, eid) {
   showOnly('spa-episode-details');
   let details = document.getElementById('spa-episode-details');
   let s = allSeries.find(s=>s.slug===slug);
-  details.innerHTML = `<button id="backToSeries">&larr; Back</button><h2>Episode ${eid}</h2><div id="video"></div>`;
+  details.innerHTML = `<button id="backToSeries">&larr; Back</button><h2 style="margin-top:18px">Episode ${eid}</h2><div id="video"></div>`;
   document.getElementById('backToSeries').onclick = ()=>{ history.pushState({page:'series',slug}, '', '#series-'+slug); renderSeriesDetails(slug); };
   let load = episodesCache[slug]
     ? Promise.resolve(episodesCache[slug])
     : fetch(`episodes-${slug}.json`).then(r=>r.json()).then(eps=>(episodesCache[slug]=eps,eps));
   load.then(eps=>{
-    let ep = (eps||[]).find(e=>e.id==eid);
-    if (ep && ep.link) details.querySelector('#video').innerHTML = `<video src="${ep.link}" controls style="width:100%;max-width:600px"></video>`;
-    else details.querySelector('#video').innerHTML = "Not found.";
+    let ep = (eps||[]).find(e=>e.id==eid || String(e.id) === String(eid));
+    if (ep && ep.link) details.querySelector('#video').innerHTML = `<video src="${ep.link}" controls style="width:100%;max-width:600px;border-radius:8px;box-shadow:0 2px 8px #000a"></video>`;
+    else details.querySelector('#video').innerHTML = "<div style='color:#fff;padding:1em;'>Episode not found.</div>";
   });
 }
 function handlePopstate(e) {
@@ -101,7 +111,6 @@ function handlePopstate(e) {
   else if (state.page==='series') renderSeriesDetails(state.slug);
   else if (state.page==='episode') renderEpisodeDetails(state.slug, state.epi);
 }
-
 function showOnly(id) {
   ['spa-series-list','spa-series-details','spa-episode-details'].forEach(hid=>
     document.getElementById(hid).classList.toggle('hide',hid!==id)
