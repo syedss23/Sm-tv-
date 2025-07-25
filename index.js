@@ -67,8 +67,8 @@ function renderSeriesDetails(slug) {
   if (!meta || !sData) return renderSeriesList();
   document.getElementById('mainTitle').textContent = meta.title;
   let desc = (meta.desc && (meta.desc[currentLang] || meta.desc['en'])) || '';
-  const seasonNums = Object.keys(sData.seasons).map(Number).sort((a, b) => a - b);
-  let defaultSeason = String(seasonNums[0]);
+  const seasonNums = Object.keys(sData.seasons).map(n => String(Number(n))).sort((a, b) => Number(a) - Number(b));
+  let defaultSeason = seasonNums[0];
   let details = document.getElementById('spa-series-details');
   details.innerHTML = `
     <div class="series-details-layout">
@@ -105,7 +105,7 @@ function renderSeasonBar(slug, seasonNums, activeSeason) {
 function renderSeasonEpisodes(slug, seasonNumber) {
   const sData = seriesEpisodesData[slug];
   const seasonKey = String(seasonNumber);
-  const episodes = sData && sData.seasons ? sData.seasons[seasonKey] || [] : [];
+  const episodes = sData && sData.seasons && sData.seasons[seasonKey] ? sData.seasons[seasonKey] : [];
   let episGrid = document.getElementById('season-episodes');
   episGrid.innerHTML = '';
   if (!episodes.length) {
@@ -132,9 +132,9 @@ function renderSeasonEpisodes(slug, seasonNumber) {
 }
 
 function renderFullPageEpisode(slug, season, epi, meta) {
-  const sData = seriesEpisodesData[slug];
   const seasonKey = String(season);
-  const episodes = sData && sData.seasons ? sData.seasons[seasonKey] || [] : [];
+  const sData = seriesEpisodesData[slug];
+  const episodes = sData && sData.seasons && sData.seasons[seasonKey] ? sData.seasons[seasonKey] : [];
   const ep = episodes.find(e => String(e.ep) === String(epi));
   let existing = document.getElementById('spa-full-episode-view');
   if (!existing) {
@@ -165,7 +165,7 @@ function renderFullPageEpisode(slug, season, epi, meta) {
     renderSeriesDetails(slug);
     renderSeasonBar(
       slug,
-      Object.keys(seriesEpisodesData[slug].seasons).map(Number).sort((a, b) => a - b),
+      Object.keys(seriesEpisodesData[slug].seasons).map(n => String(Number(n))).sort((a, b) => Number(a) - Number(b)),
       seasonKey
     );
     renderSeasonEpisodes(slug, seasonKey);
