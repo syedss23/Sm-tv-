@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// SERIES GRID (Home)
 function renderSeriesList(search = "") {
   showOnly('spa-series-list');
   document.getElementById('mainTitle').textContent = "Turkish Series";
@@ -64,7 +63,6 @@ function renderSeriesList(search = "") {
   });
 }
 
-// SERIES DETAILS: Pro layout, compact big poster, description, season bar, episode grid
 function renderSeriesDetails(slug) {
   showOnly('spa-series-details');
   const meta = seriesList.find(s => s.slug === slug);
@@ -74,15 +72,14 @@ function renderSeriesDetails(slug) {
   let desc = (meta.desc && (meta.desc[currentLang] || meta.desc['en'])) || '';
   const seasonNums = Object.keys(sData.seasons).map(Number).sort((a, b) => a - b);
   let defaultSeason = String(seasonNums[0]);
-
   let details = document.getElementById('spa-series-details');
   details.innerHTML = `
-    <button id="backToList" class="close-btn" style="position:static;float:right;margin-bottom:23px;">&larr; Back</button>
-    <div class="series-details-card">
+    <button id="backToList" class="close-btn" style="position:static;float:right;margin-bottom:19px;">&larr; Back</button>
+    <div class="series-details-layout">
       <img class="series-big-poster" src="${meta.poster}" alt="${meta.title}">
-      <div style="flex:1;min-width:130px">
-        <h2 style="margin-top:0;font-size:1.2em;">${meta.title}</h2>
-        <div style="margin-bottom:1em;line-height:1.5;color:#efefef;">${desc}</div>
+      <div class="series-meta">
+        <h2>${meta.title}</h2>
+        <div class="series-desc">${desc}</div>
         <div id="seasons-bar"></div>
         <div id="season-episodes" class="poster-grid"></div>
       </div>
@@ -90,12 +87,10 @@ function renderSeriesDetails(slug) {
     <div id="spa-episode-view" class="hide"></div>
   `;
   document.getElementById('backToList').onclick = () => { goHome(); };
-
   renderSeasonBar(slug, seasonNums, defaultSeason);
   renderSeasonEpisodes(slug, defaultSeason);
 }
 
-// SEASONS BAR
 function renderSeasonBar(slug, seasonNums, activeSeason) {
   let bar = document.getElementById('seasons-bar');
   bar.innerHTML = seasonNums.map(season =>
@@ -110,7 +105,6 @@ function renderSeasonBar(slug, seasonNums, activeSeason) {
   });
 }
 
-// Tighter episode grid for season
 function renderSeasonEpisodes(slug, seasonNumber) {
   const sData = seriesEpisodesData[slug];
   const episodes = sData.seasons[seasonNumber] || [];
@@ -136,15 +130,14 @@ function renderSeasonEpisodes(slug, seasonNumber) {
   });
 }
 
-// Centered streaming popup
 function renderEpisodeView(slug, season, ep) {
-  const overlay = document.getElementById('spa-episode-view');
+  let overlay = document.getElementById('spa-episode-view');
   overlay.classList.remove('hide');
   overlay.innerHTML = `
     <button class="close-btn" id="closeEpisodeView" title="Close">&times;</button>
     <div class="stream-content">
       <div class="ep-title">${ep.title ? ep.title : `Episode ${ep.ep}`}</div>
-      <div class="ep-embed">${ep.embed || '<div style="padding:60px 0;color:#ccc;">No streaming available</div>'}</div>
+      <div class="ep-embed">${ep.embed || '<div style="padding:50px 0;color:#ccc;">No streaming available</div>'}</div>
       <a class="download-btn" href="${ep.download||'#'}" download>⬇️ Download</a>
     </div>
   `;
@@ -157,7 +150,7 @@ function renderEpisodeView(slug, season, ep) {
   };
 }
 
-function episodViewShow(){ /* handled by overlay above */ }
+function episodViewShow(){}
 function episodViewHide(){
   const el = document.getElementById('spa-episode-view');
   if (el) el.classList.add('hide');
@@ -183,7 +176,6 @@ function showOnly(id) {
     document.getElementById(hid) && document.getElementById(hid).classList.toggle('hide', hid !== id)
   );
 }
-
 function goHome() {
   history.pushState({page:'list'}, '', '#');
   renderSeriesList(document.getElementById('seriesSearch').value.trim());
