@@ -77,7 +77,7 @@ function renderGrid(searchTerm = '') {
       : series.title;
     const item = document.createElement('div');
     item.className = 'poster-item';
-    // Change to clickable div for ad show and navigation
+    // No ad code, just redirect to series page
     item.innerHTML = `
       <div class="series-card-link" style="cursor:pointer;">
         <img src="${series.poster}" alt="${series.title}">
@@ -85,32 +85,7 @@ function renderGrid(searchTerm = '') {
       </div>
     `;
     item.querySelector('.series-card-link').addEventListener('click', function () {
-      let redirected = false;
-      if (window.show_9623557) {
-        show_9623557({
-          type: 'inApp',
-          onClose: function() {
-            redirected = true;
-            console.log('Monetag ad closed! Redirecting...');
-            window.location.href = 'series.html?slug=' + series.slug;
-          },
-          inAppSettings: {
-            frequency: 2,
-            capping: 0.5,  // 30 minutes window
-            interval: 60, // 1 minute between ads
-            timeout: 0, // show ad instantly
-            everyPage: false
-          }
-        });
-        setTimeout(function() {
-          if (!redirected) {
-            console.log('Fallback: Redirecting due to Monetag not firing onClose.');
-            window.location.href = 'series.html?slug=' + series.slug;
-          }
-        }, 15000); // 15s fallback in case Monetag fails
-      } else {
-        window.location.href = 'series.html?slug=' + series.slug;
-      }
+      window.location.href = 'series.html?slug=' + series.slug;
     });
     grid.appendChild(item);
   });
