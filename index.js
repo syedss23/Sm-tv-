@@ -1,4 +1,3 @@
-// SPA Router & Classic Grid View
 let allSeries = [];
 let episodesCache = {};
 
@@ -7,6 +6,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
     allSeries = series;
     renderSeriesList();
     window.addEventListener('popstate', handlePopstate);
+    // Sidebar
+    document.getElementById('sidebarToggle').onclick = ()=>document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarClose').onclick = ()=>document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('navHome').onclick = (e)=>{ e.preventDefault(); goHome(); };
+    // Search
     document.getElementById('seriesSearch').addEventListener('input', e=>{
       renderSeriesList(e.target.value.trim());
     });
@@ -35,6 +39,7 @@ function renderSeriesList(search = "") {
     grid.appendChild(div);
   });
 }
+
 function renderSeriesDetails(slug) {
   showOnly('spa-series-details');
   let s = allSeries.find(ss=>ss.slug===slug);
@@ -42,18 +47,16 @@ function renderSeriesDetails(slug) {
   document.getElementById('mainTitle').textContent = s.title;
   let details = document.getElementById('spa-series-details');
   details.innerHTML = `<button id="backToList">&larr; Back</button>
-    <div style="display:flex;gap:24px;align-items:start;">
-      <img src="${s.poster}" alt="${s.title}" style="width:160px;border-radius:8px">
+    <div style="display:flex;gap:24px;align-items:start;flex-wrap:wrap;">
+      <img src="${s.poster}" alt="${s.title}" style="width:144px;border-radius:8px">
       <div>
-        <h2>${s.title}</h2>
+        <h2 style="margin-top:0">${s.title}</h2>
         <div>${s.description||''}</div>
         <h3 style="margin:1em 0 0.5em">Episodes</h3>
         <div id="epis-grid" class="poster-grid"></div>
       </div>
-    </div>
-  `;
-  document.getElementById('backToList').onclick = ()=>{ history.pushState({page:'list'}, '', '#'); renderSeriesList(); };
-  // Load episodes
+    </div>`;
+  document.getElementById('backToList').onclick = ()=>{ goHome(); };
   loadEpisodesForSeries(slug);
 }
 function loadEpisodesForSeries(slug) {
@@ -82,16 +85,12 @@ function renderEpisodeDetails(slug, eid) {
   let details = document.getElementById('spa-episode-details');
   let s = allSeries.find(s=>s.slug===slug);
   details.innerHTML = `<button id="backToSeries">&larr; Back</button><h2>Episode ${eid}</h2><div id="video"></div>`;
-  document.getElementById('backToSeries').onclick = ()=>{
-    history.pushState({page:'series',slug}, '', '#series-'+slug);
-    renderSeriesDetails(slug);
-  };
-  // Load/Show episode video
+  document.getElementById('backToSeries').onclick = ()=>{ history.pushState({page:'series',slug}, '', '#series-'+slug); renderSeriesDetails(slug); };
   let load = episodesCache[slug]
     ? Promise.resolve(episodesCache[slug])
     : fetch(`episodes-${slug}.json`).then(r=>r.json()).then(eps=>(episodesCache[slug]=eps,eps));
   load.then(eps=>{
-    let ep = (eps||[]).find(e=>e.id===eid||String(e.id)===String(eid));
+    let ep = (eps||[]).find(e=>e.id==eid);
     if (ep && ep.link) details.querySelector('#video').innerHTML = `<video src="${ep.link}" controls style="width:100%;max-width:600px"></video>`;
     else details.querySelector('#video').innerHTML = "Not found.";
   });
@@ -107,4 +106,8 @@ function showOnly(id) {
   ['spa-series-list','spa-series-details','spa-episode-details'].forEach(hid=>
     document.getElementById(hid).classList.toggle('hide',hid!==id)
   );
+}
+function goHome() {
+  history.pushState({page:'list'}, '', '#');
+  renderSeriesList();
 }
