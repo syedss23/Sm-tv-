@@ -153,7 +153,7 @@ function renderEpisodes(slug, seasonNum, episodesArr) {
             console.log('Fallback: Redirecting due to Monetag not firing onClose.');
             window.location.href = `episode.html?slug=${slug}&season=${seasonNum}&ep=${ep.ep}`;
           }
-        }, 4000); // 4s fallback for much snappier redirection
+        }, 16000); // 16s fallback in case onClose does not fire
       } else {
         window.location.href = `episode.html?slug=${slug}&season=${seasonNum}&ep=${ep.ep}`;
       }
