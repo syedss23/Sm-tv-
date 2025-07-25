@@ -177,4 +177,88 @@ button:hover { background:#272838; }
   .classic-details-card img { width: 82px; }
   .classic-episode-modal { max-width:95vw; padding: 10px 3vw 14px; }
 }
+.pro-episode-view {
+  max-width: 600px;
+  margin: 28px auto 0;
+  background: #191a23;
+  border-radius: 18px;
+  padding: 14px 11px 32px 11px;
+  box-shadow: 0 3px 18px #0007;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pro-episode-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 23px;
+  gap: 14px;
+}
+
+.pro-episode-back {
+  background: none;
+  border: none;
+  color: #41adff;
+  font-size: 1.15em;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 7px 13px 7px 3px;
+  border-radius: 6px;
+  transition: background .14s;
+}
+
+.pro-episode-back:hover {
+  background: #263463;
+}
+
+.pro-episode-title {
+  margin: 0;
+  font-size: 1.18em;
+  color: #fff;
+  font-weight: 700;
+  flex: 1;
+  text-align: left;
+}
+.pro-episode-title span {
+  font-weight: 600;
+  color: #41adff;
+}
+
+.pro-episode-embed {
+  width: 100%;
+  max-width: 570px;
+  margin: 0 0 23px 0;
+  border-radius: 10px;
+  box-shadow: 0 2px 16px #0006;
+  overflow: hidden;
+  background: #0e101b;
+  text-align: center;
+  min-height: 190px;
+}
+
+.pro-download-btn {
+  display: inline-block;
+  background: linear-gradient(90deg,#0de456,#3b8bea 85%);
+  color: #fff;
+  padding: 14px 21px 12px 21px;
+  font-size: 1.05em;
+  font-weight: 700;
+  border-radius: 9px;
+  margin-top: 8px;
+  box-shadow: 0 1.5px 9px #015b9e44;
+  text-decoration: none;
+  border: none;
+  transition: background .17s, box-shadow .15s;
+  cursor: pointer;
+}
+.pro-download-btn:hover { background: linear-gradient(90deg,#19e097,#1a88e4 90%);}
+@media (max-width: 700px) {
+  .pro-episode-view { max-width: 98vw; padding: 10px 4vw 20px 4vw;}
+  .pro-episode-header { flex-direction: column; align-items: stretch; }
+  .pro-episode-title { text-align: center; margin-top:8px;}
+  .pro-episode-embed { min-height: 110px; }
+}
+
 
