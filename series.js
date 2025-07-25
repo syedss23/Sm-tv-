@@ -119,13 +119,33 @@ function renderEpisodes(slug, seasonNum, episodesArr) {
   episodesArr.forEach(ep => {
     const epDiv = document.createElement('div');
     epDiv.className = "episode-thumb";
+    // Make the entire card clickable, trigger ad, then navigate
     epDiv.innerHTML = `
-      <a href="episode.html?slug=${slug}&season=${seasonNum}&ep=${ep.ep}">
+      <div class="episode-card-link" style="cursor:pointer;">
         <img src="${ep.thumb}" alt="Episode ${ep.ep}">
         <div class="ep-label">Ep ${ep.ep}</div>
         <div class="title">${ep.title}</div>
-      </a>
+      </div>
     `;
+    epDiv.querySelector('.episode-card-link').addEventListener('click', function () {
+      if (window.show_9623557) {
+        show_9623557({
+          type: 'inApp',
+          onClose: function() {
+            window.location.href = `episode.html?slug=${slug}&season=${seasonNum}&ep=${ep.ep}`;
+          },
+          inAppSettings: {
+            frequency: 2,
+            capping: 0.1,
+            interval: 30,
+            timeout: 5,
+            everyPage: false
+          }
+        });
+      } else {
+        window.location.href = `episode.html?slug=${slug}&season=${seasonNum}&ep=${ep.ep}`;
+      }
+    });
     section.appendChild(epDiv);
   });
 }
