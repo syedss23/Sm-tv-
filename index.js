@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (state.page === 'series')
         renderSeriesDetails(state.slug);
       else if (state.page === 'episode')
-        renderFullPageEpisode(state.slug, String(state.season), state.epi, seriesList.find(s => s.slug === state.slug));
+        playClassicEpisode(state.slug, String(state.season), state.epi, seriesList.find(s=>s.slug===state.slug));
     };
   });
 });
@@ -60,6 +60,7 @@ function renderSeriesList(search = "") {
   });
 }
 
+// --- Classic series detail card/page ---
 function renderSeriesDetails(slug) {
   showOnly('spa-series-details');
   const meta = seriesList.find(s => s.slug === slug);
@@ -67,119 +68,91 @@ function renderSeriesDetails(slug) {
   if (!meta || !sData) return renderSeriesList();
   document.getElementById('mainTitle').textContent = meta.title;
   let desc = (meta.desc && (meta.desc[currentLang] || meta.desc['en'])) || '';
-  // Always build seasonNums as strings
   const seasonNums = Object.keys(sData.seasons).sort((a, b) => Number(a) - Number(b));
   let defaultSeason = seasonNums[0];
   let details = document.getElementById('spa-series-details');
   details.innerHTML = `
-    <div class="series-details-layout">
+    <div class="classic-details-card">
       <button class="series-back-btn" id="backToList" title="Go Back">&larr; Back</button>
       <img class="series-big-poster" src="${meta.poster}" alt="${meta.title}">
-      <div class="series-meta">
+      <div class="series-desc">
         <h2>${meta.title}</h2>
-        <div class="series-desc">${desc}</div>
-        <div id="seasons-bar"></div>
-        <div id="season-episodes" class="poster-grid"></div>
+        <p>${desc}</p>
       </div>
     </div>
-    <div id="spa-full-episode-view" class="hide"></div>
+    <div class="classic-seasons-bar" id="classic-seasons-bar"></div>
+    <div class="classic-episodes-list" id="classic-episodes-list"></div>
   `;
   document.getElementById('backToList').onclick = () => { goHome(); };
-  renderSeasonBar(slug, seasonNums, defaultSeason);
-  renderSeasonEpisodes(slug, defaultSeason);
+  renderClassicSeasonBar(slug, seasonNums, defaultSeason);
+  renderClassicEpisodesList(slug, defaultSeason);
 }
 
-function renderSeasonBar(slug, seasonNums, activeSeason) {
-  let bar = document.getElementById('seasons-bar');
-  bar.innerHTML = seasonNums.map(season =>
-    `<button data-season="${season}" class="season-btn${season == activeSeason ? ' active' : ''}">Season ${season}</button>`
-  ).join("");
-  bar.querySelectorAll(".season-btn").forEach(btn => {
+function renderClassicSeasonBar(slug, seasonNums, activeSeason) {
+  let bar = document.getElementById('classic-seasons-bar');
+  bar.innerHTML =
+    seasonNums.map(season => `
+      <button data-season="${season}" class="season-btn${season == activeSeason ? ' active' : ''}">Season ${season}</button>
+    `).join('');
+  bar.querySelectorAll('.season-btn').forEach(btn => {
     btn.onclick = () => {
       bar.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      renderSeasonEpisodes(slug, btn.dataset.season);
+      renderClassicEpisodesList(slug, btn.dataset.season);
     };
   });
 }
 
-function renderSeasonEpisodes(slug, seasonNumber) {
+function renderClassicEpisodesList(slug, seasonNumber) {
   const sData = seriesEpisodesData[slug];
   const seasonKey = String(seasonNumber);
   const episodes = sData && sData.seasons && sData.seasons[seasonKey] ? sData.seasons[seasonKey] : [];
-  let episGrid = document.getElementById('season-episodes');
-  episGrid.innerHTML = '';
+  let out = '';
   if (!episodes.length) {
-    episGrid.innerHTML = `<div style='color:#fff;'>No episodes for season <b>${seasonKey}</b> in <b>${slug}</b>.</div>`;
-    return;
+    out = `<div style='color:#fff;padding:18px;'>No episodes for this season.</div>`;
+  } else {
+    out = episodes
+      .map(ep => `
+        <div class="classic-ep-row" onclick="window._spaPlayEpisode && window._spaPlayEpisode('${slug}','${seasonKey}','${ep.ep}')">
+          <img src="${ep.thumb || 'default-thumb.jpg'}" class="classic-ep-thumb" alt="Ep ${ep.ep}" />
+          <span class="classic-ep-title">${ep.title ? ep.title : `Episode ${ep.ep}`}</span>
+        </div>
+      `).join('');
   }
-  episodes.forEach(ep => {
-    let div = document.createElement('div');
-    div.className = 'episode-item';
-    div.innerHTML = `
-      <img class="episode-thumb" src="${ep.thumb || 'default-thumb.jpg'}" alt="Ep ${ep.ep}">
-      <div class="episode-title">${ep.title ? ep.title : `Episode ${ep.ep}`}</div>
-    `;
-    div.onclick = () => {
-      history.pushState(
-        {page: 'episode', slug, season: seasonKey, epi: ep.ep},
-        '',
-        `#series-${slug}-s${seasonKey}-ep${ep.ep}`
-      );
-      renderFullPageEpisode(slug, seasonKey, ep.ep, seriesList.find(s => s.slug === slug));
-    };
-    episGrid.appendChild(div);
-  });
+  document.getElementById('classic-episodes-list').innerHTML = out;
+  // For SPA navigation:
+  window._spaPlayEpisode = (slug, seasonKey, epNum) =>
+    playClassicEpisode(slug, seasonKey, epNum, seriesList.find(s=>s.slug===slug));
 }
 
-function renderFullPageEpisode(slug, season, epi, meta) {
+// --- Classic episode streaming page/modal ---
+function playClassicEpisode(slug, season, epi, meta) {
   const seasonKey = String(season);
   const sData = seriesEpisodesData[slug];
-  const episodes = sData && sData.seasons && sData.seasons[seasonKey] ? sData.seasons[seasonKey] : [];
+  const episodes = sData && sData.seasons ? sData.seasons[seasonKey] || [] : [];
   const ep = episodes.find(e => String(e.ep) === String(epi));
-  let existing = document.getElementById('spa-full-episode-view');
-  if (!existing) {
-    existing = document.createElement('div');
-    existing.id = "spa-full-episode-view";
-    document.body.appendChild(existing);
-  }
+  let container = document.getElementById('spa-series-details');
   if (!ep) {
-    existing.classList.remove('hide');
-    existing.innerHTML = `<div style='color:#fff;padding:40px;'>Episode not found.<br>slug=${slug}, season=${seasonKey}, epi=${epi}</div>`;
+    container.innerHTML = `<div style="color:#fff; padding:40px;">Episode not found.</div>`;
     return;
   }
-  showOnly(null);
-  existing.classList.remove('hide');
-  existing.innerHTML = `
-    <div class="ep-full-header">
-      <button class="ep-full-back-btn" id="episodePageBack" title="Back">&larr;</button>
-      <h2>${meta ? meta.title : ''} – <span style="font-weight:600;">${ep.title ? ep.title : `Episode ${ep.ep}`}</span></h2>
-      <span style="width:36px;"></span>
-    </div>
-    <div class="ep-full-embed-block">
-      <div class="ep-full-embed">${ep.embed || '<div style="padding:50px 0;color:#ccc;">No streaming available</div>'}</div>
-      <a class="ep-full-download-btn" href="${ep.download || '#'}" download>⬇️ Download</a>
+  container.innerHTML = `
+    <div class="classic-episode-modal">
+      <button class="classic-ep-back" onclick="renderSeriesDetails('${slug}')">&larr; Back to episodes</button>
+      <h2 class="classic-ep-title">${meta ? meta.title : ''} – ${ep.title ? ep.title : `Episode ${ep.ep}`}</h2>
+      <div class="classic-ep-embed">${ep.embed || '<div style="padding:38px 0;color:#ccc;">No streaming available</div>'}</div>
+      <a class="classic-download-btn" href="${ep.download || '#'}" download>⬇️ Download</a>
     </div>
   `;
-  document.getElementById('episodePageBack').onclick = () => {
-    existing.classList.add('hide');
-    renderSeriesDetails(slug);
-    renderSeasonBar(
-      slug,
-      Object.keys(seriesEpisodesData[slug].seasons).sort((a, b) => Number(a) - Number(b)),
-      seasonKey
-    );
-    renderSeasonEpisodes(slug, seasonKey);
-    history.pushState({page:'series', slug}, '', `#series-${slug}`);
-  };
+  // Set state for browser navigation
+  history.pushState({page: 'episode', slug, season: seasonKey, epi: ep.ep}, '', `#series-${slug}-s${seasonKey}-ep${ep.ep}`);
 }
 
 function showOnly(id) {
   ['spa-series-list', 'spa-series-details'].forEach(hid =>
     document.getElementById(hid) && document.getElementById(hid).classList.toggle('hide', hid !== id)
   );
-  let epView = document.getElementById('spa-full-episode-view');
-  if (epView) epView.classList.add('hide');
+  // Episode modal now shares the same container, so nothing else to hide
 }
 
 function goHome() {
@@ -194,12 +167,11 @@ function handlePopstate(e) {
   } else if (state.page === 'series') {
     renderSeriesDetails(state.slug);
   } else if (state.page === 'episode') {
-    renderFullPageEpisode(
+    playClassicEpisode(
       state.slug,
       String(state.season),
       state.epi,
-      seriesList.find(s => s.slug === state.slug)
+      seriesList.find(s=>s.slug===state.slug)
     );
   }
 }
-  
