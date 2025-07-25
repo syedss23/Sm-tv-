@@ -1,4 +1,3 @@
-alert('INDEX.JS VERSION 88');
 let seriesList = [];
 let seriesEpisodesData = {};
 let currentLang = 'en';
