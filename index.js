@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (state.page === 'series')
         renderSeriesDetails(state.slug);
       else if (state.page === 'episode')
-        renderFullPageEpisode(state.slug, state.season, state.epi, seriesList.find(s=>s.slug===state.slug));
+        renderFullPageEpisode(state.slug, String(state.season), state.epi, seriesList.find(s=>s.slug===state.slug));
     };
   });
 });
@@ -104,11 +104,12 @@ function renderSeasonBar(slug, seasonNums, activeSeason) {
 
 function renderSeasonEpisodes(slug, seasonNumber) {
   const sData = seriesEpisodesData[slug];
-  const episodes = sData && sData.seasons ? sData.seasons[String(seasonNumber)] || [] : [];
+  const seasonKey = String(seasonNumber);
+  const episodes = sData && sData.seasons ? sData.seasons[seasonKey] || [] : [];
   let episGrid = document.getElementById('season-episodes');
   episGrid.innerHTML = '';
   if (!episodes.length) {
-    episGrid.innerHTML = `<div style='color:#fff;'>No episodes for season <b>${seasonNumber}</b> in <b>${slug}</b>.</div>`;
+    episGrid.innerHTML = `<div style='color:#fff;'>No episodes for season <b>${seasonKey}</b> in <b>${slug}</b>.</div>`;
     return;
   }
   episodes.forEach(ep => {
@@ -119,9 +120,11 @@ function renderSeasonEpisodes(slug, seasonNumber) {
       <div class="episode-title">${ep.title ? ep.title : `Episode ${ep.ep}`}</div>
     `;
     div.onclick = () => {
-      history.pushState({page: 'episode', slug, season: String(seasonNumber), epi: ep.ep},
-        '', `#series-${slug}-s${seasonNumber}-ep${ep.ep}`);
-      renderFullPageEpisode(slug, String(seasonNumber), ep.ep, seriesList.find(s=>s.slug===slug));
+      history.pushState(
+        {page: 'episode', slug, season: seasonKey, epi: ep.ep},
+        '', `#series-${slug}-s${seasonKey}-ep${ep.ep}`
+      );
+      renderFullPageEpisode(slug, seasonKey, ep.ep, seriesList.find(s=>s.slug===slug));
     };
     episGrid.appendChild(div);
   });
@@ -129,7 +132,8 @@ function renderSeasonEpisodes(slug, seasonNumber) {
 
 function renderFullPageEpisode(slug, season, epi, meta) {
   const sData = seriesEpisodesData[slug];
-  const episodes = sData && sData.seasons ? sData.seasons[String(season)] || [] : [];
+  const seasonKey = String(season);
+  const episodes = sData && sData.seasons ? sData.seasons[seasonKey] || [] : [];
   const ep = episodes.find(e => String(e.ep) === String(epi));
   let existing = document.getElementById('spa-full-episode-view');
   if (!existing) {
@@ -139,11 +143,10 @@ function renderFullPageEpisode(slug, season, epi, meta) {
   }
   if (!ep) {
     existing.classList.remove('hide');
-    existing.innerHTML = "<div style='color:#fff;padding:40px;'>Episode not found.<br>slug="
-                          + slug + ", season=" + season + ", epi=" + epi + "</div>";
+    existing.innerHTML = `<div style='color:#fff;padding:40px;'>Episode not found.<br>slug=${slug}, season=${seasonKey}, epi=${epi}</div>`;
     return;
   }
-  showOnly(null); // Hide all
+  showOnly(null);
   existing.classList.remove('hide');
   existing.innerHTML = `
     <div class="ep-full-header">
@@ -159,14 +162,18 @@ function renderFullPageEpisode(slug, season, epi, meta) {
   document.getElementById('episodePageBack').onclick = () => {
     existing.classList.add('hide');
     renderSeriesDetails(slug);
-    renderSeasonBar(slug, Object.keys(seriesEpisodesData[slug].seasons).map(Number).sort((a,b)=>a-b), season);
-    renderSeasonEpisodes(slug, season);
+    renderSeasonBar(
+      slug,
+      Object.keys(seriesEpisodesData[slug].seasons).map(Number).sort((a, b) => a - b),
+      seasonKey
+    );
+    renderSeasonEpisodes(slug, seasonKey);
     history.pushState({page:'series', slug}, '', `#series-${slug}`);
   };
 }
 
 function showOnly(id) {
-  ['spa-series-list','spa-series-details'].forEach(hid =>
+  ['spa-series-list', 'spa-series-details'].forEach(hid =>
     document.getElementById(hid) && document.getElementById(hid).classList.toggle('hide', hid !== id)
   );
   let epView = document.getElementById('spa-full-episode-view');
@@ -185,6 +192,11 @@ function handlePopstate(e) {
   } else if (state.page === 'series') {
     renderSeriesDetails(state.slug);
   } else if (state.page === 'episode') {
-    renderFullPageEpisode(state.slug, String(state.season), state.epi, seriesList.find(s=>s.slug===state.slug));
+    renderFullPageEpisode(
+      state.slug,
+      String(state.season),
+      state.epi,
+      seriesList.find(s=>s.slug===state.slug)
+    );
   }
 }
