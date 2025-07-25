@@ -60,6 +60,7 @@ function renderSeriesList(search = "") {
   });
 }
 
+// --- Classic series detail card/page ---
 function renderSeriesDetails(slug) {
   showOnly('spa-series-details');
   const meta = seriesList.find(s => s.slug === slug);
