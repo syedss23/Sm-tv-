@@ -85,20 +85,29 @@ function renderGrid(searchTerm = '') {
       </div>
     `;
     item.querySelector('.series-card-link').addEventListener('click', function () {
+      let redirected = false;
       if (window.show_9623557) {
         show_9623557({
           type: 'inApp',
           onClose: function() {
+            redirected = true;
+            console.log('Monetag ad closed! Redirecting...');
             window.location.href = 'series.html?slug=' + series.slug;
           },
           inAppSettings: {
             frequency: 2,
             capping: 0.1,
             interval: 30,
-            timeout: 0,
+            timeout: 0, // show ad instantly
             everyPage: false
           }
         });
+        setTimeout(function() {
+          if (!redirected) {
+            console.log('Fallback: Redirecting due to Monetag not firing onClose.');
+            window.location.href = 'series.html?slug=' + series.slug;
+          }
+        }, 15000); // 15s fallback in case Monetag fails
       } else {
         window.location.href = 'series.html?slug=' + series.slug;
       }
