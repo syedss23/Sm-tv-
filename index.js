@@ -23,11 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('langSelect').onchange = function () {
       currentLang = this.value;
       const state = history.state || {};
-      if (!state.page || state.page === 'list') renderSeriesList(document.getElementById('seriesSearch').value.trim());
-      else if (state.page === 'series') renderSeriesDetails(state.slug);
-      else if (state.page === 'episode') {
+      if (!state.page || state.page === 'list')
+        renderSeriesList(document.getElementById('seriesSearch').value.trim());
+      else if (state.page === 'series')
+        renderSeriesDetails(state.slug);
+      else if (state.page === 'episode')
         renderFullPageEpisode(state.slug, state.season, state.epi, seriesList.find(s=>s.slug===state.slug));
-      }
     };
   });
 });
@@ -68,6 +69,7 @@ function renderSeriesDetails(slug) {
   let desc = (meta.desc && (meta.desc[currentLang] || meta.desc['en'])) || '';
   const seasonNums = Object.keys(sData.seasons).map(Number).sort((a, b) => a - b);
   let defaultSeason = String(seasonNums[0]);
+
   let details = document.getElementById('spa-series-details');
   details.innerHTML = `
     <div class="series-details-layout">
@@ -103,12 +105,14 @@ function renderSeasonBar(slug, seasonNums, activeSeason) {
 
 function renderSeasonEpisodes(slug, seasonNumber) {
   const sData = seriesEpisodesData[slug];
-  // Always use string for seasonNumber!
-  const episodes = sData.seasons[String(seasonNumber)] || [];
+  // Always use string key!
+  const episodes = sData && sData.seasons ? sData.seasons[String(seasonNumber)] || [] : [];
   let episGrid = document.getElementById('season-episodes');
   episGrid.innerHTML = '';
+  // Debugging output to help solve mystery!
   if (!episodes.length) {
-    episGrid.innerHTML = "<div style='color:#fff;'>No episodes.</div>";
+    episGrid.innerHTML = `<div style='color:#fff;'>No episodes for season <b>${seasonNumber}</b> in slug <b>${slug}</b>.</div>`;
+    console.log(`DEBUG: No episodes for slug="${slug}" season="${seasonNumber}"`);
     return;
   }
   episodes.forEach(ep => {
@@ -119,7 +123,8 @@ function renderSeasonEpisodes(slug, seasonNumber) {
       <div class="episode-title">${ep.title ? ep.title : `Episode ${ep.ep}`}</div>
     `;
     div.onclick = () => {
-      history.pushState({page: 'episode', slug, season: seasonNumber, epi: ep.ep}, '', `#series-${slug}-s${seasonNumber}-ep${ep.ep}`);
+      history.pushState({page: 'episode', slug, season: seasonNumber, epi: ep.ep},
+        '', `#series-${slug}-s${seasonNumber}-ep${ep.ep}`);
       renderFullPageEpisode(slug, seasonNumber, ep.ep, seriesList.find(s=>s.slug===slug));
     };
     episGrid.appendChild(div);
@@ -128,7 +133,7 @@ function renderSeasonEpisodes(slug, seasonNumber) {
 
 function renderFullPageEpisode(slug, season, epi, meta) {
   const sData = seriesEpisodesData[slug];
-  // Always use string for season!
+  // Always use string for season
   const episodes = sData && sData.seasons ? sData.seasons[String(season)] || [] : [];
   const ep = episodes.find(e => String(e.ep) === String(epi));
   let existing = document.getElementById('spa-full-episode-view');
@@ -139,7 +144,9 @@ function renderFullPageEpisode(slug, season, epi, meta) {
   }
   if (!ep) {
     existing.classList.remove('hide');
-    existing.innerHTML = "<div style='color:#fff;padding:40px;'>Episode not found.</div>";
+    existing.innerHTML = "<div style='color:#fff;padding:40px;'>Episode not found.<br>slug="
+                          + slug + ", season=" + season + ", epi=" + epi + "</div>";
+    console.log(`DEBUG: Not found: slug="${slug}" season="${season}" epi="${epi}"`);
     return;
   }
   showOnly(null); // Hide all
