@@ -138,7 +138,7 @@ function renderEpisodes(slug, seasonNum, episodesArr) {
             frequency: 2,
             capping: 0.1,
             interval: 30,
-            timeout: 5,
+            timeout: 0,
             everyPage: false
           }
         });
