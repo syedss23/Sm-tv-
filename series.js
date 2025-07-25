@@ -139,9 +139,9 @@ function renderEpisodes(slug, seasonNum, episodesArr) {
           },
           inAppSettings: {
             frequency: 2,
-            capping: 0.1,
-            interval: 30,
-            timeout: 0,
+            capping: 0.5,  // 30 minutes window
+            interval: 60, // 1 minute between ads
+            timeout: 0, // show ad instantly
             everyPage: false
           }
         });
