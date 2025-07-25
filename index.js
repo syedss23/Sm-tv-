@@ -1,11 +1,11 @@
 let seriesList = [];
 let seriesEpisodesData = {};
-let currentLang = 'en'; // adjusts for desc
+let currentLang = 'en';
 
 document.addEventListener('DOMContentLoaded', () => {
   Promise.all([
     fetch('series.json').then(r => r.json()),
-    fetch('links.json').then(r => r.json()) // if your "episodes-by-series" is in links.json, else update this line to match your filename!
+    fetch('links.json').then(r => r.json())
   ]).then(([listArr, episodesObj]) => {
     seriesList = listArr;
     seriesEpisodesData = episodesObj;
@@ -17,13 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('sidebarClose').onclick = () =>
       document.getElementById('sidebar').classList.remove('open');
     document.getElementById('navHome').onclick = (e) => { e.preventDefault(); goHome(); };
-
-    // Search
     document.getElementById('seriesSearch').addEventListener('input', e => {
       renderSeriesList(e.target.value.trim());
     });
-
-    // Language picker
     document.getElementById('langSelect').onchange = function () {
       currentLang = this.value;
       const state = history.state || {};
@@ -40,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// SHOW ALL SERIES (grid view)
+// SERIES GRID (Home)
 function renderSeriesList(search = "") {
   showOnly('spa-series-list');
   document.getElementById('mainTitle').textContent = "Turkish Series";
@@ -68,7 +64,7 @@ function renderSeriesList(search = "") {
   });
 }
 
-// SERIES DETAILS: poster, desc, season bar, grid of episode thumbs
+// SERIES DETAILS: Pro layout, big poster, description, season bar, episode grid
 function renderSeriesDetails(slug) {
   showOnly('spa-series-details');
   const meta = seriesList.find(s => s.slug === slug);
@@ -76,19 +72,18 @@ function renderSeriesDetails(slug) {
   if (!meta || !sData) return renderSeriesList();
   document.getElementById('mainTitle').textContent = meta.title;
   let desc = (meta.desc && (meta.desc[currentLang] || meta.desc['en'])) || '';
-
   const seasonNums = Object.keys(sData.seasons).map(Number).sort((a, b) => a - b);
   let defaultSeason = String(seasonNums[0]);
 
   let details = document.getElementById('spa-series-details');
   details.innerHTML = `
-    <button id="backToList">&larr; Back</button>
-    <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;">
-      <img src="${meta.poster}" alt="${meta.title}" style="width:160px;border-radius:8px;">
-      <div>
-        <h2 style="margin-top:0">${meta.title}</h2>
-        <div style="margin-bottom:1.15em;max-width:400px;">${desc}</div>
-        <div id="seasons-bar" style="margin:1em 0 0.5em 0;"></div>
+    <button id="backToList" class="close-btn" style="position:static;float:right;margin-bottom:23px;">&larr; Back</button>
+    <div class="series-details-card">
+      <img class="series-big-poster" src="${meta.poster}" alt="${meta.title}">
+      <div style="flex:1;min-width:180px">
+        <h2 style="margin-top:0;font-size:1.5em;">${meta.title}</h2>
+        <div style="margin-bottom:1.12em;line-height:1.55;color:#efefef;">${desc}</div>
+        <div id="seasons-bar"></div>
         <div id="season-episodes" class="poster-grid"></div>
       </div>
     </div>
@@ -96,12 +91,11 @@ function renderSeriesDetails(slug) {
   `;
   document.getElementById('backToList').onclick = () => { goHome(); };
 
-  // Render season bar and (by default) the first season
   renderSeasonBar(slug, seasonNums, defaultSeason);
   renderSeasonEpisodes(slug, defaultSeason);
 }
 
-// Season bar (tabs for 1/2/3...)
+// SEASONS BAR as pro tabs/buttons
 function renderSeasonBar(slug, seasonNums, activeSeason) {
   let bar = document.getElementById('seasons-bar');
   bar.innerHTML = seasonNums.map(season =>
@@ -116,7 +110,7 @@ function renderSeasonBar(slug, seasonNums, activeSeason) {
   });
 }
 
-// Render all episodes for a single season, as grid/thumbs
+// Episodes grid for season
 function renderSeasonEpisodes(slug, seasonNumber) {
   const sData = seriesEpisodesData[slug];
   const episodes = sData.seasons[seasonNumber] || [];
@@ -129,10 +123,10 @@ function renderSeasonEpisodes(slug, seasonNumber) {
   episGrid.innerHTML = '';
   episodes.forEach(ep => {
     let div = document.createElement('div');
-    div.className = 'poster-item';
+    div.className = 'episode-item';
     div.innerHTML = `
-      <img src="${ep.thumb || 'default-thumb.jpg'}" alt="Ep ${ep.ep}">
-      <div class="title">Ep ${ep.ep}: ${ep.title}</div>
+      <img class="episode-thumb" src="${ep.thumb || 'default-thumb.jpg'}" alt="Ep ${ep.ep}">
+      <div class="episode-title">Ep ${ep.ep}: ${ep.title}</div>
     `;
     div.onclick = () => {
       history.pushState({page: 'episode', slug, season: seasonNumber, epi: ep.ep}, '', `#series-${slug}-s${seasonNumber}-ep${ep.ep}`);
@@ -142,19 +136,20 @@ function renderSeasonEpisodes(slug, seasonNumber) {
   });
 }
 
-// Main episode popup (embed + download button)
+// Modern, centered streaming popup
 function renderEpisodeView(slug, season, ep) {
-  episodViewShow();
-  let box = document.getElementById('spa-episode-view');
-  box.innerHTML = `
-    <button id="closeEpisodeView">&larr; Back to Season</button>
-    <h2>${ep.title ? ep.title : `Episode ${ep.ep}`}</h2>
-    <div class="ep-embed">${ep.embed || ''}</div>
-    <div style="margin:1em 0;">
-      <a class="download-btn" href="${ep.download||'#'}" download>Download Episode</a>
+  const overlay = document.getElementById('spa-episode-view');
+  overlay.classList.remove('hide');
+  overlay.innerHTML = `
+    <button class="close-btn" id="closeEpisodeView" title="Close">&times;</button>
+    <div class="stream-content">
+      <div class="ep-title">${ep.title ? ep.title : `Episode ${ep.ep}`}</div>
+      <div class="ep-embed">${ep.embed || '<div style="padding:60px 0;color:#ccc;">No streaming available</div>'}</div>
+      <a class="download-btn" href="${ep.download||'#'}" download>⬇️ Download</a>
     </div>
   `;
   document.getElementById('closeEpisodeView').onclick = () => {
+    overlay.classList.add('hide');
     history.pushState({page:'series', slug}, '', `#series-${slug}`);
     renderSeriesDetails(slug);
     renderSeasonBar(slug, Object.keys(seriesEpisodesData[slug].seasons).map(Number).sort((a,b)=>a-b), season);
@@ -162,19 +157,12 @@ function renderEpisodeView(slug, season, ep) {
   };
 }
 
-// Hide/show helpers
-function episodViewShow(){
-  document.getElementById('spa-episode-view').classList.remove('hide');
-  document.getElementById('season-episodes').classList.add('hide');
-  document.getElementById('seasons-bar').classList.add('hide');
-}
+function episodViewShow(){ /* handled by overlay above */ }
 function episodViewHide(){
-  document.getElementById('spa-episode-view').classList.add('hide');
-  document.getElementById('season-episodes').classList.remove('hide');
-  document.getElementById('seasons-bar').classList.remove('hide');
+  const el = document.getElementById('spa-episode-view');
+  if (el) el.classList.add('hide');
 }
 
-// SPA/Telegram/WB back/forward support
 function handlePopstate(e) {
   const state = e.state || {};
   if (!state.page || state.page === 'list') {
