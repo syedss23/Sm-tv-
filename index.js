@@ -103,7 +103,7 @@ function renderSeasonBar(slug, seasonNums, activeSeason) {
 
 function renderSeasonEpisodes(slug, seasonNumber) {
   const sData = seriesEpisodesData[slug];
-  // Always use String key!
+  // Always use string for seasonNumber!
   const episodes = sData.seasons[String(seasonNumber)] || [];
   let episGrid = document.getElementById('season-episodes');
   episGrid.innerHTML = '';
@@ -127,8 +127,8 @@ function renderSeasonEpisodes(slug, seasonNumber) {
 }
 
 function renderFullPageEpisode(slug, season, epi, meta) {
-  // Always look up episode object by ep number and string season key
   const sData = seriesEpisodesData[slug];
+  // Always use string for season!
   const episodes = sData && sData.seasons ? sData.seasons[String(season)] || [] : [];
   const ep = episodes.find(e => String(e.ep) === String(epi));
   let existing = document.getElementById('spa-full-episode-view');
