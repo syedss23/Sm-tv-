@@ -18,13 +18,18 @@ Promise.all([
     return;
   }
 
-  // --- Monetag PREMIUM: Ad overlays before episode render ---
+  // Show Monetag ad before streaming
   showAdThen(() => {
     container.innerHTML = `
       <div class="pro-episode-view">
-        <div class="pro-episode-header">
-          <a class="pro-episode-back" href="series.html?series=${slug}">&larr; Back to episodes</a>
-          <h2 class="pro-episode-title">${meta ? meta.title : ''} – <span>${ep.title ? ep.title : `Episode ${ep.ep}`}</span></h2>
+        <div class="pro-episode-header-pro">
+          <a class="pro-episode-back-pro" href="series.html?series=${slug}" title="Back">
+            <span class="pro-back-arrow">&#8592;</span> Episodes
+          </a>
+          <h2 class="pro-episode-title-pro">
+            ${meta ? meta.title : ''} 
+            <span class="pro-ep-title-part">${ep.title ? ep.title : `Episode ${ep.ep}`}</span>
+          </h2>
         </div>
         <div class="pro-episode-embed">${ep.embed || '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'}</div>
         <a class="pro-download-btn" href="${ep.download || '#'}" download>⬇️ Download Episode</a>
