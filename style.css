@@ -22,6 +22,7 @@ header { padding: 20px 10px 8px 10px; border-bottom: 1px solid #292a2f; position
 @media (min-width: 701px) { #main-content { margin-left: 240px; } .sidebar { transform: translateX(0);} .sidebar-close-btn { display: none;} }
 @media (max-width: 700px) { #main-content { margin-left: 0;} .sidebar { width: 90vw;} }
 .ad-space { margin: 24px 0 10px 0; text-align: center; min-height: 60px; background: #191a23; border-radius: 10px; }
+
 /* --- Home Poster Grid --- */
 .poster-grid {
   display: grid;
@@ -196,7 +197,107 @@ header { padding: 20px 10px 8px 10px; border-bottom: 1px solid #292a2f; position
   .pro-episode-card-pro { min-width: 103px; max-width: 118px; }
   .pro-ep-title-pro { font-size:.91em; }
 }
-/* --- Streaming page/professional episode view: unchanged, remains as before (CSS above) --- */
+
+/* ============================
+   Streaming page – Premium style
+   ============================ */
+.pro-episode-view-polished {
+  max-width: 650px;
+  margin: 40px auto 0;
+  background: #161b25;
+  border-radius: 24px;
+  padding: 17px 10px 28px 10px;
+  box-shadow: 0 4px 34px #10194050;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.pro-episode-header-polished {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  margin-bottom: 27px;
+  gap: 12px;
+}
+.pro-back-btn-polished {
+  display: flex;
+  align-items: center;
+  padding: 6px 21px 6px 10px;
+  background: #17273d;
+  border: 1.7px solid #23c6ed;
+  border-radius: 900px;
+  color: #fff;
+  font-size: 1em;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 2px 11px #0e338618;
+  transition: background 0.13s, color 0.13s, border-color 0.13s, box-shadow 0.14s, transform 0.12s;
+  min-width: 0;
+}
+.pro-back-btn-polished:hover,
+.pro-back-btn-polished:focus {
+  background: #112140;
+  color: #20e2f2;
+  border-color: #38f6ff;
+  box-shadow: 0 4px 20px #168de940;
+  outline: none;
+  transform: translateY(-1px) scale(1.05);
+}
+.svg-arrow {
+  margin-right: 6px;
+  margin-bottom: -2px;
+  stroke: #23c6ed!important;
+}
+.pro-episode-title-polished {
+  flex: 1;
+  color: #fff;
+  font-size: 1.18em;
+  margin: 0;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: .01em;
+}
+.pro-ep-title-part-polished {
+  font-weight: 500;
+  color: #20e2f2;
+  margin-left: 15px;
+  font-size: 0.95em;
+}
+.pro-episode-embed-polished {
+  width: 100%;
+  max-width: 585px;
+  margin: 0 0 24px 0;
+  border-radius: 12px;
+  box-shadow: 0 3px 19px #0006;
+  overflow: hidden;
+  background: #0e101b;
+  text-align: center;
+  min-height: 180px;
+}
+.pro-download-btn-polished {
+  display: inline-block;
+  background: linear-gradient(90deg,#0de456,#3b8bea 85%);
+  color: #fff;
+  padding: 13px 22px 11px 22px;
+  font-size: 1.07em;
+  font-weight: 700;
+  border-radius: 11px;
+  margin-top: 7px;
+  box-shadow: 0 2px 13px #21a9ff28;
+  text-decoration: none;
+  border: none;
+  transition: background .17s, box-shadow .15s;
+  cursor: pointer;
+}
+.pro-download-btn-polished:hover { background: linear-gradient(90deg,#16e0a7,#368de1 85%);}
+@media (max-width: 700px) {
+  .pro-episode-view-polished { max-width: 97vw; padding: 8px 2vw 18px 2vw;}
+  .pro-episode-header-polished { flex-direction: column; align-items: stretch; gap:5px; }
+  .pro-episode-title-polished { text-align: left; margin-top: 11px; font-size: 1em; }
+  .pro-ep-title-part-polished { margin-left:5px; font-size:0.89em; }
+  .pro-episode-embed-polished { min-height: 92px;}
+}
 
 /* --- Monetag ad overlay for streaming page --- */
 #adBlockOverlay {
