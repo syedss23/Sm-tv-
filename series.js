@@ -1,19 +1,21 @@
+// --- series.js ---
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('series');
 
 Promise.all([
-  fetch('series.json').then(r=>r.json()),
-  fetch('links.json').then(r=>r.json())
+  fetch('series.json').then(r => r.json()),
+  fetch('links.json').then(r => r.json())
 ]).then(([seriesList, episodesData]) => {
-  const meta = seriesList.find(s=>s.slug===slug);
+  const meta = seriesList.find(s => s.slug === slug);
   const sData = episodesData[slug];
   if (!meta || !sData) {
     document.getElementById('series-details').innerHTML = `<div style="color:#fff;">Series not found.</div>`;
     return;
   }
+  // Main card and layout
   let html = `
     <div class="pro-details-header">
-      <a href="index.html" class="series-back-btn" title="Go Back">&larr; Back</a>
+      <a href="index.html" class="series-back-btn" title="Go Back">&larr; Back to all series</a>
       <img class="series-detail-poster" src="${meta.poster}" alt="${meta.title}">
       <div class="series-detail-meta">
         <h2>${meta.title}</h2>
@@ -25,19 +27,22 @@ Promise.all([
   `;
   document.getElementById('series-details').innerHTML = html;
 
-  const seasonNums = Object.keys(sData.seasons).sort((a,b)=>Number(a)-Number(b));
+  // Render season tabs
+  const seasonNums = Object.keys(sData.seasons).sort((a, b) => Number(a) - Number(b));
   document.getElementById('pro-seasons-tabs').innerHTML =
     seasonNums.map(season =>
-      `<button data-season="${season}" class="pro-season-tab${season==seasonNums[0]?' active':''}">Season ${season}</button>`
+      `<button data-season="${season}" class="pro-season-tab${season == seasonNums[0] ? ' active' : ''}">Season ${season}</button>`
     ).join('');
   document.querySelectorAll('.pro-season-tab').forEach(btn => {
-    btn.onclick = function() {
-      document.querySelectorAll('.pro-season-tab').forEach(b=>b.classList.remove('active'));
+    btn.onclick = function () {
+      document.querySelectorAll('.pro-season-tab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       renderProEpisodesRow(btn.dataset.season);
     };
   });
+  // Initial episodes row for default season
   renderProEpisodesRow(seasonNums[0]);
+
   function renderProEpisodesRow(seasonNumber) {
     const seasonKey = String(seasonNumber);
     const episodes = sData.seasons && sData.seasons[seasonKey] ? sData.seasons[seasonKey] : [];
