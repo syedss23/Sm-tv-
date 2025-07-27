@@ -1,13 +1,14 @@
+// --- episode.js ---
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('series');
 const season = params.get('season');
 const epNum = params.get('ep');
 
 Promise.all([
-  fetch('series.json').then(r=>r.json()),
-  fetch('links.json').then(r=>r.json())
+  fetch('series.json').then(r => r.json()),
+  fetch('links.json').then(r => r.json())
 ]).then(([seriesList, data]) => {
-  const meta = seriesList.find(s=>s.slug===slug);
+  const meta = seriesList.find(s => s.slug === slug);
   const sData = data[slug];
   const episodes = sData && sData.seasons && sData.seasons[String(season)] ? sData.seasons[String(season)] : [];
   const ep = episodes.find(e => String(e.ep) === String(epNum));
@@ -17,7 +18,7 @@ Promise.all([
     return;
   }
 
-  // --- Monetag ad overlay blocking logic ---
+  // --- Monetag PREMIUM: Ad overlays before episode render ---
   showAdThen(() => {
     container.innerHTML = `
       <div class="pro-episode-view">
@@ -32,7 +33,7 @@ Promise.all([
   });
 
   function showAdThen(done) {
-    // Show blocking overlay
+    // Show blocking overlay for ad
     let overlay = document.createElement('div');
     overlay.id = 'adBlockOverlay';
     overlay.style = 'position:fixed;z-index:99999;top:0;left:0;width:100vw;height:100vh;background:#111c;padding:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2em;';
@@ -51,7 +52,7 @@ Promise.all([
         }
       });
     }
-    // Remove overlay after 6.5 sec (or adjust to your Monetag typical ad display time)
+    // Remove overlay after ad time (tune delay to Monetag)
     setTimeout(() => {
       document.body.removeChild(overlay);
       done();
