@@ -84,7 +84,7 @@
           "ep": 1,
           "title": "Episode 1",
           "thumb": "assets/posters/salauddin_ayyubi_e1.jpg",
-          "embed": "<iframe src='https://yourstreamingsite.com/embed/salauddin_ayyubi_e1' frameborder='0' allowfullscreen></iframe>",
+          "embed": "<iframe title="vimeo-player" src="https://player.vimeo.com/video/1104921063?h=699e9d21a5" width="640" height="360" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"   allowfullscreen></iframe>",
           "download": "https://terabox.com/salauddin-ayyubi-e1"
         }
       ],
