@@ -26,15 +26,15 @@ Promise.all([
             <svg width="23" height="23" viewBox="0 0 20 20" class="svg-arrow"><polyline points="12 4 6 10 12 16" fill="none" stroke="#23c6ed" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Back
           </a>
-          <h2 class="pro-episode-title-polished">
-            ${meta ? meta.title : ''} 
-            <span class="pro-ep-title-part-polished">${ep.title ? ep.title : `Episode ${ep.ep}`}</span>
-          </h2>
+          <div class="pro-header-title-wrap">
+            <span class="pro-series-bigname">${meta ? meta.title : ''}</span>
+            <span class="pro-ep-strong-title">${ep.title ? ep.title : `Episode ${ep.ep}`}</span>
+          </div>
         </div>
         <div class="pro-episode-embed-polished">
           ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'}
         </div>
-        <a class="pro-download-btn-polished" href="${ep.download || '#'}" download>⬇️ Download Episode</a>
+        <a class="pro-download-btn-polished" href="${ep.download || '#'}" download>🖇️ Download Episode</a>
       </div>
     `;
   });
