@@ -12,11 +12,14 @@ Promise.all([
     document.getElementById('series-details').innerHTML = `<div style="color:#fff;">Series not found.</div>`;
     return;
   }
+
   // --- Modern header with poster, back, desc ---
   let html = `
     <section class="pro-series-header-pro">
       <a href="index.html" class="pro-series-back-btn-pro" title="Back">
-        <svg width="24" height="24" viewBox="0 0 20 20" style="vertical-align: middle;"><polyline points="12 4 6 10 12 16" fill="none" stroke="#23c6ed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="24" height="24" viewBox="0 0 20 20" style="vertical-align: middle;">
+          <polyline points="12 4 6 10 12 16" fill="none" stroke="#23c6ed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </a>
       <img class="pro-series-poster-pro" src="${meta.poster}" alt="${meta.title}">
       <div class="pro-series-meta-pro">
@@ -43,8 +46,8 @@ Promise.all([
     };
   });
   renderProEpisodesRow(seasonNums[0]);
-  
-  // --- Premium episode cards row ---
+
+  // --- Episode cards row (horizontal, scrollable) ---
   function renderProEpisodesRow(seasonNumber) {
     const seasonKey = String(seasonNumber);
     const episodes = sData.seasons && sData.seasons[seasonKey] ? sData.seasons[seasonKey] : [];
@@ -65,4 +68,8 @@ Promise.all([
     }
     document.getElementById('pro-episodes-row-wrap').innerHTML = row;
   }
+}).catch(err => {
+  document.getElementById('series-details').innerHTML = `<div style="color:#fff;padding:30px;">Could not load series info. Try again later.</div>`;
+  // Optionally: console.error(err);
 });
+                   
