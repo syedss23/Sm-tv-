@@ -326,3 +326,14 @@ header { padding: 20px 10px 8px 10px; border-bottom: 1px solid #292a2f; position
 .hide { display:none !important; }
 button, input[type="button"], input[type="submit"] { background:#23242a; color:#fff; border:1px solid #333; border-radius:6px; padding:7px 18px; font-size:1em;}
 button:hover { background:#272838; }
+/* Always stretch and fit iframes in pro-episode-embed-polished */
+.pro-episode-embed-polished iframe {
+  width: 100% !important;
+  height: 100% !important;
+  aspect-ratio: 16/9;
+  min-height: 170px;
+  max-height: 60vw;
+  border-radius: 8px;
+  display: block;
+  background: #000;
+}
