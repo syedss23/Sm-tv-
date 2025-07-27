@@ -22,7 +22,6 @@ header { padding: 20px 10px 8px 10px; border-bottom: 1px solid #292a2f; position
 @media (min-width: 701px) { #main-content { margin-left: 240px; } .sidebar { transform: translateX(0);} .sidebar-close-btn { display: none;} }
 @media (max-width: 700px) { #main-content { margin-left: 0;} .sidebar { width: 90vw;} }
 .ad-space { margin: 24px 0 10px 0; text-align: center; min-height: 60px; background: #191a23; border-radius: 10px; }
-
 /* --- Home Poster Grid --- */
 .poster-grid {
   display: grid;
@@ -65,7 +64,6 @@ header { padding: 20px 10px 8px 10px; border-bottom: 1px solid #292a2f; position
 /* =========================
    Modern, Premium series/season/episodes look
    ========================= */
-/* --- Modern header with pro back button & poster --- */
 .pro-series-header-pro {
   display: flex; align-items: flex-start; gap: 23px;
   margin: 26px 0 13px 0; background: #141926;
@@ -223,47 +221,71 @@ header { padding: 20px 10px 8px 10px; border-bottom: 1px solid #292a2f; position
 .pro-back-btn-polished {
   display: flex;
   align-items: center;
-  padding: 6px 21px 6px 10px;
+  padding: 7px 22px 7px 11px;
   background: #17273d;
-  border: 1.7px solid #23c6ed;
+  border: 2px solid #23c6ed;
   border-radius: 900px;
-  color: #fff;
-  font-size: 1em;
-  font-weight: 600;
+  color: #23c6ed;
+  font-weight: 700;
+  font-size: 1.06em;
   text-decoration: none;
-  box-shadow: 0 2px 11px #0e338618;
-  transition: background 0.13s, color 0.13s, border-color 0.13s, box-shadow 0.14s, transform 0.12s;
-  min-width: 0;
+  box-shadow: 0 2px 11px #1bc3e820;
+  transition:
+    background 0.13s, color 0.13s, border-color 0.13s, 
+    box-shadow 0.14s, transform 0.13s;
 }
 .pro-back-btn-polished:hover,
 .pro-back-btn-polished:focus {
   background: #112140;
-  color: #20e2f2;
-  border-color: #38f6ff;
-  box-shadow: 0 4px 20px #168de940;
+  color: #fff;
+  border-color: #32eaff;
+  box-shadow: 0 4px 16px #23c6ed33;
   outline: none;
-  transform: translateY(-1px) scale(1.05);
+  transform: translateY(-1px) scale(1.06);
 }
 .svg-arrow {
   margin-right: 6px;
   margin-bottom: -2px;
   stroke: #23c6ed!important;
 }
-.pro-episode-title-polished {
+.pro-header-title-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   flex: 1;
-  color: #fff;
-  font-size: 1.18em;
-  margin: 0;
+}
+.pro-series-bigname {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 1.34em;
+  font-weight: 900;
+  color: #19f7d8;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 20px #19c7c335, 0 1px 2px #2227;
+  margin-bottom: 3px;
+  line-height: 1.17;
   text-align: center;
+  filter: drop-shadow(0 1.5px 4px #0ed4ff18);
+}
+.pro-ep-strong-title {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 1.07em;
   font-weight: 700;
-  letter-spacing: .01em;
+  color: #ffe06e;
+  letter-spacing: .015em;
+  background: rgba(33,57,90,0.32);
+  padding: 4px 13px 3px 13px;
+  border-radius: 15px;
+  margin-top: 8px;
+  box-shadow: 0 2px 8px #120c0e12, 0 1px 4px #212a3b0a;
+  text-align: center;
+  display: inline-block;
 }
-.pro-ep-title-part-polished {
-  font-weight: 500;
-  color: #20e2f2;
-  margin-left: 15px;
-  font-size: 0.95em;
+@media (max-width:700px){
+  .pro-header-title-wrap { margin-left:0; }
+  .pro-series-bigname { font-size: 1.15em; }
+  .pro-ep-strong-title { font-size: .97em; }
 }
+
 .pro-episode-embed-polished {
   width: 100%;
   max-width: 585px;
@@ -279,7 +301,7 @@ header { padding: 20px 10px 8px 10px; border-bottom: 1px solid #292a2f; position
   display: inline-block;
   background: linear-gradient(90deg,#0de456,#3b8bea 85%);
   color: #fff;
-  padding: 13px 22px 11px 22px;
+  padding: 13px 19px 11px 19px;
   font-size: 1.07em;
   font-weight: 700;
   border-radius: 11px;
@@ -291,12 +313,14 @@ header { padding: 20px 10px 8px 10px; border-bottom: 1px solid #292a2f; position
   cursor: pointer;
 }
 .pro-download-btn-polished:hover { background: linear-gradient(90deg,#16e0a7,#368de1 85%);}
+
 @media (max-width: 700px) {
   .pro-episode-view-polished { max-width: 97vw; padding: 8px 2vw 18px 2vw;}
   .pro-episode-header-polished { flex-direction: column; align-items: stretch; gap:5px; }
-  .pro-episode-title-polished { text-align: left; margin-top: 11px; font-size: 1em; }
-  .pro-ep-title-part-polished { margin-left:5px; font-size:0.89em; }
+  .pro-series-bigname { font-size: 1.02em; }
+  .pro-ep-strong-title { margin-top: 6px; padding: 3px 8px 2px 8px;}
   .pro-episode-embed-polished { min-height: 92px;}
+  .pro-header-title-wrap { padding: 0 4vw;}
 }
 
 /* --- Monetag ad overlay for streaming page --- */
@@ -307,3 +331,4 @@ header { padding: 20px 10px 8px 10px; border-bottom: 1px solid #292a2f; position
 .hide { display:none !important; }
 button, input[type="button"], input[type="submit"] { background:#23242a; color:#fff; border:1px solid #333; border-radius:6px; padding:7px 18px; font-size:1em;}
 button:hover { background:#272838; }
+  
