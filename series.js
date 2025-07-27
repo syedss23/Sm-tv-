@@ -12,52 +12,54 @@ Promise.all([
     document.getElementById('series-details').innerHTML = `<div style="color:#fff;">Series not found.</div>`;
     return;
   }
-  // Main card and layout
+  // --- Modern header with poster, back, desc ---
   let html = `
-    <div class="pro-details-header">
-      <a href="index.html" class="series-back-btn" title="Go Back">&larr; Back to all series</a>
-      <img class="series-detail-poster" src="${meta.poster}" alt="${meta.title}">
-      <div class="series-detail-meta">
-        <h2>${meta.title}</h2>
-        <div class="series-desc">${meta.desc && meta.desc.en ? meta.desc.en : ''}</div>
+    <section class="pro-series-header-pro">
+      <a href="index.html" class="pro-series-back-btn-pro" title="Back">
+        <svg width="24" height="24" viewBox="0 0 20 20" style="vertical-align: middle;"><polyline points="12 4 6 10 12 16" fill="none" stroke="#23c6ed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <img class="pro-series-poster-pro" src="${meta.poster}" alt="${meta.title}">
+      <div class="pro-series-meta-pro">
+        <h2 class="pro-series-title-pro">${meta.title}</h2>
+        <div class="pro-series-desc-pro">${meta.desc && meta.desc.en ? meta.desc.en : ""}</div>
       </div>
-    </div>
-    <div class="pro-seasons-tabs" id="pro-seasons-tabs"></div>
-    <div class="pro-episodes-row-wrap" id="pro-episodes-row-wrap"></div>
+    </section>
+    <nav class="pro-seasons-tabs-pro" id="pro-seasons-tabs"></nav>
+    <section class="pro-episodes-row-wrap-pro" id="pro-episodes-row-wrap"></section>
   `;
   document.getElementById('series-details').innerHTML = html;
 
-  // Render season tabs
+  // --- Season tabs ---
   const seasonNums = Object.keys(sData.seasons).sort((a, b) => Number(a) - Number(b));
   document.getElementById('pro-seasons-tabs').innerHTML =
     seasonNums.map(season =>
-      `<button data-season="${season}" class="pro-season-tab${season == seasonNums[0] ? ' active' : ''}">Season ${season}</button>`
+      `<button data-season="${season}" class="pro-season-tab-pro${season == seasonNums[0] ? ' active' : ''}">Season ${season}</button>`
     ).join('');
-  document.querySelectorAll('.pro-season-tab').forEach(btn => {
+  document.querySelectorAll('.pro-season-tab-pro').forEach(btn => {
     btn.onclick = function () {
-      document.querySelectorAll('.pro-season-tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.pro-season-tab-pro').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       renderProEpisodesRow(btn.dataset.season);
     };
   });
-  // Initial episodes row for default season
   renderProEpisodesRow(seasonNums[0]);
-
+  
+  // --- Premium episode cards row ---
   function renderProEpisodesRow(seasonNumber) {
     const seasonKey = String(seasonNumber);
     const episodes = sData.seasons && sData.seasons[seasonKey] ? sData.seasons[seasonKey] : [];
     let row = '';
     if (!episodes.length) {
-      row = `<div style='color:#fff;padding:22px 0 0 0;'>No episodes for this season.</div>`;
+      row = `<div style='color:#fff;padding:28px 0 0 0;'>No episodes for this season.</div>`;
     } else {
-      row = `<div class="pro-episodes-row">` +
+      row = `<div class="pro-episodes-row-pro">` +
         episodes.map(ep => `
-          <a class="pro-episode-card" href="episode.html?series=${slug}&season=${seasonKey}&ep=${ep.ep}">
-            <div class="pro-ep-thumb-wrap">
-              <img src="${ep.thumb || 'default-thumb.jpg'}" class="pro-ep-thumb" alt="Ep ${ep.ep}">
-              <span class="pro-ep-num">Ep ${ep.ep}</span>
+          <a class="pro-episode-card-pro" href="episode.html?series=${slug}&season=${seasonKey}&ep=${ep.ep}">
+            <div class="pro-ep-thumb-wrap-pro">
+              <img src="${ep.thumb || 'default-thumb.jpg'}" class="pro-ep-thumb-pro" alt="Ep ${ep.ep}">
+              <span class="pro-ep-num-pro">Ep ${ep.ep}</span>
             </div>
-            <div class="pro-ep-title">${ep.title ? ep.title : `Episode ${ep.ep}`}</div>
+            <div class="pro-ep-title-pro">${ep.title ? ep.title : `Episode ${ep.ep}`}</div>
           </a>
         `).join('') + '</div>';
     }
