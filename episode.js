@@ -48,15 +48,16 @@ Promise.all([
 
     if (typeof show_9623557 === "function") {
       show_9623557({
-        type: 'inApp',
-        inAppSettings: {
-          frequency: 2,
-          capping: 0.1,
-          interval: 30,
-          timeout: 5,
-          everyPage: false
-        }
-      });
+  type: 'inApp',
+  inAppSettings: {
+    frequency: 1,    // Only ONE ad per page/session
+    capping: 1,      // Show only once per interval
+    interval: 9999,  // Sets a very long interval, basically disables repeated ads on the same page
+    timeout: 5,
+    everyPage: false
+  }
+});
+
     }
     setTimeout(() => {
       document.body.removeChild(overlay);
