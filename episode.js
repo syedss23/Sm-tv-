@@ -60,3 +60,28 @@ Promise.all([
   const container = document.getElementById('episode-view') || document.body;
   container.innerHTML = `<div style="color:#fff;padding:30px;">Could not load episode info. Try again later.</div>`;
 });
+// --- Monetag ad overlay loader ---
+function showAdThen(done) {
+  let overlay = document.createElement('div');
+  overlay.id = 'adBlockOverlay';
+  overlay.style = 'position:fixed;z-index:99999;top:0;left:0;width:100vw;height:100vh;background:#111c;padding:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2em;';
+  overlay.innerHTML = '<div><b>Loading Ad...</b></div>';
+  document.body.appendChild(overlay);
+
+  if (typeof show_9623557 === "function") {
+    show_9623557({
+      type: 'inApp',
+      inAppSettings: {
+        frequency: 1,
+        capping: 1,
+        interval: 9999,
+        timeout: 5,
+        everyPage: false
+      }
+    });
+  }
+  setTimeout(() => {
+    document.body.removeChild(overlay);
+    done();
+  }, 6500);
+}
