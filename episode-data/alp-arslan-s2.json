@@ -1,0 +1,16 @@
+[
+  {
+    "ep": 1,
+    "title": "Episode 1",
+    "thumb": "assets/posters/alp_arslan_s2e1.jpg",
+    "embed": "<iframe src='https://yourstreamingsite.com/embed/alp_arslan_s2e1' frameborder='0' allowfullscreen></iframe>",
+    "download": "https://terabox.com/alp-arslan-s2e1"
+  },
+  {
+    "ep": 2,
+    "title": "Episode 2",
+    "thumb": "assets/posters/alp_arslan_s2e2.jpg",
+    "embed": "<iframe src='https://yourstreamingsite.com/embed/alp_arslan_s2e2' frameborder='0' allowfullscreen></iframe>",
+    "download": "https://terabox.com/alp-arslan-s2e2"
+  }
+]
