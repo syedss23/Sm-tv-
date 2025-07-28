@@ -2,7 +2,7 @@
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('series');
 
-// Load series meta (poster, desc, etc)
+// Load series meta (from series.json)
 fetch('series.json')
   .then(r => r.json())
   .then(seriesList => {
@@ -31,16 +31,16 @@ fetch('series.json')
     `;
     document.getElementById('series-details').innerHTML = html;
 
-    // Make season numbers array – if count is a number, use 1...n; else, get dynamic keys
+    // Figure out season list: use meta.seasons count if number, else array, else ["1"]
     let seasonNums = [];
     if (typeof meta.seasons === "number") {
       for (let i = 1; i <= meta.seasons; i++) seasonNums.push(String(i));
     } else if (Array.isArray(meta.seasons)) {
-      seasonNums = meta.seasons.map(v => String(v));
+      seasonNums = meta.seasons.map(s => String(s));
     } else {
       seasonNums = ["1"];
     }
-
+    // Render tabs
     document.getElementById('pro-seasons-tabs').innerHTML =
       seasonNums.map(season =>
         `<button data-season="${season}" class="pro-season-tab-pro${season == seasonNums[0] ? ' active' : ''}">Season ${season}</button>`
@@ -53,19 +53,19 @@ fetch('series.json')
       };
     });
 
-    // Immediately load first season
+    // Show first season by default
     renderProEpisodesRow(seasonNums[0]);
 
-    // --- Modular episode loader ---
+    // Get filename for episodes for this series and season
     function getEpisodeFile(slug, season) {
-      // Use dash as in your folder/file structure: [slug]-s[season].json
       return `episode-data/${slug}-s${season}.json`;
     }
 
+    // Modular episode loader: loads array and renders episode cards
     function renderProEpisodesRow(seasonNumber) {
       fetch(getEpisodeFile(slug, seasonNumber))
         .then(r => {
-          if (!r.ok) throw new Error("Not found");
+          if (!r.ok) throw new Error("File not found");
           return r.json();
         })
         .then(episodes => {
@@ -92,6 +92,7 @@ fetch('series.json')
         });
     }
   })
-  .catch(err => {
-    document.getElementById('
-                            
+  .catch(() => {
+    document.getElementById('series-details').innerHTML =
+      `<div style="color:#fff;padding:30px;">Could not load series info. Try again later.</div>`;
+  });
