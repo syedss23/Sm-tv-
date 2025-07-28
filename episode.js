@@ -1,15 +1,15 @@
+// --- episode.js ---
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('series');
 const season = params.get('season');
 const epNum = params.get('ep');
 
+// Fetch series metadata and episodes for this season
 Promise.all([
   fetch('series.json').then(r => r.json()),
-  fetch('links.json').then(r => r.json())
-]).then(([seriesList, data]) => {
+  fetch(`episode-data/${slug}-s${season}.json`).then(r => r.json())
+]).then(([seriesList, episodes]) => {
   const meta = seriesList.find(s => s.slug === slug);
-  const sData = data[slug];
-  const episodes = sData && sData.seasons && sData.seasons[String(season)] ? sData.seasons[String(season)] : [];
   const ep = episodes.find(e => String(e.ep) === String(epNum));
   let container = document.getElementById('episode-view');
   if (!ep) {
@@ -39,6 +39,7 @@ Promise.all([
     `;
   });
 
+  // Your ad logic...
   function showAdThen(done) {
     let overlay = document.createElement('div');
     overlay.id = 'adBlockOverlay';
@@ -48,20 +49,22 @@ Promise.all([
 
     if (typeof show_9623557 === "function") {
       show_9623557({
-  type: 'inApp',
-  inAppSettings: {
-    frequency: 1,    // Only ONE ad per page/session
-    capping: 1,      // Show only once per interval
-    interval: 9999,  // Sets a very long interval, basically disables repeated ads on the same page
-    timeout: 5,
-    everyPage: false
-  }
-});
-
+        type: 'inApp',
+        inAppSettings: {
+          frequency: 1,
+          capping: 1,
+          interval: 9999,
+          timeout: 5,
+          everyPage: false
+        }
+      });
     }
     setTimeout(() => {
       document.body.removeChild(overlay);
       done();
     }, 6500);
   }
+
+}).catch(() => {
+  document.getElementById('episode-view').innerHTML = `<div style="color:#fff;padding:30px;">Could not load episode info. Try again later.</div>`;
 });
