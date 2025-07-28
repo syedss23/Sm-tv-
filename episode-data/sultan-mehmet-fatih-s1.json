@@ -1,0 +1,9 @@
+[
+  {
+    "ep": 1,
+    "title": "Episode 1",
+    "thumb": "assets/posters/mehmet_fatih_e1.jpg",
+    "embed": "<iframe src='https://yourstreamingsite.com/embed/mehmet_fatih_e1' frameborder='0' allowfullscreen></iframe>",
+    "download": "https://terabox.com/mehmet-fatih-e1"
+  }
+]
