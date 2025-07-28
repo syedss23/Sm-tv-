@@ -1,0 +1,9 @@
+[
+  {
+    "ep": 1,
+    "title": "Episode 1",
+    "thumb": "assets/posters/haji_bayram_vali_e1.jpg",
+    "embed": "<iframe src='https://yourvideohost.com/embed/haji_bayram_vali_e1' frameborder='0' allowfullscreen></iframe>",
+    "download": "https://filehost.com/haji-bayram-vali-e1"
+  }
+]
