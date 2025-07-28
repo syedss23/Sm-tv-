@@ -1,0 +1,9 @@
+[
+  {
+    "ep": 1,
+    "title": "Episode 1",
+    "thumb": "assets/posters/rumi_e1.jpg",
+    "embed": "<iframe src='https://yourstreamingsite.com/embed/rumi_e1' frameborder='0' allowfullscreen></iframe>",
+    "download": "https://terabox.com/rumi-e1"
+  }
+]
