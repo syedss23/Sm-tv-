@@ -83,4 +83,16 @@
     },
     "seasons": 2
   }
+{
+  "id": 8,
+  "title": "Haji Bayram Vali",
+  "slug": "haji-bayram-vali",
+  "poster": "assets/posters/haji_bayram_vali.jpg",
+  "desc": {
+    "en": "Dramatic life and spiritual journey of Haji Bayram Veli.",
+    "hi": "हाजी बायराम वली का जीवन और आध्यात्मिक यात्रा।",
+    "ur": "حاجی بیرام ولی کی زندگی اور روحانی سفر۔"
+  },
+  "seasons": 1
+}
 ]
