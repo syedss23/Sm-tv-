@@ -1,0 +1,9 @@
+[
+  {
+    "ep": 1,
+    "title": "Episode 1",
+    "thumb": "assets/posters/alp_arslan_e1.jpg",
+    "embed": "<iframe src='https://yourstreamingsite.com/embed/alp_arslan_e1' frameborder='0' allowfullscreen></iframe>",
+    "download": "https://terabox.com/alp-arslan-e1"
+  }
+]
