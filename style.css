@@ -337,3 +337,65 @@ button:hover { background:#272838; }
   display: block;
   background: #000;
 }
+.pro-download-btn-polished {
+  display: block;
+  background: #198fff;
+  color: #fff;
+  border-radius: 7px;
+  text-align: center;
+  padding: 14px 0;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 1.03em;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: background 0.22s, box-shadow 0.22s;
+  box-shadow: 0 2px 8px #0001;
+}
+.pro-download-btn-polished[aria-disabled="true"],
+.pro-download-btn-polished:disabled {
+  pointer-events: none;
+  opacity: 0.7;
+  background: #666 !important;
+}
+
+.pro-download-btns-flex {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.pro-tutorial-btn {
+  display: block;
+  background: #234a63;
+  color: #fff !important;
+  padding: 12px 24px;
+  margin: 8px 0 0 0;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 1.03em;
+  transition: background 0.16s;
+}
+.pro-tutorial-btn:hover {
+  background: #195787;
+}
+
+.pro-premium-btn {
+  display: block;
+  background: #099c7d;
+  color: #fff !important;
+  padding: 13px 24px;
+  margin: 12px 0 0 0;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 1.12em;
+  letter-spacing: 0.01em;
+  transition: background 0.16s;
+}
+.pro-premium-btn:hover {
+  background: #07785e;
+}
