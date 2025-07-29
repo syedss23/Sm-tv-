@@ -9,7 +9,11 @@ function getEpisodeFile(slug, season) {
   return `episode-data/${slug}-s${season}.json`;
 }
 
-// Fetch series metadata (for title/poster), and season episodes
+// --- CHANGE THESE URLs if you ever need different links globally ---
+const HOW_TO_DOWNLOAD_URL = "https://t.me/howtodownloadd1/10";
+const PREMIUM_CHANNEL_URL = "https://t.me/itzmezain1/2905";
+
+// Fetch series metadata and season episodes
 Promise.all([
   fetch('series.json').then(r => r.json()),
   fetch(getEpisodeFile(slug, season)).then(r => r.ok ? r.json() : [])
@@ -52,7 +56,42 @@ Promise.all([
         <div class="pro-episode-embed-polished">
           ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'}
         </div>
-        <a class="pro-download-btn-polished" href="${ep.download || '#'}" download>🖇️ Download Episode</a>
+
+        <!-- Download Buttons -->
+        <div class="pro-download-btns-flex" style="margin:24px 0 8px 0;display:flex;gap:16px;flex-wrap:wrap;">
+          <a class="pro-download-btn-polished"
+             href="${ep.download || '#'}"
+             download
+             style="flex:1 1 180px;background:#198fff;"
+             ${ep.download ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>
+            🖇️ Download (Server 1)
+          </a>
+          <a class="pro-download-btn-polished"
+             href="${ep.download2 || '#'}"
+             download
+             style="flex:1 1 180px;background:#30c96b;"
+             ${ep.download2 ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>
+            🖇️ Download (Server 2)
+          </a>
+        </div>
+
+        <!-- How to Download Tutorial Button -->
+        <a class="pro-tutorial-btn"
+           href="${HOW_TO_DOWNLOAD_URL}"
+           target="_blank"
+           rel="noopener"
+           style="display:block;background:#234a63;color:#fff;padding:12px 28px;margin:8px 0 0 0;border-radius:8px;text-align:center;font-weight:600;text-decoration:none;font-size:1.03em;">
+          📕 How to Download (Tutorial)
+        </a>
+
+        <!-- Join Premium Channel Button -->
+        <a class="pro-premium-btn"
+           href="${PREMIUM_CHANNEL_URL}"
+           target="_blank"
+           rel="noopener"
+           style="display:block;background:#099c7d;color:#fff;padding:13px 28px;margin:12px 0 0 0;border-radius:8px;text-align:center;font-weight:600;font-size:1.11em;text-decoration:none;letter-spacing:0.01em;">
+          🌟 Join Premium Channel
+        </a>
       </div>
     `;
   }
@@ -60,6 +99,7 @@ Promise.all([
   const container = document.getElementById('episode-view') || document.body;
   container.innerHTML = `<div style="color:#fff;padding:30px;">Could not load episode info. Try again later.</div>`;
 });
+
 // --- Monetag ad overlay loader ---
 function showAdThen(done) {
   let overlay = document.createElement('div');
