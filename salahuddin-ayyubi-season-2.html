@@ -43,7 +43,6 @@
       <h2>Latest Updates</h2>
       <p>Watch new episodes of Sultan Salahuddin Ayyubi Season 2 in Urdu as soon as they release! Find trailers, cast information, and the latest news below.</p>
     </section>
-    <!-- Episode List Container (JS will auto-populate) -->
     <section>
       <h2>Episodes</h2>
       <div id="season-2-episodes"></div>
@@ -56,27 +55,5 @@
       <a href="series.html" class="button" style="padding:10px 18px;background:#2196f3;color:#fff;border-radius:5px;text-decoration:none;">Back to All Series</a>
     </div>
   </div>
-  <script>
-    // Sidebar toggle
-    document.addEventListener('DOMContentLoaded', function() {
-      var sbar = document.getElementById('sidebar');
-      if(document.getElementById('sidebarToggle')) 
-        document.getElementById('sidebarToggle').onclick = () => sbar.classList.toggle('open');
-      if(document.getElementById('sidebarClose'))
-        document.getElementById('sidebarClose').onclick = () => sbar.classList.remove('open');
-      // Load only Season 2 episodes (dynamic example)
-      // This assumes you have a function loadEpisodes(dataUrl, targetDivId)
-      if(window.loadEpisodes) {
-        loadEpisodes('episode-data/salahuddin-ayyubi-season-2.json', 'season-2-episodes');
-      } else {
-        // fallback: show static links
-        document.getElementById('season-2-episodes').innerHTML =
-          '<ul>' +
-          '<li><a href=\"salahuddin-ayyubi-s2e1.html\">Episode 1</a></li>' +
-          '<li><a href=\"salahuddin-ayyubi-s2e2.html\">Episode 2</a></li>' +
-          '</ul>';
-      }
-    });
-  </script>
 </body>
 </html>
