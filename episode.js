@@ -4,13 +4,20 @@ const season = params.get('season');
 const epNum = params.get('ep');
 const container = document.getElementById('episode-view') || document.body;
 
-if (!slug || !season || !epNum) {
-  container.innerHTML = `<div style="color:#fff;padding:30px;">Episode not found (missing series, season, or ep in URL)</div>`;
+if (!slug || !epNum) {
+  container.innerHTML = `<div style="color:#fff;padding:30px;">Episode not found (missing series or ep in URL)</div>`;
   throw new Error("Missing required param");
 }
 
-// This is the key line: use series-s{season}.json
-const jsonFile = `episode-data/${slug}-s${season}.json`;
+// Automatically select JSON file based on whether season is present
+let jsonFile, backUrl;
+if (season) {
+  jsonFile = `episode-data/${slug}-s${season}.json`;
+  backUrl = `series.html?series=${slug}&season=${season}`;
+} else {
+  jsonFile = `episode-data/${slug}.json`;
+  backUrl = `series.html?series=${slug}`;
+}
 
 const HOW_TO_DOWNLOAD_URL = "https://t.me/howtodownloadd1/10";
 const PREMIUM_CHANNEL_URL = "https://t.me/itzmezain1/2905";
@@ -20,7 +27,8 @@ Promise.all([
   fetch(jsonFile).then(r => r.ok ? r.json() : [])
 ]).then(([seriesList, episodesArray]) => {
   const meta = Array.isArray(seriesList) ? seriesList.find(s => s.slug === slug) : null;
-  // Only match by ep field!
+
+  // Only match by ep number
   const ep = Array.isArray(episodesArray)
     ? episodesArray.find(e => String(e.ep) === String(epNum))
     : null;
@@ -40,7 +48,7 @@ Promise.all([
     container.innerHTML = `
       <div class="pro-episode-view-polished">
         <div class="pro-episode-header-polished">
-          <a class="pro-back-btn-polished" href="${slug}-s${season}.html" title="Back">
+          <a class="pro-back-btn-polished" href="${backUrl}" title="Back">
             <svg width="23" height="23" viewBox="0 0 20 20" class="svg-arrow">
               <polyline points="12 4 6 10 12 16" fill="none" stroke="#23c6ed" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
@@ -97,7 +105,7 @@ Promise.all([
   container.innerHTML = `<div style="color:#fff;padding:30px;">Could not load episode info. Error: ${err.message}</div>`;
 });
 
-// --- Monetag ad overlay loader for optional pre-roll ad ---
+// --- Monetag ad overlay loader (ad code) ---
 function showAdThen(done) {
   let overlay = document.createElement('div');
   overlay.id = 'adBlockOverlay';
