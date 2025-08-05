@@ -1,44 +1,37 @@
-// --- episode.js ---
-// This script works if your JSON has an "ep" key for each episode object, and your URLs look like:
-// episode.html?series=salahuddin-ayyubi-s2&ep=1
-
 const params = new URLSearchParams(window.location.search);
-const epNum = params.get('ep');        // episode number as string/number
-let slug = params.get('series');       // series identifier, eg. 'salahuddin-ayyubi-s2'
-
+const epParam = params.get('ep');        // could be number or slug
+const slug = params.get('series');       // e.g. 'salahuddin-ayyubi-s2'
 const container = document.getElementById('episode-view') || document.body;
 
-// Ensure both series and ep are provided
-if (!slug || !epNum) {
-  container.innerHTML = `<div style="color:#fff;padding:30px;">Episode not found (URL missing series or ep parameters)</div>`;
-  throw new Error("Missing series or ep in URL");
+if (!slug || !epParam) {
+  container.innerHTML = `<div style="color:#fff;padding:30px;">Episode not found (missing series or ep in URL)</div>`;
+  throw new Error("Missing query param series or ep");
 }
 
-// File path: /episode-data/{series}.json
-function getEpisodeFile(slug) {
-  return `episode-data/${slug}.json`;
-}
-
+const jsonFile = `episode-data/${slug}.json`;
 const HOW_TO_DOWNLOAD_URL = "https://t.me/howtodownloadd1/10";
 const PREMIUM_CHANNEL_URL = "https://t.me/itzmezain1/2905";
 
-// Fetch series metadata and episode data
 Promise.all([
   fetch('series.json').then(r => r.ok ? r.json() : []),
-  fetch(getEpisodeFile(slug)).then(r => r.ok ? r.json() : [])
+  fetch(jsonFile).then(r => r.ok ? r.json() : [])
 ]).then(([seriesList, episodesArray]) => {
   const meta = Array.isArray(seriesList) ? seriesList.find(s => s.slug === slug) : null;
-  // Find episode by number only, not slug
-  const ep = Array.isArray(episodesArray)
-    ? episodesArray.find(e => String(e.ep) === String(epNum))
-    : null;
+  let ep = null;
+
+  // Try to find by ep as number or string, or by slug
+  if (/^\\d+$/.test(epParam)) {
+    ep = episodesArray.find(e => String(e.ep) === String(epParam));
+  }
+  if (!ep) {
+    ep = episodesArray.find(e => e.slug === epParam);
+  }
 
   if (!ep) {
-    container.innerHTML = `<div style="color:#fff;padding:30px;">Episode not found.</div>`;
+    container.innerHTML = `<div style="color:#fff;padding:30px;">Episode not found for ep param: <b>${epParam}</b></div>`;
     return;
   }
 
-  // Optional ad before rendering
   if (typeof showAdThen === "function") {
     showAdThen(renderEpisode);
   } else {
@@ -50,7 +43,9 @@ Promise.all([
       <div class="pro-episode-view-polished">
         <div class="pro-episode-header-polished">
           <a class="pro-back-btn-polished" href="${slug}.html" title="Back">
-            <svg width="23" height="23" viewBox="0 0 20 20" class="svg-arrow"><polyline points="12 4 6 10 12 16" fill="none" stroke="#23c6ed" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg width="23" height="23" viewBox="0 0 20 20" class="svg-arrow">
+              <polyline points="12 4 6 10 12 16" fill="none" stroke="#23c6ed" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
             Back
           </a>
           <div class="pro-header-title-wrap">
@@ -100,8 +95,8 @@ Promise.all([
       </div>
     `;
   }
-}).catch(() => {
-  container.innerHTML = `<div style="color:#fff;padding:30px;">Could not load episode info. Try again later.</div>`;
+}).catch(err => {
+  container.innerHTML = `<div style="color:#fff;padding:30px;">Could not load episode info. Error: ${err.message}</div>`;
 });
 
 // --- Monetag ad overlay loader for optional pre-roll ad ---
