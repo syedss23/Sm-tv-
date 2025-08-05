@@ -5,9 +5,10 @@ const slug = params.get('series');
 const season = params.get('season');
 const epNum = params.get('ep');
 
-// Helper: Get the JSON file for this show and season
+// Get the JSON file for this show and season
+// FIXED: remove -s${season}
 function getEpisodeFile(slug, season) {
-  return `episode-data/${slug}-s${season}.json`;
+  return `episode-data/${slug}.json`;
 }
 
 const HOW_TO_DOWNLOAD_URL = "https://t.me/howtodownloadd1/10";
