@@ -66,19 +66,16 @@ document.addEventListener('DOMContentLoaded', () => {
         epContainer.innerHTML = `<div style="color:#fff;padding:1.5em;">Episodes will appear here as soon as they release!</div>`;
         return;
       }
-      let listHTML = '<div class="episode-list">';
+      let listHTML = '<div class="pro-episodes-row-pro">';
       episodes.forEach(ep => {
         listHTML += `
-          <div class="episode-card">
-            <a href="episode.html?ep=${ep.slug}" class="episode-thumb-link">
-              <img src="${ep.thumb}" alt="${ep.title}" class="episode-thumb">
-            </a>
-            <div class="episode-meta">
-              <a href="episode.html?ep=${ep.slug}" class="episode-title">${ep.title ? ep.title : 'Episode ' + ep.ep}</a>
-              ${ep.description ? `<div class="episode-desc">${ep.description}</div>` : ''}
-              ${ep.download ? `<a class="download-link" href="${ep.download}" target="_blank">Download</a>` : ''}
+          <a class="pro-episode-card-pro" href="episode.html?ep=${ep.slug}">
+            <div class="pro-ep-thumb-wrap-pro">
+              <img src="${ep.thumb}" alt="${ep.title}" class="pro-ep-thumb-pro">
+              <span class="pro-ep-num-pro">EP ${ep.ep}</span>
             </div>
-          </div>
+            <div class="pro-ep-title-pro">${ep.title ? ep.title : 'Episode ' + ep.ep}</div>
+          </a>
         `;
       });
       listHTML += '</div>';
