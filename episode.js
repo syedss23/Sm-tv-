@@ -1,15 +1,15 @@
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('series');
 const season = params.get('season');
-const epNum = params.get('ep');
+const epParam = params.get('ep');
 const container = document.getElementById('episode-view') || document.body;
 
-if (!slug || !epNum) {
+if (!slug || !epParam) {
   container.innerHTML = `<div style="color:#fff;padding:30px;">Episode not found (missing series or ep in URL)</div>`;
   throw new Error("Missing required param");
 }
 
-// Automatically select JSON file based on whether season is present
+// Support both with and without season JSON structure
 let jsonFile, backUrl;
 if (season) {
   jsonFile = `episode-data/${slug}-s${season}.json`;
@@ -28,16 +28,21 @@ Promise.all([
 ]).then(([seriesList, episodesArray]) => {
   const meta = Array.isArray(seriesList) ? seriesList.find(s => s.slug === slug) : null;
 
-  // Only match by ep number
-  const ep = Array.isArray(episodesArray)
-    ? episodesArray.find(e => String(e.ep) === String(epNum))
-    : null;
+  let ep = null;
+  // Match by ep number OR slug (for the special Ayyubi file)
+  if (/^(\d+)$/.test(epParam)) {
+    ep = episodesArray.find(e => String(e.ep) === String(epParam));
+  }
+  if (!ep && episodesArray && episodesArray.length) {
+    ep = episodesArray.find(e => e.slug === epParam);
+  }
 
   if (!ep) {
-    container.innerHTML = `<div style="color:#fff;padding:30px;">Episode not found (ep=${epNum}) in ${jsonFile}</div>`;
+    container.innerHTML = `<div style="color:#fff;padding:30px;">Episode not found (ep=${epParam}) in ${jsonFile}</div>`;
     return;
   }
 
+  // Show ad if available
   if (typeof showAdThen === "function") {
     showAdThen(renderEpisode);
   } else {
@@ -105,7 +110,7 @@ Promise.all([
   container.innerHTML = `<div style="color:#fff;padding:30px;">Could not load episode info. Error: ${err.message}</div>`;
 });
 
-// --- Monetag ad overlay loader (ad code) ---
+// --- Monetag ad overlay loader for optional pre-roll ad ---
 function showAdThen(done) {
   let overlay = document.createElement('div');
   overlay.id = 'adBlockOverlay';
