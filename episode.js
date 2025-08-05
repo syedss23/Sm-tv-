@@ -1,37 +1,39 @@
+// --- episode.js ---
+// Usage: episode.html?series=salahuddin-ayyubi-s2&ep=1
+
 const params = new URLSearchParams(window.location.search);
-const epParam = params.get('ep');        // could be number or slug
-const slug = params.get('series');       // e.g. 'salahuddin-ayyubi-s2'
+const epNum = params.get('ep');         // episode number as string or number
+const slug = params.get('series');      // e.g. 'salahuddin-ayyubi-s2'
 const container = document.getElementById('episode-view') || document.body;
 
-if (!slug || !epParam) {
+if (!slug || !epNum) {
   container.innerHTML = `<div style="color:#fff;padding:30px;">Episode not found (missing series or ep in URL)</div>`;
-  throw new Error("Missing query param series or ep");
+  throw new Error("Missing series or ep in URL");
 }
 
-const jsonFile = `episode-data/${slug}.json`;
 const HOW_TO_DOWNLOAD_URL = "https://t.me/howtodownloadd1/10";
 const PREMIUM_CHANNEL_URL = "https://t.me/itzmezain1/2905";
 
+function getEpisodeFile(slug) {
+  return `episode-data/${slug}.json`;
+}
+
 Promise.all([
   fetch('series.json').then(r => r.ok ? r.json() : []),
-  fetch(jsonFile).then(r => r.ok ? r.json() : [])
+  fetch(getEpisodeFile(slug)).then(r => r.ok ? r.json() : [])
 ]).then(([seriesList, episodesArray]) => {
   const meta = Array.isArray(seriesList) ? seriesList.find(s => s.slug === slug) : null;
-  let ep = null;
-
-  // Try to find by ep as number or string, or by slug
-  if (/^\\d+$/.test(epParam)) {
-    ep = episodesArray.find(e => String(e.ep) === String(epParam));
-  }
-  if (!ep) {
-    ep = episodesArray.find(e => e.slug === epParam);
-  }
+  // Always match ONLY by ep number
+  const ep = Array.isArray(episodesArray)
+    ? episodesArray.find(e => String(e.ep) === String(epNum))
+    : null;
 
   if (!ep) {
-    container.innerHTML = `<div style="color:#fff;padding:30px;">Episode not found for ep param: <b>${epParam}</b></div>`;
+    container.innerHTML = `<div style="color:#fff;padding:30px;">Episode not found for episode number: <b>${epNum}</b></div>`;
     return;
   }
 
+  // Optionally show ad overlay before rendering
   if (typeof showAdThen === "function") {
     showAdThen(renderEpisode);
   } else {
