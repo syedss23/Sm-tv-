@@ -1,7 +1,6 @@
 [
   {
     "ep": 1,
-    "slug": "salahuddin-ayyubi-s2e1",
     "title": "Episode 1",
     "thumb": "assets/posters/salauddin_ayyubi_s2e1.jpg",
     "embed": "<iframe src='https://yourstreamingsite.com/embed/salauddin_ayyubi_s2e1' frameborder='0' allowfullscreen></iframe>",
@@ -9,7 +8,6 @@
   },
   {
     "ep": 2,
-    "slug": "salahuddin-ayyubi-s2e2",
     "title": "Episode 2",
     "thumb": "assets/posters/salauddin_ayyubi_s2e2.jpg",
     "embed": "<iframe src='https://yourstreamingsite.com/embed/salauddin_ayyubi_s2e2' frameborder='0' allowfullscreen></iframe>",
