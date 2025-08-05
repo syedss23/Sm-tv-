@@ -1,23 +1,16 @@
 const params = new URLSearchParams(window.location.search);
-const epParam = params.get('ep'); // example: "salahuddin-ayyubi-s2e1"
+const slug = params.get('series');
 const season = params.get('season');
+const epNum = params.get('ep');
 const container = document.getElementById('episode-view') || document.body;
 
-// AUTO-DETECT SERIES SLUG from epParam like "salahuddin-ayyubi-s2e1" or "alp-arslan-e1"
-let slug = null, jsonFile, backUrl;
-if (epParam) {
-  // Match "series-sX" or "series" with optional "-e" or "-sXe" at the end
-  let match = epParam.match(/^([a-z0-9-]+?)(?:-s(\d+))?e\d+$/i);
-  if (match) {
-    slug = match[1] + (match[2] ? ("-s" + match[2]) : "");
-  }
-}
-if (!epParam || !slug) {
-  container.innerHTML = `<div style="color:#fff;padding:30px;">Episode not found (cannot auto-detect series from ep param)</div>`;
-  throw new Error("Missing or invalid ep param");
+if (!slug || !epNum) {
+  container.innerHTML = `<div style="color:#fff;padding:30px;">Episode not found (missing series or ep in URL)</div>`;
+  throw new Error("Missing required param");
 }
 
-// Choose correct JSON filename (with or without -s{season})
+// Decide JSON file path, support with or without season
+let jsonFile, backUrl;
 if (season) {
   jsonFile = `episode-data/${slug}-s${season}.json`;
   backUrl = `series.html?series=${slug}&season=${season}`;
@@ -35,22 +28,13 @@ Promise.all([
 ]).then(([seriesList, episodesArray]) => {
   const meta = Array.isArray(seriesList) ? seriesList.find(s => s.slug === slug) : null;
 
-  // Match by ep number or slug
-  let ep = episodesArray.find(e => e.slug === epParam);
-  if (!ep && /^\d+$/.test(epParam)) {
-    ep = episodesArray.find(e => String(e.ep) === epParam);
-  }
-  // Also allow for "e1", "e2" at the end (fallback)
-  if (!ep && epParam && episodesArray[0]?.slug) {
-    const simpleSlug = epParam.replace(/-s\d+e(\d+)$/, (m, n) => `e${n}`);
-    ep = episodesArray.find(e => e.slug === simpleSlug);
-  }
-  if (!ep && /^\d+$/.test(epParam)) {
-    ep = episodesArray.find(e => String(e.ep) === epParam);
-  }
+  // Only match by "ep" number
+  const ep = Array.isArray(episodesArray)
+    ? episodesArray.find(e => String(e.ep) === String(epNum))
+    : null;
 
   if (!ep) {
-    container.innerHTML = `<div style="color:#fff;padding:30px;">Episode not found (ep=${epParam}) in ${jsonFile}</div>`;
+    container.innerHTML = `<div style="color:#fff;padding:30px;">Episode not found (ep=${epNum}) in ${jsonFile}</div>`;
     return;
   }
 
