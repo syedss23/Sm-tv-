@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ---- SEASON PAGE (Like salahuddin-ayyubi-season-2.html) ----
   if (document.getElementById('season-2-episodes')) {
-    fetch('episode-data/salahuddin-ayyubi-season-2.json')
+    fetch('episode-data/salauddin-ayyubi-s2.json')
       .then(resp => resp.json())
       .then(episodes => renderEpisodes(episodes));
 
