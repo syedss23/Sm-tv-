@@ -8,18 +8,22 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('sidebarClose').onclick = () => sbar.classList.remove('open');
   }
 
-  // Helper to get current filename
-  function getPageFilename() {
-    return location.pathname.split('/').pop();
-  }
-
   // ---- SERIES LIST PAGE ----
   if (document.getElementById('spa-series-list')) {
     let seriesList = [];
-    fetch('series.json').then(r => r.json()).then(data => {
-      seriesList = data;
-      renderSeriesList('');
-    });
+    fetch('series.json')
+      .then(r => {
+        if (!r.ok) throw new Error('Series JSON not found. Check /series.json');
+        return r.json();
+      })
+      .then(data => {
+        seriesList = data;
+        renderSeriesList('');
+      })
+      .catch(err => {
+        let gridContainer = document.getElementById('spa-series-list');
+        gridContainer.innerHTML = `<div style="color:#f44;padding:1.2em;">Error: ${err.message}</div>`;
+      });
 
     if (document.getElementById('seriesSearch')) {
       document.getElementById('seriesSearch').addEventListener('input', e => {
@@ -54,16 +58,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ---- SEASON PAGE (Like salahuddin-ayyubi-season-2.html) ----
+  // ---- SEASON PAGE (For salauddin-ayyubi-s2) ----
   if (document.getElementById('season-2-episodes')) {
     fetch('episode-data/salauddin-ayyubi-s2.json')
-      .then(resp => resp.json())
-      .then(episodes => renderEpisodes(episodes));
+      .then(resp => {
+        if (!resp.ok) throw new Error('Season JSON not found. Check episode-data/salauddin-ayyubi-s2.json');
+        return resp.json();
+      })
+      .then(episodes => renderEpisodes(episodes))
+      .catch(err => {
+        document.getElementById('season-2-episodes').innerHTML =
+          `<div style="color:#f44;padding:1.2em;">Error: ${err.message}</div>`;
+      });
 
     function renderEpisodes(episodes) {
       let epContainer = document.getElementById('season-2-episodes');
       if (!episodes || !episodes.length) {
-        epContainer.innerHTML = `<div style="color:#fff;padding:1.5em;">Episodes will appear here as soon as they release!</div>`;
+        epContainer.innerHTML =
+          `<div style="color:#fff;padding:1.5em;">Episodes will appear here as soon as they release!</div>`;
         return;
       }
       let listHTML = '<div class="pro-episodes-row-pro">';
