@@ -1,25 +1,25 @@
 // --- episode.js ---
+
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('series');
 const season = params.get('season');
 const epNum = params.get('ep');
 
-// Utility to get the correct season-episode JSON file
+// Helper: Get the JSON file for this show and season
 function getEpisodeFile(slug, season) {
   return `episode-data/${slug}-s${season}.json`;
 }
 
-// --- CHANGE THESE URLs if you ever need different links globally ---
 const HOW_TO_DOWNLOAD_URL = "https://t.me/howtodownloadd1/10";
 const PREMIUM_CHANNEL_URL = "https://t.me/itzmezain1/2905";
 
-// Fetch series metadata and season episodes
+// Fetch series metadata and current season's episode data
 Promise.all([
-  fetch('series.json').then(r => r.json()),
+  fetch('series.json').then(r => r.ok ? r.json() : []),
   fetch(getEpisodeFile(slug, season)).then(r => r.ok ? r.json() : [])
 ]).then(([seriesList, episodesArray]) => {
-  const meta = seriesList.find(s => s.slug === slug);
-  const ep = episodesArray.find(e => String(e.ep) === String(epNum));
+  const meta = Array.isArray(seriesList) ? seriesList.find(s => s.slug === slug) : null;
+  const ep = Array.isArray(episodesArray) ? episodesArray.find(e => String(e.ep) === String(epNum)) : null;
   const container = document.getElementById('episode-view') || document.body;
 
   if (!meta || !ep) {
@@ -27,7 +27,7 @@ Promise.all([
     return;
   }
 
-  // Show Monetag ad before rendering stream, or just render if not present
+  // Optionally show ad overlay before rendering
   if (typeof showAdThen === "function") {
     showAdThen(renderEpisode);
   } else {
@@ -38,13 +38,13 @@ Promise.all([
     container.innerHTML = `
       <div class="pro-episode-view-polished">
         <div class="pro-episode-header-polished">
-          <a class="pro-back-btn-polished" href="series.html?series=${slug}" title="Back">
+          <a class="pro-back-btn-polished" href="salahuddin-ayyubi-s2.html" title="Back">
             <svg width="23" height="23" viewBox="0 0 20 20" class="svg-arrow"><polyline points="12 4 6 10 12 16" fill="none" stroke="#23c6ed" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Back
           </a>
           <div class="pro-header-title-wrap">
-            <span class="pro-series-bigname">${meta ? meta.title : ''}</span>
-            <span class="pro-ep-strong-title">${ep.title ? ep.title : `Episode ${ep.ep}`}</span>
+            <span class="pro-series-bigname">${meta.title || ''}</span>
+            <span class="pro-ep-strong-title">${ep.title || `Episode ${ep.ep}`}</span>
           </div>
         </div>
         <div class="fullscreen-alert-msg" style="background:#162632;padding:16px 16px 14px 16px;border-radius:10px;color:#23c6ed;font-size:1.05em;margin:16px 0 24px 0;">
@@ -56,8 +56,6 @@ Promise.all([
         <div class="pro-episode-embed-polished">
           ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'}
         </div>
-
-        <!-- Download Buttons -->
         <div class="pro-download-btns-flex" style="margin:24px 0 8px 0;display:flex;gap:16px;flex-wrap:wrap;">
           <a class="pro-download-btn-polished"
              href="${ep.download || '#'}"
@@ -74,8 +72,6 @@ Promise.all([
             🖇️ Download (Server 2)
           </a>
         </div>
-
-        <!-- How to Download Tutorial Button -->
         <a class="pro-tutorial-btn"
            href="${HOW_TO_DOWNLOAD_URL}"
            target="_blank"
@@ -83,8 +79,6 @@ Promise.all([
            style="display:block;background:#234a63;color:#fff;padding:12px 28px;margin:8px 0 0 0;border-radius:8px;text-align:center;font-weight:600;text-decoration:none;font-size:1.03em;">
           📕 How to Download (Tutorial)
         </a>
-
-        <!-- Join Premium Channel Button -->
         <a class="pro-premium-btn"
            href="${PREMIUM_CHANNEL_URL}"
            target="_blank"
@@ -100,7 +94,7 @@ Promise.all([
   container.innerHTML = `<div style="color:#fff;padding:30px;">Could not load episode info. Try again later.</div>`;
 });
 
-// --- Monetag ad overlay loader ---
+// --- Monetag ad overlay loader for optional pre-roll ad ---
 function showAdThen(done) {
   let overlay = document.createElement('div');
   overlay.id = 'adBlockOverlay';
