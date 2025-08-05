@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Sidebar toggle logic (for mobile)
+  // Sidebar logic
   const sbar = document.getElementById('sidebar');
   if (document.getElementById('sidebarToggle')) {
     document.getElementById('sidebarToggle').onclick = () => sbar.classList.toggle('open');
@@ -8,12 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('sidebarClose').onclick = () => sbar.classList.remove('open');
   }
 
-  // Helper: get page name
+  // Helper to get current filename
   function getPageFilename() {
     return location.pathname.split('/').pop();
   }
 
-  // If on SERIES LIST page (index.html, series.html), show series grid
+  // ---- SERIES LIST PAGE ----
   if (document.getElementById('spa-series-list')) {
     let seriesList = [];
     fetch('series.json').then(r => r.json()).then(data => {
@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
       renderSeriesList('');
     });
 
-    // Search bar handler
     if (document.getElementById('seriesSearch')) {
       document.getElementById('seriesSearch').addEventListener('input', e => {
         renderSeriesList(e.target.value.trim());
@@ -55,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // If on a dedicated SEASON page (e.g., salahuddin-ayyubi-season-2.html), auto-populate episodes
+  // ---- SEASON PAGE (Like salahuddin-ayyubi-season-2.html) ----
   if (document.getElementById('season-2-episodes')) {
     fetch('episode-data/salahuddin-ayyubi-season-2.json')
       .then(resp => resp.json())
@@ -71,10 +70,16 @@ document.addEventListener('DOMContentLoaded', () => {
       episodes.forEach(ep => {
         listHTML += `
           <div class="episode-card">
-            <h3>${ep.title ? ep.title : 'Episode ' + ep.ep}</h3>
-            ${ep.embed ? `<div class="video-embed">${ep.embed}</div>` : ''}
-            ${ep.download ? `<a class="download-link" href="${ep.download}" target="_blank">Download</a>` : ''}
-          </div>`;
+            <a href="episode.html?ep=${ep.slug}" class="episode-thumb-link">
+              <img src="${ep.thumb}" alt="${ep.title}" class="episode-thumb">
+            </a>
+            <div class="episode-meta">
+              <a href="episode.html?ep=${ep.slug}" class="episode-title">${ep.title ? ep.title : 'Episode ' + ep.ep}</a>
+              ${ep.description ? `<div class="episode-desc">${ep.description}</div>` : ''}
+              ${ep.download ? `<a class="download-link" href="${ep.download}" target="_blank">Download</a>` : ''}
+            </div>
+          </div>
+        `;
       });
       listHTML += '</div>';
       epContainer.innerHTML = listHTML;
