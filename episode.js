@@ -1,45 +1,44 @@
 // --- episode.js ---
+// This script works if your JSON has an "ep" key for each episode object, and your URLs look like:
+// episode.html?series=salahuddin-ayyubi-s2&ep=1
+
 const params = new URLSearchParams(window.location.search);
-const epSlug = params.get('ep');
-let slug = params.get('series');    // e.g. 'salahuddin-ayyubi-s2'
+const epNum = params.get('ep');        // episode number as string/number
+let slug = params.get('series');       // series identifier, eg. 'salahuddin-ayyubi-s2'
 
-// Helper: If no series param, guess from epSlug (e.g. 'salahuddin-ayyubi-s2e1' => 'salahuddin-ayyubi-s2')
-if (!slug && epSlug) {
-  const match = epSlug.match(/^(.*?)-s\d+e\d+$/i);
-  if (match && match[1]) {
-    slug = match[1];
-  }
-}
-
-// If still no slug or epSlug, show error and stop
 const container = document.getElementById('episode-view') || document.body;
-if (!epSlug || !slug) {
-  container.innerHTML = `<div style="color:#fff;padding:30px;">Episode not found (missing parameters).</div>`;
-  throw new Error("Missing ep or series param in URL");
+
+// Ensure both series and ep are provided
+if (!slug || !epNum) {
+  container.innerHTML = `<div style="color:#fff;padding:30px;">Episode not found (URL missing series or ep parameters)</div>`;
+  throw new Error("Missing series or ep in URL");
 }
 
-// Fetch metadata (series.json) then the episode JSON for that show
-const HOW_TO_DOWNLOAD_URL = "https://t.me/howtodownloadd1/10";
-const PREMIUM_CHANNEL_URL = "https://t.me/itzmezain1/2905";
-
+// File path: /episode-data/{series}.json
 function getEpisodeFile(slug) {
   return `episode-data/${slug}.json`;
 }
 
+const HOW_TO_DOWNLOAD_URL = "https://t.me/howtodownloadd1/10";
+const PREMIUM_CHANNEL_URL = "https://t.me/itzmezain1/2905";
+
+// Fetch series metadata and episode data
 Promise.all([
   fetch('series.json').then(r => r.ok ? r.json() : []),
   fetch(getEpisodeFile(slug)).then(r => r.ok ? r.json() : [])
 ]).then(([seriesList, episodesArray]) => {
   const meta = Array.isArray(seriesList) ? seriesList.find(s => s.slug === slug) : null;
-  // Find by slug, always
-  const ep = Array.isArray(episodesArray) ? episodesArray.find(e => e.slug === epSlug) : null;
+  // Find episode by number only, not slug
+  const ep = Array.isArray(episodesArray)
+    ? episodesArray.find(e => String(e.ep) === String(epNum))
+    : null;
 
   if (!ep) {
     container.innerHTML = `<div style="color:#fff;padding:30px;">Episode not found.</div>`;
     return;
   }
 
-  // Optionally show ad overlay before rendering
+  // Optional ad before rendering
   if (typeof showAdThen === "function") {
     showAdThen(renderEpisode);
   } else {
@@ -55,8 +54,8 @@ Promise.all([
             Back
           </a>
           <div class="pro-header-title-wrap">
-            <span class="pro-series-bigname">${meta ? meta.title : ''}</span>
-            <span class="pro-ep-strong-title">${ep.title || 'Episode'}</span>
+            <span class="pro-series-bigname">${meta ? meta.title : slug.replace(/-/g, " ").toUpperCase()}</span>
+            <span class="pro-ep-strong-title">${ep.title || `Episode ${ep.ep}`}</span>
           </div>
         </div>
         <div class="fullscreen-alert-msg" style="background:#162632;padding:16px 16px 14px 16px;border-radius:10px;color:#23c6ed;font-size:1.05em;margin:16px 0 24px 0;">
