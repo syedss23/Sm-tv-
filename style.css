@@ -19,7 +19,12 @@ header { padding: 20px 10px 8px 10px; border-bottom: 1px solid #292a2f; position
 .sidebar nav a { color: #fff; text-decoration: none; display: block; padding: 10px 0;}
 .sidebar nav .lang-label { margin-top: 20px; color: #aaa; font-size:0.95em;}
 .sidebar nav select { width: 100%; padding: 6px 0 6px 6px; border-radius: 6px; }
-@media (min-width: 701px) { #main-content { margin-left: 240px; } .sidebar { transform: translateX(0);} .sidebar-close-btn { display: none;} }
+/* FIXED: Removed hiding of close button on desktop! */
+@media (min-width: 701px) {
+  #main-content { margin-left: 240px; }
+  .sidebar { transform: translateX(0);}
+  /* .sidebar-close-btn { display: none;}  <-- removed this line */
+}
 @media (max-width: 700px) { #main-content { margin-left: 0;} .sidebar { width: 90vw;} }
 .ad-space { margin: 24px 0 10px 0; text-align: center; min-height: 60px; background: #191a23; border-radius: 10px; }
 
