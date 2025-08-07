@@ -94,5 +94,17 @@
       "ur": "حاجی بیرام ولی کی زندگی اور روحانی سفر۔"
     },
     "seasons": 1
+  },
+  {
+    "id": 9,  
+    "title": "Destan",
+    "slug": "destan",
+    "poster": "assets/posters/destan.jpg",
+    "desc": {
+      "en": "Epic saga of Akkiz and Batuga in the Turkish steppes. Urdu dubbed episodes.",
+      "hi": "तुर्की मरुस्थल में अक्किज़ और बातूगा की ऐतिहासिक गाथा। उर्दू डब्ड।",
+      "ur": "ترکی کے میدانوں میں اککز اور باتوگا کی شاندار داستان۔ اردو ڈبbed."
   }
+  }
+  
 ]
