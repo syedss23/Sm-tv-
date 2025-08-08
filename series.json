@@ -84,7 +84,7 @@
     "seasons": 2
   },
   {
-    "id": 8,
+    "id": 10,
     "title": "Haji Bayram Vali",
     "slug": "haji-bayram-vali",
     "poster": "assets/posters/haji_bayram_vali.jpg",
@@ -108,7 +108,7 @@
     "seasons": 1
   },
   {
-  "id": 10,
+  "id": 8,
   "title": "Barbaros Hayreddin",
   "slug": "barbaros-hayreddin",
   "poster": "assets/posters/barbaros_hayreddin.jpg",
