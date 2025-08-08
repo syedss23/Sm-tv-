@@ -106,5 +106,17 @@
       "ur": "ترکی کے میدانوں میں اککز اور باتوگا کی شاندار داستان۔ اردو ڈبbed."
     },
     "seasons": 1
+  },
+  {
+  "id": 10,
+  "title": "Barbaros Hayreddin",
+  "slug": "barbaros-hayreddin",
+  "poster": "assets/posters/barbaros_hayreddin.jpg",
+  "desc": {
+    "en": "Legend of Barbaros Hayreddin, the Ottoman admiral. Urdu dubbed Turkish series.",
+    "hi": "बारबरोस हैरेद्दीन – उस्मानिया एडमिरल की महागाथा। तुर्की सीरीज, उर्दू डब्ड।",
+    "ur": "باربروس ہےریددین، عثمانی بحری ایڈمرل کی شاندار کہانی۔ اردو ڈبbed ترکش سیریز."
+  },
+    "seasons": 1
   }
 ]
