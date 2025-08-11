@@ -76,13 +76,12 @@ Promise.all([
              ${ep.download ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>
             🖇️ Download (Server 1)
           </a>
-          <a class="pro-download-btn-polished"
-             href="${ep.download2 || '#'}"
-             download
-             style="flex:1 1 180px;background:#30c96b;"
-             ${ep.download2 ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>
+          <button class="pro-download-btn-polished"
+                  id="download2Btn"
+                  style="flex:1 1 180px;background:#30c96b;"
+                  ${ep.download2 ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>
             🖇️ Download (Server 2)
-          </a>
+          </button>
         </div>
         <a class="pro-tutorial-btn"
            href="${HOW_TO_DOWNLOAD_URL}"
@@ -100,6 +99,24 @@ Promise.all([
         </a>
       </div>
     `;
+
+    // --------- Download 2 Ad & Redirect Handler (Only Server 2 button) ---------
+    const download2Btn = document.getElementById('download2Btn');
+    if (download2Btn && ep.download2) {
+      download2Btn.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // Show Monetag rewarded interstitial, then redirect:
+        show_9623557().then(() => {
+          // After ad has been watched
+          window.location.href = ep.download2;
+        }).catch(() => {
+          // Ad failed to load or show
+          alert('Ad could not be loaded. Please try again.');
+        });
+      });
+    }
+    // --------------------------------------------------------------------------
   }
 }).catch(err => {
   container.innerHTML = `<div style="color:#fff;padding:30px;">Could not load episode info. Error: ${err.message}</div>`;
