@@ -12,6 +12,17 @@ fetch('series.json')
       return;
     }
 
+    // ----------- SEO: SET DYNAMIC TITLE & DESCRIPTION -----------
+    document.title = meta.title + " – SmTv Urdu";
+    const metaDescTag = document.querySelector('meta[name="description"]');
+    if (metaDescTag) {
+      metaDescTag.setAttribute(
+        'content',
+        `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`
+      );
+    }
+    // -----------------------------------------------------------
+
     // --- Modern header with poster, back, desc ---
     let html = `
       <section class="pro-series-header-pro">
