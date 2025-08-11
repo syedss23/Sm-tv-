@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SM-TV – Series Details</title>
+  <title>SmTv Urdu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Watch Turkish drama series and historical shows in Urdu on SmTv Urdu. All series details and streaming links.">
   <link rel="stylesheet" href="style.css">
   <script defer src="series.js"></script>
 </head>
@@ -39,5 +40,25 @@
     
     <div id="series-details"></div>
   </div>
+
+  <!-- Inline JS to dynamically update <title> and meta description -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const params = new URLSearchParams(window.location.search);
+      const slug = params.get('series');
+      fetch('series.json').then(res => res.json()).then(seriesArr => {
+        const meta = Array.isArray(seriesArr) ? seriesArr.find(s => s.slug === slug) : null;
+        if (meta && meta.title) {
+          // Format: Series Name – SmTv Urdu
+          document.title = `${meta.title} – SmTv Urdu`;
+          // Format meta description for SEO
+          const metaDesc = document.querySelector('meta[name="description"]');
+          if (metaDesc) {
+            metaDesc.setAttribute('content', `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`);
+          }
+        }
+      });
+    });
+  </script>
 </body>
 </html>
