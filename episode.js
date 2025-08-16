@@ -108,10 +108,8 @@ Promise.all([
 
         // Show Monetag rewarded interstitial, then redirect:
         show_9623557().then(() => {
-          // After ad has been watched
           window.location.href = ep.download2;
         }).catch(() => {
-          // Ad failed to load or show
           alert('Ad could not be loaded. Please try again.');
         });
       });
@@ -122,28 +120,42 @@ Promise.all([
   container.innerHTML = `<div style="color:#fff;padding:30px;">Could not load episode info. Error: ${err.message}</div>`;
 });
 
-// --- Monetag ad overlay loader for optional pre-roll ad ---
+// --- Monetag ad overlay loader for main episode load ---
+
 function showAdThen(done) {
+  // Show overlay
   let overlay = document.createElement('div');
   overlay.id = 'adBlockOverlay';
   overlay.style = 'position:fixed;z-index:99999;top:0;left:0;width:100vw;height:100vh;background:#111c;padding:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2em;';
   overlay.innerHTML = '<div><b>Loading Ad...</b></div>';
   document.body.appendChild(overlay);
 
-  if (typeof show_9623557 === "function") {
-    show_9623557({
-      type: 'inApp',
-      inAppSettings: {
-        frequency: 1,
-        capping: 1,
-        interval: 9999,
-        timeout: 5,
-        everyPage: false
-      }
+  // Show interstitial ad first, then popup ad
+  let adPromise = typeof show_9623557 === "function"
+    ? show_9623557({
+        type: 'inApp',
+        inAppSettings: {
+          frequency: 1,
+          capping: 1,
+          interval: 9999,
+          timeout: 5,
+          everyPage: false
+        }
+      })
+    : Promise.resolve();
+
+  adPromise
+    .then(() => {
+      return typeof show_9623557 === "function"
+        ? show_9623557('pop')
+        : Promise.resolve();
+    })
+    .then(() => {
+      document.body.removeChild(overlay);
+      done();
+    })
+    .catch(() => {
+      document.body.removeChild(overlay);
+      done();
     });
-  }
-  setTimeout(() => {
-    document.body.removeChild(overlay);
-    done();
-  }, 6500);
 }
