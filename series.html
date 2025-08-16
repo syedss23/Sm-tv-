@@ -19,7 +19,7 @@
       <script type="text/javascript">
         atOptions = {
           'key' : 'c91a82435d260630918ecc80c95125ac',
-          'format' : 'iframe', // Change to 'native' or 'push' for Native Banner or In-Page Push
+          'format' : 'iframe',
           'height' : 50,
           'width' : 320,
           'params' : {}
@@ -28,9 +28,21 @@
       <script type="text/javascript" src="//www.highperformanceformat.com/c91a82435d260630918ecc80c95125ac/invoke.js"></script>
     </div>
     
-    <!-- Vignette Banner Ad REMOVED! -->
-    
     <div id="series-details"></div>
+    
+    <!-- In-Page Push (Banner) Ad Below Episode Card -->
+    <div class="ad-space" id="belowSeriesCardPushAd">
+      <script data-cfasync="false" type="text/javascript">
+        atOptions = {
+          'key': 'YOUR_INPAGE_PUSH_ZONE_KEY', // Replace with your real Monetag code
+          'format': 'push',
+          'height': 50,
+          'width': 320,
+          'params': {}
+        };
+      </script>
+      <script type="text/javascript" src="//www.highperformanceformat.com/YOUR_INPAGE_PUSH_ZONE_KEY/invoke.js"></script>
+    </div>
   </div>
 
   <!-- Inline JS to dynamically update <title> and meta description -->
@@ -41,9 +53,7 @@
       fetch('series.json').then(res => res.json()).then(seriesArr => {
         const meta = Array.isArray(seriesArr) ? seriesArr.find(s => s.slug === slug) : null;
         if (meta && meta.title) {
-          // Format: Series Name – SmTv Urdu
           document.title = `${meta.title} – SmTv Urdu`;
-          // Format meta description for SEO
           const metaDesc = document.querySelector('meta[name="description"]');
           if (metaDesc) {
             metaDesc.setAttribute('content', `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`);
