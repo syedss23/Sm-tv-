@@ -38,12 +38,8 @@ Promise.all([
     return;
   }
 
-  // Show Monetag overlay loader, then reveal main episode
-  if (typeof showAdThen === "function") {
-    showAdThen(renderEpisode);
-  } else {
-    renderEpisode();
-  }
+  // Show Monetag rewarded interstitial before loading episode page
+  showRewardedAdThen(renderEpisode);
 
   function renderEpisode() {
     container.innerHTML = `
@@ -101,12 +97,11 @@ Promise.all([
       </div>
     `;
 
-    // Download 2 Ad & Redirect Handler (shows Monetag rewarded ad before redirect)
+    // Monetag ad for Download 2
     const download2Btn = document.getElementById('download2Btn');
     if (download2Btn && ep.download2) {
       download2Btn.addEventListener('click', function(e) {
         e.preventDefault();
-
         if (typeof show_9623557 === "function") {
           show_9623557().then(() => {
             window.location.href = ep.download2;
@@ -123,35 +118,16 @@ Promise.all([
   container.innerHTML = `<div style="color:#fff;padding:30px;">Could not load episode info. Error: ${err.message}</div>`;
 });
 
-// --- Monetag in-app interstitial for episode load ---
-function showAdThen(done) {
-  let overlay = document.createElement('div');
-  overlay.id = 'adBlockOverlay';
-  overlay.style = 'position:fixed;z-index:99999;top:0;left:0;width:100vw;height:100vh;background:#111c;padding:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2em;';
-  overlay.innerHTML = '<div><b>Loading Ad...</b></div>';
-  document.body.appendChild(overlay);
-
-  // Monetag Interstitial: show max 2 ads in 6min, 5s delay, 30s interval, session saved
-  let adPromise = typeof show_9623557 === "function"
-    ? show_9623557({
-        type: 'inApp',
-        inAppSettings: {
-          frequency: 2,
-          capping: 0.1,
-          interval: 30,
-          timeout: 5,
-          everyPage: false
-        }
-      })
-    : Promise.resolve();
-
-  adPromise
-    .then(() => {
-      document.body.removeChild(overlay);
+// --- Monetag Rewarded Interstitial (user gets episode page as reward) ---
+function showRewardedAdThen(done) {
+  if (typeof show_9623557 === "function") {
+    show_9623557().then(() => {
+      // Reward: show the episode page!
       done();
-    })
-    .catch(() => {
-      document.body.removeChild(overlay);
+    }).catch(() => {
       done();
     });
+  } else {
+    done();
+  }
 }
