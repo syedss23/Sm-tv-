@@ -38,6 +38,7 @@ Promise.all([
     return;
   }
 
+  // Show Monetag overlay loader, then reveal main episode
   if (typeof showAdThen === "function") {
     showAdThen(renderEpisode);
   } else {
@@ -100,44 +101,44 @@ Promise.all([
       </div>
     `;
 
-    // --------- Download 2 Ad & Redirect Handler (Only Server 2 button) ---------
+    // Download 2 Ad & Redirect Handler (shows Monetag rewarded ad before redirect)
     const download2Btn = document.getElementById('download2Btn');
     if (download2Btn && ep.download2) {
       download2Btn.addEventListener('click', function(e) {
         e.preventDefault();
 
-        // Show Monetag rewarded interstitial, then redirect:
-        show_9623557().then(() => {
+        if (typeof show_9623557 === "function") {
+          show_9623557().then(() => {
+            window.location.href = ep.download2;
+          }).catch(() => {
+            alert('Ad could not be loaded. Please try again.');
+          });
+        } else {
           window.location.href = ep.download2;
-        }).catch(() => {
-          alert('Ad could not be loaded. Please try again.');
-        });
+        }
       });
     }
-    // --------------------------------------------------------------------------
   }
 }).catch(err => {
   container.innerHTML = `<div style="color:#fff;padding:30px;">Could not load episode info. Error: ${err.message}</div>`;
 });
 
-// --- Monetag ad overlay loader for main episode load ---
-
+// --- Monetag in-app interstitial for episode load ---
 function showAdThen(done) {
-  // Show overlay
   let overlay = document.createElement('div');
   overlay.id = 'adBlockOverlay';
   overlay.style = 'position:fixed;z-index:99999;top:0;left:0;width:100vw;height:100vh;background:#111c;padding:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2em;';
   overlay.innerHTML = '<div><b>Loading Ad...</b></div>';
   document.body.appendChild(overlay);
 
-  // Show interstitial ad first, then popup ad
+  // Monetag Interstitial: show max 2 ads in 6min, 5s delay, 30s interval, session saved
   let adPromise = typeof show_9623557 === "function"
     ? show_9623557({
         type: 'inApp',
         inAppSettings: {
-          frequency: 1,
-          capping: 1,
-          interval: 9999,
+          frequency: 2,
+          capping: 0.1,
+          interval: 30,
           timeout: 5,
           everyPage: false
         }
@@ -145,11 +146,6 @@ function showAdThen(done) {
     : Promise.resolve();
 
   adPromise
-    .then(() => {
-      return typeof show_9623557 === "function"
-        ? show_9623557('pop')
-        : Promise.resolve();
-    })
     .then(() => {
       document.body.removeChild(overlay);
       done();
