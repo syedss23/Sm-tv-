@@ -49,26 +49,29 @@
     });
   </script>
 
-  <!-- Stylish WhatsApp Update Popup Notification -->
+  <!-- Centered WhatsApp Update Popup Notification -->
   <div id="whatsappPopup"
-       style="display:none; position:fixed; bottom:38px; right:38px; z-index:99999; max-width:340px; box-shadow:0 8px 24px rgba(15,18,30,.13); border-radius:16px; background:#232936; color:#fff; padding:28px 28px 20px 28px; font-size:1.09em; text-align:left; font-family: 'Segoe UI', Arial, sans-serif;">
+       style="display:none; position:fixed; top:50%; left:50%; z-index:99999; transform:translate(-50%, -50%); max-width:340px; width:90vw; box-shadow:0 8px 24px rgba(15,18,30,.13); border-radius:16px; background:#232936; color:#fff; padding:28px 28px 22px 28px; font-size:1.09em; text-align:left; font-family: 'Segoe UI', Arial, sans-serif;">
     <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
       <img src="https://static.whatsapp.net/rsrc.php/v3/yf/r/CWXxhVnCnRr.png" alt="WhatsApp" style="width:32px; height:32px;">
       <span style="font-weight:700; font-size:1.16em;">Stay Updated!</span>
     </div>
     <div style="margin-bottom:15px; color:#f1f1f1;">Get instant notifications for new episodes and exclusive news. Join our WhatsApp Channel now.</div>
     <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k" target="_blank"
-       style="display:inline-block; background:#29a345; color:#fff; font-weight:600; border-radius:9px; padding:10px 22px; text-decoration:none; font-size:1em; box-shadow:0 2px 8px rgba(40,52,70,.09); transition:background 0.2s;">
+       style="display:inline-block; background:#29a345; color:#fff; font-weight:600; border-radius:9px; padding:10px 22px; text-decoration:none; font-size:1em; box-shadow:0 2px 8px rgba(40,52,70,.09); margin-bottom:14px; transition:background 0.2s;">
       🟢 Join on WhatsApp
     </a>
+    <br>
     <button id="closeWhatsAppPopup"
-            style="background:none; border:none; color:#ccc; font-weight:600; font-size:1.04em; margin-top:14px; cursor:pointer; float:right;">✖ Close</button>
+            style="background:none; border:none; color:#ccc; font-weight:600; font-size:1.08em; margin-top:6px; cursor:pointer; display:block; margin-left:auto; margin-right:auto;">
+      ✖ Close
+    </button>
   </div>
   <script>
     window.addEventListener('DOMContentLoaded', function() {
       setTimeout(function() {
         document.getElementById('whatsappPopup').style.display = "block";
-      }, 3000); // Show after 3 seconds
+      }, 3000);
 
       document.getElementById('closeWhatsAppPopup').onclick = function() {
         document.getElementById('whatsappPopup').style.display = "none";
