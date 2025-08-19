@@ -48,5 +48,28 @@
       });
     });
   </script>
+
+  <!-- WhatsApp Update Popup Notification -->
+  <div id="whatsappPopup"
+       style="display:none; position:fixed; bottom:32px; right:32px; z-index:99999; max-width:320px; box-shadow:0 6px 24px rgba(40,52,70,.1); border-radius:15px; background:#23c6ed; color:#fff; padding:20px 24px; font-size:1.11em; text-align:center;">
+    <div style="font-weight:700; font-size:1.2em;">📢 Get Updates!</div>
+    <div style="margin:10px 0;">Join our WhatsApp Channel for the latest episodes, notifications and streaming news.</div>
+    <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k" target="_blank"
+       style="display:inline-block; background:#fff; color:#23c6ed; font-weight:700; border-radius:7px; padding:8px 16px; text-decoration:none; margin-bottom:8px;">🟢 Join on WhatsApp</a>
+    <br>
+    <button id="closeWhatsAppPopup"
+            style="background:none; border:none; color:#fff; font-weight:600; font-size:1.1em; margin-top:9px; cursor:pointer;">Close</button>
+  </div>
+  <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        document.getElementById('whatsappPopup').style.display = "block";
+      }, 3000); // Show after 3 seconds
+
+      document.getElementById('closeWhatsAppPopup').onclick = function() {
+        document.getElementById('whatsappPopup').style.display = "none";
+      };
+    });
+  </script>
 </body>
 </html>
