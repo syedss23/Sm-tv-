@@ -51,21 +51,23 @@
 
   <!-- Centered WhatsApp Update Popup Notification -->
   <div id="whatsappPopup"
-       style="display:none; position:fixed; top:50%; left:50%; z-index:99999; transform:translate(-50%, -50%); max-width:340px; width:90vw; box-shadow:0 8px 24px rgba(15,18,30,.13); border-radius:16px; background:#232936; color:#fff; padding:28px 28px 22px 28px; font-size:1.09em; text-align:left; font-family: 'Segoe UI', Arial, sans-serif;">
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-      <img src="https://static.whatsapp.net/rsrc.php/v3/yf/r/CWXxhVnCnRr.png" alt="WhatsApp" style="width:32px; height:32px;">
-      <span style="font-weight:700; font-size:1.16em;">Stay Updated!</span>
+       style="display:none; position:fixed; top:50%; left:50%; z-index:99999; transform:translate(-50%, -50%); max-width:340px; width:90vw; box-shadow:0 8px 24px rgba(15,18,30,.13); border-radius:22px; background:#232936; color:#fff; padding:28px 28px 22px 28px; font-size:1.09em; text-align:left; font-family: 'Segoe UI', Arial, sans-serif;">
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+      <img src="favicon.png" alt="Channel Logo" style="width:40px; height:40px; border-radius:18px; object-fit:cover; box-shadow:0 2px 8px rgba(40,52,70,.10);">
+      <span style="font-weight:700; font-size:1.18em;">Stay Updated!</span>
     </div>
-    <div style="margin-bottom:15px; color:#f1f1f1;">Get instant notifications for new episodes and exclusive news. Join our WhatsApp Channel now.</div>
-    <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k" target="_blank"
-       style="display:inline-block; background:#29a345; color:#fff; font-weight:600; border-radius:9px; padding:10px 22px; text-decoration:none; font-size:1em; box-shadow:0 2px 8px rgba(40,52,70,.09); margin-bottom:14px; transition:background 0.2s;">
-      🟢 Join on WhatsApp
-    </a>
-    <br>
-    <button id="closeWhatsAppPopup"
-            style="background:none; border:none; color:#ccc; font-weight:600; font-size:1.08em; margin-top:6px; cursor:pointer; display:block; margin-left:auto; margin-right:auto;">
-      ✖ Close
-    </button>
+    <div style="margin-bottom:16px; color:#f1f1f1;">Get instant notifications for new episodes and exclusive news.<br>Join our WhatsApp Channel now.</div>
+    <div style="text-align:center;">
+      <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k" target="_blank"
+         style="display:inline-block; background:#29a345; color:#fff; font-weight:600; border-radius:11px; padding:11px 26px; text-decoration:none; font-size:1em; box-shadow:0 2px 8px rgba(40,52,70,.09); margin-bottom:15px; transition:background 0.2s;">
+        🟢 Join on WhatsApp
+      </a>
+      <br>
+      <button id="closeWhatsAppPopup"
+              style="background:none; border:none; color:#ff6868; font-weight:600; font-size:1.12em; margin-top:7px; cursor:pointer; display:block; margin-left:auto; margin-right:auto;">
+        ✖ Close
+      </button>
+    </div>
   </div>
   <script>
     window.addEventListener('DOMContentLoaded', function() {
