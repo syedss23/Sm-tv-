@@ -22,13 +22,37 @@ if (season) {
 const HOW_TO_DOWNLOAD_URL = "https://t.me/howtodownloadd1/10";
 const PREMIUM_CHANNEL_URL = "https://t.me/itzmezain1/2905";
 
+// --- Ad frequency control helper: shows only one ad per hour per user ---
+function shouldShowAd() {
+  const key = "lastAdTime";
+  const now = Date.now();
+  const last = localStorage.getItem(key);
+  // 1 hour = 3600000 ms (adjust the interval here if needed)
+  if (!last || now - parseInt(last) > 3600000) {
+    localStorage.setItem(key, now);
+    return true;
+  }
+  return false;
+}
+
+// --- Monetag Rewarded Interstitial ---
+function showRewardedAdThen(done) {
+  if (typeof show_9623557 === "function") {
+    show_9623557().then(() => {
+      done();
+    }).catch(() => {
+      done();
+    });
+  } else {
+    done();
+  }
+}
+
 Promise.all([
   fetch('series.json').then(r => r.ok ? r.json() : []),
   fetch(jsonFile).then(r => r.ok ? r.json() : [])
 ]).then(([seriesList, episodesArray]) => {
   const meta = Array.isArray(seriesList) ? seriesList.find(s => s.slug === slug) : null;
-
-  // Only match by "ep" number
   const ep = Array.isArray(episodesArray)
     ? episodesArray.find(e => String(e.ep) === String(epNum))
     : null;
@@ -38,8 +62,12 @@ Promise.all([
     return;
   }
 
-  // Show Monetag rewarded interstitial before loading episode page
-  showRewardedAdThen(renderEpisode);
+  // Use ad frequency control
+  if (shouldShowAd()) {
+    showRewardedAdThen(renderEpisode);
+  } else {
+    renderEpisode();
+  }
 
   function renderEpisode() {
     container.innerHTML = `
@@ -117,17 +145,3 @@ Promise.all([
 }).catch(err => {
   container.innerHTML = `<div style="color:#fff;padding:30px;">Could not load episode info. Error: ${err.message}</div>`;
 });
-
-// --- Monetag Rewarded Interstitial (user gets episode page as reward) ---
-function showRewardedAdThen(done) {
-  if (typeof show_9623557 === "function") {
-    show_9623557().then(() => {
-      // Reward: show the episode page!
-      done();
-    }).catch(() => {
-      done();
-    });
-  } else {
-    done();
-  }
-}
