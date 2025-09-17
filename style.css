@@ -36,25 +36,25 @@ header { padding: 20px 10px 8px 10px; border-bottom: 1px solid #292a2f; position
 /* Ads */
 .ad-space { margin: 24px 0 10px 0; text-align: center; min-height: 60px; background: #191a23; border-radius: 10px; }
 
-/* ---- New Filter Bar ---- */
+/* ---- Filter Bar (no counts) ---- */
 .filter-bar{display:flex;flex-direction:column;gap:8px;margin:10px 10px 6px 10px;max-width:1120px}
 .filter-bar .primary,.filter-bar .secondary{display:flex;gap:8px;flex-wrap:wrap}
-.pill{flex:0 0 auto;padding:8px 12px;border-radius:999px;border:1px solid #2a3a49;background:#17212b;color:#cfe8f3;cursor:pointer}
+.pill{flex:0 0 auto;padding:8px 12px;border-radius:999px;border:1px solid #2a3a49;background:#17212b;color:#cfe8f3;cursor:pointer;white-space:nowrap}
 .pill.active{background:#23c6ed;color:#0b1b24;border-color:#23c6ed}
 .secondary.hidden{display:none}
 
-/* ---- Series Grid (new cards used by index.js) ---- */
+/* ---- Series Grid (restored compact posters) ---- */
 .series-grid{
   display:grid;
-  grid-template-columns: repeat(auto-fill,minmax(140px,1fr));
+  grid-template-columns: repeat(auto-fill,minmax(120px,1fr));
   gap:12px;
-  padding: 12px 9px 18px 9px;
+  padding:12px 9px 18px 9px;
   max-width:1120px;
   margin:auto;
 }
 .card{
   background:#262838;
-  border-radius:10px;
+  border-radius:8px;
   box-shadow:0 1.5px 6px #0003;
   display:block;
   text-decoration:none;
@@ -62,10 +62,25 @@ header { padding: 20px 10px 8px 10px; border-bottom: 1px solid #292a2f; position
   transition:transform .16s ease, box-shadow .16s ease, background .16s ease;
 }
 .card:hover{ background:#212345; box-shadow:0 4px 18px #0a121c20; transform: translateY(-2px) scale(1.03); }
-.card img{ width:100%; aspect-ratio: 6/8; object-fit:cover; display:block; background:#191a23; }
-.card .title{ padding:10px 8px 12px; color:#fff; font-weight:700; font-size:.95em; text-align:center; }
+.card img{
+  width:100%;
+  aspect-ratio: 6/8;
+  min-height:108px;
+  max-height:180px;
+  object-fit:cover;
+  display:block;
+  background:#191a23;
+  border-radius:6px 6px 0 0;
+}
+.card .title{
+  padding:10px 4px 12px;
+  color:#fff;
+  font-weight:700;
+  font-size:.95em;
+  text-align:center;
+}
 
-/* Old poster grid (kept for legacy SPA section) */
+/* Legacy poster grid (kept for older markup) */
 .poster-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px,1fr));
@@ -87,9 +102,7 @@ header { padding: 20px 10px 8px 10px; border-bottom: 1px solid #292a2f; position
 }
 .poster-item:hover { background: #212345; box-shadow: 0 4px 18px #0a121c20; transform: translateY(-2px) scale(1.03);}
 .poster-item img { width: 100%; aspect-ratio: 6/8; min-height: 108px; max-height: 180px; object-fit: cover; border-radius: 6px 6px 0 0; background: #191a23; }
-.poster-item .title {
-  color: #fff; font-size: 0.95em; font-weight: 700; margin: 10px 0 0 0; text-align: center; white-space: normal; padding: 0 4px; letter-spacing: .01em;
-}
+.poster-item .title { color:#fff; font-size:.95em; font-weight:700; margin:10px 0 0 0; text-align:center; white-space:normal; padding:0 4px; letter-spacing:.01em; }
 
 /* Mobile tweaks */
 @media (max-width:900px){
