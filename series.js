@@ -2,15 +2,19 @@
   const qs = new URLSearchParams(location.search);
   const slug = (qs.get('series') || '').trim();
   const lang = (qs.get('lang') || '').toLowerCase();
-  const seasonParam = qs.get('season') || '';
+  const season = qs.get('season') || '1';
 
+  // Use only the actual file names:
   function jsonFor(season) {
     if (lang === 'dub') {
-      // Dubbed loads unsuffixed file (e.g., kurulus-osman-s7.json)
+      // Dubbed: eg. kurulus-osman-s7.json
       return `episode-data/${slug}-s${season}.json`;
+    } else if (lang === 'en') {
+      // Subtitles: eg. kurulus-osman-s7-en.json
+      return `episode-data/${slug}-s${season}-en.json`;
     } else {
-      // Subtitles loads suffixed file (e.g., kurulus-osman-s7-en.json)
-      return `episode-data/${slug}-s${season}-${lang}.json`;
+      // Fallback: try dubbed if lang not recognized
+      return `episode-data/${slug}-s${season}.json`;
     }
   }
 
@@ -53,7 +57,6 @@
         <section class="pro-episodes-row-wrap-pro" id="pro-episodes-row-wrap"></section>
       `;
 
-      // Build seasons
       let seasons = [];
       if (typeof meta.seasons === 'number') {
         for (let i = 1; i <= meta.seasons; i++) seasons.push(String(i));
@@ -62,11 +65,9 @@
       } else {
         seasons = ['1'];
       }
-
-      // Show season tabs
       const tabs = document.getElementById('pro-seasons-tabs');
       tabs.innerHTML = seasons.map(s => 
-        `<button data-season="${s}" class="pro-season-tab-pro${s == (seasonParam || seasons[0]) ? ' active' : ''}">Season ${s}</button>`
+        `<button data-season="${s}" class="pro-season-tab-pro${s == season ? ' active' : ''}">Season ${s}</button>`
       ).join('');
       tabs.querySelectorAll('.pro-season-tab-pro').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -76,8 +77,7 @@
         });
       });
 
-      // Render the first or requested season
-      renderSeason(seasonParam || seasons[0]);
+      renderSeason(season);
 
       function renderSeason(season) {
         const url = bust(jsonFor(season));
