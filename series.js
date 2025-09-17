@@ -6,14 +6,11 @@
 
   function jsonFor(season) {
     if (lang === 'dub') {
-      // Dubbed loads old style: kurulus-osman-s7.json
+      // Dubbed loads unsuffixed file (e.g., kurulus-osman-s7.json)
       return `episode-data/${slug}-s${season}.json`;
-    } else if (['en', 'hi', 'ur'].includes(lang)) {
-      // Subtitles: kurulus-osman-s7-en.json, etc
-      return `episode-data/${slug}-s${season}-${lang}.json`;
     } else {
-      // fallback (treat as dub by default)
-      return `episode-data/${slug}-s${season}.json`;
+      // Subtitles loads suffixed file (e.g., kurulus-osman-s7-en.json)
+      return `episode-data/${slug}-s${season}-${lang}.json`;
     }
   }
 
@@ -55,6 +52,8 @@
         <nav class="pro-seasons-tabs-pro" id="pro-seasons-tabs"></nav>
         <section class="pro-episodes-row-wrap-pro" id="pro-episodes-row-wrap"></section>
       `;
+
+      // Build seasons
       let seasons = [];
       if (typeof meta.seasons === 'number') {
         for (let i = 1; i <= meta.seasons; i++) seasons.push(String(i));
@@ -63,6 +62,8 @@
       } else {
         seasons = ['1'];
       }
+
+      // Show season tabs
       const tabs = document.getElementById('pro-seasons-tabs');
       tabs.innerHTML = seasons.map(s => 
         `<button data-season="${s}" class="pro-season-tab-pro${s == (seasonParam || seasons[0]) ? ' active' : ''}">Season ${s}</button>`
@@ -74,7 +75,10 @@
           renderSeason(btn.dataset.season);
         });
       });
+
+      // Render the first or requested season
       renderSeason(seasonParam || seasons[0]);
+
       function renderSeason(season) {
         const url = bust(jsonFor(season));
         fetch(url)
