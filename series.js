@@ -1,8 +1,7 @@
-// series.js - supports en, hi, ur, dub
-
+// series.js - works for en, hi, ur, dub with correctly matched file names
 (function() {
   const qs = new URLSearchParams(location.search);
-  const slug = (qs.get('series') || '').trim();
+  const slug = (qs.get('series') || '').trim();  // MUST MATCH your JSON file prefix
 
   // Supported languages
   const SUPPORTED = ['dub', 'en', 'hi', 'ur'];
@@ -10,9 +9,7 @@
   if (!SUPPORTED.includes(lang)) lang = 'en';
 
   function jsonFor(season) {
-    let suffix = lang;
-    if (!['en', 'hi', 'ur', 'dub'].includes(suffix)) suffix = 'en';
-    return `episode-data/${slug}-s${season}-${suffix}.json`;
+    return `episode-data/${slug}-s${season}-${lang}.json`;
   }
 
   function bust(url) {
