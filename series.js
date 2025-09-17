@@ -1,27 +1,33 @@
-// --- series.js (language-aware episodes) ---
+// --- series.js (language-aware: dub | en | hi | ur) ---
 (function(){
   const params = new URLSearchParams(window.location.search);
   const slug = params.get('series');
 
-  // Helper: get active language (en|hi|ur)
+  // 1) Determine active language reliably
   function getActiveLang() {
-    const qsLang = (params.get('lang') || '').toLowerCase();
-    if (qsLang === 'en' || qsLang === 'hi' || qsLang === 'ur') return qsLang;
+    // a) URL has highest priority
+    const qs = (params.get('lang') || '').toLowerCase();
+    if (['dub','en','hi','ur'].includes(qs)) return qs;
 
-    // Infer from title text once header renders, else default 'en'
-    const t = (document.querySelector('.pro-series-title-pro')?.textContent || '').toLowerCase();
-    if (t.includes('hindi')) return 'hi';
-    if (t.includes('urdu'))  return 'ur';
+    // b) Infer from visible title text if present
+    const titleText = (document.querySelector('.pro-series-title-pro')?.textContent || '').toLowerCase();
+    if (titleText.includes('dub'))   return 'dub';
+    if (titleText.includes('hindi')) return 'hi';
+    if (titleText.includes('urdu'))  return 'ur';
+    if (titleText.includes('english')) return 'en';
+
+    // c) Default to English subs
     return 'en';
   }
 
-  // Build per-language episode JSON path
+  // 2) Build the correct episode JSON path
   function getEpisodeFile(slug, season) {
     const lang = getActiveLang();
-    return `episode-data/${slug}-s${season}-${lang}.json`;
+    const suffix = lang === 'dub' ? 'dub' : lang; // dubbed uses -dub.json
+    return `episode-data/${slug}-s${season}-${suffix}.json`;
   }
 
-  // Load series meta (from series.json)
+  // 3) Load series meta
   fetch('series.json')
     .then(r => r.json())
     .then(seriesList => {
@@ -31,19 +37,15 @@
         return;
       }
 
-      // ----------- SEO: SET DYNAMIC TITLE & DESCRIPTION -----------
-      document.title = meta.title + " – SmTv Urdu";
+      // SEO
+      document.title = `${meta.title} – SmTv Urdu`;
       const metaDescTag = document.querySelector('meta[name="description"]');
       if (metaDescTag) {
-        metaDescTag.setAttribute(
-          'content',
-          `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`
-        );
+        metaDescTag.setAttribute('content', `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`);
       }
-      // -----------------------------------------------------------
 
-      // --- Modern header with poster, back, desc ---
-      let html = `
+      // Header
+      const headerHTML = `
         <section class="pro-series-header-pro">
           <a href="index.html" class="pro-series-back-btn-pro" title="Back">
             <svg width="24" height="24" viewBox="0 0 20 20" style="vertical-align: middle;">
@@ -59,64 +61,63 @@
         <nav class="pro-seasons-tabs-pro" id="pro-seasons-tabs"></nav>
         <section class="pro-episodes-row-wrap-pro" id="pro-episodes-row-wrap"></section>
       `;
-      document.getElementById('series-details').innerHTML = html;
+      document.getElementById('series-details').innerHTML = headerHTML;
 
-      // Seasons list
+      // Seasons
       let seasonNums = [];
-      if (typeof meta.seasons === "number") {
+      if (typeof meta.seasons === 'number') {
         for (let i = 1; i <= meta.seasons; i++) seasonNums.push(String(i));
       } else if (Array.isArray(meta.seasons)) {
         seasonNums = meta.seasons.map(s => String(s));
       } else {
-        seasonNums = ["1"];
+        seasonNums = ['1'];
       }
 
-      // Render season tabs
-      document.getElementById('pro-seasons-tabs').innerHTML =
-        seasonNums.map(season =>
-          `<button data-season="${season}" class="pro-season-tab-pro${season == seasonNums[0] ? ' active' : ''}">Season ${season}</button>`
-        ).join('');
+      // Season tabs
+      const tabs = document.getElementById('pro-seasons-tabs');
+      tabs.innerHTML = seasonNums.map(season =>
+        `<button data-season="${season}" class="pro-season-tab-pro${season == seasonNums[0] ? ' active' : ''}">Season ${season}</button>`
+      ).join('');
 
-      document.querySelectorAll('.pro-season-tab-pro').forEach(btn => {
-        btn.onclick = function () {
-          document.querySelectorAll('.pro-season-tab-pro').forEach(b => b.classList.remove('active'));
+      tabs.querySelectorAll('.pro-season-tab-pro').forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabs.querySelectorAll('.pro-season-tab-pro').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           renderProEpisodesRow(btn.dataset.season);
-        };
+        });
       });
 
       // Initial render
       renderProEpisodesRow(seasonNums[0]);
 
-      // Modular episode loader: loads array and renders episode cards
+      // 4) Render episodes
       function renderProEpisodesRow(seasonNumber) {
         const url = getEpisodeFile(slug, seasonNumber);
         fetch(url)
           .then(r => {
-            if (!r.ok) throw new Error("File not found");
+            if (!r.ok) throw new Error('File not found');
             return r.json();
           })
           .then(episodes => {
-            let row = '';
-            if (!episodes || !episodes.length) {
-              row = `<div style='color:#fff;padding:28px 0 0 0;'>No episodes for this season.</div>`;
+            let rowHTML = '';
+            if (!Array.isArray(episodes) || episodes.length === 0) {
+              rowHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
             } else {
-              row = `<div class="pro-episodes-row-pro">` +
-                episodes.map(ep => `
-                  <a class="pro-episode-card-pro" href="episode.html?series=${slug}&season=${seasonNumber}&ep=${ep.ep}">
-                    <div class="pro-ep-thumb-wrap-pro">
-                      <img src="${ep.thumb || 'default-thumb.jpg'}" class="pro-ep-thumb-pro" alt="Ep ${ep.ep}">
-                      <span class="pro-ep-num-pro">Ep ${ep.ep}</span>
-                    </div>
-                    <div class="pro-ep-title-pro">${ep.title ? ep.title : `Episode ${ep.ep}`}</div>
-                  </a>
-                `).join('') + '</div>';
+              rowHTML = `<div class="pro-episodes-row-pro">` + episodes.map(ep => `
+                <a class="pro-episode-card-pro" href="episode.html?series=${slug}&season=${seasonNumber}&ep=${ep.ep}">
+                  <div class="pro-ep-thumb-wrap-pro">
+                    <img src="${ep.thumb || 'default-thumb.jpg'}" class="pro-ep-thumb-pro" alt="Ep ${ep.ep}">
+                    <span class="pro-ep-num-pro">Ep ${ep.ep}</span>
+                  </div>
+                  <div class="pro-ep-title-pro">${ep.title ? ep.title : 'Episode ' + ep.ep}</div>
+                </a>
+              `).join('') + `</div>`;
             }
-            document.getElementById('pro-episodes-row-wrap').innerHTML = row;
+            document.getElementById('pro-episodes-row-wrap').innerHTML = rowHTML;
           })
           .catch(() => {
             document.getElementById('pro-episodes-row-wrap').innerHTML =
-              `<div style='color:#fff;padding:28px 0 0 0;'>No episodes for this season.</div>`;
+              `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
           });
       }
     })
