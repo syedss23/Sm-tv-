@@ -132,7 +132,7 @@
   {
     "id": 101,
     "title": "Kuruluş: Osman (English Subtitles)",
-    "slug": "kurulus-osman-en-sub",
+    "slug": "kurulus-osman-en",
     "poster": "assets/posters/osman.jpg",
     "desc": { "en": "Kuruluş: Osman with English subtitles." },
     "seasons": 7,
@@ -142,7 +142,7 @@
   {
     "id": 102,
     "title": "Kuruluş: Osman (Hindi Subtitles)",
-    "slug": "kurulus-osman-hi-sub",
+    "slug": "kurulus-osman-hi",
     "poster": "assets/posters/osman.jpg",
     "desc": { "en": "Kuruluş: Osman with Hindi subtitles." },
     "seasons": 7,
@@ -152,7 +152,7 @@
   {
     "id": 103,
     "title": "Kuruluş: Osman (Urdu Subtitles)",
-    "slug": "kurulus-osman-ur-sub",
+    "slug": "kurulus-osman-ur",
     "poster": "assets/posters/osman.jpg",
     "desc": { "en": "Kuruluş: Osman with Urdu subtitles." },
     "seasons": 7,
