@@ -1,3 +1,5 @@
+// episode.js — polished with safe lazy-loading for embeds
+
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('series');
 const season = params.get('season');
@@ -27,7 +29,7 @@ function shouldShowAd() {
   const key = "lastAdTime";
   const now = Date.now();
   const last = localStorage.getItem(key);
-  // 1 hour = 3600000 ms (adjust the interval here if needed)
+  // 1 hour = 3600000 ms
   if (!last || now - parseInt(last) > 3600000) {
     localStorage.setItem(key, now);
     return true;
@@ -38,16 +40,13 @@ function shouldShowAd() {
 // --- Monetag Rewarded Interstitial ---
 function showRewardedAdThen(done) {
   if (typeof show_9623557 === "function") {
-    show_9623557().then(() => {
-      done();
-    }).catch(() => {
-      done();
-    });
+    show_9623557().then(done).catch(done);
   } else {
     done();
   }
 }
 
+// Fetch series meta and episode list in parallel
 Promise.all([
   fetch('series.json').then(r => r.ok ? r.json() : []),
   fetch(jsonFile).then(r => r.ok ? r.json() : [])
@@ -62,7 +61,6 @@ Promise.all([
     return;
   }
 
-  // Use ad frequency control
   if (shouldShowAd()) {
     showRewardedAdThen(renderEpisode);
   } else {
@@ -75,7 +73,7 @@ Promise.all([
         <div class="pro-episode-header-polished">
           <a class="pro-back-btn-polished" href="${backUrl}" title="Back">
             <svg width="23" height="23" viewBox="0 0 20 20" class="svg-arrow">
-              <polyline points="12 4 6 10 12 16" fill="none" stroke="#23c6ed" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="12 4 6 10 12 16" fill="none" stroke="#23c6ed" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"></polyline>
             </svg>
             Back
           </a>
@@ -84,30 +82,31 @@ Promise.all([
             <span class="pro-ep-strong-title">${ep.title || `Episode ${ep.ep}`}</span>
           </div>
         </div>
+
         <div class="fullscreen-alert-msg" style="background:#162632;padding:16px 16px 14px 16px;border-radius:10px;color:#23c6ed;font-size:1.05em;margin:16px 0 24px 0;">
           <b>🔔 Note:</b><br>
           Telegram Mini App mein <b>full screen</b> me Episodes dekhna support nahi karta. Agar aapko <b>full screen</b> aur behtar quality mein episode dekhna hai toh <b>hamari website par jaakar dekhein.</b><br>
           Sabhi episodes full screen ke sath wahan available hain.<br>
           <a href="https://sm-tv.vercel.app" target="_blank" style="color:#f7e038;text-decoration:underline;word-break:break-all;">https://sm-tv.vercel.app</a> 👇
         </div>
+
         <div class="pro-episode-embed-polished">
           ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'}
         </div>
+
         <div class="pro-download-btns-flex" style="margin:24px 0 8px 0;display:flex;gap:16px;flex-wrap:wrap;">
           <a class="pro-download-btn-polished"
              href="${ep.download || '#'}"
              download
              style="flex:1 1 180px;background:#198fff;"
-             ${ep.download ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>
-            🖇️ Download (Server 1)
-          </a>
+             ${ep.download ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>🖇️ Download (Server 1)</a>
+
           <button class="pro-download-btn-polished"
                   id="download2Btn"
                   style="flex:1 1 180px;background:#30c96b;"
-                  ${ep.download2 ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>
-            🖇️ Download (Server 2)
-          </button>
+                  ${ep.download2 ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>🖇️ Download (Server 2)</button>
         </div>
+
         <a class="pro-tutorial-btn"
            href="${HOW_TO_DOWNLOAD_URL}"
            target="_blank"
@@ -115,6 +114,7 @@ Promise.all([
            style="display:block;background:#234a63;color:#fff;padding:12px 28px;margin:8px 0 0 0;border-radius:8px;text-align:center;font-weight:600;text-decoration:none;font-size:1.03em;">
           📕 How to Download (Tutorial)
         </a>
+
         <a class="pro-premium-btn"
            href="${PREMIUM_CHANNEL_URL}"
            target="_blank"
@@ -125,17 +125,58 @@ Promise.all([
       </div>
     `;
 
-    // Monetag ad for Download 2
+    // --- Apply native lazy loading + safe defaults to any iframe present in embed
+    const embedWrap = container.querySelector('.pro-episode-embed-polished');
+    if (embedWrap) {
+      // If providers delivered a placeholder instead of iframe, support data-embed-src
+      const placeholders = embedWrap.querySelectorAll('[data-embed-src]');
+      if (placeholders.length) {
+        const io = new IntersectionObserver(entries => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              const src = e.target.getAttribute('data-embed-src');
+              const i = document.createElement('iframe');
+              i.src = src;
+              i.loading = 'lazy';
+              i.width = '100%';
+              i.height = '100%';
+              i.setAttribute('frameborder', '0');
+              i.setAttribute('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share');
+              i.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+              i.setAttribute('allowfullscreen', '');
+              e.target.replaceWith(i);
+              io.unobserve(e.target);
+            }
+          });
+        }, { rootMargin: '400px' });
+        placeholders.forEach(el => io.observe(el));
+      }
+
+      // For already-inserted iframes, upgrade attributes
+      embedWrap.querySelectorAll('iframe').forEach((f, idx) => {
+        // Keep the first iframe eager only if it's truly the hero above-the-fold; else lazy.
+        const shouldLazy = idx > 0 || window.matchMedia('(max-width: 767px)').matches;
+        if (shouldLazy && !f.hasAttribute('loading')) f.setAttribute('loading', 'lazy');
+        if (!f.hasAttribute('referrerpolicy')) f.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        if (!f.hasAttribute('allow')) f.setAttribute('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share');
+        if (!f.hasAttribute('width')) f.setAttribute('width', '100%');
+        if (!f.hasAttribute('height')) f.setAttribute('height', '100%');
+        if (!f.hasAttribute('frameborder')) f.setAttribute('frameborder', '0');
+        if (!f.hasAttribute('allowfullscreen')) f.setAttribute('allowfullscreen', '');
+        // Defer decoding where supported
+        if (!f.hasAttribute('decoding')) f.setAttribute('decoding', 'async');
+      });
+    }
+
+    // --- Monetag ad for Download 2
     const download2Btn = document.getElementById('download2Btn');
     if (download2Btn && ep.download2) {
       download2Btn.addEventListener('click', function(e) {
         e.preventDefault();
         if (typeof show_9623557 === "function") {
-          show_9623557().then(() => {
-            window.location.href = ep.download2;
-          }).catch(() => {
-            alert('Ad could not be loaded. Please try again.');
-          });
+          show_9623557()
+            .then(() => { window.location.href = ep.download2; })
+            .catch(() => { alert('Ad could not be loaded. Please try again.'); });
         } else {
           window.location.href = ep.download2;
         }
