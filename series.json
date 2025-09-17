@@ -9,7 +9,8 @@
       "hi": "ऑटोमन साम्राज्य के संस्थापक उस्मान बेय की यात्रा।",
       "ur": "عثمانی سلطنت کے بانی عثمان بے کا سفر۔"
     },
-    "seasons": 7
+    "seasons": 7,
+    "track": "dubbed"
   },
   {
     "id": 2,
@@ -21,7 +22,8 @@
       "hi": "सेल्ज़ुक साम्राज्य के विजयी सुलतान अल्प अर्सलान की कहानी।",
       "ur": "سلجوقی سلطنت کے فاتح سلطان البرسلان کی کہانی۔"
     },
-    "seasons": 2
+    "seasons": 2,
+    "track": "dubbed"
   },
   {
     "id": 3,
@@ -30,10 +32,11 @@
     "poster": "assets/posters/mehmet_fatih.jpg",
     "desc": {
       "en": "Life and conquests of Sultan Mehmet the Conqueror.",
-      "hi": "सुल्तान मेहमत فاتح के जीवन और विजय।",
+      "hi": "सुल्तान मेहमत فاتह के जीवन और विजय।",
       "ur": "زندگی اور فتوحات سلطان مہمت فاتح۔"
     },
-    "seasons": 2
+    "seasons": 2,
+    "track": "dubbed"
   },
   {
     "id": 4,
@@ -45,7 +48,8 @@
       "hi": "स्लेडीन अय्यूबी और क्रूसेड्स की महागाथा।",
       "ur": "سلاہدین ایوبی اور صلیبیوں کی رزمیہ داستان۔"
     },
-    "seasons": 2
+    "seasons": 2,
+    "track": "dubbed"
   },
   {
     "id": 5,
@@ -57,7 +61,8 @@
       "hi": "सेल्ज़ुक साम्राज्य के उत्थान और पतन पर नाटक।",
       "ur": "سلجوقی سلطنت کے عروج و زوال پر ڈرامہ۔"
     },
-    "seasons": 1
+    "seasons": 1,
+    "track": "dubbed"
   },
   {
     "id": 6,
@@ -69,7 +74,8 @@
       "hi": "प्रसिद्ध सूफ़ी रहस्यवादी जलालुद्दीन रूमी का जीवन और कविता।",
       "ur": "مشہور صوفی شاعر جلال الدین رومی کی زندگی اور شاعری۔"
     },
-    "seasons": 3
+    "seasons": 3,
+    "track": "dubbed"
   },
   {
     "id": 7,
@@ -81,7 +87,8 @@
       "hi": "बरबरोज़ भाइयों और उस्मानिया समुद्री विजय की महागाथा।",
       "ur": "باربروسا بھائیوں اور عثمانی بحری برتری کی شاندار کہانی۔"
     },
-    "seasons": 2
+    "seasons": 2,
+    "track": "dubbed"
   },
   {
     "id": 8,
@@ -93,10 +100,11 @@
       "hi": "हाजी बायराम वली का जीवन और आध्यात्मिक यात्रा।",
       "ur": "حاجی بیرام ولی کی زندگی اور روحانی سفر۔"
     },
-    "seasons": 1
+    "seasons": 1,
+    "track": "dubbed"
   },
   {
-    "id": 9,  
+    "id": 9,
     "title": "Destan",
     "slug": "destan",
     "poster": "assets/posters/destan.jpg",
@@ -105,18 +113,80 @@
       "hi": "तुर्की मरुस्थल में अक्किज़ और बातूगा की ऐतिहासिक गाथा। उर्दू डब्ड।",
       "ur": "ترکی کے میدانوں میں اککز اور باتوگا کی شاندار داستان۔ اردو ڈبbed."
     },
-    "seasons": 1
+    "seasons": 1,
+    "track": "dubbed"
   },
   {
-  "id": 10,
-  "title": "Barbaros Hayreddin",
-  "slug": "barbaros-hayreddin",
-  "poster": "assets/posters/barbaros_hayreddin.jpg",
-  "desc": {
-    "en": "Legend of Barbaros Hayreddin, the Ottoman admiral. Urdu dubbed Turkish series.",
-    "hi": "बारबरोस हैरेद्दीन – उस्मानिया एडमिरल की महागाथा। तुर्की सीरीज, उर्दू डब्ड।",
-    "ur": "باربروس ہےریددین، عثمانی بحری ایڈمرل کی شاندار کہانی۔ اردو ڈبbed ترکش سیریز."
+    "id": 10,
+    "title": "Barbaros Hayreddin",
+    "slug": "barbaros-hayreddin",
+    "poster": "assets/posters/barbaros_hayreddin.jpg",
+    "desc": {
+      "en": "Legend of Barbaros Hayreddin, the Ottoman admiral. Urdu dubbed Turkish series.",
+      "hi": "बारबरोस हैरेद्दीन – उस्मानिया एडमिरल की महागाथा। तुर्की सीरीज, उर्दू डब्ड।",
+      "ur": "باربروس ہےریددین، عثمانی بحری ایڈمرل کی شاندار کہانی۔ اردو ڈبbed ترکش سیریز."
+    },
+    "seasons": 1,
+    "track": "dubbed"
   },
-    "seasons": 1
+  {
+    "id": 101,
+    "title": "Kuruluş: Osman (English Subtitles)",
+    "slug": "kurulus-osman-en-sub",
+    "poster": "assets/posters/osman.jpg",
+    "desc": { "en": "Kuruluş: Osman with English subtitles." },
+    "seasons": 7,
+    "track": "sub",
+    "subLang": "en"
+  },
+  {
+    "id": 102,
+    "title": "Kuruluş: Osman (Hindi Subtitles)",
+    "slug": "kurulus-osman-hi-sub",
+    "poster": "assets/posters/osman.jpg",
+    "desc": { "en": "Kuruluş: Osman with Hindi subtitles." },
+    "seasons": 7,
+    "track": "sub",
+    "subLang": "hi"
+  },
+  {
+    "id": 103,
+    "title": "Kuruluş: Osman (Urdu Subtitles)",
+    "slug": "kurulus-osman-ur-sub",
+    "poster": "assets/posters/osman.jpg",
+    "desc": { "en": "Kuruluş: Osman with Urdu subtitles." },
+    "seasons": 7,
+    "track": "sub",
+    "subLang": "ur"
+  },
+  {
+    "id": 201,
+    "title": "Sultan Mehmet Fatih (English Subtitles)",
+    "slug": "sultan-mehmet-fatih-en-sub",
+    "poster": "assets/posters/mehmet_fatih.jpg",
+    "desc": { "en": "Sultan Mehmet Fatih with English subtitles." },
+    "seasons": 2,
+    "track": "sub",
+    "subLang": "en"
+  },
+  {
+    "id": 202,
+    "title": "Sultan Mehmet Fatih (Hindi Subtitles)",
+    "slug": "sultan-mehmet-fatih-hi-sub",
+    "poster": "assets/posters/mehmet_fatih.jpg",
+    "desc": { "en": "Sultan Mehmet Fatih with Hindi subtitles." },
+    "seasons": 2,
+    "track": "sub",
+    "subLang": "hi"
+  },
+  {
+    "id": 203,
+    "title": "Sultan Mehmet Fatih (Urdu Subtitles)",
+    "slug": "sultan-mehmet-fatih-ur-sub",
+    "poster": "assets/posters/mehmet_fatih.jpg",
+    "desc": { "en": "Sultan Mehmet Fatih with Urdu subtitles." },
+    "seasons": 2,
+    "track": "sub",
+    "subLang": "ur"
   }
 ]
