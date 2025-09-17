@@ -1,19 +1,26 @@
-// series.js - works for en, hi, ur, dub with correctly matched file names
+// series.js - Handles dub as old files, subtitles as suffixed files
+
 (function() {
   const qs = new URLSearchParams(location.search);
-  const slug = (qs.get('series') || '').trim();  // MUST MATCH your JSON file prefix
-
-  // Supported languages
-  const SUPPORTED = ['dub', 'en', 'hi', 'ur'];
+  const slug = (qs.get('series') || '').trim();
   let lang = (qs.get('lang') || '').toLowerCase();
+
+  // Only expected languages for this project
+  const SUPPORTED = ['dub', 'en', 'hi', 'ur'];
   if (!SUPPORTED.includes(lang)) lang = 'en';
 
   function jsonFor(season) {
-    return `episode-data/${slug}-s${season}-${lang}.json`;
+    if (lang === 'dub') {
+      // Use old naming format for dub
+      return `episode-data/${slug}-s${season}.json`;
+    } else {
+      // Use new naming for subtitles (en, hi, ur, etc)
+      return `episode-data/${slug}-s${season}-${lang}.json`;
+    }
   }
 
   function bust(url) {
-    const v = (qs.get('v') || '18');
+    const v = (qs.get('v') || '1');
     return url + (url.includes('?') ? '&' : '?') + 'v=' + v;
   }
 
@@ -22,7 +29,7 @@
     t.textContent = msg;
     t.style.cssText = 'position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#122231;color:#9fe6ff;padding:10px 14px;border-radius:9px;border:1px solid #2d4b6a;font-weight:700;z-index:9999';
     document.body.appendChild(t);
-    setTimeout(() => t.remove(), 2600);
+    setTimeout(()=>t.remove(), 2600);
   }
 
   // Load series meta
@@ -38,7 +45,7 @@
       // SEO
       document.title = `${meta.title} – SmTv Urdu`;
       const md = document.querySelector('meta[name="description"]');
-      if (md) md.setAttribute('content', `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`);
+      if (md) md.setAttribute('content', `${meta.title} - Watch all episodes of ${meta.title} on SmTv Urdu. Complete Turkish historical drama.`);
 
       // Header
       document.getElementById('series-details').innerHTML = `
