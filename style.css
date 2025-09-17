@@ -31,12 +31,36 @@ header{padding:20px 10px 8px 10px;border-bottom:1px solid #292a2f;position:relat
 /* Ads */
 .ad-space{margin:24px 0 10px 0;text-align:center;min-height:60px;background:#191a23;border-radius:10px}
 
-/* Filter bar (no counts) */
-.filter-bar{display:flex;flex-direction:column;gap:8px;margin:10px 10px 6px 10px;max-width:1120px}
-.filter-bar .primary,.filter-bar .secondary{display:flex;gap:8px;flex-wrap:wrap}
-.pill{flex:0 0 auto;padding:8px 12px;border-radius:999px;border:1px solid #2a3a49;background:#17212b;color:#cfe8f3;cursor:pointer;white-space:nowrap}
-.pill.active{background:#23c6ed;color:#0b1b24;border-color:#23c6ed}
+/* Filter bar – polished large pills (no counts) */
+.filter-bar{display:flex;flex-direction:column;gap:10px;margin:12px 10px 8px 10px;max-width:1120px}
+.filter-bar .primary,.filter-bar .secondary{display:flex;gap:10px;flex-wrap:wrap}
+
+.pill{
+  flex:0 0 auto;
+  padding:10px 18px;               /* bigger tap target */
+  min-height:42px;
+  border-radius:999px;
+  border:1.5px solid #2b3f52;
+  background:linear-gradient(180deg,#172434 0%,#121c28 100%);
+  color:#e9f7ff;
+  font-family:'Montserrat',Arial,sans-serif;
+  font-size:1.02em;
+  font-weight:700;
+  letter-spacing:.02em;
+  cursor:pointer; white-space:nowrap;
+  box-shadow:0 2px 10px #00000030,inset 0 1px 0 #2a394a;
+  transition:background .18s,color .18s,border-color .18s,box-shadow .18s,transform .08s;
+  outline:none;
+}
+.pill:active{transform:scale(.98)}
+.pill.active{
+  background:linear-gradient(180deg,#25d2f4 0%,#18a6c7 100%);
+  color:#0a1a22;
+  border-color:#25d2f4;
+  box-shadow:0 6px 22px #19c7ff42,inset 0 1px 0 #7feaff;
+}
 .secondary.hidden{display:none}
+@media (max-width:420px){ .pill{padding:10px 14px;font-size:1em} }
 
 /* --- Home Poster Grid (exact old look) --- */
 .poster-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;padding:12px 9px 18px 9px;background:transparent;max-width:1120px;margin:auto}
@@ -46,7 +70,7 @@ header{padding:20px 10px 8px 10px;border-bottom:1px solid #292a2f;position:relat
 .poster-item .title{color:#fff;font-size:.95em;font-weight:700;margin:10px 0 0 0;text-align:center;white-space:normal;padding:0 4px;letter-spacing:.01em}
 @media (max-width:450px){.poster-grid{grid-template-columns:repeat(2,1fr)}.poster-item img{min-height:80px;max-height:110px}}
 
-/* Make new Home grid use the same exact sizing as old poster grid */
+/* New Home grid uses the same sizing */
 .series-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;padding:12px 9px 18px 9px;max-width:1120px;margin:auto}
 .card{background:#262838;border-radius:8px;box-shadow:0 1.5px 6px #0003;display:block;text-decoration:none;overflow:hidden;transition:transform .17s,box-shadow .17s,background .17s}
 .card:hover{background:#212345;box-shadow:0 4px 18px #0a121c20;transform:translateY(-2px) scale(1.03)}
