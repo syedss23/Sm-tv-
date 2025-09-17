@@ -5,8 +5,16 @@
   const seasonParam = qs.get('season') || '';
 
   function jsonFor(season) {
-    // Always load unsuffixed filename like sultan-mehmet-fatih-s2.json
-    return `episode-data/${slug}-s${season}.json`;
+    if (lang === 'dub') {
+      // Dubbed loads old style: kurulus-osman-s7.json
+      return `episode-data/${slug}-s${season}.json`;
+    } else if (['en', 'hi', 'ur'].includes(lang)) {
+      // Subtitles: kurulus-osman-s7-en.json, etc
+      return `episode-data/${slug}-s${season}-${lang}.json`;
+    } else {
+      // fallback (treat as dub by default)
+      return `episode-data/${slug}-s${season}.json`;
+    }
   }
 
   function bust(url) {
@@ -30,7 +38,6 @@
         document.getElementById('series-details').innerHTML = `<div style="color:#fff;padding:20px;">Series not found.</div>`;
         return;
       }
-
       document.title = `${meta.title} – SmTv Urdu`;
       document.getElementById('series-details').innerHTML = `
         <section class="pro-series-header-pro">
@@ -48,8 +55,6 @@
         <nav class="pro-seasons-tabs-pro" id="pro-seasons-tabs"></nav>
         <section class="pro-episodes-row-wrap-pro" id="pro-episodes-row-wrap"></section>
       `;
-
-      // Build season tab buttons from series.json
       let seasons = [];
       if (typeof meta.seasons === 'number') {
         for (let i = 1; i <= meta.seasons; i++) seasons.push(String(i));
@@ -58,7 +63,6 @@
       } else {
         seasons = ['1'];
       }
-
       const tabs = document.getElementById('pro-seasons-tabs');
       tabs.innerHTML = seasons.map(s => 
         `<button data-season="${s}" class="pro-season-tab-pro${s == (seasonParam || seasons[0]) ? ' active' : ''}">Season ${s}</button>`
@@ -70,10 +74,7 @@
           renderSeason(btn.dataset.season);
         });
       });
-
-      // Show first or requested season by default
       renderSeason(seasonParam || seasons[0]);
-
       function renderSeason(season) {
         const url = bust(jsonFor(season));
         fetch(url)
