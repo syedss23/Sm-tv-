@@ -1,2 +1,3 @@
 User-agent: *
-Allow: /Sitemap: https://www.smtvurdu.site/sitemap.xml
+Allow: /
+Sitemap: https://www.smtvurdu.site/sitemap.xml
