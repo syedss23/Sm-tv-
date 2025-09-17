@@ -1,48 +1,49 @@
-// --- series.js (language-aware: dub | en | hi | ur) ---
+// --- series.js (strict language via ?lang=dub|en|hi|ur) ---
 (function(){
   const params = new URLSearchParams(window.location.search);
-  const slug = params.get('series');
+  const slug = (params.get('series') || '').trim();
+  const lang = (params.get('lang') || '').toLowerCase(); // REQUIRED
 
-  // 1) Determine active language reliably
-  function getActiveLang() {
-    // a) URL has highest priority
-    const qs = (params.get('lang') || '').toLowerCase();
-    if (['dub','en','hi','ur'].includes(qs)) return qs;
-
-    // b) Infer from visible title text if present
-    const titleText = (document.querySelector('.pro-series-title-pro')?.textContent || '').toLowerCase();
-    if (titleText.includes('dub'))   return 'dub';
-    if (titleText.includes('hindi')) return 'hi';
-    if (titleText.includes('urdu'))  return 'ur';
-    if (titleText.includes('english')) return 'en';
-
-    // c) Default to English subs
-    return 'en';
+  // Enforce explicit language to avoid mismatches
+  const LANGS = ['dub','en','hi','ur'];
+  function requireLang() {
+    if (!LANGS.includes(lang)) {
+      const box = document.createElement('div');
+      box.style.cssText = 'margin:18px;color:#ffd66b;background:#2a2433;border:1px solid #5a4b77;padding:12px 14px;border-radius:10px;font-weight:600';
+      box.textContent = 'Select a language: add ?lang=dub | en | hi | ur to the URL, e.g., ?series=kurulus-osman&lang=en';
+      document.getElementById('series-details')?.appendChild(box);
+      return false;
+    }
+    return true;
   }
 
-  // 2) Build the correct episode JSON path
-  function getEpisodeFile(slug, season) {
-    const lang = getActiveLang();
-    const suffix = lang === 'dub' ? 'dub' : lang; // dubbed uses -dub.json
-    return `episode-data/${slug}-s${season}-${suffix}.json`;
+  function jsonPath(s, l) {
+    const suffix = l === 'dub' ? 'dub' : l;    // dubbed uses -dub.json
+    return `episode-data/${s}-s{SEASON}-${suffix}.json`;
   }
 
-  // 3) Load series meta
+  function toast(msg) {
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#122231;color:#9fe6ff;padding:10px 14px;border-radius:9px;border:1px solid #2d4b6a;font-weight:700;z-index:9999';
+    document.body.appendChild(t);
+    setTimeout(()=>t.remove(), 2600);
+  }
+
+  // Load series meta
   fetch('series.json')
     .then(r => r.json())
     .then(seriesList => {
       const meta = Array.isArray(seriesList) ? seriesList.find(s => s.slug === slug) : null;
       if (!meta) {
-        document.getElementById('series-details').innerHTML = `<div style="color:#fff;">Series not found.</div>`;
+        document.getElementById('series-details').innerHTML = `<div style="color:#fff;padding:20px;">Series not found.</div>`;
         return;
       }
 
       // SEO
       document.title = `${meta.title} – SmTv Urdu`;
       const metaDescTag = document.querySelector('meta[name="description"]');
-      if (metaDescTag) {
-        metaDescTag.setAttribute('content', `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`);
-      }
+      if (metaDescTag) metaDescTag.setAttribute('content', `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`);
 
       // Header
       const headerHTML = `
@@ -73,56 +74,55 @@
         seasonNums = ['1'];
       }
 
-      // Season tabs
+      // Tabs
       const tabs = document.getElementById('pro-seasons-tabs');
       tabs.innerHTML = seasonNums.map(season =>
         `<button data-season="${season}" class="pro-season-tab-pro${season == seasonNums[0] ? ' active' : ''}">Season ${season}</button>`
       ).join('');
-
       tabs.querySelectorAll('.pro-season-tab-pro').forEach(btn => {
         btn.addEventListener('click', () => {
           tabs.querySelectorAll('.pro-season-tab-pro').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
-          renderProEpisodesRow(btn.dataset.season);
+          renderSeason(btn.dataset.season);
         });
       });
 
-      // Initial render
-      renderProEpisodesRow(seasonNums[0]);
+      // Require explicit lang once UI exists (shows hint neatly)
+      if (!requireLang()) return;
 
-      // 4) Render episodes
-      function renderProEpisodesRow(seasonNumber) {
-        const url = getEpisodeFile(slug, seasonNumber);
+      // Initial render
+      renderSeason(seasonNums[0]);
+
+      function renderSeason(season) {
+        const url = jsonPath(slug, lang).replace('{SEASON}', season);
         fetch(url)
           .then(r => {
-            if (!r.ok) throw new Error('File not found');
+            if (!r.ok) throw new Error(url);
             return r.json();
           })
           .then(episodes => {
-            let rowHTML = '';
             if (!Array.isArray(episodes) || episodes.length === 0) {
-              rowHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
-            } else {
-              rowHTML = `<div class="pro-episodes-row-pro">` + episodes.map(ep => `
-                <a class="pro-episode-card-pro" href="episode.html?series=${slug}&season=${seasonNumber}&ep=${ep.ep}">
-                  <div class="pro-ep-thumb-wrap-pro">
-                    <img src="${ep.thumb || 'default-thumb.jpg'}" class="pro-ep-thumb-pro" alt="Ep ${ep.ep}">
-                    <span class="pro-ep-num-pro">Ep ${ep.ep}</span>
-                  </div>
-                  <div class="pro-ep-title-pro">${ep.title ? ep.title : 'Episode ' + ep.ep}</div>
-                </a>
-              `).join('') + `</div>`;
+              document.getElementById('pro-episodes-row-wrap').innerHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
+              return;
             }
-            document.getElementById('pro-episodes-row-wrap').innerHTML = rowHTML;
+            const row = `<div class="pro-episodes-row-pro">` + episodes.map(ep => `
+              <a class="pro-episode-card-pro" href="episode.html?series=${slug}&season=${season}&ep=${ep.ep}&lang=${lang}">
+                <div class="pro-ep-thumb-wrap-pro">
+                  <img src="${ep.thumb || 'default-thumb.jpg'}" class="pro-ep-thumb-pro" alt="Ep ${ep.ep}">
+                  <span class="pro-ep-num-pro">Ep ${ep.ep}</span>
+                </div>
+                <div class="pro-ep-title-pro">${ep.title ? ep.title : 'Episode ' + ep.ep}</div>
+              </a>
+            `).join('') + `</div>`;
+            document.getElementById('pro-episodes-row-wrap').innerHTML = row;
           })
-          .catch(() => {
-            document.getElementById('pro-episodes-row-wrap').innerHTML =
-              `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
+          .catch((e) => {
+            document.getElementById('pro-episodes-row-wrap').innerHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
+            toast('Missing file: ' + e.message); // shows which path failed
           });
       }
     })
     .catch(() => {
-      document.getElementById('series-details').innerHTML =
-        `<div style="color:#fff;padding:30px;">Could not load series info. Try again later.</div>`;
+      document.getElementById('series-details').innerHTML = `<div style="color:#fff;padding:30px;">Could not load series info. Try again later.</div>`;
     });
 })();
