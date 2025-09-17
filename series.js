@@ -1,22 +1,12 @@
-// series.js - Handles dub as old files, subtitles as suffixed files
-
 (function() {
   const qs = new URLSearchParams(location.search);
-  const slug = (qs.get('series') || '').trim();
-  let lang = (qs.get('lang') || '').toLowerCase();
+  const slug = (qs.get('series') || '').trim(); // must match "salauddin-ayyubi"
+  const season = qs.get('season') || '1';
+  const lang = (qs.get('lang') || '').toLowerCase();
 
-  // Only expected languages for this project
-  const SUPPORTED = ['dub', 'en', 'hi', 'ur'];
-  if (!SUPPORTED.includes(lang)) lang = 'en';
-
-  function jsonFor(season) {
-    if (lang === 'dub') {
-      // Use old naming format for dub
-      return `episode-data/${slug}-s${season}.json`;
-    } else {
-      // Use new naming for subtitles (en, hi, ur, etc)
-      return `episode-data/${slug}-s${season}-${lang}.json`;
-    }
+  function jsonFor() {
+    // always fetch the base, no suffix file for Dub
+    return `episode-data/${slug}-s${season}.json`;
   }
 
   function bust(url) {
@@ -32,7 +22,6 @@
     setTimeout(()=>t.remove(), 2600);
   }
 
-  // Load series meta
   fetch('series.json')
     .then(r => r.json())
     .then(arr => {
@@ -42,12 +31,8 @@
         return;
       }
 
-      // SEO
       document.title = `${meta.title} – SmTv Urdu`;
-      const md = document.querySelector('meta[name="description"]');
-      if (md) md.setAttribute('content', `${meta.title} - Watch all episodes of ${meta.title} on SmTv Urdu. Complete Turkish historical drama.`);
 
-      // Header
       document.getElementById('series-details').innerHTML = `
         <section class="pro-series-header-pro">
           <a href="index.html" class="pro-series-back-btn-pro" title="Back">
@@ -61,36 +46,13 @@
             <div class="pro-series-desc-pro">${meta.desc && meta.desc.en ? meta.desc.en : ""}</div>
           </div>
         </section>
-        <nav class="pro-seasons-tabs-pro" id="pro-seasons-tabs"></nav>
         <section class="pro-episodes-row-wrap-pro" id="pro-episodes-row-wrap"></section>
       `;
 
-      // Seasons
-      let seasons = [];
-      if (typeof meta.seasons === 'number') {
-        for (let i = 1; i <= meta.seasons; i++) seasons.push(String(i));
-      } else if (Array.isArray(meta.seasons)) {
-        seasons = meta.seasons.map(s => String(s));
-      } else {
-        seasons = ['1'];
-      }
+      renderSeason();
 
-      // Tabs
-      const tabs = document.getElementById('pro-seasons-tabs');
-      tabs.innerHTML = seasons.map(s => `<button data-season="${s}" class="pro-season-tab-pro${s == seasons[0] ? ' active' : ''}">Season ${s}</button>`).join('');
-      tabs.querySelectorAll('.pro-season-tab-pro').forEach(btn => {
-        btn.addEventListener('click', () => {
-          tabs.querySelectorAll('.pro-season-tab-pro').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          renderSeason(btn.dataset.season);
-        });
-      });
-
-      // Initial
-      renderSeason(seasons[0]);
-
-      function renderSeason(season) {
-        const url = bust(jsonFor(season));
+      function renderSeason() {
+        const url = bust(jsonFor());
         fetch(url)
           .then(r => { if (!r.ok) throw new Error(url); return r.json(); })
           .then(episodes => {
