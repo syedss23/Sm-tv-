@@ -1,11 +1,11 @@
 (function() {
   const qs = new URLSearchParams(location.search);
-  const slug = (qs.get('series') || '').trim(); // must match "salauddin-ayyubi"
-  const season = qs.get('season') || '1';
+  const slug = (qs.get('series') || '').trim();
   const lang = (qs.get('lang') || '').toLowerCase();
+  const seasonParam = qs.get('season') || '';
 
-  function jsonFor() {
-    // always fetch the base, no suffix file for Dub
+  function jsonFor(season) {
+    // Always load unsuffixed filename like sultan-mehmet-fatih-s2.json
     return `episode-data/${slug}-s${season}.json`;
   }
 
@@ -32,7 +32,6 @@
       }
 
       document.title = `${meta.title} – SmTv Urdu`;
-
       document.getElementById('series-details').innerHTML = `
         <section class="pro-series-header-pro">
           <a href="index.html" class="pro-series-back-btn-pro" title="Back">
@@ -46,13 +45,37 @@
             <div class="pro-series-desc-pro">${meta.desc && meta.desc.en ? meta.desc.en : ""}</div>
           </div>
         </section>
+        <nav class="pro-seasons-tabs-pro" id="pro-seasons-tabs"></nav>
         <section class="pro-episodes-row-wrap-pro" id="pro-episodes-row-wrap"></section>
       `;
 
-      renderSeason();
+      // Build season tab buttons from series.json
+      let seasons = [];
+      if (typeof meta.seasons === 'number') {
+        for (let i = 1; i <= meta.seasons; i++) seasons.push(String(i));
+      } else if (Array.isArray(meta.seasons)) {
+        seasons = meta.seasons.map(s => String(s));
+      } else {
+        seasons = ['1'];
+      }
 
-      function renderSeason() {
-        const url = bust(jsonFor());
+      const tabs = document.getElementById('pro-seasons-tabs');
+      tabs.innerHTML = seasons.map(s => 
+        `<button data-season="${s}" class="pro-season-tab-pro${s == (seasonParam || seasons[0]) ? ' active' : ''}">Season ${s}</button>`
+      ).join('');
+      tabs.querySelectorAll('.pro-season-tab-pro').forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabs.querySelectorAll('.pro-season-tab-pro').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          renderSeason(btn.dataset.season);
+        });
+      });
+
+      // Show first or requested season by default
+      renderSeason(seasonParam || seasons[0]);
+
+      function renderSeason(season) {
+        const url = bust(jsonFor(season));
         fetch(url)
           .then(r => { if (!r.ok) throw new Error(url); return r.json(); })
           .then(episodes => {
