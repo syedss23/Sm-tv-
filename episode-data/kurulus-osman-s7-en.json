@@ -3,7 +3,7 @@
 "ep": 1,
 "title": "Episode 1 (English Subtitles)",
 "thumb": "assets/posters/osman_s7e1.jpg",
-"embed": "",
+"embed": "<iframe src='https://yourstreamingsite.com/embed/osman_s7e1' frameborder='0' allowfullscreen></iframe>",
 "download": "https://terabox.com/kurulus-osman-s7e1-en"
 }
 ] 
