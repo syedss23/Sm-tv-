@@ -4,16 +4,15 @@
   const lang = (qs.get('lang') || '').toLowerCase();
   const season = qs.get('season') || '1';
 
-  // Use only the actual file names:
   function jsonFor(season) {
     if (lang === 'dub') {
-      // Dubbed: eg. kurulus-osman-s7.json
+      // Dubbed: kurulus-osman-s7.json
       return `episode-data/${slug}-s${season}.json`;
-    } else if (lang === 'en') {
-      // Subtitles: eg. kurulus-osman-s7-en.json
-      return `episode-data/${slug}-s${season}-en.json`;
+    } else if (['en', 'hi', 'ur'].includes(lang)) {
+      // Subtitles: kurulus-osman-s7-en.json, hi.json, ur.json
+      return `episode-data/${slug}-s${season}-${lang}.json`;
     } else {
-      // Fallback: try dubbed if lang not recognized
+      // Fallback: try dubbed
       return `episode-data/${slug}-s${season}.json`;
     }
   }
