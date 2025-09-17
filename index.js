@@ -1,109 +1,200 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>SmTv Urdu - Watch Turkish Series in Urdu | SMTV Urdu</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="SmTv Urdu: Watch Turkish historical series, Islamic serials, and new releases (like Salahuddin Ayyubi Season 2 and Mehmet Fatih Season 2) in Urdu language.">
-  <meta name="theme-color" content="#0d171f">
+document.addEventListener('DOMContentLoaded', () => {
+  // Sidebar
+  const sbar = document.getElementById('sidebar');
+  document.getElementById('sidebarToggle')?.addEventListener('click', () => sbar.classList.toggle('open'));
+  document.getElementById('sidebarClose')?.addEventListener('click', () => sbar.classList.remove('open'));
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="SmTv Urdu">
-  <meta property="og:site_name" content="SmTv Urdu">
-  <meta property="og:description" content="Watch Urdu dubbed Turkish Series, Islamic serials & new Turkish drama releases. Join SmTv Urdu for all episodes with Urdu subtitles.">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="https://smtvurdu.site/assets/posters/smtv_promo.jpg">
-  <meta property="og:url" content="https://smtvurdu.site">
+  // ---------------- Home: Series list with Dubbed/Subtitles toggle ----------------
+  const grid = document.getElementById('series-grid');
+  if (grid) {
+    const search = document.getElementById('search');
+    const pillDub = document.getElementById('pill-dub');
+    const pillSub = document.getElementById('pill-sub');
+    const subLangs = document.getElementById('sub-langs'); // hidden by default in HTML
 
-  <link rel="icon" href="/favicon.png" type="image/png">
-  <link rel="canonical" href="https://smtvurdu.site/">
+    let SERIES = [];
+    let state = {
+      track: new URLSearchParams(location.search).get('track') || localStorage.getItem('track') || 'dubbed',
+      lang: new URLSearchParams(location.search).get('lang') || localStorage.getItem('subLang') || 'en',
+      q: ''
+    };
 
-  <!-- JSON-LD -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "SmTv Urdu",
-    "url": "https://smtvurdu.site",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://smtvurdu.site/?s={search_term_string}",
-      "query-input": "required name=search_term_string"
+    fetch('series.json')
+      .then(r => {
+        if (!r.ok) throw new Error('Series JSON not found. Check /series.json');
+        return r.json();
+      })
+      .then(data => {
+        SERIES = Array.isArray(data) ? data : [];
+        hydrateUI();
+        render();
+      })
+      .catch(err => {
+        grid.innerHTML = `<div style="color:#f44;padding:1.2em;">Error: ${err.message}</div>`;
+      });
+
+    function hydrateUI() {
+      setPrimary(state.track);
+      toggleSubLangs(); // only show languages when Subtitles is active
+      subLangs?.querySelectorAll('.pill').forEach(b => {
+        b.classList.toggle('active', b.dataset.lang === state.lang);
+        b.setAttribute('aria-pressed', String(b.dataset.lang === state.lang));
+      });
+      setCounts();
+    }
+
+    function setCounts() {
+      const dubbedCount = SERIES.filter(s => s.track === 'dubbed').length;
+      if (pillDub) pillDub.textContent = `Dubbed (${dubbedCount})`;
+      const en = SERIES.filter(s => s.track === 'sub' && s.subLang === 'en').length;
+      const hi = SERIES.filter(s => s.track === 'sub' && s.subLang === 'hi').length;
+      const ur = SERIES.filter(s => s.track === 'sub' && s.subLang === 'ur').length;
+      const enBtn = subLangs?.querySelector('[data-lang="en"]');
+      const hiBtn = subLangs?.querySelector('[data-lang="hi"]');
+      const urBtn = subLangs?.querySelector('[data-lang="ur"]');
+      if (enBtn) enBtn.textContent = `English (${en})`;
+      if (hiBtn) hiBtn.textContent = `Hindi (${hi})`;
+      if (urBtn) urBtn.textContent = `Urdu (${ur})`;
+    }
+
+    function setPrimary(track) {
+      state.track = track;
+      localStorage.setItem('track', track);
+      pillDub?.classList.toggle('active', track === 'dubbed');
+      pillSub?.classList.toggle('active', track === 'sub');
+      pillDub?.setAttribute('aria-pressed', String(track === 'dubbed'));
+      pillSub?.setAttribute('aria-pressed', String(track === 'sub'));
+    }
+
+    function toggleSubLangs() {
+      if (!subLangs) return;
+      subLangs.classList.toggle('hidden', state.track !== 'sub');
+    }
+
+    function setLang(lang) {
+      state.lang = lang;
+      localStorage.setItem('subLang', lang);
+      subLangs?.querySelectorAll('.pill').forEach(b => {
+        b.classList.toggle('active', b.dataset.lang === lang);
+        b.setAttribute('aria-pressed', String(b.dataset.lang === lang));
+      });
+    }
+
+    pillDub?.addEventListener('click', () => { setPrimary('dubbed'); toggleSubLangs(); render(); });
+    pillSub?.addEventListener('click', () => { setPrimary('sub'); toggleSubLangs(); render(); });
+    subLangs?.addEventListener('click', e => {
+      const t = e.target;
+      if (t && t.matches('.pill') && t.dataset.lang) { setLang(t.dataset.lang); render(); }
+    });
+
+    // Mobile-friendly search (filters current view only)
+    search?.addEventListener('input', e => {
+      state.q = e.target.value.trim().toLowerCase();
+      render();
+    });
+
+    function render() {
+      let list = SERIES;
+      if (state.track === 'dubbed') {
+        list = list.filter(s => s.track === 'dubbed');
+      } else {
+        list = list.filter(s => s.track === 'sub' && s.subLang === state.lang);
+      }
+      if (state.q) {
+        list = list.filter(s => (s.title || '').toLowerCase().includes(state.q));
+      }
+      grid.innerHTML = list.length ? list.map(s => `
+        <a class="card" href="series.html?series=${s.slug}">
+          <img src="${s.poster}" alt="${s.title}" loading="lazy" decoding="async">
+          <div class="title">${s.title}</div>
+        </a>
+      `).join('') : `<div style="color:#fff;font-size:1.1em;padding:1.5em;">No series found.</div>`;
+    }
+
+    // Optional: re-run counts on orientation change
+    window.addEventListener('orientationchange', () => setTimeout(setCounts, 300));
+  }
+
+  // ---------------- Legacy SPA list (older markup support) ----------------
+  if (document.getElementById('spa-series-list')) {
+    let seriesList = [];
+    fetch('series.json')
+      .then(r => {
+        if (!r.ok) throw new Error('Series JSON not found. Check /series.json');
+        return r.json();
+      })
+      .then(data => {
+        seriesList = data;
+        renderSeriesList('');
+      })
+      .catch(err => {
+        let gridContainer = document.getElementById('spa-series-list');
+        gridContainer.innerHTML = `<div style="color:#f44;padding:1.2em;">Error: ${err.message}</div>`;
+      });
+
+    document.getElementById('seriesSearch')?.addEventListener('input', e => {
+      renderSeriesList(e.target.value.trim());
+    });
+
+    function renderSeriesList(search) {
+      let gridContainer = document.getElementById('spa-series-list');
+      gridContainer.innerHTML = `<div class="poster-grid"></div>`;
+      let grid = gridContainer.querySelector('.poster-grid');
+      let filtered = seriesList;
+      if (search) {
+        filtered = seriesList.filter(s => (s.title || '').toLowerCase().includes(search.toLowerCase()));
+      }
+      if (!filtered.length) {
+        grid.innerHTML = `<div style="color:#fff;font-size:1.1em;padding:1.5em;">No series found.</div>`;
+        return;
+      }
+      filtered.forEach(series => {
+        let a = document.createElement('a');
+        a.href = `series.html?series=${series.slug}`;
+        a.className = 'poster-item';
+        a.innerHTML = `
+          <img src="${series.poster}" alt="${series.title}">
+          <div class="title">${series.title}</div>
+        `;
+        grid.appendChild(a);
+      });
     }
   }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "SmTv Urdu",
-    "url": "https://smtvurdu.site",
-    "logo": "https://smtvurdu.site/assets/logo.png"
+
+  // ---------------- Season page: Salahuddin Ayyubi S2 ----------------
+  if (document.getElementById('season-2-episodes')) {
+    fetch('episode-data/salauddin-ayyubi-s2.json')
+      .then(resp => {
+        if (!resp.ok) throw new Error('Season JSON not found. Check episode-data/salauddin-ayyubi-s2.json');
+        return resp.json();
+      })
+      .then(episodes => renderEpisodes(episodes))
+      .catch(err => {
+        document.getElementById('season-2-episodes').innerHTML =
+          `<div style="color:#f44;padding:1.2em;">Error: ${err.message}</div>`;
+      });
+
+    function renderEpisodes(episodes) {
+      let epContainer = document.getElementById('season-2-episodes');
+      if (!episodes || !episodes.length) {
+        epContainer.innerHTML =
+          `<div style="color:#fff;padding:1.5em;">Episodes will appear here as soon as they release!</div>`;
+        return;
+      }
+      let listHTML = '<div class="pro-episodes-row-pro">';
+      episodes.forEach(ep => {
+        listHTML += `
+          <a class="pro-episode-card-pro" href="episode.html?ep=${ep.slug}">
+            <div class="pro-ep-thumb-wrap-pro">
+              <img src="${ep.thumb}" alt="${ep.title}" class="pro-ep-thumb-pro" loading="lazy" decoding="async">
+              <span class="pro-ep-num-pro">EP ${ep.ep}</span>
+            </div>
+            <div class="pro-ep-title-pro">${ep.title ? ep.title : 'Episode ' + ep.ep}</div>
+          </a>
+        `;
+      });
+      listHTML += '</div>';
+      epContainer.innerHTML = listHTML;
+    }
   }
-  </script>
-
-  <!-- Monetag SDK -->
-  <script src="//libtl.com/sdk.js" data-zone="9623557" data-sdk="show_9623557"></script>
-
-  <!-- Fonts & Styles -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <script defer src="index.js"></script>
-</head>
-<body>
-  <!-- Sidebar -->
-  <div id="sidebar" class="sidebar">
-    <button id="sidebarClose" class="sidebar-close-btn" aria-label="Close menu">&times;</button>
-    <div class="brand">SmTv Urdu</div>
-    <nav>
-      <a href="index.html" id="navHome">Home</a>
-      <a href="index.html">All Series</a>
-      <a href="https://t.me/smtv_official1" target="_blank" rel="noopener">Join Telegram Channel</a>
-      <div class="lang-label">Language</div>
-      <select id="langSelect" aria-label="Site language">
-        <option value="en">English</option>
-        <option value="hi">Hindi</option>
-        <option value="ur">Urdu</option>
-      </select>
-    </nav>
-  </div>
-
-  <div id="main-content">
-    <header>
-      <button id="sidebarToggle" aria-label="Open menu">&#9776;</button>
-      <h1 id="mainTitle" style="display:inline-block; font-family:'Montserrat',sans-serif; font-weight:600; color:#fff; margin:0;">
-        SmTv Urdu
-      </h1>
-      <div class="searchbar-container">
-        <span class="search-icon">&#128269;</span>
-        <input type="text" id="search" placeholder="Search SmTv Urdu..." autocomplete="off" aria-label="Search series">
-      </div>
-    </header>
-
-    <!-- Filter bar: show only Dubbed/Subtitles by default -->
-    <div class="filter-bar">
-      <div class="primary">
-        <button id="pill-dub" class="pill active" aria-pressed="true">Dubbed</button>
-        <button id="pill-sub" class="pill" aria-pressed="false">Subtitles</button>
-      </div>
-      <!-- Language pills are hidden initially; index.js reveals this only when Subtitles is active -->
-      <div id="sub-langs" class="secondary hidden" aria-label="Subtitle languages">
-        <button class="pill" data-lang="en" aria-pressed="true">English</button>
-        <button class="pill" data-lang="hi" aria-pressed="false">Hindi</button>
-        <button class="pill" data-lang="ur" aria-pressed="false">Urdu</button>
-      </div>
-    </div>
-
-    <!-- 320x50 ad banner -->
-    <div class="ad-space" id="adSpace">
-      <script type="text/javascript">
-        atOptions = { key: 'c91a82435d260630918ecc80c95125ac', format: 'iframe', height: 50, width: 320, params: {} };
-      </script>
-      <script type="text/javascript" src="//www.highperformanceformat.com/c91a82435d260630918ecc80c95125ac/invoke.js"></script>
-    </div>
-
-    <!-- Series grid -->
-    <div id="series-grid" class="series-grid" aria-live="polite"></div>
-  </div>
-</body>
-</html>
+});
