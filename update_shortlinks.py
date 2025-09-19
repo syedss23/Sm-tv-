@@ -1,8 +1,8 @@
 import json
 import requests
+import re
 
 API_KEY = '1e9c15ef4c7e5d1cda14440ee88b3ee050761100'
-# API endpoint for nanolinks.in (no alias by default)
 API_ENDPOINT = 'https://nanolinks.in/api?api={}&url={}'
 
 def get_shortlink(long_url):
@@ -24,7 +24,13 @@ def update_json(filename):
         episodes = json.load(f)
     changed = False
     for ep in episodes:
-        url = ep.get('download')
+        # Extract streaming page url from embed field
+        embed = ep.get('embed')
+        url = None
+        if embed:
+            match = re.search(r"src=['\"]([^'\"]+)", embed)
+            if match:
+                url = match.group(1)
         if url and ("shortlink" not in ep or not ep["shortlink"]):
             shortlink = get_shortlink(url)
             if shortlink:
@@ -38,13 +44,13 @@ def update_json(filename):
     else:
         print(f"No changes needed in {filename}")
 
-# List your JSON episode files below
+# List your JSON files here:
 json_files = [
     'kurulus-osman-s7.json',
     'sultan-mehmet-fatih-s1.json',
     'destan-s1.json',
     'salauddin-ayyubi-s1.json',
-    # Add more filenames as needed
+    # Add more files as needed
 ]
 
 for fname in json_files:
@@ -52,5 +58,4 @@ for fname in json_files:
         update_json(fname)
     except Exception as ex:
         print(f"Error processing {fname}: {ex}")
-
-print("All done.")
+        
