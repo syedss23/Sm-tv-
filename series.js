@@ -6,13 +6,10 @@
 
   function jsonFor(season) {
     if (lang === 'dub') {
-      // Dubbed: kurulus-osman-s7.json
       return `episode-data/${slug}-s${season}.json`;
     } else if (['en', 'hi', 'ur'].includes(lang)) {
-      // Subtitles: kurulus-osman-s7-en.json, hi.json, ur.json
       return `episode-data/${slug}-s${season}-${lang}.json`;
     } else {
-      // Fallback: try dubbed
       return `episode-data/${slug}-s${season}.json`;
     }
   }
@@ -87,15 +84,25 @@
               document.getElementById('pro-episodes-row-wrap').innerHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
               return;
             }
-            const html = `<div class="pro-episodes-row-pro">` + episodes.map(ep => `
-              <a class="pro-episode-card-pro" href="episode.html?series=${slug}&season=${season}&ep=${ep.ep}&lang=${lang}">
-                <div class="pro-ep-thumb-wrap-pro">
-                  <img src="${ep.thumb || 'default-thumb.jpg'}" class="pro-ep-thumb-pro" alt="Ep ${ep.ep}">
-                  <span class="pro-ep-num-pro">Ep ${ep.ep}</span>
-                </div>
-                <div class="pro-ep-title-pro">${ep.title || ('Episode ' + ep.ep)}</div>
-              </a>
-            `).join('') + `</div>`;
+            const html = `<div class="pro-episodes-row-pro">` + episodes.map(ep => {
+              // Prefer shortlink if it exists:
+              const episodeUrl = ep.shortlink
+                ? ep.shortlink
+                : `episode.html?series=${slug}&season=${season}&ep=${ep.ep}&lang=${lang}`;
+              // Open shortlinks in new tab, fallback stays in tab
+              const extra = ep.shortlink
+                ? 'target="_blank" rel="noopener"'
+                : '';
+              return `
+                <a class="pro-episode-card-pro" href="${episodeUrl}" ${extra}>
+                  <div class="pro-ep-thumb-wrap-pro">
+                    <img src="${ep.thumb || 'default-thumb.jpg'}" class="pro-ep-thumb-pro" alt="Ep ${ep.ep}">
+                    <span class="pro-ep-num-pro">Ep ${ep.ep}</span>
+                  </div>
+                  <div class="pro-ep-title-pro">${ep.title || ('Episode ' + ep.ep)}</div>
+                </a>
+              `;
+            }).join('') + `</div>`;
             document.getElementById('pro-episodes-row-wrap').innerHTML = html;
           })
           .catch(e => {
