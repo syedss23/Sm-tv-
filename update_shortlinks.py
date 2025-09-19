@@ -18,6 +18,7 @@ def get_shortlink(long_url):
         api_url = API_ENDPOINT.format(API_KEY, long_url)
         res = requests.get(api_url)
         data = res.json()
+        # Only use if status is success and a shortlink is returned
         if data.get("status") == "success" and data.get("shortenedUrl"):
             return data["shortenedUrl"]
         else:
@@ -33,8 +34,9 @@ def update_json(filename, info):
     changed = False
     for ep in episodes:
         ep_num = ep['ep']
+        # Generate your streaming landing page URL for this episode
         page_url = f"https://www.smtvurdu.site/episode?series={info['series']}&season={info['season']}&ep={ep_num}&lang="
-        # Check if shortlink needs to be created or refreshed
+        # Only get shortlink if missing or not valid
         if ("shortlink" not in ep) or (not ep["shortlink"]) or (not ep["shortlink"].startswith("https://nanolinks.in/")):
             print(f"Generating shortlink for: {page_url}")
             shortlink = get_shortlink(page_url)
