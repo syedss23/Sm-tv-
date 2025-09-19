@@ -24,19 +24,30 @@ def update_json(filename):
         episodes = json.load(f)
     changed = False
     for ep in episodes:
-        # Extract streaming page url from embed field
         embed = ep.get('embed')
         url = None
+        print(f"ep: {ep}")
+        print(f"embed: {embed}")
+
+        # This will work for BOTH <iframe src="..."> and <div>...<iframe src='...'>
         if embed:
-            match = re.search(r"src=['\"]([^'\"]+)", embed)
+            match = re.search(r"<iframe[^>]+src=['\"]([^'\"]+)", embed)
             if match:
                 url = match.group(1)
+                print(f"Extracted url: {url}")
+            else:
+                print("NO MATCH for embed src.")
+        else:
+            print("NO embed field.")
+
         if url and ("shortlink" not in ep or not ep["shortlink"]):
             shortlink = get_shortlink(url)
             if shortlink:
                 ep["shortlink"] = shortlink
-                print(f"Updated: {ep.get('title', '')} - {shortlink}")
+                print(f"Added shortlink: {shortlink}")
                 changed = True
+            else:
+                print(f"Shortlink API failed for: {url}")
     if changed:
         with open(filename, 'w') as f:
             json.dump(episodes, f, indent=2)
@@ -58,4 +69,5 @@ for fname in json_files:
         update_json(fname)
     except Exception as ex:
         print(f"Error processing {fname}: {ex}")
-        
+
+print("Done processing all files.")
