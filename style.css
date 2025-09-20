@@ -62,7 +62,7 @@ header{padding:20px 10px 8px 10px;border-bottom:1px solid #292a2f;position:relat
 .secondary.hidden{display:none}
 @media (max-width:420px){ .pill{padding:10px 14px;font-size:1em} }
 
-/* --- Home Poster Grid (exact old look) --- */
+/* Home Poster Grid */
 .poster-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;padding:12px 9px 18px 9px;background:transparent;max-width:1120px;margin:auto}
 .poster-item{background:#262838;border-radius:8px;box-shadow:0 1.5px 6px #0003;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:box-shadow .17s,background .19s;min-width:0;padding:0 0 8px 0;text-decoration:none}
 .poster-item:hover{background:#212345;box-shadow:0 4px 18px #0a121c20;transform:translateY(-2px) scale(1.03)}
@@ -78,9 +78,9 @@ header{padding:20px 10px 8px 10px;border-bottom:1px solid #292a2f;position:relat
 .card .title{padding:10px 4px 12px;color:#fff;font-weight:700;font-size:.95em;text-align:center}
 @media (max-width:450px){.series-grid{grid-template-columns:repeat(2,1fr)}.card img{min-height:80px;max-height:110px}}
 
-/* ------------------------
+/* ===========================
    Series/Episodes Page
------------------------- */
+========================== */
 .pro-series-header-pro{display:flex;align-items:flex-start;gap:23px;margin:26px 0 13px 0;background:#141926;border-radius:18px;box-shadow:0 2.5px 22px #07163a38;padding:22px 20px 19px 13px;position:relative}
 .pro-series-back-btn-pro{display:flex;align-items:center;background:#16233b;border-radius:11px;padding:7px 15px 7px 8px;color:#23c6ed;text-decoration:none;border:1.5px solid #23c6ed;font-size:1.15em;box-shadow:0 1px 9px #062a4744;margin-right:9px;position:absolute;left:14px;top:16px;transition:background .14s,border .14s,color .14s,box-shadow .13s;z-index:2}
 .pro-series-back-btn-pro:hover{background:#1d2b44;color:#3de9fc;border-color:#3de9fc}
@@ -138,36 +138,51 @@ button:hover{background:#272838}
 .pro-premium-btn:hover{background:#07785e}
 
 /* ===========================
-   Professional "How to Watch Episodes" Block
+   Pro Highlighted Tutorial Section
 =========================== */
-.pro-tutorial-block {
-  margin: 40px auto 30px auto;
-  background: #162438;
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(30,46,76,0.18);
-  overflow: hidden;
-  border: 1.5px solid #116873;
-  max-width: 700px;
-}
-.pro-tutorial-header {
-  padding: 25px 18px 8px 18px;
+.pro-highlight-section {
+  background: linear-gradient(106deg,#124576 20%,#1dc3fa 100%);
+  border-radius: 18px 18px 0 0;
+  padding: 19px 12px 15px 12px;
   text-align: center;
-  color: #23c6ed;
-  font-size: 2rem;
-  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
-  text-shadow: 0 1px 8px rgba(35,198,237,0.18);
-  font-weight: 800;
-  letter-spacing: 0.8px;
+  box-shadow: 0 4px 20px #12c0fa25;
+  max-width: 650px;
+  margin: 32px auto 0 auto;
+  border: 1.5px solid #15b4eb;
 }
-.pro-tutorial-video {
+
+.pro-highlight-title {
+  font-size: 1.55em;
+  color: #fff;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin: 0;
+  line-height: 1.16;
+  text-shadow: 0 2px 18px #0993ce32, 0 1.5px 9px #0002;
+}
+
+.pro-video-card {
+  background: #162438;
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 6px 24px #1dc3fa1f;
+  border: 1.5px solid #15b4eb;
+  max-width: 650px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 50px;
+  overflow: hidden;
+  padding-bottom: 8px;
+}
+.pro-video-frame-wrap {
   position: relative;
   width: 100%;
   height: 0;
   padding-bottom: 56.25%;
 }
-.pro-tutorial-video iframe {
+.pro-video-frame-wrap iframe {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
-  border-radius: 0 0 16px 16px;
+  border-radius: 0 0 18px 18px;
   border: none;
-}
+  }
