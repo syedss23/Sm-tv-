@@ -24,20 +24,8 @@ if (season) {
 const HOW_TO_DOWNLOAD_URL = "https://t.me/howtodownloadd1/10";
 const PREMIUM_CHANNEL_URL = "https://t.me/itzmezain1/2905";
 
-// --- Ad frequency control helper: shows only one ad per hour per user ---
-function shouldShowAd() {
-  const key = "lastAdTime";
-  const now = Date.now();
-  const last = localStorage.getItem(key);
-  // 1 hour = 3600000 ms
-  if (!last || now - parseInt(last) > 3600000) {
-    localStorage.setItem(key, now);
-    return true;
-  }
-  return false;
-}
-
 // --- Monetag Rewarded Interstitial ---
+// KEEP this function for download ads
 function showRewardedAdThen(done) {
   if (typeof show_9623557 === "function") {
     show_9623557().then(done).catch(done);
@@ -61,11 +49,8 @@ Promise.all([
     return;
   }
 
-  if (shouldShowAd()) {
-    showRewardedAdThen(renderEpisode);
-  } else {
-    renderEpisode();
-  }
+  // *** CHANGED: No ad on episode load, directly render episode ***
+  renderEpisode();
 
   function renderEpisode() {
     container.innerHTML = `
@@ -168,7 +153,7 @@ Promise.all([
       });
     }
 
-    // --- Monetag ad for Download 2
+    // --- Monetag ad for Download 2 (UNCHANGED)
     const download2Btn = document.getElementById('download2Btn');
     if (download2Btn && ep.download2) {
       download2Btn.addEventListener('click', function(e) {
