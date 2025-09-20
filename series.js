@@ -85,11 +85,9 @@
               return;
             }
             const html = `<div class="pro-episodes-row-pro">` + episodes.map(ep => {
-              // Prefer shortlink if it exists:
               const episodeUrl = ep.shortlink
                 ? ep.shortlink
                 : `episode.html?series=${slug}&season=${season}&ep=${ep.ep}&lang=${lang}`;
-              // Open shortlinks in new tab, fallback stays in tab
               const extra = ep.shortlink
                 ? 'target="_blank" rel="noopener"'
                 : '';
@@ -103,7 +101,14 @@
                 </a>
               `;
             }).join('') + `</div>`;
-            document.getElementById('pro-episodes-row-wrap').innerHTML = html;
+            // --- EMBEDDED RUMBLE VIDEO ---
+            const embed = `<div style='margin-top:32px;'>
+              <h3 style="color:#23c6ed;">How to Watch Episodes</h3>
+              <div style='position:relative;width:100%;height:0;padding-bottom:56.25%;'>
+                <iframe class='rumble' src='https://rumble.com/embed/v6x1664/?pub=2kaom2' style='position:absolute;top:0;left:0;width:100%;height:100%;' frameborder='0' allowfullscreen></iframe>
+              </div>
+            </div>`;
+            document.getElementById('pro-episodes-row-wrap').innerHTML = html + embed;
           })
           .catch(e => {
             document.getElementById('pro-episodes-row-wrap').innerHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
