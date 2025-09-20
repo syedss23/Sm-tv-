@@ -101,13 +101,17 @@
                 </a>
               `;
             }).join('') + `</div>`;
-            // --- EMBEDDED RUMBLE VIDEO ---
-            const embed = `<div style='margin-top:32px;'>
-              <h3 style="color:#23c6ed;">How to Watch Episodes</h3>
-              <div style='position:relative;width:100%;height:0;padding-bottom:56.25%;'>
-                <iframe class='rumble' src='https://rumble.com/embed/v6x1664/?pub=2kaom2' style='position:absolute;top:0;left:0;width:100%;height:100%;' frameborder='0' allowfullscreen></iframe>
-              </div>
-            </div>`;
+            // Professional video section using CSS classes
+            const embed = `
+              <section class="pro-tutorial-block">
+                <div class="pro-tutorial-header">How to Watch Episodes</div>
+                <div class="pro-tutorial-video">
+                  <iframe class='rumble'
+                    src='https://rumble.com/embed/v6x1664/?pub=2kaom2'
+                    allowfullscreen></iframe>
+                </div>
+              </section>
+            `;
             document.getElementById('pro-episodes-row-wrap').innerHTML = html + embed;
           })
           .catch(e => {
