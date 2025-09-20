@@ -4,13 +4,15 @@
     "title": "Episode 1",
     "thumb": "assets/posters/mehmet_fatih_s2e1.jpg",
     "embed": "<iframe src='https://yourstreamingsite.com/embed/mehmet_fatih_s2e1' frameborder='0' allowfullscreen></iframe>",
-    "download": "https://terabox.com/mehmet-fatih-s2e1"
+    "download": "https://terabox.com/mehmet-fatih-s2e1",
+    "shortlink": "https://nanolinks.in/iaD"
   },
   {
     "ep": 2,
     "title": "Episode 2",
     "thumb": "assets/posters/mehmet_fatih_s2e2.jpg",
     "embed": "<iframe src='https://yourstreamingsite.com/embed/mehmet_fatih_s2e2' frameborder='0' allowfullscreen></iframe>",
-    "download": "https://terabox.com/mehmet-fatih-s2e2"
+    "download": "https://terabox.com/mehmet-fatih-s2e2",
+    "shortlink": "https://nanolinks.in/aD"
   }
 ]
