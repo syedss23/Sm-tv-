@@ -102,11 +102,14 @@
               `;
             }).join('') + `</div>`;
 
-            // Updated: Streaming-style highlighted bar + video card
-            const embed = `
+            // TITLE SECTION (highlighted bar)
+            const tutorialTitle = `
               <section class="pro-highlight-section">
                 <div class="pro-highlight-title">How to Watch Episodes</div>
               </section>
+            `;
+            // VIDEO SECTION (polished card)
+            const tutorialVideo = `
               <section class="pro-video-card">
                 <div class="pro-video-frame-wrap">
                   <iframe class='rumble'
@@ -115,7 +118,8 @@
                 </div>
               </section>
             `;
-            document.getElementById('pro-episodes-row-wrap').innerHTML = html + embed;
+            // Combine sections (title and video visually separate)
+            document.getElementById('pro-episodes-row-wrap').innerHTML = html + tutorialTitle + tutorialVideo;
           })
           .catch(e => {
             document.getElementById('pro-episodes-row-wrap').innerHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
