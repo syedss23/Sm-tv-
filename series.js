@@ -101,11 +101,14 @@
                 </a>
               `;
             }).join('') + `</div>`;
-            // Professional video section using CSS classes
+
+            // Updated: Streaming-style highlighted bar + video card
             const embed = `
-              <section class="pro-tutorial-block">
-                <div class="pro-tutorial-header">How to Watch Episodes</div>
-                <div class="pro-tutorial-video">
+              <section class="pro-highlight-section">
+                <div class="pro-highlight-title">How to Watch Episodes</div>
+              </section>
+              <section class="pro-video-card">
+                <div class="pro-video-frame-wrap">
                   <iframe class='rumble'
                     src='https://rumble.com/embed/v6x1664/?pub=2kaom2'
                     allowfullscreen></iframe>
