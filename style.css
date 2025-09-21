@@ -112,10 +112,10 @@ header {
   box-shadow: 0 10px 30px #0ef5c431;
   text-decoration: none;
 }
-  .telegram-pro {
+.telegram-pro {
   background: linear-gradient(96deg, #1d5fa9 65%, #27b4ff 100%);
   color: #fff !important;
-  box-shadow: 0 0 12px 2px #1d5fa999, 0 6px 22px #27b4ff38; /* glow */
+  box-shadow: 0 0 12px 2px #1d5fa999, 0 6px 22px #27b4ff38;
   border: none;
 }
 .telegram-pro:hover,
@@ -127,12 +127,89 @@ header {
 .whatsapp-pro {
   background: linear-gradient(96deg, #246643 60%, #25d366 100%);
   color: #fff !important;
+  box-shadow: 0 0 12px 2px #25d36690, 0 6px 22px #25d36633;
+  border: none;
 }
 .whatsapp-pro:hover, .whatsapp-pro:focus {
   background: linear-gradient(96deg,#25d366 40%,#246643 100%);
   color: #173b21 !important;
 }
 .brand { display:none !important; }
+
+/* Series Detail Page Modern Header */
+.pro-series-header-pro {
+  background: #232945;
+  border-radius: 20px;
+  box-shadow: 0 4px 28px #011b3844;
+  padding: 16px 10px 18px 10px;
+  margin: 18px 8px 10px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.pro-series-poster-pro {
+  width: 100%;
+  max-width: 340px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px #191a2388;
+  object-fit: cover;
+  margin-bottom: 18px;
+}
+.pro-series-meta-pro {
+  text-align: center;
+}
+.pro-series-title-pro {
+  font-size: 1.28em;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.pro-series-desc-pro {
+  font-size: 1em;
+  color: #e3e7ef;
+  margin-bottom: 12px;
+}
+.pro-seasons-tabs-pro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin: 12px 0 18px 0;
+}
+.pro-season-tab-pro {
+  background: linear-gradient(90deg,#101f37,#0c3454 90%);
+  color: #e7f8ff;
+  font-family: 'Montserrat', Arial, sans-serif;
+  padding: 7px 20px;
+  margin: 3px 0;
+  font-size: 1em;
+  font-weight: 700;
+  border-radius: 999px;
+  border: 1.5px solid #24cddb55;
+  cursor: pointer;
+  transition: background 0.13s, color 0.13s, border-color 0.13s;
+}
+.pro-season-tab-pro.active {
+  background: linear-gradient(90deg,#11d8e1 30%,#128cf4 90%);
+  color: #061626;
+  border-color: #36eaff;
+  box-shadow: 0 2px 18px #20e2ff33;
+}
+.pro-season-tab-pro:hover {
+  background: linear-gradient(90deg,#209be2 30%,#20e2ff 100%);
+  color: #061626;
+}
+
+/* Responsive tweaks for mobile */
+@media (max-width: 560px) {
+  .pro-series-header-pro { padding: 10px 2vw 13px 2vw;}
+  .pro-series-poster-pro { max-width: 99vw; border-radius: 12px;}
+  .pro-series-title-pro { font-size: 1.13em;}
+}
+
+/* Optional: box for episodes grid if needed */
+.pro-episodes-row-wrap-pro {
+  margin: 0 7px 24px 7px;
+}
 
 /* Desktop push content when sidebar open */
 @media (min-width:701px){
@@ -231,5 +308,3 @@ header {
   .poster-grid,.series-grid{grid-template-columns:repeat(2,1fr)}
   .poster-item img,.card img{min-height:80px;max-height:110px}
 }
-
-/* (All pro sections/streaming/episodes/tutorial sections remain unchanged) */
