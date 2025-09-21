@@ -1,53 +1,22 @@
 /* Base */
-body {
-  font-family: 'Montserrat', Arial, sans-serif;
-  margin: 0;
-  background: #15171c;
-  color: #fff;
-  -webkit-font-smoothing: antialiased;
-  font-variant-ligatures: common-ligatures;
-}
-#main-content, header, .sidebar { background: #15171c; color: #fff; }
-header {
-  padding: 20px 10px 8px 10px;
-  border-bottom: 1px solid #292a2f;
-  position: relative;
-}
-#sidebarToggle {
-  font-size: 2em;
-  background: none;
-  border: none;
-  color: #fff;
-  margin-right: 14px;
-}
-#mainTitle { display: inline-block; margin: 0; font-size: 1.65em; color: #fff; }
-.searchbar-container {
-  display: flex;
-  align-items: center;
-  background: #23242a;
-  border-radius: 32px;
-  margin: 16px 0 6px 0;
-  padding: 5px 10px;
-  color: #fff;
-}
-.search-icon { margin-right: 8px; font-size: 1.1em; color: #bbb; }
-#seriesSearch, #search {
-  border: none; outline: none;
-  background: transparent;
-  font-size: 1em;
-  width: 100%;
-  padding: 8px 0;
-  color: #fff;
-}
+body{font-family:'Montserrat',Arial,sans-serif;margin:0;background:#15171c;color:#fff}
+#main-content,header,.sidebar{background:#15171c;color:#fff}
+header{padding:20px 10px 8px 10px;border-bottom:1px solid #292a2f;position:relative}
+#sidebarToggle{font-size:2em;background:none;border:none;color:#fff;margin-right:14px}
+#mainTitle{display:inline-block;margin:0;font-size:1.65em;color:#fff}
+.searchbar-container{display:flex;align-items:center;background:#23242a;border-radius:32px;margin:16px 0 6px 0;padding:5px 10px;color:#fff}
+.search-icon{margin-right:8px;font-size:1.1em;color:#bbb}
+#seriesSearch,#search{border:none;outline:none;background:transparent;font-size:1em;width:100%;padding:8px 0;color:#fff}
 
-/* Sidebar - Professional Style */
+/* Sidebar - PROFESSIONAL UPGRADE */
 .sidebar {
   position: fixed;
   z-index: 20;
-  left: 0; top: 0;
+  left: 0;
+  top: 0;
   width: 260px;
   height: 100vh;
-  background: rgba(20, 24, 37, 0.98);
+  background: rgba(20,24,37,0.98);
   box-shadow: 0 8px 36px #06def438;
   border-radius: 0 34px 34px 0;
   padding: 27px 0 0 0;
@@ -105,16 +74,31 @@ header {
   text-align: left;
   outline: none;
 }
-.sidebar-btn-pro:hover, .sidebar-btn-pro:focus {
+.sidebar-btn-pro:hover,
+.sidebar-btn-pro:focus {
   background: linear-gradient(96deg,#19e8dc 30%,#337df7 99%);
   color: #1f3544 !important;
   transform: translateY(-2px) scale(1.07);
   box-shadow: 0 10px 30px #0ef5c431;
   text-decoration: none;
 }
+.telegram-pro {
+  background: linear-gradient(96deg, #1d5fa9 65%, #27b4ff 100%);
+  color: #fff !important;
+  box-shadow: 0 0 12px 2px #1d5fa999, 0 6px 22px #27b4ff38;
+  border: none;
+}
+.telegram-pro:hover,
+.telegram-pro:focus {
+  background: linear-gradient(96deg,#40c7fe 30%,#145080 100%);
+  color: #145080 !important;
+  box-shadow: 0 0 22px 4px #40c7fe66, 0 10px 36px #015a9680;
+}
 .whatsapp-pro {
   background: linear-gradient(96deg, #246643 60%, #25d366 100%);
   color: #fff !important;
+  box-shadow: 0 0 12px 2px #25d36690, 0 6px 22px #25d36633;
+  border: none;
 }
 .whatsapp-pro:hover, .whatsapp-pro:focus {
   background: linear-gradient(96deg,#25d366 40%,#246643 100%);
@@ -129,20 +113,16 @@ header {
   .sidebar{transform:translateX(-100%)}
   .sidebar.open{transform:translateX(0)}
 }
-@media (max-width:700px){
-  #main-content{margin-left:0}
-  .sidebar{width:90vw}
-  .sidebar-header-pro{padding:0 10px 13px 12px;}
-  .sidebar-logo-pro{font-size:1.28em}
-  .sidebar-btn-pro{font-size:1em; padding:13px 8px;}
-}
+/* Mobile sidebar width */
+@media (max-width:700px){#main-content{margin-left:0}.sidebar{width:90vw}.sidebar-header-pro{padding:0 10px 13px 12px;}.sidebar-logo-pro{font-size:1.28em}.sidebar-btn-pro{font-size:1em; padding:13px 8px;}}
 
 /* Ads */
 .ad-space{margin:24px 0 10px 0;text-align:center;min-height:60px;background:#191a23;border-radius:10px}
 
-/* Filter bar – Large pro-style pills */
+/* Filter bar – polished large pills (no counts) */
 .filter-bar{display:flex;flex-direction:column;gap:10px;margin:12px 10px 8px 10px;max-width:1120px}
 .filter-bar .primary,.filter-bar .secondary{display:flex;gap:10px;flex-wrap:wrap}
+
 .pill{
   flex:0 0 auto;
   padding:10px 18px;
@@ -170,54 +150,127 @@ header {
 .secondary.hidden{display:none}
 @media (max-width:420px){ .pill{padding:10px 14px;font-size:1em} }
 
-/* Home Poster and Series Grid */
-.poster-grid,.series-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
-  gap:12px;
-  padding:12px 9px 18px 9px;
-  max-width:1120px;
-  margin:auto;
-}
-.poster-item,.card{
-  background:#262838;
-  border-radius:8px;
-  box-shadow:0 1.5px 6px #0003;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  cursor:pointer;
-  transition:box-shadow .17s,background .19s;
-  min-width:0;
-  padding:0 0 8px 0;
-  text-decoration:none;
-}
-.poster-item:hover,.card:hover{
-  background:#212345;
-  box-shadow:0 4px 18px #0a121c20;
-  transform:translateY(-2px) scale(1.03)
-}
-.poster-item img,.card img{
-  width:100%;
-  aspect-ratio:6/8;
-  min-height:108px;max-height:180px;
-  object-fit:cover;
-  border-radius:6px 6px 0 0;
-  background:#191a23
-}
-.poster-item .title,.card .title{
-  color:#fff;
-  font-size:.95em;
-  font-weight:700;
-  margin:10px 0 0 0;
-  text-align:center;
-  white-space:normal;
-  padding:0 4px;
-  letter-spacing:.01em;
-}
-@media (max-width:450px){
-  .poster-grid,.series-grid{grid-template-columns:repeat(2,1fr)}
-  .poster-item img,.card img{min-height:80px;max-height:110px}
+/* Home Poster Grid */
+.poster-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;padding:12px 9px 18px 9px;background:transparent;max-width:1120px;margin:auto}
+.poster-item{background:#262838;border-radius:8px;box-shadow:0 1.5px 6px #0003;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:box-shadow .17s,background .19s;min-width:0;padding:0 0 8px 0;text-decoration:none}
+.poster-item:hover{background:#212345;box-shadow:0 4px 18px #0a121c20;transform:translateY(-2px) scale(1.03)}
+.poster-item img{width:100%;aspect-ratio:6/8;min-height:108px;max-height:180px;object-fit:cover;border-radius:6px 6px 0 0;background:#191a23}
+.poster-item .title{color:#fff;font-size:.95em;font-weight:700;margin:10px 0 0 0;text-align:center;white-space:normal;padding:0 4px;letter-spacing:.01em}
+@media (max-width:450px){.poster-grid{grid-template-columns:repeat(2,1fr)}.poster-item img{min-height:80px;max-height:110px}}
+
+/* New Home grid uses the same sizing */
+.series-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;padding:12px 9px 18px 9px;max-width:1120px;margin:auto}
+.card{background:#262838;border-radius:8px;box-shadow:0 1.5px 6px #0003;display:block;text-decoration:none;overflow:hidden;transition:transform .17s,box-shadow .17s,background .17s}
+.card:hover{background:#212345;box-shadow:0 4px 18px #0a121c20;transform:translateY(-2px) scale(1.03)}
+.card img{width:100%;aspect-ratio:6/8;min-height:108px;max-height:180px;object-fit:cover;display:block;background:#191a23;border-radius:6px 6px 0 0}
+.card .title{padding:10px 4px 12px;color:#fff;font-weight:700;font-size:.95em;text-align:center}
+@media (max-width:450px){.series-grid{grid-template-columns:repeat(2,1fr)}.card img{min-height:80px;max-height:110px}}
+
+/* ===========================
+   Series/Episodes Page
+========================== */
+.pro-series-header-pro{display:flex;align-items:flex-start;gap:23px;margin:26px 0 13px 0;background:#141926;border-radius:18px;box-shadow:0 2.5px 22px #07163a38;padding:22px 20px 19px 13px;position:relative}
+.pro-series-back-btn-pro{display:flex;align-items:center;background:#16233b;border-radius:11px;padding:7px 15px 7px 8px;color:#23c6ed;text-decoration:none;border:1.5px solid #23c6ed;font-size:1.15em;box-shadow:0 1px 9px #062a4744;margin-right:9px;position:absolute;left:14px;top:16px;transition:background .14s,border .14s,color .14s,box-shadow .13s;z-index:2}
+.pro-series-back-btn-pro:hover{background:#1d2b44;color:#3de9fc;border-color:#3de9fc}
+.pro-series-poster-pro{width:120px;border-radius:12px;box-shadow:0 3.5px 30px #03152588;min-width:82px}
+.pro-series-meta-pro{flex:1;min-width:0;padding-left:10px}
+.pro-series-title-pro{font-size:1.32em;margin:0 0 11px 0;color:#00e0ef;line-height:1.14}
+.pro-series-desc-pro{color:#e2eaf5;font-size:1em;letter-spacing:.01em;text-shadow:0 1px 8px #0012151c}
+.pro-seasons-tabs-pro{display:flex;gap:14px;flex-wrap:wrap;margin:37px 0 19px 10px}
+.pro-season-tab-pro{background:linear-gradient(90deg,#1c285b 0%,#1ec9ee 100%);border:none;color:#fff;font-size:1.06em;padding:7px 27px;border-radius:18px;cursor:pointer;font-weight:700;letter-spacing:.04em;box-shadow:0 1.5px 8px #1a234a19;transition:background .14s,color .14s,box-shadow .18s,transform .12s;opacity:.93}
+.pro-season-tab-pro.active,.pro-season-tab-pro:focus{background:linear-gradient(90deg,#2cebf9 0%,#2bafe7 90%);color:#24282d;box-shadow:0 7px 32px #0be8d836;transform:scale(1.05);opacity:1}
+.pro-episodes-row-wrap-pro{width:100%;background:#181f33e6;border-radius:25px;box-shadow:0 9px 31px #060f2a24;padding:23px 0 22px 0;margin-bottom:45px}
+.pro-episodes-row-pro{display:flex;gap:28px;margin:0 0 0 18px;overflow-x:auto;padding-bottom:2px;scrollbar-color:#17e5ff #191a23}
+.pro-episode-card-pro{background:#141c33;border-radius:19px;min-width:153px;max-width:168px;box-shadow:0 8px 32px #2313ef13;cursor:pointer;display:flex;flex-direction:column;align-items:center;padding:0 0 17px 0;margin-bottom:4px;border:2.2px solid transparent;text-decoration:none;transition:box-shadow .21s,transform .14s,border .13s}
+.pro-episode-card-pro:hover,.pro-episode-card-pro:focus{box-shadow:0 11px 38px #1adadd88;border:2.2px solid #23c6ed;transform:scale(1.047);z-index:1}
+.pro-ep-thumb-wrap-pro{position:relative;width:100%}
+.pro-ep-thumb-pro{width:100%;aspect-ratio:16/9;border-radius:15px 15px 0 0;object-fit:cover;background:#141933;min-height:82px;max-height:127px}
+.pro-ep-num-pro{position:absolute;right:13px;top:13px;background:linear-gradient(96deg,#095be5 30%,#11e2f2 90%);color:#fff;font-size:.99em;font-weight:700;padding:5px 14px 5px 11px;border-radius:21px;box-shadow:0 2px 12px #0297fd7c}
+.pro-ep-title-pro{width:93%;color:#fff;font-weight:700;font-size:1.10em;text-align:center;margin:17px 0 0 0;line-height:1.29;word-break:break-word;text-shadow:0 2px 11px #01162444}
+@media (max-width:850px){.pro-series-header-pro{flex-direction:column;align-items:center}.pro-series-poster-pro{width:80px}}
+@media (max-width:440px){.pro-episode-card-pro{min-width:103px;max-width:118px}.pro-ep-title-pro{font-size:.91em}}
+
+/* ============================
+   Streaming page – Cinematic Pro Look
+============================ */
+.pro-episode-view-polished{max-width:740px;margin:48px auto 0;background:linear-gradient(136deg,#16223b 80%,#15171c 100%);border-radius:35px;padding:23px 16px 44px 16px;box-shadow:0 8px 40px #03102571,0 1px 8px #fff1;display:flex;flex-direction:column;align-items:center;border:1.5px solid #253669}
+.pro-episode-header-polished{display:flex;align-items:center;justify-content:flex-start;width:100%;margin-bottom:40px;gap:20px}
+.pro-back-btn-polished{display:flex;align-items:center;padding:10px 33px 10px 15px;background:#17273d;border:2.3px solid #23c6ed;border-radius:900px;color:#23c6ed;font-weight:800;font-size:1.21em;text-decoration:none;box-shadow:0 3.5px 18px #1bc3e830;transition:background .16s,color .17s,border-color .15s,box-shadow .14s,transform .13s}
+.pro-back-btn-polished:hover,.pro-back-btn-polished:focus{background:#153352;color:#fff;border-color:#47eaff;box-shadow:0 8px 28px #23c6ed44;outline:none;transform:translateY(-1px) scale(1.07)}
+.svg-arrow{margin-right:8px;margin-bottom:-2px;stroke:#23c6ed!important}
+.pro-header-title-wrap{display:flex;flex-direction:column;align-items:flex-start;flex:1;margin-left:20px;gap:10px}
+.pro-series-bigname{font-family:'Montserrat',Arial,sans-serif;font-size:2.1em;font-weight:900;color:#1dedf0;letter-spacing:.01em;text-shadow:0 4px 29px #0ddbe12e,0 1.2px 6px #11b8ce58;line-height:1.1;text-align:left;filter:drop-shadow(0 2px 8px #00eae45a)}
+.pro-ep-strong-title{font-family:'Montserrat',Arial,sans-serif;font-size:1.32em;font-weight:700;color:#ffd267;letter-spacing:.017em;background:linear-gradient(90deg,#2e3857 10%,#1be5d4 95%);padding:8px 24px 7px 22px;border-radius:19px;margin-top:0;box-shadow:0 3px 12px #1be5d433,0 1px 4px #31364b0a;text-align:left;display:inline-block;border:1.2px solid #11b3b1}
+.pro-episode-embed-polished{width:100%;max-width:620px;margin:0 0 33px 0;border-radius:18px;box-shadow:0 7px 28px #03103349,0 .5px 8px #18151a1c;background:#0b101b;text-align:center;min-height:200px;overflow:hidden}
+.pro-download-btn-polished{display:inline-block;background:linear-gradient(91deg,#0de456,#3b8bea 92%);color:#fff;padding:15px 32px 13px 32px;font-size:1.13em;font-weight:700;border-radius:14px;margin-top:15px;box-shadow:0 2.5px 17px #21a9ff33;text-decoration:none;border:none;transition:background .17s,box-shadow .15s,color .13s;cursor:pointer;letter-spacing:.03em}
+.pro-download-btn-polished:hover{background:linear-gradient(89deg,#16e0a7,#368de1 92%);color:#111}
+@media (max-width:800px){.pro-episode-view-polished{max-width:97vw;padding:11px 2vw 22px 2vw}.pro-episode-header-polished{flex-direction:column;align-items:flex-start;gap:10px;margin-bottom:28px}.pro-header-title-wrap{margin-left:0;align-items:flex-start}.pro-series-bigname{font-size:1.27em}.pro-ep-strong-title{font-size:1em;padding:6px 12px}.pro-episode-embed-polished{min-height:96px}}
+
+/* Monetag overlay + utilities */
+#adBlockOverlay{position:fixed;z-index:99999;top:0;left:0;width:100vw;height:100vh;background:#111c;padding:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2em}
+.hide{display:none!important}
+button,input[type="button"],input[type="submit"]{background:#23242a;color:#fff;border:1px solid #333;border-radius:6px;padding:7px 18px;font-size:1em}
+button:hover{background:#272838}
+
+/* Ensure embeds scale nicely */
+.pro-episode-embed-polished iframe{width:100%!important;height:100%!important;aspect-ratio:16/9;min-height:170px;max-height:60vw;border-radius:8px;display:block;background:#000}
+
+/* Download buttons */
+.pro-download-btn-polished{display:block;background:#198fff;color:#fff;border-radius:7px;text-align:center;padding:14px 0;font-weight:600;text-decoration:none;font-size:1.03em;margin-bottom:8px;cursor:pointer;transition:background .22s,box-shadow .22s;box-shadow:0 2px 8px #0001}
+.pro-download-btn-polished[aria-disabled="true"],.pro-download-btn-polished:disabled{pointer-events:none;opacity:.7;background:#666!important}
+
+.pro-download-btns-flex{display:flex;gap:16px;flex-wrap:wrap}
+.pro-tutorial-btn{display:block;background:#234a63;color:#fff!important;padding:12px 24px;margin:8px 0 0 0;border-radius:8px;text-align:center;font-weight:600;text-decoration:none;font-size:1.03em;transition:background .16s}
+.pro-tutorial-btn:hover{background:#195787}
+.pro-premium-btn{display:block;background:#099c7d;color:#fff!important;padding:13px 24px;margin:12px 0 0 0;border-radius:8px;text-align:center;font-weight:600;text-decoration:none;font-size:1.12em;letter-spacing:.01em;transition:background .16s}
+.pro-premium-btn:hover{background:#07785e}
+
+/* ===========================
+   Pro Highlighted Tutorial Section
+=========================== */
+.pro-highlight-section {
+  background: linear-gradient(106deg,#124576 20%,#1dc3fa 100%);
+  border-radius: 18px 18px 0 0;
+  padding: 19px 12px 15px 12px;
+  text-align: center;
+  box-shadow: 0 4px 20px #12c0fa25;
+  max-width: 650px;
+  margin: 32px auto 0 auto;
+  border: 1.5px solid #15b4eb;
 }
 
-/* (All pro sections/streaming/episodes/tutorial sections remain unchanged) */
+.pro-highlight-title {
+  font-size: 1.55em;
+  color: #fff;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin: 0;
+  line-height: 1.16;
+  text-shadow: 0 2px 18px #0993ce32, 0 1.5px 9px #0002;
+}
+
+.pro-video-card {
+  background: #162438;
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 6px 24px #1dc3fa1f;
+  border: 1.5px solid #15b4eb;
+  max-width: 650px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 50px;
+  overflow: hidden;
+  padding-bottom: 8px;
+}
+.pro-video-frame-wrap {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%;
+}
+.pro-video-frame-wrap iframe {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  border-radius: 0 0 18px 18px;
+  border: none;
+}
