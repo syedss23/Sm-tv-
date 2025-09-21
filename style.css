@@ -112,6 +112,18 @@ header {
   box-shadow: 0 10px 30px #0ef5c431;
   text-decoration: none;
 }
+  .telegram-pro {
+  background: linear-gradient(96deg, #1d5fa9 65%, #27b4ff 100%);
+  color: #fff !important;
+  box-shadow: 0 0 12px 2px #1d5fa999, 0 6px 22px #27b4ff38; /* glow */
+  border: none;
+}
+.telegram-pro:hover,
+.telegram-pro:focus {
+  background: linear-gradient(96deg,#40c7fe 30%,#145080 100%);
+  color: #145080 !important;
+  box-shadow: 0 0 22px 4px #40c7fe66, 0 10px 36px #015a9680;
+}
 .whatsapp-pro {
   background: linear-gradient(96deg, #246643 60%, #25d366 100%);
   color: #fff !important;
