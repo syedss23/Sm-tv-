@@ -118,8 +118,7 @@ header {
   box-shadow: 0 0 12px 2px #1d5fa999, 0 6px 22px #27b4ff38;
   border: none;
 }
-.telegram-pro:hover,
-.telegram-pro:focus {
+.telegram-pro:hover, .telegram-pro:focus {
   background: linear-gradient(96deg,#40c7fe 30%,#145080 100%);
   color: #145080 !important;
   box-shadow: 0 0 22px 4px #40c7fe66, 0 10px 36px #015a9680;
@@ -135,6 +134,35 @@ header {
   color: #173b21 !important;
 }
 .brand { display:none !important; }
+
+/* Modern Back Button for Series Page */
+.pro-series-back-btn-pro {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  text-decoration: none;
+  font-size: 1.07em;
+  background: linear-gradient(96deg,#193f4c 10%,#289efd 100%);
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 28px;
+  box-shadow: 0 2px 14px #0ef7f5a6;
+  padding: 9px 22px 9px 16px;
+  margin-bottom: 13px;
+  margin-left: 2px;
+  transition: background .16s, box-shadow .16s, color .11s;
+}
+.pro-series-back-btn-pro:hover, .pro-series-back-btn-pro:focus {
+  background: linear-gradient(96deg,#0ec7ea 30%,#193f4c 100%);
+  color: #0057fe;
+  box-shadow: 0 6px 20px #0ef7f577;
+}
+.pro-series-back-btn-pro svg {
+  width: 22px; height: 22px; margin-right: 6px;
+  stroke: #fff;
+  vertical-align: middle;
+}
 
 /* Series Detail Page Modern Header */
 .pro-series-header-pro {
@@ -171,15 +199,15 @@ header {
 .pro-seasons-tabs-pro {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
   justify-content: center;
-  margin: 12px 0 18px 0;
+  margin: 13px 0 17px 0;
 }
 .pro-season-tab-pro {
   background: linear-gradient(90deg,#101f37,#0c3454 90%);
   color: #e7f8ff;
   font-family: 'Montserrat', Arial, sans-serif;
-  padding: 7px 20px;
+  padding: 8px 26px;
   margin: 3px 0;
   font-size: 1em;
   font-weight: 700;
@@ -199,16 +227,86 @@ header {
   color: #061626;
 }
 
-/* Responsive tweaks for mobile */
+/* Modern Episode Card */
+.pro-episode-card-pro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #21243c;
+  border-radius: 15px;
+  box-shadow: 0 3px 22px 0 #0074c24d;
+  margin: 10px 7px 18px 7px;
+  padding: 12px 10px 13px 10px;
+  max-width: 165px;
+  min-width: 118px;
+  flex: 1 1 140px;
+  transition: transform .14s, box-shadow .14s;
+  text-decoration: none !important;
+  border: none;
+  position: relative;
+}
+.pro-episode-card-pro:hover, .pro-episode-card-pro:focus {
+  box-shadow: 0 8px 32px 0 #24eaff46;
+  background: #262d46;
+  transform: translateY(-2px) scale(1.04);
+}
+.pro-episode-thumb-pro {
+  width: 100%;
+  min-width: 82px;
+  max-width: 135px;
+  max-height: 84px;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #14171d;
+  margin-bottom: 12px;
+}
+.pro-episode-badge-pro {
+  position: absolute;
+  left: 11px;
+  top: 11px;
+  background: linear-gradient(96deg,#12e0e0 40%,#028cf9 100%);
+  color: #fff;
+  font-weight: bold;
+  padding: 4px 11px;
+  font-size: .93em;
+  border-radius: 20px;
+  box-shadow: 0 1px 6px #16eae849;
+}
+.pro-episode-title-pro {
+  font-size: 1.04em;
+  color: #fff;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 5px;
+  min-height: 1.1em;
+}
+.pro-episode-sub-pro {
+  font-size: 0.95em;
+  color: #9ce6ff;
+  text-align: center;
+  min-height: 1em;
+}
+.pro-episode-row-wrap-pro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0 7px 24px 7px;
+  justify-content: flex-start;
+}
+
+/* Responsive for episode cards */
+@media (max-width:680px){
+  .pro-episode-row-wrap-pro{justify-content:center;}
+}
+
 @media (max-width: 560px) {
   .pro-series-header-pro { padding: 10px 2vw 13px 2vw;}
   .pro-series-poster-pro { max-width: 99vw; border-radius: 12px;}
   .pro-series-title-pro { font-size: 1.13em;}
-}
-
-/* Optional: box for episodes grid if needed */
-.pro-episodes-row-wrap-pro {
-  margin: 0 7px 24px 7px;
+  .pro-episode-card-pro { padding: 9px 4px 11px 4px; max-width: 140px;}
+  .pro-episode-thumb-pro { max-width: 110px; }
 }
 
 /* Desktop push content when sidebar open */
