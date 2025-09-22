@@ -84,10 +84,7 @@
               document.getElementById('pro-episodes-row-wrap').innerHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
               return;
             }
-            // Store ep data for handler reference
-            const epList = [];
             const html = `<div class="pro-episodes-row-pro">` + episodes.map((ep, idx) => {
-              epList.push(ep); // store reference
               const episodeUrl = ep.shortlink
                 ? ep.shortlink
                 : `episode.html?series=${slug}&season=${season}&ep=${ep.ep}&lang=${lang}`;
@@ -124,9 +121,9 @@
             `;
             document.getElementById('pro-episodes-row-wrap').innerHTML = html + tutorialTitle + tutorialVideo;
 
-            // --- REDIRECTION LOGIC: LIMIT SHORTLINK REDIRECT TO ONCE PER HOUR PER EPISODE ---
             setTimeout(() => {
-              document.querySelectorAll('.pro-episode-card-pro').forEach(function(link) {
+              const episodeCards = document.querySelectorAll('.pro-episode-card-pro');
+              episodeCards.forEach(function(link) {
                 const epid = link.getAttribute('data-epid');
                 const epi = link.getAttribute('data-epi');
                 if (link.getAttribute('href')?.startsWith('http')) {
@@ -136,17 +133,16 @@
                     const oneHour = 60 * 60 * 1000;
                     if (now - lastRedirect < oneHour) {
                       e.preventDefault();
-                      // Use episode array's real episode number
-                      const realEpNum = epList[epi]?.ep || '1';
-                      window.location.href = `episode.html?series=${slug}&season=${season}&ep=${realEpNum}&lang=${lang}`;
+                      const epNum = episodes[epi].ep; // always from data!
+                      window.location.href = `episode.html?series=${slug}&season=${season}&ep=${epNum}&lang=${lang}`;
                     } else {
                       localStorage.setItem('redir_' + epid, now + '');
+                      // proceed to shortlink
                     }
                   });
                 }
               });
             }, 10);
-            // ---------------------------------------------------------
           })
           .catch(e => {
             document.getElementById('pro-episodes-row-wrap').innerHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
