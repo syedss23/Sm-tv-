@@ -84,17 +84,19 @@
               document.getElementById('pro-episodes-row-wrap').innerHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
               return;
             }
-            const html = `<div class="pro-episodes-row-pro">` + episodes.map(ep => {
+            // Store ep data for handler reference
+            const epList = [];
+            const html = `<div class="pro-episodes-row-pro">` + episodes.map((ep, idx) => {
+              epList.push(ep); // store reference
               const episodeUrl = ep.shortlink
                 ? ep.shortlink
                 : `episode.html?series=${slug}&season=${season}&ep=${ep.ep}&lang=${lang}`;
               const extra = ep.shortlink
                 ? 'target="_blank" rel="noopener"'
                 : '';
-              // Add data-epid for unique tracking
               return `
                 <a class="pro-episode-card-pro" href="${episodeUrl}" ${extra}
-                   data-epid="${slug}-s${season}-ep${ep.ep}-${lang}">
+                   data-epid="${slug}-s${season}-ep${ep.ep}-${lang}" data-epi="${idx}">
                   <div class="pro-ep-thumb-wrap-pro">
                     <img src="${ep.thumb || 'default-thumb.jpg'}" class="pro-ep-thumb-pro" alt="Ep ${ep.ep}">
                     <span class="pro-ep-num-pro">Ep ${ep.ep}</span>
@@ -120,13 +122,13 @@
                 </div>
               </section>
             `;
-            // Combine sections (title and video visually separate)
             document.getElementById('pro-episodes-row-wrap').innerHTML = html + tutorialTitle + tutorialVideo;
 
             // --- REDIRECTION LOGIC: LIMIT SHORTLINK REDIRECT TO ONCE PER HOUR PER EPISODE ---
             setTimeout(() => {
               document.querySelectorAll('.pro-episode-card-pro').forEach(function(link) {
                 const epid = link.getAttribute('data-epid');
+                const epi = link.getAttribute('data-epi');
                 if (link.getAttribute('href')?.startsWith('http')) {
                   link.addEventListener('click', function(e) {
                     const now = Date.now();
@@ -134,12 +136,11 @@
                     const oneHour = 60 * 60 * 1000;
                     if (now - lastRedirect < oneHour) {
                       e.preventDefault();
-                      // Get episode number from the DOM so it's always correct
-                      const epNum = link.querySelector('.pro-ep-num-pro')?.textContent?.replace('Ep ','').trim() || '1';
-                      window.location.href = `episode.html?series=${slug}&season=${season}&ep=${epNum}&lang=${lang}`;
+                      // Use episode array's real episode number
+                      const realEpNum = epList[epi]?.ep || '1';
+                      window.location.href = `episode.html?series=${slug}&season=${season}&ep=${realEpNum}&lang=${lang}`;
                     } else {
                       localStorage.setItem('redir_' + epid, now + '');
-                      // Let the link go to the shortlink
                     }
                   });
                 }
