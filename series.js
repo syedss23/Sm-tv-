@@ -123,11 +123,10 @@
             // Combine sections (title and video visually separate)
             document.getElementById('pro-episodes-row-wrap').innerHTML = html + tutorialTitle + tutorialVideo;
 
-            // --- REDIRECTION LOGIC: LIMIT SHORTLINK REDIRECT TO ONCE PER HOUR ---
+            // --- REDIRECTION LOGIC: LIMIT SHORTLINK REDIRECT TO ONCE PER HOUR PER EPISODE ---
             setTimeout(() => {
               document.querySelectorAll('.pro-episode-card-pro').forEach(function(link) {
                 const epid = link.getAttribute('data-epid');
-                // Only act on shortlink (external URL)
                 if (link.getAttribute('href')?.startsWith('http')) {
                   link.addEventListener('click', function(e) {
                     const now = Date.now();
@@ -135,13 +134,12 @@
                     const oneHour = 60 * 60 * 1000;
                     if (now - lastRedirect < oneHour) {
                       e.preventDefault();
-                      // Replace with your internal episode.html logic as needed:
-                      const parts = epid.split('-');
-                      const [sSlug,, epNum, langPart] = parts;
-                      window.location.href = `episode.html?series=${slug}&season=${season}&ep=${epNum.replace('ep','')}&lang=${lang}`;
+                      // Get episode number from the DOM so it's always correct
+                      const epNum = link.querySelector('.pro-ep-num-pro')?.textContent?.replace('Ep ','').trim() || '1';
+                      window.location.href = `episode.html?series=${slug}&season=${season}&ep=${epNum}&lang=${lang}`;
                     } else {
                       localStorage.setItem('redir_' + epid, now + '');
-                      // Allow default link behavior (to shortlink)
+                      // Let the link go to the shortlink
                     }
                   });
                 }
