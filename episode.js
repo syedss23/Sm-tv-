@@ -1,5 +1,3 @@
-// episode.js — correct 300x250 ad below note and below player
-
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('series');
 const season = params.get('season');
@@ -70,37 +68,15 @@ Promise.all([
           <a href="https://sm-tv.vercel.app" target="_blank" style="color:#f7e038;text-decoration:underline;word-break:break-all;">https://sm-tv.vercel.app</a> 👇
         </div>
 
-        <!-- AD: below note, above player -->
-        <div style="display:flex;justify-content:center;margin:18px 0;">
-          <script type="text/javascript">
-            atOptions = {
-              'key' : '030f560988476116223cff5a510791aa',
-              'format' : 'iframe',
-              'height' : 250,
-              'width' : 300,
-              'params' : {}
-            };
-          </script>
-          <script type="text/javascript" src="//www.highperformanceformat.com/030f560988476116223cff5a510791aa/invoke.js"></script>
-        </div>
+        <!-- AD SPACE BELOW NOTE -->
+        <div id="ad-above-player"></div>
 
         <div class="pro-episode-embed-polished">
           ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'}
         </div>
 
-        <!-- AD: immediately below the player, above downloads -->
-        <div style="display:flex;justify-content:center;margin:18px 0;">
-          <script type="text/javascript">
-            atOptions = {
-              'key' : '030f560988476116223cff5a510791aa',
-              'format' : 'iframe',
-              'height' : 250,
-              'width' : 300,
-              'params' : {}
-            };
-          </script>
-          <script type="text/javascript" src="//www.highperformanceformat.com/030f560988476116223cff5a510791aa/invoke.js"></script>
-        </div>
+        <!-- AD SPACE BELOW PLAYER -->
+        <div id="ad-below-player"></div>
 
         <div style="margin:24px 0 8px 0;">
           <a class="pro-download-btn-polished"
@@ -148,6 +124,30 @@ Promise.all([
         </a>
       </div>
     `;
+
+    // --- Inject the ad scripts dynamically for proper rendering ---
+    function injectAdScript(slotId) {
+      var s1 = document.createElement('script');
+      s1.innerHTML = `
+        atOptions = {
+          'key' : '030f560988476116223cff5a510791aa',
+          'format' : 'iframe',
+          'height' : 250,
+          'width' : 300,
+          'params' : {}
+        };
+      `;
+      var s2 = document.createElement('script');
+      s2.src = "//www.highperformanceformat.com/030f560988476116223cff5a510791aa/invoke.js";
+      var target = document.getElementById(slotId);
+      if (target) {
+        target.innerHTML = '';
+        target.appendChild(s1);
+        target.appendChild(s2);
+      }
+    }
+    injectAdScript('ad-above-player');
+    injectAdScript('ad-below-player');
 
     //--- Safe lazy load code ---(unchanged)---
     const embedWrap = container.querySelector('.pro-episode-embed-polished');
