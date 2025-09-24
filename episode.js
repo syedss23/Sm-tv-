@@ -1,4 +1,4 @@
-// episode.js — polished with safe lazy-loading for embeds
+// episode.js — polished with safe lazy-loading for embeds and correct ad placements
 
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('series');
@@ -11,7 +11,6 @@ if (!slug || !epNum) {
   throw new Error("Missing required param");
 }
 
-// Decide JSON file path, support with or without season
 let jsonFile, backUrl;
 if (season) {
   jsonFile = `episode-data/${slug}-s${season}.json`;
@@ -24,8 +23,6 @@ if (season) {
 const HOW_TO_DOWNLOAD_URL = "https://t.me/howtodownloadd1/10";
 const PREMIUM_CHANNEL_URL = "https://t.me/itzmezain1/2905";
 
-// --- Monetag Rewarded Interstitial ---
-// KEEP this function for download ads
 function showRewardedAdThen(done) {
   if (typeof show_9623557 === "function") {
     show_9623557().then(done).catch(done);
@@ -34,7 +31,6 @@ function showRewardedAdThen(done) {
   }
 }
 
-// Fetch series meta and episode list in parallel
 Promise.all([
   fetch('series.json').then(r => r.ok ? r.json() : []),
   fetch(jsonFile).then(r => r.ok ? r.json() : [])
@@ -49,12 +45,26 @@ Promise.all([
     return;
   }
 
-  // *** CHANGED: No ad on episode load, directly render episode ***
   renderEpisode();
 
   function renderEpisode() {
     container.innerHTML = `
       <div class="pro-episode-view-polished">
+
+        <!-- 300x250 Ad ABOVE Player -->
+        <div style="display:flex; justify-content:center; margin:18px 0;">
+          <script type="text/javascript">
+            atOptions = {
+              'key' : '030f560988476116223cff5a510791aa',
+              'format' : 'iframe',
+              'height' : 250,
+              'width' : 300,
+              'params' : {}
+            };
+          </script>
+          <script type="text/javascript" src="//www.highperformanceformat.com/030f560988476116223cff5a510791aa/invoke.js"></script>
+        </div>
+
         <div class="pro-episode-header-polished">
           <a class="pro-back-btn-polished" href="${backUrl}" title="Back">
             <svg width="23" height="23" viewBox="0 0 20 20" class="svg-arrow">
@@ -79,16 +89,46 @@ Promise.all([
           ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'}
         </div>
 
-        <div class="pro-download-btns-flex" style="margin:24px 0 8px 0;display:flex;gap:16px;flex-wrap:wrap;">
+        <!-- 300x250 Ad BELOW Player -->
+        <div style="display:flex; justify-content:center; margin:18px 0;">
+          <script type="text/javascript">
+            atOptions = {
+              'key' : '030f560988476116223cff5a510791aa',
+              'format' : 'iframe',
+              'height' : 250,
+              'width' : 300,
+              'params' : {}
+            };
+          </script>
+          <script type="text/javascript" src="//www.highperformanceformat.com/030f560988476116223cff5a510791aa/invoke.js"></script>
+        </div>
+
+        <div style="margin:24px 0 8px 0;">
           <a class="pro-download-btn-polished"
              href="${ep.download || '#'}"
              download
-             style="flex:1 1 180px;background:#198fff;"
+             style="display:block;width:100%;max-width:500px;margin:0 auto 12px auto;background:#198fff;"
              ${ep.download ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>🖇️ Download (Server 1)</a>
+        </div>
 
+        <!-- 320x50 Ad BETWEEN Download Buttons -->
+        <div style="display:flex;justify-content:center;margin:12px 0;">
+          <script type="text/javascript">
+            atOptions = {
+              'key' : 'c91a82435d260630918ecc80c95125ac',
+              'format' : 'iframe',
+              'height' : 50,
+              'width' : 320,
+              'params' : {}
+            };
+          </script>
+          <script type="text/javascript" src="//www.highperformanceformat.com/c91a82435d260630918ecc80c95125ac/invoke.js"></script>
+        </div>
+
+        <div style="margin:8px 0;">
           <button class="pro-download-btn-polished"
                   id="download2Btn"
-                  style="flex:1 1 180px;background:#30c96b;"
+                  style="display:block;width:100%;max-width:500px;margin:0 auto;background:#30c96b;"
                   ${ep.download2 ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>🖇️ Download (Server 2)</button>
         </div>
 
@@ -110,10 +150,9 @@ Promise.all([
       </div>
     `;
 
-    // --- Apply native lazy loading + safe defaults to any iframe present in embed
+    // --- Lazy loading enhancements (same as before) ---
     const embedWrap = container.querySelector('.pro-episode-embed-polished');
     if (embedWrap) {
-      // If providers delivered a placeholder instead of iframe, support data-embed-src
       const placeholders = embedWrap.querySelectorAll('[data-embed-src]');
       if (placeholders.length) {
         const io = new IntersectionObserver(entries => {
@@ -136,10 +175,7 @@ Promise.all([
         }, { rootMargin: '400px' });
         placeholders.forEach(el => io.observe(el));
       }
-
-      // For already-inserted iframes, upgrade attributes
       embedWrap.querySelectorAll('iframe').forEach((f, idx) => {
-        // Keep the first iframe eager only if it's truly the hero above-the-fold; else lazy.
         const shouldLazy = idx > 0 || window.matchMedia('(max-width: 767px)').matches;
         if (shouldLazy && !f.hasAttribute('loading')) f.setAttribute('loading', 'lazy');
         if (!f.hasAttribute('referrerpolicy')) f.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
@@ -148,12 +184,11 @@ Promise.all([
         if (!f.hasAttribute('height')) f.setAttribute('height', '100%');
         if (!f.hasAttribute('frameborder')) f.setAttribute('frameborder', '0');
         if (!f.hasAttribute('allowfullscreen')) f.setAttribute('allowfullscreen', '');
-        // Defer decoding where supported
         if (!f.hasAttribute('decoding')) f.setAttribute('decoding', 'async');
       });
     }
 
-    // --- Monetag ad for Download 2 (UNCHANGED)
+    // --- Monetag rewarded ad logic for Download 2 ---
     const download2Btn = document.getElementById('download2Btn');
     if (download2Btn && ep.download2) {
       download2Btn.addEventListener('click', function(e) {
