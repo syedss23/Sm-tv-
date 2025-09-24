@@ -21,6 +21,36 @@ if (season) {
 const HOW_TO_DOWNLOAD_URL = "https://t.me/howtodownloadd1/10";
 const PREMIUM_CHANNEL_URL = "https://t.me/itzmezain1/2905";
 
+// Helper to inject Adsterra/Monetag banners dynamically
+function injectAdBanner(slotId, key, width, height, delay = 0) {
+  const inject = () => {
+    const adDiv = document.getElementById(slotId);
+    if (!adDiv) return;
+    adDiv.innerHTML = "";
+    const s1 = document.createElement("script");
+    s1.type = "text/javascript";
+    s1.innerHTML = `
+      atOptions = {
+        'key' : '${key}',
+        'format' : 'iframe',
+        'height' : ${height},
+        'width' : ${width},
+        'params' : {}
+      };
+    `;
+    const s2 = document.createElement("script");
+    s2.type = "text/javascript";
+    s2.src = `//www.highperformanceformat.com/${key}/invoke.js`;
+    adDiv.appendChild(s1);
+    adDiv.appendChild(s2);
+  };
+  if (delay) {
+    setTimeout(inject, delay);
+  } else {
+    inject();
+  }
+}
+
 function showRewardedAdThen(done) {
   if (typeof show_9623557 === "function") {
     show_9623557().then(done).catch(done);
@@ -29,36 +59,11 @@ function showRewardedAdThen(done) {
   }
 }
 
-// Helper to inject Adsterra/Monetag banners dynamically
-function injectAdBanner(slotId, key, width, height) {
-  const adDiv = document.getElementById(slotId);
-  if (!adDiv) return;
-  adDiv.innerHTML = "";
-  const s1 = document.createElement("script");
-  s1.type = "text/javascript";
-  s1.innerHTML = `
-    atOptions = {
-      'key' : '${key}',
-      'format' : 'iframe',
-      'height' : ${height},
-      'width' : ${width},
-      'params' : {}
-    };
-  `;
-  const s2 = document.createElement("script");
-  s2.type = "text/javascript";
-  s2.src = `//www.highperformanceformat.com/${key}/invoke.js`;
-  adDiv.appendChild(s1);
-  adDiv.appendChild(s2);
-}
-
 Promise.all([
-  fetch("series.json").then(r => r.ok ? r.json() : []),
+  fetch('series.json').then(r => r.ok ? r.json() : []),
   fetch(jsonFile).then(r => r.ok ? r.json() : [])
 ]).then(([seriesList, episodesArray]) => {
-  const meta = Array.isArray(seriesList)
-    ? seriesList.find(s => s.slug === slug)
-    : null;
+  const meta = Array.isArray(seriesList) ? seriesList.find(s => s.slug === slug) : null;
   const ep = Array.isArray(episodesArray)
     ? episodesArray.find(e => String(e.ep) === String(epNum))
     : null;
@@ -85,24 +90,19 @@ Promise.all([
             <span class="pro-ep-strong-title">${ep.title || `Episode ${ep.ep}`}</span>
           </div>
         </div>
-
         <div class="fullscreen-alert-msg" style="background:#162632;padding:16px 16px 14px 16px;border-radius:10px;color:#23c6ed;font-size:1.05em;margin:16px 0 24px 0;">
           <b>🔔 Note:</b><br>
           Telegram Mini App mein <b>full screen</b> me Episodes dekhna support nahi karta. Agar aapko <b>full screen</b> aur behtar quality mein episode dekhna hai toh <b>hamari website par jaakar dekhein.</b><br>
           Sabhi episodes full screen ke sath wahan available hain.<br>
           <a href="https://sm-tv.vercel.app" target="_blank" style="color:#f7e038;text-decoration:underline;word-break:break-all;">https://sm-tv.vercel.app</a> 👇
         </div>
-
         <!-- 300x250 AD BELOW NOTE -->
         <div id="ad-above-player"></div>
-
         <div class="pro-episode-embed-polished">
           ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'}
         </div>
-
         <!-- 300x250 AD BELOW PLAYER -->
         <div id="ad-below-player"></div>
-
         <div style="margin:24px 0 8px 0;">
           <a class="pro-download-btn-polished"
               href="${ep.download || "#"}"
@@ -110,17 +110,14 @@ Promise.all([
               style="display:block;width:100%;max-width:500px;margin:0 auto 12px auto;background:#198fff;"
               ${ep.download ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>🖇️ Download (Server 1)</a>
         </div>
-
         <!-- 320x50 AD BETWEEN DOWNLOAD BUTTONS -->
         <div id="ad-between-downloads"></div>
-
         <div style="margin:8px 0;">
           <button class="pro-download-btn-polished"
                   id="download2Btn"
                   style="display:block;width:100%;max-width:500px;margin:0 auto;background:#30c96b;"
                   ${ep.download2 ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>🖇️ Download (Server 2)</button>
         </div>
-
         <a class="pro-tutorial-btn"
           href="${HOW_TO_DOWNLOAD_URL}"
           target="_blank"
@@ -128,7 +125,6 @@ Promise.all([
           style="display:block;background:#234a63;color:#fff;padding:12px 28px;margin:8px 0 0 0;border-radius:8px;text-align:center;font-weight:600;text-decoration:none;font-size:1.03em;">
           📕 How to Download (Tutorial)
         </a>
-
         <a class="pro-premium-btn"
           href="${PREMIUM_CHANNEL_URL}"
           target="_blank"
@@ -139,12 +135,12 @@ Promise.all([
       </div>
     `;
 
-    // Inject ads at all slots (dynamic script for banner rendering)
-    injectAdBanner("ad-above-player", "030f560988476116223cff5a510791aa", 300, 250);
-    injectAdBanner("ad-below-player", "030f560988476116223cff5a510791aa", 300, 250);
-    injectAdBanner("ad-between-downloads", "c91a82435d260630918ecc80c95125ac", 320, 50);
+    // Inject: above player (after short delay), below player (after short delay), and between buttons (immediate)
+    injectAdBanner("ad-above-player", "030f560988476116223cff5a510791aa", 300, 250, 300);
+    injectAdBanner("ad-below-player", "030f560988476116223cff5a510791aa", 300, 250, 650);
+    injectAdBanner("ad-between-downloads", "c91a82435d260630918ecc80c95125ac", 320, 50, 0);
 
-    // Lazy load embed video code (unchanged)
+    // --- Safe lazy load for video embed (unchanged) ---
     const embedWrap = container.querySelector('.pro-episode-embed-polished');
     if (embedWrap) {
       const placeholders = embedWrap.querySelectorAll('[data-embed-src]');
@@ -182,7 +178,7 @@ Promise.all([
       });
     }
 
-    // Monetag rewarded ad for Download 2 (unchanged)
+    // Rewarded ad code for Download 2 (unchanged)
     const download2Btn = document.getElementById("download2Btn");
     if (download2Btn && ep.download2) {
       download2Btn.addEventListener("click", function (e) {
