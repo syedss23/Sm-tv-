@@ -29,12 +29,11 @@ function showRewardedAdThen(done) {
   }
 }
 
-// Helper for Adsterra/Monetag-style banners
-function injectAdBanner({ slotId, key, width, height }) {
+// Helper to inject Adsterra/Monetag banners dynamically
+function injectAdBanner(slotId, key, width, height) {
   const adDiv = document.getElementById(slotId);
   if (!adDiv) return;
   adDiv.innerHTML = "";
-  // Inject the script that sets atOptions
   const s1 = document.createElement("script");
   s1.type = "text/javascript";
   s1.innerHTML = `
@@ -46,7 +45,6 @@ function injectAdBanner({ slotId, key, width, height }) {
       'params' : {}
     };
   `;
-  // Inject the loader script
   const s2 = document.createElement("script");
   s2.type = "text/javascript";
   s2.src = `//www.highperformanceformat.com/${key}/invoke.js`;
@@ -55,14 +53,14 @@ function injectAdBanner({ slotId, key, width, height }) {
 }
 
 Promise.all([
-  fetch("series.json").then((r) => (r.ok ? r.json() : [])),
-  fetch(jsonFile).then((r) => (r.ok ? r.json() : []))
+  fetch("series.json").then(r => r.ok ? r.json() : []),
+  fetch(jsonFile).then(r => r.ok ? r.json() : [])
 ]).then(([seriesList, episodesArray]) => {
   const meta = Array.isArray(seriesList)
-    ? seriesList.find((s) => s.slug === slug)
+    ? seriesList.find(s => s.slug === slug)
     : null;
   const ep = Array.isArray(episodesArray)
-    ? episodesArray.find((e) => String(e.ep) === String(epNum))
+    ? episodesArray.find(e => String(e.ep) === String(epNum))
     : null;
 
   if (!ep) {
@@ -83,12 +81,8 @@ Promise.all([
             Back
           </a>
           <div class="pro-header-title-wrap">
-            <span class="pro-series-bigname">${
-              meta ? meta.title : slug.replace(/-/g, " ").toUpperCase()
-            }</span>
-            <span class="pro-ep-strong-title">${
-              ep.title || `Episode ${ep.ep}`
-            }</span>
+            <span class="pro-series-bigname">${meta ? meta.title : slug.replace(/-/g, " ").toUpperCase()}</span>
+            <span class="pro-ep-strong-title">${ep.title || `Episode ${ep.ep}`}</span>
           </div>
         </div>
 
@@ -99,81 +93,58 @@ Promise.all([
           <a href="https://sm-tv.vercel.app" target="_blank" style="color:#f7e038;text-decoration:underline;word-break:break-all;">https://sm-tv.vercel.app</a> 👇
         </div>
 
-        <!-- AD BANNER BELOW NOTE -->
+        <!-- 300x250 AD BELOW NOTE -->
         <div id="ad-above-player"></div>
 
         <div class="pro-episode-embed-polished">
-          ${
-            ep.embed
-              ? ep.embed
-              : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'
-          }
+          ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'}
         </div>
 
-        <!-- AD BANNER BELOW PLAYER -->
+        <!-- 300x250 AD BELOW PLAYER -->
         <div id="ad-below-player"></div>
 
         <div style="margin:24px 0 8px 0;">
           <a class="pro-download-btn-polished"
-             href="${ep.download || "#"}"
-             download
-             style="display:block;width:100%;max-width:500px;margin:0 auto 12px auto;background:#198fff;"
-             ${ep.download ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>🖇️ Download (Server 1)</a>
+              href="${ep.download || "#"}"
+              download
+              style="display:block;width:100%;max-width:500px;margin:0 auto 12px auto;background:#198fff;"
+              ${ep.download ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>🖇️ Download (Server 1)</a>
         </div>
 
-        <!-- AD BANNER BETWEEN BUTTONS -->
+        <!-- 320x50 AD BETWEEN DOWNLOAD BUTTONS -->
         <div id="ad-between-downloads"></div>
 
         <div style="margin:8px 0;">
           <button class="pro-download-btn-polished"
                   id="download2Btn"
                   style="display:block;width:100%;max-width:500px;margin:0 auto;background:#30c96b;"
-                  ${
-                    ep.download2
-                      ? ""
-                      : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"
-                  }>🖇️ Download (Server 2)</button>
+                  ${ep.download2 ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>🖇️ Download (Server 2)</button>
         </div>
 
         <a class="pro-tutorial-btn"
-           href="${HOW_TO_DOWNLOAD_URL}"
-           target="_blank"
-           rel="noopener"
-           style="display:block;background:#234a63;color:#fff;padding:12px 28px;margin:8px 0 0 0;border-radius:8px;text-align:center;font-weight:600;text-decoration:none;font-size:1.03em;">
+          href="${HOW_TO_DOWNLOAD_URL}"
+          target="_blank"
+          rel="noopener"
+          style="display:block;background:#234a63;color:#fff;padding:12px 28px;margin:8px 0 0 0;border-radius:8px;text-align:center;font-weight:600;text-decoration:none;font-size:1.03em;">
           📕 How to Download (Tutorial)
         </a>
 
         <a class="pro-premium-btn"
-           href="${PREMIUM_CHANNEL_URL}"
-           target="_blank"
-           rel="noopener"
-           style="display:block;background:#099c7d;color:#fff;padding:13px 28px;margin:12px 0 0 0;border-radius:8px;text-align:center;font-weight:600;font-size:1.11em;text-decoration:none;letter-spacing:0.01em;">
+          href="${PREMIUM_CHANNEL_URL}"
+          target="_blank"
+          rel="noopener"
+          style="display:block;background:#099c7d;color:#fff;padding:13px 28px;margin:12px 0 0 0;border-radius:8px;text-align:center;font-weight:600;font-size:1.11em;text-decoration:none;letter-spacing:0.01em;">
           🌟 Join Premium Channel
         </a>
       </div>
     `;
 
-    // Inject Adsterra/Monetag Banners at all positions
-    injectAdBanner({
-      slotId: "ad-above-player",
-      key: "030f560988476116223cff5a510791aa",
-      width: 300,
-      height: 250,
-    });
-    injectAdBanner({
-      slotId: "ad-below-player",
-      key: "030f560988476116223cff5a510791aa",
-      width: 300,
-      height: 250,
-    });
-    injectAdBanner({
-      slotId: "ad-between-downloads",
-      key: "c91a82435d260630918ecc80c95125ac",
-      width: 320,
-      height: 50,
-    });
+    // Inject ads at all slots (dynamic script for banner rendering)
+    injectAdBanner("ad-above-player", "030f560988476116223cff5a510791aa", 300, 250);
+    injectAdBanner("ad-below-player", "030f560988476116223cff5a510791aa", 300, 250);
+    injectAdBanner("ad-between-downloads", "c91a82435d260630918ecc80c95125ac", 320, 50);
 
-    //--- Safe lazy load code ---(unchanged)---
+    // Lazy load embed video code (unchanged)
     const embedWrap = container.querySelector('.pro-episode-embed-polished');
     if (embedWrap) {
       const placeholders = embedWrap.querySelectorAll('[data-embed-src]');
@@ -211,19 +182,15 @@ Promise.all([
       });
     }
 
-    // --- Monetag/Rewarded logic for Download 2 (unchanged) ---
+    // Monetag rewarded ad for Download 2 (unchanged)
     const download2Btn = document.getElementById("download2Btn");
     if (download2Btn && ep.download2) {
       download2Btn.addEventListener("click", function (e) {
         e.preventDefault();
         if (typeof show_9623557 === "function") {
           show_9623557()
-            .then(() => {
-              window.location.href = ep.download2;
-            })
-            .catch(() => {
-              alert("Ad could not be loaded. Please try again.");
-            });
+            .then(() => { window.location.href = ep.download2; })
+            .catch(() => { alert("Ad could not be loaded. Please try again."); });
         } else {
           window.location.href = ep.download2;
         }
