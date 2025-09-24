@@ -1,4 +1,4 @@
-// episode.js — polished with safe lazy-loading for embeds and correct ad placements
+// episode.js — polished, with correct ad placements
 
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('series');
@@ -50,21 +50,6 @@ Promise.all([
   function renderEpisode() {
     container.innerHTML = `
       <div class="pro-episode-view-polished">
-
-        <!-- 300x250 Ad ABOVE Player -->
-        <div style="display:flex; justify-content:center; margin:18px 0;">
-          <script type="text/javascript">
-            atOptions = {
-              'key' : '030f560988476116223cff5a510791aa',
-              'format' : 'iframe',
-              'height' : 250,
-              'width' : 300,
-              'params' : {}
-            };
-          </script>
-          <script type="text/javascript" src="//www.highperformanceformat.com/030f560988476116223cff5a510791aa/invoke.js"></script>
-        </div>
-
         <div class="pro-episode-header-polished">
           <a class="pro-back-btn-polished" href="${backUrl}" title="Back">
             <svg width="23" height="23" viewBox="0 0 20 20" class="svg-arrow">
@@ -85,12 +70,26 @@ Promise.all([
           <a href="https://sm-tv.vercel.app" target="_blank" style="color:#f7e038;text-decoration:underline;word-break:break-all;">https://sm-tv.vercel.app</a> 👇
         </div>
 
+        <!-- 300x250 AD CODE: below note, above player -->
+        <div style="display:flex;justify-content:center;margin:18px 0;">
+          <script type="text/javascript">
+            atOptions = {
+              'key' : '030f560988476116223cff5a510791aa',
+              'format' : 'iframe',
+              'height' : 250,
+              'width' : 300,
+              'params' : {}
+            };
+          </script>
+          <script type="text/javascript" src="//www.highperformanceformat.com/030f560988476116223cff5a510791aa/invoke.js"></script>
+        </div>
+
         <div class="pro-episode-embed-polished">
           ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'}
         </div>
 
-        <!-- 300x250 Ad BELOW Player -->
-        <div style="display:flex; justify-content:center; margin:18px 0;">
+        <!-- 300x250 AD CODE: below player -->
+        <div style="display:flex;justify-content:center;margin:18px 0;">
           <script type="text/javascript">
             atOptions = {
               'key' : '030f560988476116223cff5a510791aa',
