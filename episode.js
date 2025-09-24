@@ -21,7 +21,7 @@ if (season) {
 const HOW_TO_DOWNLOAD_URL = "https://t.me/howtodownloadd1/10";
 const PREMIUM_CHANNEL_URL = "https://t.me/itzmezain1/2905";
 
-// Helper to inject Adsterra/Monetag banners dynamically
+// Helper to inject Adsterra (Monetag) banners dynamically
 function injectAdBanner(slotId, key, width, height, delay = 0) {
   const inject = () => {
     const adDiv = document.getElementById(slotId);
@@ -39,7 +39,6 @@ function injectAdBanner(slotId, key, width, height, delay = 0) {
       };
     `;
     const s2 = document.createElement("script");
-    s2.type = "text/javascript";
     s2.src = `//www.highperformanceformat.com/${key}/invoke.js`;
     adDiv.appendChild(s1);
     adDiv.appendChild(s2);
@@ -110,8 +109,20 @@ Promise.all([
               style="display:block;width:100%;max-width:500px;margin:0 auto 12px auto;background:#198fff;"
               ${ep.download ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>🖇️ Download (Server 1)</a>
         </div>
-        <!-- 320x50 AD BETWEEN DOWNLOAD BUTTONS -->
-        <div id="ad-between-downloads"></div>
+        <!-- 320x50 Adsterra Banner between Downloads - static (not injected by JS) -->
+        <div id="ad-between-downloads">
+          <!-- Replace key below with your 320x50 Adsterra zone key -->
+          <script type="text/javascript">
+            atOptions = {
+              'key': 'c91a82435d260630918ecc80c95125ac',
+              'format': 'iframe',
+              'height': 50,
+              'width': 320,
+              'params': {}
+            };
+          </script>
+          <script type="text/javascript" src="//www.highperformanceformat.com/c91a82435d260630918ecc80c95125ac/invoke.js"></script>
+        </div>
         <div style="margin:8px 0;">
           <button class="pro-download-btn-polished"
                   id="download2Btn"
@@ -135,10 +146,9 @@ Promise.all([
       </div>
     `;
 
-    // Inject: above player (after short delay), below player (after short delay), and between buttons (immediate)
+    // 300x250 ads - inject dynamically above and below player
     injectAdBanner("ad-above-player", "030f560988476116223cff5a510791aa", 300, 250, 300);
     injectAdBanner("ad-below-player", "030f560988476116223cff5a510791aa", 300, 250, 650);
-    injectAdBanner("ad-between-downloads", "c91a82435d260630918ecc80c95125ac", 320, 50, 0);
 
     // --- Safe lazy load for video embed (unchanged) ---
     const embedWrap = container.querySelector('.pro-episode-embed-polished');
@@ -149,15 +159,15 @@ Promise.all([
           entries.forEach(e => {
             if (e.isIntersecting) {
               const src = e.target.getAttribute('data-embed-src');
-              const i = document.createElement('iframe');
+              const i = document.createElement("iframe");
               i.src = src;
               i.loading = 'lazy';
               i.width = '100%';
               i.height = '100%';
-              i.setAttribute('frameborder', '0');
-              i.setAttribute('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share');
-              i.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
-              i.setAttribute('allowfullscreen', '');
+              i.setAttribute('frameborder', "0");
+              i.setAttribute('allow', "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share");
+              i.setAttribute('referrerpolicy', "strict-origin-when-cross-origin");
+              i.setAttribute('allowfullscreen', "");
               e.target.replaceWith(i);
               io.unobserve(e.target);
             }
@@ -169,10 +179,10 @@ Promise.all([
         const shouldLazy = idx > 0 || window.matchMedia('(max-width: 767px)').matches;
         if (shouldLazy && !f.hasAttribute('loading')) f.setAttribute('loading', 'lazy');
         if (!f.hasAttribute('referrerpolicy')) f.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
-        if (!f.hasAttribute('allow')) f.setAttribute('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share');
-        if (!f.hasAttribute('width')) f.setAttribute('width', '100%');
-        if (!f.hasAttribute('height')) f.setAttribute('height', '100%');
-        if (!f.hasAttribute('frameborder')) f.setAttribute('frameborder', '0');
+        if (!f.hasAttribute('allow')) f.setAttribute('allow', "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share");
+        if (!f.hasAttribute('width')) f.setAttribute('width', "100%");
+        if (!f.hasAttribute('height')) f.setAttribute('height', "100%");
+        if (!f.hasAttribute('frameborder')) f.setAttribute('frameborder', "0");
         if (!f.hasAttribute('allowfullscreen')) f.setAttribute('allowfullscreen', '');
         if (!f.hasAttribute('decoding')) f.setAttribute('decoding', 'async');
       });
