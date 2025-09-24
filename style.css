@@ -274,3 +274,8 @@ button:hover{background:#272838}
   border-radius: 0 0 18px 18px;
   border: none;
 }
+#ad-above-player, #ad-below-player {
+  display: flex;
+  justify-content: center;
+  margin: 18px 0;
+}
