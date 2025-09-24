@@ -163,9 +163,9 @@
     "id": 201,
     "title": "Sultan Mehmet Fatih (English Subtitles)",
     "slug": "sultan-mehmet-fatih-en-sub",
-    "poster": "assets/posters/mehmet_fatih.jpg",
+    "poster": "assets/posters/mehmet_fatih_en.jpg",
     "desc": { "en": "Sultan Mehmet Fatih with English subtitles." },
-    "seasons": 2,
+    "seasons": 3,
     "track": "sub",
     "subLang": "en"
   },
@@ -173,9 +173,9 @@
     "id": 202,
     "title": "Sultan Mehmet Fatih (Hindi Subtitles)",
     "slug": "sultan-mehmet-fatih-hi-sub",
-    "poster": "assets/posters/mehmet_fatih.jpg",
+    "poster": "assets/posters/mehmet_fatih_hi.jpg",
     "desc": { "en": "Sultan Mehmet Fatih with Hindi subtitles." },
-    "seasons": 2,
+    "seasons": 3,
     "track": "sub",
     "subLang": "hi"
   },
@@ -183,9 +183,9 @@
     "id": 203,
     "title": "Sultan Mehmet Fatih (Urdu Subtitles)",
     "slug": "sultan-mehmet-fatih-ur-sub",
-    "poster": "assets/posters/mehmet_fatih.jpg",
+    "poster": "assets/posters/mehmet_fatih_ur.jpg",
     "desc": { "en": "Sultan Mehmet Fatih with Urdu subtitles." },
-    "seasons": 2,
+    "seasons": 3,
     "track": "sub",
     "subLang": "ur"
   }
