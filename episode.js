@@ -1,4 +1,4 @@
-// episode.js — polished, with correct ad placements
+// episode.js — correct 300x250 ad below note and below player
 
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('series');
@@ -70,7 +70,7 @@ Promise.all([
           <a href="https://sm-tv.vercel.app" target="_blank" style="color:#f7e038;text-decoration:underline;word-break:break-all;">https://sm-tv.vercel.app</a> 👇
         </div>
 
-        <!-- 300x250 AD CODE: below note, above player -->
+        <!-- AD: below note, above player -->
         <div style="display:flex;justify-content:center;margin:18px 0;">
           <script type="text/javascript">
             atOptions = {
@@ -88,7 +88,7 @@ Promise.all([
           ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'}
         </div>
 
-        <!-- 300x250 AD CODE: below player -->
+        <!-- AD: immediately below the player, above downloads -->
         <div style="display:flex;justify-content:center;margin:18px 0;">
           <script type="text/javascript">
             atOptions = {
@@ -149,7 +149,7 @@ Promise.all([
       </div>
     `;
 
-    // --- Lazy loading enhancements (same as before) ---
+    //--- Safe lazy load code ---(unchanged)---
     const embedWrap = container.querySelector('.pro-episode-embed-polished');
     if (embedWrap) {
       const placeholders = embedWrap.querySelectorAll('[data-embed-src]');
@@ -187,7 +187,7 @@ Promise.all([
       });
     }
 
-    // --- Monetag rewarded ad logic for Download 2 ---
+    // --- Monetag rewarded ad for Download 2 ---
     const download2Btn = document.getElementById('download2Btn');
     if (download2Btn && ep.download2) {
       download2Btn.addEventListener('click', function(e) {
