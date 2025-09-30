@@ -1,8 +1,8 @@
 [
   {
     "title": "Salahuddin Ayyubi DuB",
-    "days": "Mon - Fri",
-    "time": "11:30 PM",
+    "time": "Mon - Fri",
+    "days": "11:30 PM",
     "poster": "assets/posters/salauddin_ayyubi.jpg"
   },
   {
@@ -12,7 +12,7 @@
   },
   {
     "title": "Haji Bayram Vali",
-    "days": "Mon - Fri",
+    "time": "Mon - Fri",
     "poster": "assets/posters/haji_bayram_vali.jpg"
   }
 ]
