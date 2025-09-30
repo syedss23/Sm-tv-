@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('sidebarToggle')?.addEventListener('click', () => sbar.classList.toggle('open'));
   document.getElementById('sidebarClose')?.addEventListener('click', () => sbar.classList.remove('open'));
 
-  // ---------- New Episodes Grid: Uses episode-data/index.json ONLY ----------
+  // ---------- New Episodes Grid: Horizontal style ----------
   const newGrid = document.getElementById('new-episodes-grid');
   if (newGrid) {
     fetch('episode-data/index.json')
@@ -35,21 +35,29 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
 
-        newGrid.innerHTML = latestEps.map(ep => {
-          const img = ep.thumb || ep.poster || '';
-          const epNum = ep.ep || '';
-          const epTitle = ep.title || `Episode ${epNum}`;
-          return `
-            <div class="episode-card-pro">
-              <img src="${img}" class="episode-img-pro" alt="${epTitle}" loading="lazy" decoding="async">
-              <div class="episode-title-pro">
-                ${epTitle}
-                <span class="new-badge-pro">NEW</span>
-              </div>
-              <a href="${ep.shortlink || ep.download || '#'}" class="watch-btn-pro" target="_blank" rel="noopener">Watch Now</a>
-            </div>
-          `;
-        }).join('');
+        newGrid.innerHTML = `
+          <div class="pro-episodes-row-pro" style="display:flex;gap:15px;overflow-x:auto;padding-bottom:8px;">
+            ${
+              latestEps.map(ep => {
+                const img = ep.thumb || ep.poster || '';
+                const epNum = ep.ep || '';
+                const epTitle = ep.title || `Episode ${epNum}`;
+                return `
+                  <a class="pro-episode-card-pro" style="background:#192837;border-radius:9px;min-width:150px;max-width:185px;box-shadow:0 2px 14px #0005;overflow:hidden;display:flex;flex-direction:column;text-decoration:none;margin-bottom:2px;" href="${ep.shortlink || ep.download || '#'}" target="_blank" rel="noopener">
+                    <div class="pro-ep-thumb-wrap-pro" style="position:relative;">
+                      <img src="${img}" alt="${epTitle}" style="width:100%;height:95px;object-fit:cover;">
+                      <span class="pro-ep-num-pro" style="position:absolute;top:7px;left:7px;background:#198fff;color:#fff;font-weight:700;border-radius:6px;padding:3px 11px 2px 11px;font-size:.92em;">Ep ${epNum}</span>
+                    </div>
+                    <div class="pro-ep-title-pro" style="padding:7px 8px 12px 10px;font-family:'Montserrat',sans-serif;font-size:1em;font-weight:600;color:#fff;text-align:left;">
+                      ${epTitle}
+                      <span class="new-badge-pro" style="background:#ffd700;color:#162632;font-size:.82em;border-radius:5px;padding:2px 10px 2px 10px;margin-left:6px;font-weight:700;">NEW</span>
+                    </div>
+                  </a>
+                `;
+              }).join('')
+            }
+          </div>
+        `;
       })
       .catch(() => {
         newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">
