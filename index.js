@@ -4,6 +4,92 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('sidebarToggle')?.addEventListener('click', () => sbar.classList.toggle('open'));
   document.getElementById('sidebarClose')?.addEventListener('click', () => sbar.classList.remove('open'));
 
+  // New Episodes Grid (Top of Homepage)
+  const newGrid = document.getElementById('new-episodes-grid');
+  if (newGrid) {
+    fetch('series.json')
+      .then(r => r.json())
+      .then(seriesArr => {
+        // Collect all season data file paths
+        const episodeJsonFiles = [];
+        seriesArr.forEach(series => {
+          if (Array.isArray(series.seasons)) {
+            series.seasons.forEach(season => {
+              if (season.json) episodeJsonFiles.push({series, season, path: season.json});
+            });
+          } else if (series.json) {
+            episodeJsonFiles.push({series, season: null, path: series.json});
+          }
+        });
+        // Fetch all episode json files
+        return Promise.all(
+          episodeJsonFiles.map(obj =>
+            fetch(obj.path)
+              .then(res => res.ok ? res.json() : [])
+              .then(data =>
+                (Array.isArray(data) ? data.map(ep => ({
+                  ...ep,
+                  _series: obj.series,
+                  _season: obj.season,
+                  _src: obj.path
+                })) : [])
+              )
+              .catch(() => [])
+            )
+        );
+      })
+      .then(arrays => {
+        // Flatten episode arrays, filter for valid timestamps
+        const allEpisodes = arrays.flat().filter(ep => ep.timestamp);
+        // Sort by most recent timestamp
+        allEpisodes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        // Take top 5
+        const latestEps = allEpisodes.slice(0, 5);
+
+        if (!latestEps.length) {
+          newGrid.innerHTML =
+            `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">
+              No new episodes found.
+            </div>`;
+          return;
+        }
+
+        newGrid.innerHTML = latestEps.map(ep => {
+          const seriesTitle = ep._series?.title || '';
+          // Prefer thumb > poster for episode preview:
+          const image = ep.thumb || ep.poster || ep._series?.poster || '';
+          // Build episode watch link
+          let epSlug;
+          if (ep._series && ep._series.slug) {
+            if (ep._season && ep._season.season) {
+              epSlug = `episode.html?series=${ep._series.slug}&season=${ep._season.season}&ep=${ep.ep}`;
+            } else {
+              epSlug = `episode.html?series=${ep._series.slug}&ep=${ep.ep}`;
+            }
+          } else {
+            epSlug = '#';
+          }
+
+          return `
+            <div class="episode-card-pro">
+              <img src="${image}" class="episode-img-pro" alt="${seriesTitle} Ep ${ep.ep}" loading="lazy" decoding="async">
+              <div class="series-title-pro">${seriesTitle}</div>
+              <div class="episode-title-pro">
+                ${(ep.title || 'Episode ' + ep.ep)}
+                <span class="new-badge-pro">NEW</span>
+              </div>
+              <a href="${epSlug}" class="watch-btn-pro">Watch Now</a>
+            </div>
+          `;
+        }).join('');
+      })
+      .catch(() => {
+        newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">
+          Could not load new episodes.
+        </div>`;
+      });
+  }
+
   // ---------------- Home: Series list with Dubbed/Subtitles toggle (no counts) ----------------
   const grid = document.getElementById('series-grid');
   if (grid) {
@@ -37,7 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function hydrateUI() {
       setPrimary(state.track);
       toggleSubLangs(); // only show languages when Subtitles is active
-      // set active language pill (labels stay static; no counts)
       subLangs?.querySelectorAll('.pill').forEach(b => {
         b.classList.toggle('active', b.dataset.lang === state.lang);
         b.setAttribute('aria-pressed', String(b.dataset.lang === state.lang));
@@ -90,84 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="title">${s.title}</div>
         </a>
       `).join('') : `<div style="color:#fff;font-size:1.1em;padding:1.5em;">No series found.</div>`;
-    }
-  }
-
-  // ---------------- Legacy SPA list (older markup support) ----------------
-  if (document.getElementById('spa-series-list')) {
-    let seriesList = [];
-    fetch('series.json')
-      .then(r => {
-        if (!r.ok) throw new Error('Series JSON not found. Check /series.json');
-        return r.json();
-      })
-      .then(data => {
-        seriesList = Array.isArray(data) ? data : [];
-        renderSeriesList('');
-      })
-      .catch(err => {
-        const gridContainer = document.getElementById('spa-series-list');
-        gridContainer.innerHTML = `<div style="color:#f44;padding:1.2em;">Error: ${err.message}</div>`;
-      });
-
-    document.getElementById('seriesSearch')?.addEventListener('input', e => {
-      renderSeriesList(e.target.value.trim());
-    });
-
-    function renderSeriesList(search) {
-      const gridContainer = document.getElementById('spa-series-list');
-      gridContainer.innerHTML = `<div class="poster-grid"></div>`;
-      const grid = gridContainer.querySelector('.poster-grid');
-      let filtered = seriesList;
-      if (search) filtered = seriesList.filter(s => (s.title || '').toLowerCase().includes(search.toLowerCase()));
-      if (!filtered.length) { grid.innerHTML = `<div style="color:#fff;font-size:1.1em;padding:1.5em;">No series found.</div>`; return; }
-      filtered.forEach(series => {
-        const a = document.createElement('a');
-        a.href = `series.html?series=${series.slug}`;
-        a.className = 'poster-item';
-        a.innerHTML = `
-          <img src="${series.poster}" alt="${series.title}">
-          <div class="title">${series.title}</div>
-        `;
-        grid.appendChild(a);
-      });
-    }
-  }
-
-  // ---------------- Season page: Salahuddin Ayyubi S2 ----------------
-  if (document.getElementById('season-2-episodes')) {
-    fetch('episode-data/salauddin-ayyubi-s2.json')
-      .then(resp => {
-        if (!resp.ok) throw new Error('Season JSON not found. Check episode-data/salauddin-ayyubi-s2.json');
-        return resp.json();
-      })
-      .then(episodes => renderEpisodes(episodes))
-      .catch(err => {
-        document.getElementById('season-2-episodes').innerHTML =
-          `<div style="color:#f44;padding:1.2em;">Error: ${err.message}</div>`;
-      });
-
-    function renderEpisodes(episodes) {
-      const epContainer = document.getElementById('season-2-episodes');
-      if (!episodes || !episodes.length) {
-        epContainer.innerHTML =
-          `<div style="color:#fff;padding:1.5em;">Episodes will appear here as soon as they release!</div>`;
-        return;
-      }
-      let listHTML = '<div class="pro-episodes-row-pro">';
-      episodes.forEach(ep => {
-        listHTML += `
-          <a class="pro-episode-card-pro" href="episode.html?ep=${ep.slug}">
-            <div class="pro-ep-thumb-wrap-pro">
-              <img src="${ep.thumb}" alt="${ep.title}" class="pro-ep-thumb-pro" loading="lazy" decoding="async">
-              <span class="pro-ep-num-pro">EP ${ep.ep}</span>
-            </div>
-            <div class="pro-ep-title-pro">${ep.title ? ep.title : 'Episode ' + ep.ep}</div>
-          </a>
-        `;
-      });
-      listHTML += '</div>';
-      epContainer.innerHTML = listHTML;
     }
   }
 });
