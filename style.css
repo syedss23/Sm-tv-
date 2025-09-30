@@ -307,3 +307,107 @@ button:hover{background:#272838}
   box-shadow: 0 1px 3px rgba(197,22,44,0.09), 0 1px 1px rgba(0,0,0,0.07);
   transform: translateY(1px) scale(0.98);
 }
+/* --- NEW EPISODES PREMIUM SECTION --- */
+.new-episodes-section {
+  background: radial-gradient(circle at 34% 36%, #232f3e 74%, #101a24 100%);
+  margin: 28px 0 16px 0;
+  border-radius: 16px;
+  box-shadow: 0 5px 22px #0007, 0 2px 10px #ffd70033;
+  padding: 28px 0 13px 0;
+}
+.new-episodes-section h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 1.17em;
+  margin: 0 0 18px 26px;
+  color: #ffd700;
+  letter-spacing: .07em;
+  text-shadow: 0 2px 8px #ffe49344, 0 1px 6px #1930407a;
+  display: flex; align-items: center;
+}
+.new-episodes-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: flex-start;
+  padding: 0 24px 14px 24px;
+  min-height: 120px;
+}
+.episode-card-pro {
+  background: linear-gradient(135deg, #1a232b 85%, #ffd7001b 100%);
+  border-radius: 12px;
+  box-shadow: 0 3px 18px #0005, 0 1px 7px #ffd70030;
+  width: 165px; min-width: 110px; max-width: 184px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  transition: box-shadow .2s;
+}
+.episode-card-pro:hover {
+  box-shadow: 0 8px 32px #ffd70048, 0 4px 26px #212f4055;
+}
+.episode-img-pro {
+  width: 100%;
+  height: 92px;
+  object-fit: cover;
+  border-radius: 11px 11px 0 0;
+  box-shadow: 0 2px 10px #ffd70016;
+}
+.series-title-pro {
+  font-family: 'Montserrat',sans-serif;
+  font-weight: 600;
+  color: #23c6ed;
+  text-align: center;
+  font-size: 1.12em;
+  margin: 10px 0 0 0;
+  letter-spacing: .02em;
+}
+.episode-title-pro {
+  color: #ffd700;
+  font-family: 'Montserrat',sans-serif;
+  font-weight: 800;
+  font-size: 1.02em;
+  text-align: center;
+  margin: 5px 0 0 0;
+  letter-spacing: .01em;
+  text-shadow: 0 1px 6px #1a232b42;
+}
+.new-badge-pro {
+  background: #ffd700;
+  color: #232f3e;
+  font-family: 'Montserrat',sans-serif;
+  font-weight: 700;
+  font-size: 0.8em;
+  border-radius: 7px;
+  padding: 2px 11px;
+  margin-left: 8px;
+  box-shadow: 0 0 14px #ffd70038;
+}
+.watch-btn-pro {
+  margin: 14px 0 14px 0;
+  color: #fff;
+  background: linear-gradient(90deg, #198fff 70%, #ffd700 100%);
+  border-radius: 8px;
+  padding: 10px 30px;
+  text-decoration: none;
+  font-family: 'Montserrat',sans-serif;
+  font-weight: 600;
+  font-size: 1em;
+  box-shadow: 0 1px 9px #198fff22;
+  border:none;
+  transition: background .2s;
+  cursor:pointer;
+}
+.watch-btn-pro:hover {
+  background: linear-gradient(90deg,#ffd700 28%,#198fff 100%);
+  color:#1a232b;
+  box-shadow:0 3px 24px #ffd70042;
+}
+@media (max-width: 600px) {
+  .new-episodes-grid { gap:7px; padding:0 6px 12px 6px; }
+  .episode-card-pro { width:44vw; min-width:90px;}
+  .episode-img-pro { height: 60px;}
+  .new-episodes-section h2 { margin:7px 0 9px 8px;font-size:1em;}
+}
