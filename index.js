@@ -36,29 +36,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         newGrid.innerHTML = latestEps.map(ep => {
-          // Try to extract a nice series title from filename if not specified
-          let baseTitle = ep.series;
-          if (!baseTitle && ep._src) {
-            const clean = ep._src.split('/').pop().replace('.json','').replace(/[-_]/g, ' ');
-            baseTitle = clean.charAt(0).toUpperCase() + clean.slice(1);
-          }
           const img = ep.thumb || ep.poster || '';
           const epNum = ep.ep || '';
           const epTitle = ep.title || `Episode ${epNum}`;
-          let epSlug = "#";
-          if (ep._src) {
-            const fileParam = encodeURIComponent(ep._src.replace('.json',''));
-            epSlug = `episode.html?file=${fileParam}&ep=${epNum}`;
-          }
           return `
             <div class="episode-card-pro">
-              <img src="${img}" class="episode-img-pro" alt="${baseTitle} Ep ${epNum}" loading="lazy" decoding="async">
-              <div class="series-title-pro">${baseTitle}</div>
+              <img src="${img}" class="episode-img-pro" alt="${epTitle}" loading="lazy" decoding="async">
               <div class="episode-title-pro">
                 ${epTitle}
                 <span class="new-badge-pro">NEW</span>
               </div>
-              <a href="${epSlug}" class="watch-btn-pro">Watch Now</a>
+              <a href="${ep.shortlink || ep.download || '#'}" class="watch-btn-pro" target="_blank" rel="noopener">Watch Now</a>
             </div>
           `;
         }).join('');
