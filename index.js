@@ -1,49 +1,30 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Sidebar
+  // Sidebar controls
   const sbar = document.getElementById('sidebar');
   document.getElementById('sidebarToggle')?.addEventListener('click', () => sbar.classList.toggle('open'));
   document.getElementById('sidebarClose')?.addEventListener('click', () => sbar.classList.remove('open'));
 
-  // New Episodes Grid (Top of Homepage)
+  // ---------- New Episodes Grid: Uses episode-data/index.json ONLY ----------
   const newGrid = document.getElementById('new-episodes-grid');
   if (newGrid) {
-    fetch('series.json')
+    fetch('episode-data/index.json')
       .then(r => r.json())
-      .then(seriesArr => {
-        // Collect all season data file paths
-        const episodeJsonFiles = [];
-        seriesArr.forEach(series => {
-          if (Array.isArray(series.seasons)) {
-            series.seasons.forEach(season => {
-              if (season.json) episodeJsonFiles.push({series, season, path: season.json});
-            });
-          } else if (series.json) {
-            episodeJsonFiles.push({series, season: null, path: series.json});
-          }
-        });
-        // Fetch all episode json files
-        return Promise.all(
-          episodeJsonFiles.map(obj =>
-            fetch(obj.path)
-              .then(res => res.ok ? res.json() : [])
-              .then(data =>
-                (Array.isArray(data) ? data.map(ep => ({
-                  ...ep,
-                  _series: obj.series,
-                  _season: obj.season,
-                  _src: obj.path
-                })) : [])
-              )
-              .catch(() => [])
+      .then(files => Promise.all(
+        files.map(path =>
+          fetch(path)
+            .then(res => res.ok ? res.json() : [])
+            .then(data =>
+              (Array.isArray(data) ? data.map(ep => ({
+                ...ep,
+                _src: path
+              })) : [])
             )
-        );
-      })
+            .catch(() => [])
+        )
+      ))
       .then(arrays => {
-        // Flatten episode arrays, filter for valid timestamps
         const allEpisodes = arrays.flat().filter(ep => ep.timestamp);
-        // Sort by most recent timestamp
         allEpisodes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        // Take top 5
         const latestEps = allEpisodes.slice(0, 5);
 
         if (!latestEps.length) {
@@ -55,27 +36,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         newGrid.innerHTML = latestEps.map(ep => {
-          const seriesTitle = ep._series?.title || '';
-          // Prefer thumb > poster for episode preview:
-          const image = ep.thumb || ep.poster || ep._series?.poster || '';
-          // Build episode watch link
-          let epSlug;
-          if (ep._series && ep._series.slug) {
-            if (ep._season && ep._season.season) {
-              epSlug = `episode.html?series=${ep._series.slug}&season=${ep._season.season}&ep=${ep.ep}`;
-            } else {
-              epSlug = `episode.html?series=${ep._series.slug}&ep=${ep.ep}`;
-            }
-          } else {
-            epSlug = '#';
+          // Try to extract a nice series title from filename if not specified
+          let baseTitle = ep.series;
+          if (!baseTitle && ep._src) {
+            const clean = ep._src.split('/').pop().replace('.json','').replace(/[-_]/g, ' ');
+            baseTitle = clean.charAt(0).toUpperCase() + clean.slice(1);
           }
-
+          const img = ep.thumb || ep.poster || '';
+          const epNum = ep.ep || '';
+          const epTitle = ep.title || `Episode ${epNum}`;
+          let epSlug = "#";
+          if (ep._src) {
+            const fileParam = encodeURIComponent(ep._src.replace('.json',''));
+            epSlug = `episode.html?file=${fileParam}&ep=${epNum}`;
+          }
           return `
             <div class="episode-card-pro">
-              <img src="${image}" class="episode-img-pro" alt="${seriesTitle} Ep ${ep.ep}" loading="lazy" decoding="async">
-              <div class="series-title-pro">${seriesTitle}</div>
+              <img src="${img}" class="episode-img-pro" alt="${baseTitle} Ep ${epNum}" loading="lazy" decoding="async">
+              <div class="series-title-pro">${baseTitle}</div>
               <div class="episode-title-pro">
-                ${(ep.title || 'Episode ' + ep.ep)}
+                ${epTitle}
                 <span class="new-badge-pro">NEW</span>
               </div>
               <a href="${epSlug}" class="watch-btn-pro">Watch Now</a>
@@ -90,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
-  // ---------------- Home: Series list with Dubbed/Subtitles toggle (no counts) ----------------
+  // ------------- Series homepage grid: NO CHANGES -------------
   const grid = document.getElementById('series-grid');
   if (grid) {
     const search   = document.getElementById('search');
@@ -122,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function hydrateUI() {
       setPrimary(state.track);
-      toggleSubLangs(); // only show languages when Subtitles is active
+      toggleSubLangs();
       subLangs?.querySelectorAll('.pill').forEach(b => {
         b.classList.toggle('active', b.dataset.lang === state.lang);
         b.setAttribute('aria-pressed', String(b.dataset.lang === state.lang));
