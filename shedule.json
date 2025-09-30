@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Salahuddin Ayyubi DuB",
+    "days": "Mon - Fri",
+    "time": "11:30 PM",
+    "poster": "posters/salahuddin.jpg"
+  },
+  {
+    "title": "Sultan Mehmet Fatih",
+    "days": "Wednesday",
+    "time": "Every Wednesday",
+    "poster": "posters/fatih.jpg",
+    "type": "Subtitles"
+  },
+  {
+    "title": "Haji Bayram Vali",
+    "days": "Mon - Fri",
+    "poster": "posters/haji-bayram.jpg"
+  }
+]
