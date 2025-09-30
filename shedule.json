@@ -3,16 +3,16 @@
     "title": "Salahuddin Ayyubi DuB",
     "days": "Mon - Fri",
     "time": "11:30 PM",
-    "poster": "assest/posters/salauddin_ayyubi.jpg"
+    "poster": "assets/posters/salauddin_ayyubi.jpg"
   },
   {
     "title": "Sultan Mehmet Fatih Subtitles",
     "time": "Every Wednesday",
-    "poster": "assest/posters/mehmet_fatih.jpg"
+    "poster": "assets/posters/mehmet_fatih.jpg"
   },
   {
     "title": "Haji Bayram Vali",
     "days": "Mon - Fri",
-    "poster": "assest/posters/haji_bayram_vali.jpg"
+    "poster": "assets/posters/haji_bayram_vali.jpg"
   }
 ]
