@@ -4,7 +4,33 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('sidebarToggle')?.addEventListener('click', () => sbar.classList.toggle('open'));
   document.getElementById('sidebarClose')?.addEventListener('click', () => sbar.classList.remove('open'));
 
-  // ---------- New Episodes Horizontal Card Grid with Old Design ----------
+  // ===== SCHEDULE BAR (Above New Episodes) =====
+  const scheduleBar = document.getElementById('schedule-bar');
+  if (scheduleBar) {
+    fetch('shedule.json')
+      .then(r => r.json())
+      .then(schedule => {
+        if (!Array.isArray(schedule) || !schedule.length) {
+          scheduleBar.innerHTML = `<div style="color:#ffd700;font-size:1em;padding:1em;text-align:center;">No schedule yet.</div>`;
+          return;
+        }
+        scheduleBar.innerHTML = schedule.map(item => `
+          <div class="schedule-entry" title="${item.title || ''}" style="display:flex;align-items:center;margin-right:10px;">
+            <img src="${item.poster || ''}" alt="${item.title || ''}" loading="lazy" decoding="async"
+                 style="width:27px;height:27px;object-fit:cover;border-radius:5px;margin-right:5px;">
+            <span class="title" style="color:#23c6ed;font-weight:700;margin-right:4px;">${item.title || ''}</span>
+            <span class="days" style="color: #ffe493; margin-left:4px; font-size: 0.92em;">${item.days || ''}</span>
+            ${item.time ? `<span class="time" style="color: #ffd700; font-size:0.97em; margin-left:3px;">${item.time}</span>` : ''}
+            ${item.type ? `<span class="type" style="color:#23c6ed; margin-left:6px; font-size:.91em;">${item.type}</span>` : ''}
+          </div>
+        `).join('');
+      })
+      .catch(() => {
+        scheduleBar.innerHTML = `<div style="color:#ffd700;font-size:1em;padding:1em;text-align:center;">Could not load schedule.</div>`;
+      });
+  }
+
+  // ===== New Episodes Horizontal Card Grid =====
   const newGrid = document.getElementById('new-episodes-grid');
   if (newGrid) {
     fetch('episode-data/index.json')
