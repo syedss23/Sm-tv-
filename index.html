@@ -45,7 +45,44 @@
   <link rel="stylesheet" href="style.css">
   <style>
     html { scroll-behavior: smooth; }
-
+    .schedule-bar {
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+      gap: 16px;
+      background: #232f3e;
+      border-radius: 9px;
+      box-shadow: 0 1px 8px #0003;
+      padding: 7px 12px;
+      margin: 13px 16px 6px 16px;
+      min-height: 42px;
+    }
+    .schedule-entry {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #101a24;
+      border-radius: 7px;
+      box-shadow: 0 1px 6px #0003;
+      padding: 4px 11px 4px 6px;
+      font-family: 'Montserrat',sans-serif;
+      font-weight: 500;
+      font-size: 0.96em;
+      color: #ffd700;
+      white-space: nowrap;
+    }
+    .schedule-entry img {
+      width: 27px; height: 27px;
+      object-fit: cover;
+      border-radius: 5px;
+      margin-right: 4px;
+      box-shadow: 0 1px 8px #ffd70026;
+      border: 1.2px solid #ffd70025;
+    }
+    .schedule-entry .title { color:#23c6ed;font-weight:700;margin-right:4px; }
+    .schedule-entry .days { color: #ffe493; margin-left:4px; font-size: 0.92em;}
+    .schedule-entry .time { color: #ffd700; font-size:0.97em; margin-left:3px;}
+    /* Rest of your prior styles below */
     .new-episodes-section {
       background: radial-gradient(circle at 34% 36%, #232f3e 74%, #101a24 100%);
       margin: 28px 0 16px 0;
@@ -144,6 +181,9 @@
       box-shadow:0 3px 24px #ffd70042;
     }
     @media (max-width: 600px) {
+      .schedule-bar { margin:7px 4px 5px 4px; padding:6px 3px; gap:7px; min-height:32px;}
+      .schedule-entry { padding:2px 5px 2px 2px; gap:4px; font-size:0.9em; }
+      .schedule-entry img { width:17px;height:17px; }
       .new-episodes-grid { gap:7px; padding:0 6px 12px 6px; }
       .episode-card-pro { width:44vw; min-width:90px;}
       .episode-img-pro { height: 60px;}
@@ -193,8 +233,8 @@
       </div>
     </div>
 
-    <!-- Subtitles anchor for direct jump -->
-    <div id="subtitles"></div>
+    <!-- SCHEDULE BAR BELOW -->
+    <div id="schedule-bar"></div>
 
     <!-- 320x50 ad banner -->
     <div class="ad-space" id="adSpace">
