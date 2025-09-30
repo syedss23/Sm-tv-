@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('sidebarToggle')?.addEventListener('click', () => sbar.classList.toggle('open'));
   document.getElementById('sidebarClose')?.addEventListener('click', () => sbar.classList.remove('open'));
 
-  // ---------- New Episodes Horizontal Card Grid ----------
+  // ---------- New Episodes Horizontal Card Grid with Old Design ----------
   const newGrid = document.getElementById('new-episodes-grid');
   if (newGrid) {
     fetch('episode-data/index.json')
@@ -35,30 +35,26 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
 
-        // Horizontal card row, using your episode card design
+        // Render in horizontal scroll row with classic card styling
         newGrid.innerHTML = `
-          <div class="pro-episodes-row-pro" style="display:flex;gap:16px;overflow-x:auto;padding-bottom:8px;">
-            ${
-              latestEps.map(ep => {
-                const img = ep.thumb || ep.poster || '';
-                const epNum = ep.ep || '';
-                const epTitle = ep.title || `Episode ${epNum}`;
-                return `
-                  <div class="pro-episode-card-pro" style="background:#162632;border-radius:10px;box-shadow:0 1px 9px #0004;min-width:146px;max-width:168px;display:flex;flex-direction:column;align-items:center;margin:0;">
-                    <div class="pro-ep-thumb-wrap-pro" style="width:100%;position:relative;">
-                      <img src="${img}" alt="${epTitle}" style="width:100%;height:85px;object-fit:cover;border-radius:10px 10px 0 0;">
-                      <span class="pro-ep-num-pro" style="position:absolute;top:8px;left:10px;background:#009aff;color:#fff;font-weight:700;border-radius:8px;padding:2.5px 13px;font-size:.98em;">Ep ${epNum}</span>
-                    </div>
-                    <div class="pro-ep-title-pro" style="font-family:'Montserrat',sans-serif;font-size:1em;font-weight:600;color:#fff;text-align:left;width:100%;padding:9px 8px 1px 14px;letter-spacing:.02em;">
-                      ${epTitle} <span class="new-badge-pro" style="background:#ffd700;color:#162632;font-size:.82em;border-radius:5px;padding:2px 10px;margin-left:6px;font-weight:700;">NEW</span>
-                    </div>
-                    <a href="${ep.shortlink || ep.download || '#'}" class="watch-btn-pro" target="_blank" rel="noopener" style="width:80%;margin:9px auto 10px auto;display:block;background:linear-gradient(90deg,#009aff 60%,#ffd700 100%);color:#fff;font-weight:700;text-decoration:none;text-align:center;border-radius:5px;padding:7px 0 7px 0;font-family:'Montserrat',sans-serif;font-size:1em;box-shadow:0 1px 12px #0087ff18;">
-                      Watch Now
-                    </a>
-                  </div>
-                `;
-              }).join('')
-            }
+          <div style="display: flex; gap: 14px; overflow-x: auto; padding: 0 2px 2px 2px;">
+            ${latestEps.map(ep => `
+              <div class="episode-card-pro"
+                style="flex:0 0 166px; min-width:150px; max-width:172px; border-radius:13px; background: #182837; box-shadow: 0 4px 18px #0fd1cec7, 0 2px 10px #0003;">
+                <img src="${ep.thumb || ep.poster || ''}" class="episode-img-pro" alt="${ep.title || ('Episode ' + (ep.ep || ''))}" 
+                  loading="lazy" decoding="async"
+                  style="display:block;border-radius:13px 13px 0 0;width:100%;height:110px;object-fit:cover;">
+                <div class="episode-title-pro" style="margin:15px 0 4px 0;font-family:'Montserrat',sans-serif;font-size:1.07em;font-weight:700;color:#fff;text-align:center;">
+                  ${ep.title || 'Episode ' + (ep.ep || '')}
+                  <span class="new-badge-pro" style="margin-left:7px;background:#ffd700;color:#182734;font-size:.78em;border-radius:5px;padding:2.3px 9px 2.3px 9px;">NEW</span>
+                </div>
+                <a href="${ep.shortlink || ep.download || '#'}" class="watch-btn-pro"
+                  target="_blank" rel="noopener"
+                  style="margin-bottom:13px;width:86%;display:block;background:linear-gradient(90deg,#009aff 65%,#ffd700 100%);color:#fff;font-weight:700;text-decoration:none;text-align:center;border-radius:5px;padding:8px 0 8px 0;font-family:'Montserrat',sans-serif;font-size:1em;box-shadow:0 1px 10px #0087ff14;margin-left:auto;margin-right:auto;">
+                  Watch Now
+                </a>
+              </div>
+            `).join('')}
           </div>
         `;
       })
