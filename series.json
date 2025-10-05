@@ -129,6 +129,18 @@
     "seasons": 1,
     "track": "dubbed"
   },
+    {
+    "id": 11,
+    "title": "Hz Abdul Qader Gilani(R.A)",
+    "slug": "abdul-qader-gilani",
+    "poster": "assets/posters/abdul_qader_gilani.jpg",
+    "desc": {
+      "en": "Epic tale of Salauddin Ayyubi and the Crusades.",
+      "hi": "स्लेडीन अय्यूबी और क्रूसेड्स की महागाथा।",
+      "ur": "سلاہدین ایوبی اور صلیبیوں کی رزمیہ داستان۔"
+    },
+    "seasons": 2,
+    "track": "dubbed"
   {
     "id": 101,
     "title": "Kuruluş: Osman (English Subtitles)",
