@@ -21,43 +21,6 @@ if (season) {
 const HOW_TO_DOWNLOAD_URL = "https://t.me/howtodownloadd1/10";
 const PREMIUM_CHANNEL_URL = "https://t.me/itzmezain1/2905";
 
-// Helper to inject Adsterra (Monetag) banners dynamically
-function injectAdBanner(slotId, key, width, height, delay = 0) {
-  const inject = () => {
-    const adDiv = document.getElementById(slotId);
-    if (!adDiv) return;
-    adDiv.innerHTML = "";
-    const s1 = document.createElement("script");
-    s1.type = "text/javascript";
-    s1.innerHTML = `
-      atOptions = {
-        'key' : '${key}',
-        'format' : 'iframe',
-        'height' : ${height},
-        'width' : ${width},
-        'params' : {}
-      };
-    `;
-    const s2 = document.createElement("script");
-    s2.src = `//www.highperformanceformat.com/${key}/invoke.js`;
-    adDiv.appendChild(s1);
-    adDiv.appendChild(s2);
-  };
-  if (delay) {
-    setTimeout(inject, delay);
-  } else {
-    inject();
-  }
-}
-
-function showRewardedAdThen(done) {
-  if (typeof show_9623557 === "function") {
-    show_9623557().then(done).catch(done);
-  } else {
-    done();
-  }
-}
-
 Promise.all([
   fetch('series.json').then(r => r.ok ? r.json() : []),
   fetch(jsonFile).then(r => r.ok ? r.json() : [])
@@ -95,33 +58,15 @@ Promise.all([
           Sabhi episodes full screen ke sath wahan available hain.<br>
           <a href="https://sm-tv.vercel.app" target="_blank" style="color:#f7e038;text-decoration:underline;word-break:break-all;">https://sm-tv.vercel.app</a> 👇
         </div>
-        <!-- 300x250 AD BELOW NOTE -->
-        <div id="ad-above-player"></div>
         <div class="pro-episode-embed-polished">
           ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'}
         </div>
-        <!-- 300x250 AD BELOW PLAYER -->
-        <div id="ad-below-player"></div>
         <div style="margin:24px 0 8px 0;">
           <a class="pro-download-btn-polished"
               href="${ep.download || "#"}"
               download
               style="display:block;width:100%;max-width:500px;margin:0 auto 12px auto;background:#198fff;"
               ${ep.download ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>🖇️ Download (Server 1)</a>
-        </div>
-        <!-- 320x50 Adsterra Banner between Downloads - static (not injected by JS) -->
-        <div id="ad-between-downloads">
-          <!-- Replace key below with your 320x50 Adsterra zone key -->
-          <script type="text/javascript">
-            atOptions = {
-              'key': 'c91a82435d260630918ecc80c95125ac',
-              'format': 'iframe',
-              'height': 50,
-              'width': 320,
-              'params': {}
-            };
-          </script>
-          <script type="text/javascript" src="//www.highperformanceformat.com/c91a82435d260630918ecc80c95125ac/invoke.js"></script>
         </div>
         <div style="margin:8px 0;">
           <button class="pro-download-btn-polished"
@@ -146,11 +91,7 @@ Promise.all([
       </div>
     `;
 
-    // 300x250 ads - inject dynamically above and below player
-    injectAdBanner("ad-above-player", "030f560988476116223cff5a510791aa", 300, 250, 300);
-    injectAdBanner("ad-below-player", "030f560988476116223cff5a510791aa", 300, 250, 650);
-
-    // --- Safe lazy load for video embed (unchanged) ---
+    // --- Safe lazy load for video embed (unchanged code) ---
     const embedWrap = container.querySelector('.pro-episode-embed-polished');
     if (embedWrap) {
       const placeholders = embedWrap.querySelectorAll('[data-embed-src]');
@@ -188,18 +129,12 @@ Promise.all([
       });
     }
 
-    // Rewarded ad code for Download 2 (unchanged)
+    // Download 2 (no rewarded ad code - direct link only)
     const download2Btn = document.getElementById("download2Btn");
     if (download2Btn && ep.download2) {
       download2Btn.addEventListener("click", function (e) {
         e.preventDefault();
-        if (typeof show_9623557 === "function") {
-          show_9623557()
-            .then(() => { window.location.href = ep.download2; })
-            .catch(() => { alert("Ad could not be loaded. Please try again."); });
-        } else {
-          window.location.href = ep.download2;
-        }
+        window.location.href = ep.download2;
       });
     }
   }
