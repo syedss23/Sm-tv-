@@ -143,6 +143,19 @@
     "track": "dubbed"
     },
   {
+    "id": 12,
+    "title": "Golden Apple",
+    "slug": "golden-apple",
+    "poster": "assets/posters/golden_apple.jpg",
+    "desc": {
+      "en": "Epic tale of Salauddin Ayyubi and the Crusades.",
+      "hi": "स्लेडीन अय्यूबी और क्रूसेड्स की महागाथा।",
+      "ur": "سلاہدین ایوبی اور صلیبیوں کی رزمیہ داستان۔"
+    },
+    "seasons": 1,
+    "track": "dubbed"
+    },
+  {
     "id": 101,
     "title": "Kuruluş: Osman (English Subtitles)",
     "slug": "kurulus-osman-en",
