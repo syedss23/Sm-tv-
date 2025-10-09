@@ -470,22 +470,40 @@ button:hover{background:#272838}
   box-shadow: 0 2px 18px #1a232b18;
   letter-spacing: 0.03em;
 }
-
 .premium-channel-message strong {
   color: #ffd700;
   font-weight: 800;
 }
 
-.premium-channel-message a {
+.premium-channel-message .telegram-link {
+  color: #23c6ed;
+  font-weight: 700;
+  text-decoration: none;
+  margin-right: 18px;
+  transition: color 0.18s;
+  font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.premium-channel-message .telegram-link:hover {
+  color: #ffd700;
+  text-decoration: underline;
+}
+
+.premium-channel-message .video-link {
   color: #ffd700;
   font-weight: 700;
   text-decoration: none;
-  margin-right: 15px;
+  margin-right: 5px;
   font-family: 'Montserrat', Arial, sans-serif;
   transition: color 0.18s;
 }
 
-.premium-channel-message a:hover {
+.premium-channel-message .video-link:hover {
   color: #23c6ed;
   text-decoration: underline;
+}
+
+.premium-channel-message .video-link .video-icon {
+  margin-right: 5px;
+  vertical-align: middle;
 }
