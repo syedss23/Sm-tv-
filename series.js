@@ -27,7 +27,7 @@
     setTimeout(() => t.remove(), 2600);
   }
 
-  // Premium message styles (injects directly to head)
+  // Premium message styles
   const premiumStyles = `
     .premium-channel-message {
       margin-top: 18px;
@@ -46,33 +46,46 @@
     .premium-channel-message strong {
       color: #ffd700;
       font-weight: 800;
+      letter-spacing: 0.01em;
     }
-    .premium-channel-message .telegram-link {
-      color: #23c6ed;
+    .premium-btn-row {
+      display: flex;
+      gap: 18px;
+      margin-top: 11px;
+    }
+    .premium-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-size: 1em;
+      font-family: 'Montserrat', Arial, sans-serif;
       font-weight: 700;
       text-decoration: none;
-      margin-right: 18px;
-      transition: color 0.18s;
-      font-family: 'Montserrat', Arial, sans-serif;
+      transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+      box-shadow: 0 2px 11px #1a232b20;
+      border: 0;
+      cursor: pointer;
     }
-    .premium-channel-message .telegram-link:hover {
+    .premium-btn-blue {
+      background: linear-gradient(90deg, #23c6ed 85%, #198fff 100%);
+      color: #fff;
+    }
+    .premium-btn-blue:hover {
+      background: linear-gradient(90deg,#167abd 40%,#198fff 100%);
       color: #ffd700;
-      text-decoration: underline;
     }
-    .premium-channel-message .video-link {
-      color: #ffd700;
-      font-weight: 700;
-      text-decoration: none;
-      margin-right: 5px;
-      font-family: 'Montserrat', Arial, sans-serif;
-      transition: color 0.18s;
+    .premium-btn-gold {
+      background: linear-gradient(90deg, #ffd700 70%, #ffd700c0 100%);
+      color: #232f3e;
     }
-    .premium-channel-message .video-link:hover {
+    .premium-btn-gold:hover {
+      background: linear-gradient(90deg,#ffe493 40%,#ffd700 100%);
       color: #23c6ed;
-      text-decoration: underline;
     }
-    .premium-channel-message .video-link .video-icon {
-      margin-right: 5px;
+    .premium-btn-icon {
+      margin-right: 7px;
+      font-size: 1.23em;
       vertical-align: middle;
     }
   `;
@@ -90,16 +103,19 @@
       }
       document.title = `${meta.title} – SmTv Urdu`;
 
-      // Premium channel message HTML
+      // Premium channel message HTML: two modern buttons
       const premiumMsg = `
         <div class="premium-channel-message">
           <strong>Go Ad-Free!</strong> Get direct access to all episodes by joining our <strong>Premium Channel</strong>.<br>
-          <span style="display:inline-block;margin-top:7px;">
-            <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener" class="telegram-link">📱 Contact on Telegram</a>
-            <a href="https://t.me/itzmezain1/2905" target="_blank" rel="noopener" class="video-link">
-              <span class="video-icon">🎥</span>Details Video
+          <div class="premium-btn-row">
+            <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener" class="premium-btn premium-btn-blue">
+              📱 Contact on Telegram
             </a>
-          </span>
+            <a href="https://t.me/itzmezain1/2905" target="_blank" rel="noopener" class="premium-btn premium-btn-gold">
+              <span class="premium-btn-icon">🎥</span>
+              Details Video
+            </a>
+          </div>
         </div>
       `;
 
