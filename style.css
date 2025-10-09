@@ -456,3 +456,36 @@ button:hover{background:#272838}
   .schedule-entry { padding:2px 5px 2px 2px; font-size:0.93em; }
   .schedule-entry img { width:17px;height:17px; }
 }
+.premium-channel-message {
+  margin-top: 18px;
+  padding: 16px;
+  background: linear-gradient(135deg, #101a24 90%, #23c6ed30 100%);
+  border: 2px solid #23c6ed;
+  border-radius: 14px;
+  color: #23c6ed;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 1.09em;
+  max-width: 540px;
+  box-shadow: 0 2px 18px #1a232b18;
+  letter-spacing: 0.03em;
+}
+
+.premium-channel-message strong {
+  color: #ffd700;
+  font-weight: 800;
+}
+
+.premium-channel-message a {
+  color: #ffd700;
+  font-weight: 700;
+  text-decoration: none;
+  margin-right: 15px;
+  font-family: 'Montserrat', Arial, sans-serif;
+  transition: color 0.18s;
+}
+
+.premium-channel-message a:hover {
+  color: #23c6ed;
+  text-decoration: underline;
+}
