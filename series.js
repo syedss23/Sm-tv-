@@ -22,10 +22,46 @@
   function toast(msg) {
     const t = document.createElement('div');
     t.textContent = msg;
-    t.style.cssText = 'position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#122231;color:#9fe6ff;padding:10px 14px;border-radius:9px;border:1px solid #2d4b6a;font-weight:700;z-index:9999';
+    t.style.cssText = 'position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#122231;color:#9fe6ff;padding:10px 14px;border-radius:9px;border:1px solid #2d4b6a;font-weight:700;z-index:9999;font-family:Montserrat,sans-serif;';
     document.body.appendChild(t);
     setTimeout(()=>t.remove(), 2600);
   }
+
+  // Premium message styles
+  const premiumStyles = `
+    .premium-channel-message {
+      margin-top: 18px;
+      padding: 16px;
+      background: linear-gradient(135deg, #101a24 90%, #23c6ed30 100%);
+      border: 2px solid #23c6ed;
+      border-radius: 14px;
+      color: #23c6ed;
+      font-family: 'Montserrat', Arial, sans-serif;
+      font-weight: 600;
+      font-size: 1.09em;
+      max-width: 540px;
+      box-shadow: 0 2px 18px #1a232b18;
+    }
+    .premium-channel-message strong {
+      color: #ffd700;
+      font-weight: 800;
+    }
+    .premium-channel-message a {
+      color: #ffd700;
+      font-weight: 700;
+      text-decoration: none;
+      margin-right: 15px;
+      font-family: 'Montserrat', Arial, sans-serif;
+      transition: color 0.18s;
+    }
+    .premium-channel-message a:hover {
+      color: #23c6ed;
+      text-decoration: underline;
+    }
+  `;
+  const styleTag = document.createElement('style');
+  styleTag.textContent = premiumStyles;
+  document.head.appendChild(styleTag);
 
   fetch('series.json')
     .then(r => r.json())
@@ -36,6 +72,18 @@
         return;
       }
       document.title = `${meta.title} – SmTv Urdu`;
+
+      // Premium message HTML
+      const premiumMsg = `
+        <div class="premium-channel-message">
+          <strong>Go Ad-Free!</strong> Get direct access to all episodes by joining our <strong>Premium Channel</strong>.<br>
+          <span style="display:inline-block;margin:7px 0 0 0;">
+            <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">📱 Contact on Telegram</a>
+            <a href="https://t.me/itzmezain1/2905" target="_blank" rel="noopener">🎥 Details Video</a>
+          </span>
+        </div>
+      `;
+
       document.getElementById('series-details').innerHTML = `
         <section class="pro-series-header-pro">
           <a href="index.html" class="pro-series-back-btn-pro" title="Back">
@@ -47,6 +95,7 @@
           <div class="pro-series-meta-pro">
             <h2 class="pro-series-title-pro">${meta.title}</h2>
             <div class="pro-series-desc-pro">${meta.desc && meta.desc.en ? meta.desc.en : ""}</div>
+            ${premiumMsg}
           </div>
         </section>
         <nav class="pro-seasons-tabs-pro" id="pro-seasons-tabs"></nav>
@@ -102,13 +151,11 @@
               `;
             }).join('') + `</div>`;
 
-            // TITLE SECTION (highlighted bar)
             const tutorialTitle = `
               <section class="pro-highlight-section">
                 <div class="pro-highlight-title">How to Watch Episodes</div>
               </section>
             `;
-            // VIDEO SECTION (polished card)
             const tutorialVideo = `
               <section class="pro-video-card">
                 <div class="pro-video-frame-wrap">
@@ -118,7 +165,6 @@
                 </div>
               </section>
             `;
-            // Combine sections (title and video visually separate)
             document.getElementById('pro-episodes-row-wrap').innerHTML = html + tutorialTitle + tutorialVideo;
           })
           .catch(e => {
