@@ -514,3 +514,51 @@ button:hover{background:#272838}
   font-size: 1.23em;
   vertical-align: middle;
 }
+.premium-btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.premium-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 18px;
+  border-radius: 6px;
+  font-size: 1em;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.18s, color 0.18s, box-shadow 0.15s;
+  border: none;
+  box-shadow: 0 1px 5px #0001;
+  cursor: pointer;
+  min-width: 0;
+  min-height: 0;
+}
+
+.premium-btn-blue {
+  background: linear-gradient(90deg, #23c6ed 85%, #198fff 100%);
+  color: #fff;
+}
+.premium-btn-blue:hover {
+  background: linear-gradient(90deg,#167abd 40%,#198fff 100%);
+  color: #ffd700;
+}
+
+.premium-btn-gold {
+  background: linear-gradient(90deg, #ffd700 80%, #ffe066 100%);
+  color: #232f3e;
+}
+.premium-btn-gold:hover {
+  background: linear-gradient(90deg,#ffe493 40%,#ffd700 100%);
+  color: #23c6ed;
+}
+
+.premium-btn-icon {
+  margin-right: 6px;
+  font-size: 1.15em;
+  vertical-align: middle;
+}
