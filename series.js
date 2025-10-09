@@ -24,10 +24,10 @@
     t.textContent = msg;
     t.style.cssText = 'position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#122231;color:#9fe6ff;padding:10px 14px;border-radius:9px;border:1px solid #2d4b6a;font-weight:700;z-index:9999;font-family:Montserrat,sans-serif;';
     document.body.appendChild(t);
-    setTimeout(()=>t.remove(), 2600);
+    setTimeout(() => t.remove(), 2600);
   }
 
-  // Premium message styles
+  // Premium message styles (injects directly to head)
   const premiumStyles = `
     .premium-channel-message {
       margin-top: 18px;
@@ -41,22 +41,39 @@
       font-size: 1.09em;
       max-width: 540px;
       box-shadow: 0 2px 18px #1a232b18;
+      letter-spacing: 0.03em;
     }
     .premium-channel-message strong {
       color: #ffd700;
       font-weight: 800;
     }
-    .premium-channel-message a {
+    .premium-channel-message .telegram-link {
+      color: #23c6ed;
+      font-weight: 700;
+      text-decoration: none;
+      margin-right: 18px;
+      transition: color 0.18s;
+      font-family: 'Montserrat', Arial, sans-serif;
+    }
+    .premium-channel-message .telegram-link:hover {
+      color: #ffd700;
+      text-decoration: underline;
+    }
+    .premium-channel-message .video-link {
       color: #ffd700;
       font-weight: 700;
       text-decoration: none;
-      margin-right: 15px;
+      margin-right: 5px;
       font-family: 'Montserrat', Arial, sans-serif;
       transition: color 0.18s;
     }
-    .premium-channel-message a:hover {
+    .premium-channel-message .video-link:hover {
       color: #23c6ed;
       text-decoration: underline;
+    }
+    .premium-channel-message .video-link .video-icon {
+      margin-right: 5px;
+      vertical-align: middle;
     }
   `;
   const styleTag = document.createElement('style');
@@ -73,13 +90,15 @@
       }
       document.title = `${meta.title} – SmTv Urdu`;
 
-      // Premium message HTML
+      // Premium channel message HTML
       const premiumMsg = `
         <div class="premium-channel-message">
           <strong>Go Ad-Free!</strong> Get direct access to all episodes by joining our <strong>Premium Channel</strong>.<br>
-          <span style="display:inline-block;margin:7px 0 0 0;">
-            <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">📱 Contact on Telegram</a>
-            <a href="https://t.me/itzmezain1/2905" target="_blank" rel="noopener">🎥 Details Video</a>
+          <span style="display:inline-block;margin-top:7px;">
+            <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener" class="telegram-link">📱 Contact on Telegram</a>
+            <a href="https://t.me/itzmezain1/2905" target="_blank" rel="noopener" class="video-link">
+              <span class="video-icon">🎥</span>Details Video
+            </a>
           </span>
         </div>
       `;
@@ -111,7 +130,7 @@
         seasons = ['1'];
       }
       const tabs = document.getElementById('pro-seasons-tabs');
-      tabs.innerHTML = seasons.map(s => 
+      tabs.innerHTML = seasons.map(s =>
         `<button data-season="${s}" class="pro-season-tab-pro${s == season ? ' active' : ''}">Season ${s}</button>`
       ).join('');
       tabs.querySelectorAll('.pro-season-tab-pro').forEach(btn => {
