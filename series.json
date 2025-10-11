@@ -156,6 +156,19 @@
     "track": "dubbed"
     },
   {
+    "id": 13,
+    "title": "Akif",
+    "slug": "akif",
+    "poster": "assets/posters/akif.jpg",
+    "desc": {
+      "en": "The life story of Mehmet Akif Ersoy, one of the greatest poets and man of letters of Türkiye who wrote the Turkish National Anthem.",
+      "hi": "बारबरोस हैरेद्दीन – उस्मानिया एडमिरल की महागाथा। तुर्की सीरीज, उर्दू डब्ड।",
+      "ur": "باربروس ہےریددین، عثمانی بحری ایڈمرل کی شاندار کہانی۔ اردو ڈبbed ترکش سیریز."
+    },
+    "seasons": 2,
+    "track": "dubbed"
+    },
+  {
     "id": 101,
     "title": "Kuruluş: Osman (English Subtitles)",
     "slug": "kurulus-osman-en",
