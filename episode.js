@@ -52,7 +52,6 @@ Promise.all([
             <span class="pro-ep-strong-title">${ep.title || `Episode ${ep.ep}`}</span>
           </div>
         </div>
-        <!-- Highlighted Announcement Message ABOVE player -->
         <div class="fullscreen-alert-msg" style="
           background: linear-gradient(90deg, #223958 20%, #091728 90%);
           padding: 15px 14px 13px 14px;
@@ -77,12 +76,24 @@ Promise.all([
         <!-- Player Embed Section: Server 1 -->
         <div style="background:#162335;padding:13px 7px 18px 7px;margin-bottom:18px;border-radius:13px;box-shadow:0 2px 12px #122;">
           <div style="color:#23c6ed;text-align:center;font-weight:700;font-size:1.10em;letter-spacing:0.01em;padding-bottom:7px;">Server 1 (Default)</div>
-          ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available (Server 1)</div>'}
+          <div style="max-width:700px;width:100%;margin:auto;">
+            ${
+              ep.embed
+                ? ep.embed.replace('<iframe ', `<iframe style="width:100%;height:355px;max-width:100%;" `)
+                : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available (Server 1)</div>'
+            }
+          </div>
         </div>
         <!-- Player Embed Section: Server 2 -->
         <div style="background:#153e21;padding:13px 7px 18px 7px;margin-bottom:22px;border-radius:13px;box-shadow:0 2px 12px #121;">
           <div style="color:#30c96b;text-align:center;font-weight:700;font-size:1.10em;letter-spacing:0.01em;padding-bottom:7px;">Server 2</div>
-          ${ep.embed2 ? ep.embed2 : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available (Server 2)</div>'}
+          <div style="max-width:700px;width:100%;margin:auto;">
+            ${
+              ep.embed2
+                ? ep.embed2.replace('<iframe ', `<iframe style="width:100%;height:355px;max-width:100%;" `)
+                : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available (Server 2)</div>'
+            }
+          </div>
         </div>
         <div style="margin:24px 0 8px 0;">
           <a class="pro-download-btn-polished"
@@ -152,7 +163,7 @@ Promise.all([
       });
     }
 
-    // Download 2 (no rewarded ad code - direct link only)
+    // Download 2 (direct link)
     const download2Btn = document.getElementById("download2Btn");
     if (download2Btn && ep.download2) {
       download2Btn.addEventListener("click", function (e) {
