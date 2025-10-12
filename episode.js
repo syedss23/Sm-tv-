@@ -92,7 +92,7 @@ Promise.all([
               href="${ep.download || "#"}"
               download
               style="display:block;width:100%;max-width:500px;margin:0 auto 12px auto;background:#198fff;"
-              ${ep.download ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>📥 Download (Server 1)</a>
+              ${ep.download ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>📥 Telegram Download (Server 1)</a>
         </div>
 
         <div style="margin:8px 0;">
