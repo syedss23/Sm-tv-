@@ -76,7 +76,14 @@ Promise.all([
         </div>
         <!-- Player Embed Section -->
         <div class="pro-episode-embed-polished">
-          ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'}
+          ${ep.embed ? `<div>
+                <div style="color:#23c6ed;font-weight:600;padding-bottom:3px;">Server 1 (Default)</div>
+                ${ep.embed}
+            </div>` : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available (Server 1)</div>'}
+          ${ep.embed2 ? `<div style="margin-top:23px;">
+                <div style="color:#30c96b;font-weight:600;padding-bottom:3px;">Server 2</div>
+                ${ep.embed2}
+            </div>` : ''}
         </div>
         <div style="margin:24px 0 8px 0;">
           <a class="pro-download-btn-polished"
