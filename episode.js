@@ -52,15 +52,7 @@ Promise.all([
             <span class="pro-ep-strong-title">${ep.title || `Episode ${ep.ep}`}</span>
           </div>
         </div>
-        <div class="fullscreen-alert-msg" style="background:#162632;padding:16px 16px 14px 16px;border-radius:10px;color:#23c6ed;font-size:1.05em;margin:16px 0 24px 0;">
-          <b>🔔 Note:</b><br>
-          ⚠️ Important Announcement
-Filhal website par streaming ka thoda issue hai 😔.
-Jab tak ye fix nahi hota, please Download 1 ya Download 2 se episodes dekho.
-Agar koi aur problem ho to contact karo.
-Thanks for your support ❤️.
-          <br> target="_blank" style="color:#ff0000;text-decoration:underline;word-break:break-all;">
-        </div>
+        
         <div class="pro-episode-embed-polished">
           ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'}
         </div>
@@ -71,7 +63,28 @@ Thanks for your support ❤️.
               style="display:block;width:100%;max-width:500px;margin:0 auto 12px auto;background:#198fff;"
               ${ep.download ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>🖇️ Download (Server 1)</a>
         </div>
-        <div style="margin:8px 0;">
+      <div class="fullscreen-alert-msg" style="
+  background: linear-gradient(90deg, #30386b 20%, #182544 90%);
+  padding: 15px 14px 13px 14px;
+  border-radius: 10px;
+  border: 2px solid #23c6ed;
+  color: #23c6ed;
+  font-size: 1.07em;
+  margin: 16px 0 24px 0;
+  font-family: inherit;
+  font-weight: 600;
+  line-height: 1.5;
+  ">
+  <span style="font-size:1.08em; color:#ffd700;">🔔 Note:</span><br>
+  <span style="font-size:1em;">
+    ⚠️ <span style="color:#ffd700;">Important Announcement</span><br>
+    Filhal website par streaming ka thoda issue hai <span style="font-size:1.13em;">😔</span>.
+    Jab tak ye fix nahi hota, please <b>Download 1</b> ya <b>Download 2</b> se episodes dekho.<br>
+    Agar koi aur problem ho to <span style="color:#ff0000;">❤️ contact karo</span>.<br>
+    Thanks for your support!
+  </span>
+</div>  
+<div style="margin:8px 0;">
           <button class="pro-download-btn-polished"
                   id="download2Btn"
                   style="display:block;width:100%;max-width:500px;margin:0 auto;background:#30c96b;"
