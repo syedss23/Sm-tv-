@@ -74,16 +74,15 @@ Promise.all([
               Thanks for your support!
             </span>
         </div>
-        <!-- Player Embed Section -->
-        <div class="pro-episode-embed-polished">
-          ${ep.embed ? `<div>
-                <div style="color:#23c6ed;font-weight:600;padding-bottom:3px;">Server 1 (Default)</div>
-                ${ep.embed}
-            </div>` : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available (Server 1)</div>'}
-          ${ep.embed2 ? `<div style="margin-top:23px;">
-                <div style="color:#30c96b;font-weight:600;padding-bottom:3px;">Server 2</div>
-                ${ep.embed2}
-            </div>` : ''}
+        <!-- Player Embed Section: Server 1 -->
+        <div style="background:#162335;padding:13px 7px 18px 7px;margin-bottom:18px;border-radius:13px;box-shadow:0 2px 12px #122;">
+          <div style="color:#23c6ed;text-align:center;font-weight:700;font-size:1.10em;letter-spacing:0.01em;padding-bottom:7px;">Server 1 (Default)</div>
+          ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available (Server 1)</div>'}
+        </div>
+        <!-- Player Embed Section: Server 2 -->
+        <div style="background:#153e21;padding:13px 7px 18px 7px;margin-bottom:22px;border-radius:13px;box-shadow:0 2px 12px #121;">
+          <div style="color:#30c96b;text-align:center;font-weight:700;font-size:1.10em;letter-spacing:0.01em;padding-bottom:7px;">Server 2</div>
+          ${ep.embed2 ? ep.embed2 : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available (Server 2)</div>'}
         </div>
         <div style="margin:24px 0 8px 0;">
           <a class="pro-download-btn-polished"
