@@ -54,9 +54,12 @@ Promise.all([
         </div>
         <div class="fullscreen-alert-msg" style="background:#162632;padding:16px 16px 14px 16px;border-radius:10px;color:#23c6ed;font-size:1.05em;margin:16px 0 24px 0;">
           <b>🔔 Note:</b><br>
-          Telegram Mini App mein <b>full screen</b> me Episodes dekhna support nahi karta. Agar aapko <b>full screen</b> aur behtar quality mein episode dekhna hai toh <b>hamari website par jaakar dekhein.</b><br>
-          Sabhi episodes full screen ke sath wahan available hain.<br>
-          <a href="https://sm-tv.vercel.app" target="_blank" style="color:#f7e038;text-decoration:underline;word-break:break-all;">https://sm-tv.vercel.app</a> 👇
+          ⚠️ Important Announcement
+Filhal website par streaming ka thoda issue hai 😔.
+Jab tak ye fix nahi hota, please Download 1 ya Download 2 se episodes dekho.
+Agar koi aur problem ho to contact karo.
+Thanks for your support ❤️.<br>
+          target="_blank" style="color:#ff0000;text-decoration:underline;word-break:break-all;">
         </div>
         <div class="pro-episode-embed-polished">
           ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'}
