@@ -59,7 +59,7 @@ Filhal website par streaming ka thoda issue hai 😔.
 Jab tak ye fix nahi hota, please Download 1 ya Download 2 se episodes dekho.
 Agar koi aur problem ho to contact karo.
 Thanks for your support ❤️.
-          target="_blank" style="color:#ff0000;text-decoration:underline;word-break:break-all;">
+          <br> target="_blank" style="color:#ff0000;text-decoration:underline;word-break:break-all;">
         </div>
         <div class="pro-episode-embed-polished">
           ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'}
