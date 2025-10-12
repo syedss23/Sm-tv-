@@ -21,8 +21,6 @@ if (season) {
 const HOW_TO_DOWNLOAD_URL = "https://t.me/howtodownloadd1/10";
 const PREMIUM_CHANNEL_URL = "https://t.me/itzmezain1/2905";
 
-// Make sure Video.js CSS/JS is included in <head> of your HTML
-
 Promise.all([
   fetch('series.json').then(r => r.ok ? r.json() : []),
   fetch(jsonFile).then(r => r.ok ? r.json() : [])
@@ -54,42 +52,32 @@ Promise.all([
             <span class="pro-ep-strong-title">${ep.title || `Episode ${ep.ep}`}</span>
           </div>
         </div>
-        <div class="fullscreen-alert-msg" style="background: linear-gradient(90deg, #223958 20%, #091728 90%);padding: 15px 14px 13px 14px;border-radius: 10px;border: 2px solid #23c6ed;color: #23c6ed;font-size: 1.07em;margin: 18px 0 20px 0;font-family: inherit;font-weight: 600;line-height: 1.5;">
-          <span style="font-size:1.08em; color:#ffd700;">🔔 Note:</span><br>
-          <span style="font-size:1em;">
-            ⚠️ <span style="color:#ffd700;">Important Announcement</span><br>
-            Filhal website par streaming ka thoda issue hai <span style="font-size:1.13em;">😔</span>.<br>
-            Jab tak ye fix nahi hota, please <b>Download 1</b> ya <b>Download 2</b> se episodes dekho.<br>
-            Agar koi aur problem ho to <a href="https://t.me/itz_me_zain1" target="_blank" style="color:#fa2538; font-weight:600; text-decoration:underline;">❤️ contact karo</a>.<br>
-            Thanks for your support!
-          </span>
+        <!-- Highlighted Announcement Message ABOVE player -->
+        <div class="fullscreen-alert-msg" style="
+          background: linear-gradient(90deg, #223958 20%, #091728 90%);
+          padding: 15px 14px 13px 14px;
+          border-radius: 10px;
+          border: 2px solid #23c6ed;
+          color: #23c6ed;
+          font-size: 1.07em;
+          margin: 18px 0 20px 0;
+          font-family: inherit;
+          font-weight: 600;
+          line-height: 1.5;">
+            <span style="font-size:1.08em; color:#ffd700;">🔔 Note:</span><br>
+            <span style="font-size:1em;">
+              ⚠️ <span style="color:#ffd700;">Important Announcement</span><br>
+              Filhal website par streaming ka thoda issue hai <span style="font-size:1.13em;">😔</span>.<br>
+              Jab tak ye fix nahi hota, please <b>Download 1</b> ya <b>Download 2</b> se episodes dekho.<br>
+              Agar koi aur problem ho to
+              <a href="https://t.me/itz_me_zain1" target="_blank" style="color:#fa2538; font-weight:600; text-decoration:underline;">❤️ contact karo</a>.<br>
+              Thanks for your support!
+            </span>
         </div>
-
-        <!-- Player 1: Rumble (old embed) -->
-        <div class="pro-player-section" style="margin-bottom:30px;">
-          <h3 style="margin-bottom:8px;color:#23c6ed;font-size:1.07em;">Player 1 (Rumble)</h3>
-          ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No Rumble streaming available</div>'}
+        <!-- Player Embed Section -->
+        <div class="pro-episode-embed-polished">
+          ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'}
         </div>
-
-        <!-- Player 2: Fast/Pro streaming (embed2 with Video.js) -->
-        <div class="pro-player-section" style="margin-bottom:30px;">
-          <h3 style="margin-bottom:8px;color:#30c96b;font-size:1.07em;">Player 2 (Fast Streaming)</h3>
-          ${ep.embed2 ? `
-          <video
-            id="episode-player2"
-            class="video-js vjs-theme-city"
-            controls
-            preload="auto"
-            width="100%"
-            height="340"
-            poster=""
-            data-setup="{}">
-            <source src="${ep.embed2}" type="video/mp4" />
-            Sorry, your browser doesn't support embedded videos.
-          </video>
-          ` : '<div style="padding:50px 0;color:#ccc;text-align:center;">No fast streaming available</div>'}
-        </div>
-
         <div style="margin:24px 0 8px 0;">
           <a class="pro-download-btn-polished"
               href="${ep.download || "#"}"
@@ -120,9 +108,31 @@ Promise.all([
       </div>
     `;
 
-    // Unchanged: lazy load logic for Rumble embed and download2Btn handler
-    const embedWrap = container.querySelector('.pro-player-section');
+    // --- Safe lazy load for video embed (unchanged code) ---
+    const embedWrap = container.querySelector('.pro-episode-embed-polished');
     if (embedWrap) {
+      const placeholders = embedWrap.querySelectorAll('[data-embed-src]');
+      if (placeholders.length) {
+        const io = new IntersectionObserver(entries => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              const src = e.target.getAttribute('data-embed-src');
+              const i = document.createElement("iframe");
+              i.src = src;
+              i.loading = 'lazy';
+              i.width = '100%';
+              i.height = '100%';
+              i.setAttribute('frameborder', "0");
+              i.setAttribute('allow', "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share");
+              i.setAttribute('referrerpolicy', "strict-origin-when-cross-origin");
+              i.setAttribute('allowfullscreen', "");
+              e.target.replaceWith(i);
+              io.unobserve(e.target);
+            }
+          });
+        }, { rootMargin: '400px' });
+        placeholders.forEach(el => io.observe(el));
+      }
       embedWrap.querySelectorAll('iframe').forEach((f, idx) => {
         const shouldLazy = idx > 0 || window.matchMedia('(max-width: 767px)').matches;
         if (shouldLazy && !f.hasAttribute('loading')) f.setAttribute('loading', 'lazy');
