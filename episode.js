@@ -52,7 +52,29 @@ Promise.all([
             <span class="pro-ep-strong-title">${ep.title || `Episode ${ep.ep}`}</span>
           </div>
         </div>
-        
+        <!-- Highlighted Announcement Message ABOVE player -->
+        <div class="fullscreen-alert-msg" style="
+          background: linear-gradient(90deg, #223958 20%, #091728 90%);
+          padding: 15px 14px 13px 14px;
+          border-radius: 10px;
+          border: 2px solid #23c6ed;
+          color: #23c6ed;
+          font-size: 1.07em;
+          margin: 18px 0 20px 0;
+          font-family: inherit;
+          font-weight: 600;
+          line-height: 1.5;">
+            <span style="font-size:1.08em; color:#ffd700;">🔔 Note:</span><br>
+            <span style="font-size:1em;">
+              ⚠️ <span style="color:#ffd700;">Important Announcement</span><br>
+              Filhal website par streaming ka thoda issue hai <span style="font-size:1.13em;">😔</span>.<br>
+              Jab tak ye fix nahi hota, please <b>Download 1</b> ya <b>Download 2</b> se episodes dekho.<br>
+              Agar koi aur problem ho to
+              <a href="https://t.me/itz_me_zain1" target="_blank" style="color:#fa2538; font-weight:600; text-decoration:underline;">❤️ contact karo</a>.<br>
+              Thanks for your support!
+            </span>
+        </div>
+        <!-- Player Embed Section -->
         <div class="pro-episode-embed-polished">
           ${ep.embed ? ep.embed : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available</div>'}
         </div>
@@ -63,31 +85,7 @@ Promise.all([
               style="display:block;width:100%;max-width:500px;margin:0 auto 12px auto;background:#198fff;"
               ${ep.download ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>🖇️ Download (Server 1)</a>
         </div>
-        <div class="fullscreen-alert-msg" style="
-  background: linear-gradient(90deg, #223958 20%, #091728 90%);
-  padding: 15px 14px 13px 14px;
-  border-radius: 10px;
-  border: 2px solid #23c6ed;
-  color: #23c6ed;
-  font-size: 1.07em;
-  margin: 16px 0 24px 0;
-  font-family: inherit;
-  font-weight: 600;
-  line-height: 1.5;
-">
-  <span style="font-size:1.08em; color:#ffd700;">🔔 Note:</span><br>
-  <span style="font-size:1em;">
-    ⚠️ <span style="color:#ffd700;">Important Announcement</span><br>
-    Filhal website par streaming ka thoda issue hai <span style="font-size:1.13em;">😔</span>.<br>
-    Jab tak ye fix nahi hota, please <b>Download 1</b> ya <b>Download 2</b> se episodes dekho.<br>
-    Agar koi aur problem ho to 
-    <a href="https://t.me/itz_me_zain1" target="_blank" style="color:#fa2538; font-weight:600; text-decoration:underline;">
-      ❤️ contact karo
-    </a>.<br>
-    Thanks for your support!
-  </span>
-</div>
-<div style="margin:8px 0;">
+        <div style="margin:8px 0;">
           <button class="pro-download-btn-polished"
                   id="download2Btn"
                   style="display:block;width:100%;max-width:500px;margin:0 auto;background:#30c96b;"
