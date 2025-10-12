@@ -52,6 +52,7 @@ Promise.all([
             <span class="pro-ep-strong-title">${ep.title || `Episode ${ep.ep}`}</span>
           </div>
         </div>
+        <!-- Announcement Message -->
         <div class="fullscreen-alert-msg" style="
           background: linear-gradient(90deg, #223958 20%, #091728 90%);
           padding: 15px 14px 13px 14px;
@@ -73,40 +74,41 @@ Promise.all([
               Thanks for your support!
             </span>
         </div>
-        <!-- Player Embed Section: Server 1 -->
-        <div style="background:#162335;padding:13px 7px 18px 7px;margin-bottom:18px;border-radius:13px;box-shadow:0 2px 12px #122;">
-          <div style="color:#23c6ed;text-align:center;font-weight:700;font-size:1.10em;letter-spacing:0.01em;padding-bottom:7px;">Server 1 (Default)</div>
-          <div style="max-width:700px;width:100%;margin:auto;">
+        <!-- Server 1 Card -->
+        <div style="background:#162335;padding:14px 10px 18px 10px;margin-bottom:18px;border-radius:13px;box-shadow:0 2px 12px #122;max-width:700px;margin:auto;">
+          <div style="color:#23c6ed;text-align:center;font-weight:700;font-size:1.09em;letter-spacing:0.01em;padding-bottom:7px;">
+            Server 1 (Default)
+          </div>
+          <div style="max-width:700px;margin:auto;">
             ${
               ep.embed
-                ? ep.embed.replace('<iframe ', `<iframe style="width:100%;height:355px;max-width:100%;" `)
-                : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available (Server 1)</div>'
+                ? ep.embed.replace('<iframe ', `<iframe style="width:100%;min-width:220px;max-width:100%;height:360px;" `)
+                : '<div style="padding:60px 0;color:#ccc;text-align:center;">No streaming available (Server 1)</div>'
             }
           </div>
+          <a class="pro-download-btn-polished"
+            href="${ep.download || "#"}"
+            download
+            style="display:block;width:100%;max-width:400px;margin:16px auto 0 auto;background:#198fff;text-align:center;font-weight:600;color:#fff;padding:10px 6px;border-radius:7px;text-decoration:none;font-size:1em;"
+            ${ep.download ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>🖇️ Download (Server 1)</a>
         </div>
-        <!-- Player Embed Section: Server 2 -->
-        <div style="background:#153e21;padding:13px 7px 18px 7px;margin-bottom:22px;border-radius:13px;box-shadow:0 2px 12px #121;">
-          <div style="color:#30c96b;text-align:center;font-weight:700;font-size:1.10em;letter-spacing:0.01em;padding-bottom:7px;">Server 2</div>
-          <div style="max-width:700px;width:100%;margin:auto;">
+        <!-- Server 2 Card -->
+        <div style="background:#153e21;padding:14px 10px 18px 10px;margin-bottom:22px;border-radius:13px;box-shadow:0 2px 12px #121;max-width:700px;margin:auto;">
+          <div style="color:#30c96b;text-align:center;font-weight:700;font-size:1.09em;letter-spacing:0.01em;padding-bottom:7px;">
+            Server 2
+          </div>
+          <div style="max-width:700px;margin:auto;">
             ${
               ep.embed2
-                ? ep.embed2.replace('<iframe ', `<iframe style="width:100%;height:355px;max-width:100%;" `)
-                : '<div style="padding:50px 0;color:#ccc;text-align:center;">No streaming available (Server 2)</div>'
+                ? ep.embed2.replace('<iframe ', `<iframe style="width:100%;min-width:220px;max-width:100%;height:360px;" `)
+                : '<div style="padding:60px 0;color:#ccc;text-align:center;">No streaming available (Server 2)</div>'
             }
           </div>
-        </div>
-        <div style="margin:24px 0 8px 0;">
           <a class="pro-download-btn-polished"
-              href="${ep.download || "#"}"
-              download
-              style="display:block;width:100%;max-width:500px;margin:0 auto 12px auto;background:#198fff;"
-              ${ep.download ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>🖇️ Download (Server 1)</a>
-        </div>
-        <div style="margin:8px 0;">
-          <button class="pro-download-btn-polished"
-                  id="download2Btn"
-                  style="display:block;width:100%;max-width:500px;margin:0 auto;background:#30c96b;"
-                  ${ep.download2 ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>🖇️ Download (Server 2)</button>
+            href="${ep.download2 || "#"}"
+            download
+            style="display:block;width:100%;max-width:400px;margin:16px auto 0 auto;background:#30c96b;text-align:center;font-weight:600;color:#fff;padding:10px 6px;border-radius:7px;text-decoration:none;font-size:1em;"
+            ${ep.download2 ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>🖇️ Download (Server 2)</a>
         </div>
         <a class="pro-tutorial-btn"
           href="${HOW_TO_DOWNLOAD_URL}"
@@ -125,7 +127,7 @@ Promise.all([
       </div>
     `;
 
-    // --- Safe lazy load for video embed (unchanged code) ---
+    // --- Safe lazy load unchanged ---
     const embedWrap = container.querySelector('.pro-episode-embed-polished');
     if (embedWrap) {
       const placeholders = embedWrap.querySelectorAll('[data-embed-src]');
@@ -160,15 +162,6 @@ Promise.all([
         if (!f.hasAttribute('frameborder')) f.setAttribute('frameborder', "0");
         if (!f.hasAttribute('allowfullscreen')) f.setAttribute('allowfullscreen', '');
         if (!f.hasAttribute('decoding')) f.setAttribute('decoding', 'async');
-      });
-    }
-
-    // Download 2 (direct link)
-    const download2Btn = document.getElementById("download2Btn");
-    if (download2Btn && ep.download2) {
-      download2Btn.addEventListener("click", function (e) {
-        e.preventDefault();
-        window.location.href = ep.download2;
       });
     }
   }
