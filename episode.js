@@ -63,8 +63,8 @@ Promise.all([
               style="display:block;width:100%;max-width:500px;margin:0 auto 12px auto;background:#198fff;"
               ${ep.download ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#555;'"}>🖇️ Download (Server 1)</a>
         </div>
-      <div class="fullscreen-alert-msg" style="
-  background: linear-gradient(90deg, #30386b 20%, #182544 90%);
+        <div class="fullscreen-alert-msg" style="
+  background: linear-gradient(90deg, #223958 20%, #091728 90%);
   padding: 15px 14px 13px 14px;
   border-radius: 10px;
   border: 2px solid #23c6ed;
@@ -74,16 +74,19 @@ Promise.all([
   font-family: inherit;
   font-weight: 600;
   line-height: 1.5;
-  ">
+">
   <span style="font-size:1.08em; color:#ffd700;">🔔 Note:</span><br>
   <span style="font-size:1em;">
     ⚠️ <span style="color:#ffd700;">Important Announcement</span><br>
-    Filhal website par streaming ka thoda issue hai <span style="font-size:1.13em;">😔</span>.
+    Filhal website par streaming ka thoda issue hai <span style="font-size:1.13em;">😔</span>.<br>
     Jab tak ye fix nahi hota, please <b>Download 1</b> ya <b>Download 2</b> se episodes dekho.<br>
-    Agar koi aur problem ho to <span style="color:#ff0000;">❤️ contact karo</span>.<br>
+    Agar koi aur problem ho to 
+    <a href="https://t.me/itz_me_zain1" target="_blank" style="color:#fa2538; font-weight:600; text-decoration:underline;">
+      ❤️ contact karo
+    </a>.<br>
     Thanks for your support!
   </span>
-</div>  
+</div>
 <div style="margin:8px 0;">
           <button class="pro-download-btn-polished"
                   id="download2Btn"
