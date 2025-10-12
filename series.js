@@ -194,7 +194,7 @@
             const tutorialVideo = `
               <section class="pro-video-card">
                 <div class="pro-video-frame-wrap">
-                 <div style='position:relative;width:100%;height:0;padding-bottom:56.25%;'><iframe id='js_video_iframe' src='https://jumpshare.com/embed/k1uqX8VA5xpQQrcMC6q7' style='position:absolute;top:0;left:0;width:100%;height:100%;' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>
+                 <div style='position:relative;width:100%;height:0;padding-bottom:56.25%;'><iframe class='rumble' src='https://rumble.com/embed/v6y0pdg/?pub=4ngog8' style='position:absolute;top:0;left:0;width:100%;height:100%;' frameborder='0' allowfullscreen></iframe></div>
               </section>
             `;
             document.getElementById('pro-episodes-row-wrap').innerHTML = html + tutorialTitle + tutorialVideo;
