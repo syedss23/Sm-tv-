@@ -4,6 +4,16 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('sidebarToggle')?.addEventListener('click', () => sbar.classList.toggle('open'));
   document.getElementById('sidebarClose')?.addEventListener('click', () => sbar.classList.remove('open'));
 
+  // Utility: move filter bar under New Episodes
+  function moveFilterBarBelowNewEpisodes() {
+    const filterBar = document.querySelector('.filter-bar');                // Dubbed/Subtitles wrapper
+    const newEpisodesSection = document.querySelector('.new-episodes-section'); // Section to insert after
+    if (filterBar && newEpisodesSection && newEpisodesSection.parentNode) {
+      newEpisodesSection.parentNode.insertBefore(filterBar, newEpisodesSection.nextSibling);
+    }
+  }
+  // Try immediately after DOM load
+  moveFilterBarBelowNewEpisodes(); // keeps DOM/tab order consistent with visuals [web:19]
   // ===== SCHEDULE BAR (Above New Episodes) =====
   const scheduleBar = document.getElementById('schedule-bar');
   if (scheduleBar) {
@@ -58,6 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
             `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">
               No new episodes found.
             </div>`;
+          // Ensure position even when empty
+          moveFilterBarBelowNewEpisodes(); // re-run after render [web:23]
           return;
         }
 
@@ -83,11 +95,14 @@ document.addEventListener('DOMContentLoaded', () => {
             `).join('')}
           </div>
         `;
+        // Re-position after content injection to be safe
+        moveFilterBarBelowNewEpisodes(); // maintains DOM order below the section [web:19]
       })
       .catch(() => {
         newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">
           Could not load new episodes.
         </div>`;
+        moveFilterBarBelowNewEpisodes(); // still ensure placement [web:23]
       });
   }
 
