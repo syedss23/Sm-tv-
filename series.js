@@ -4,6 +4,10 @@
   const lang = (qs.get('lang') || '').toLowerCase();
   const season = qs.get('season') || '1';
 
+  // How-to videos (your exact embeds)
+  const HOWTO_PROCESS_1 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v6yg466/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
+  const HOWTO_PROCESS_2 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v6yg45g/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
+
   function jsonFor(season) {
     if (lang === 'dub') {
       return `episode-data/${slug}-s${season}.json`;
@@ -27,7 +31,7 @@
     setTimeout(() => t.remove(), 2600);
   }
 
-  // Premium message styles
+  // Styles (existing + small helpers for tutorial cards)
   const premiumStyles = `
     .premium-channel-message {
       margin-top: 18px;
@@ -52,6 +56,7 @@
       display: flex;
       gap: 18px;
       margin-top: 11px;
+      flex-wrap: wrap;
     }
     .premium-btn {
       display: inline-flex;
@@ -83,10 +88,45 @@
       background: linear-gradient(90deg,#ffe493 40%,#ffd700 100%);
       color: #23c6ed;
     }
-    .premium-btn-icon {
-      margin-right: 7px;
-      font-size: 1.23em;
-      vertical-align: middle;
+    .premium-btn-icon { margin-right: 7px; font-size: 1.23em; vertical-align: middle; }
+
+    /* Tutorial sections */
+    .pro-highlight-section { margin: 14px auto 8px auto; max-width: 900px; }
+    .pro-highlight-title {
+      background: linear-gradient(90deg, #23c6ed, #198fff);
+      color: #fff;
+      font-weight: 800;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-family: 'Montserrat', Arial, sans-serif;
+      font-size: 1.02em;
+      letter-spacing: .02em;
+      text-shadow: 0 1px 0 #0b1d2c;
+    }
+    .pro-video-card {
+      background: #0e1824;
+      border-radius: 12px;
+      padding: 12px 10px 16px 10px;
+      margin: 0 auto 14px auto;
+      max-width: 900px;
+      box-shadow: 0 2px 12px #0a111740;
+      border: 1px solid #1a2d3e;
+    }
+    .pro-video-frame-wrap {
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-bottom: 56.25%; /* 16:9 */
+      overflow: hidden;
+      border-radius: 10px;
+      background: #000;
+    }
+    .pro-video-frame-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
     }
   `;
   const styleTag = document.createElement('style');
@@ -103,7 +143,6 @@
       }
       document.title = `${meta.title} – SmTv Urdu`;
 
-      // Premium channel message HTML: two modern buttons
       const premiumMsg = `
         <div class="premium-channel-message">
           <strong>Go Ad-Free!</strong> Get direct access to all episodes by joining our <strong>Premium Channel</strong>.<br>
@@ -145,6 +184,7 @@
       } else {
         seasons = ['1'];
       }
+
       const tabs = document.getElementById('pro-seasons-tabs');
       tabs.innerHTML = seasons.map(s =>
         `<button data-season="${s}" class="pro-season-tab-pro${s == season ? ' active' : ''}">Season ${s}</button>`
@@ -168,13 +208,12 @@
               document.getElementById('pro-episodes-row-wrap').innerHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
               return;
             }
+
             const html = `<div class="pro-episodes-row-pro">` + episodes.map(ep => {
               const episodeUrl = ep.shortlink
                 ? ep.shortlink
                 : `episode.html?series=${slug}&season=${season}&ep=${ep.ep}&lang=${lang}`;
-              const extra = ep.shortlink
-                ? 'target="_blank" rel="noopener"'
-                : '';
+              const extra = ep.shortlink ? 'target="_blank" rel="noopener"' : '';
               return `
                 <a class="pro-episode-card-pro" href="${episodeUrl}" ${extra}>
                   <div class="pro-ep-thumb-wrap-pro">
@@ -186,18 +225,36 @@
               `;
             }).join('') + `</div>`;
 
-            const tutorialTitle = `
+            // Section 1: How to Watch Episodes (Process 1)
+            const tutorialTitle1 = `
               <section class="pro-highlight-section">
                 <div class="pro-highlight-title">How to Watch Episodes</div>
               </section>
             `;
-            const tutorialVideo = `
+            const tutorialVideo1 = `
               <section class="pro-video-card">
                 <div class="pro-video-frame-wrap">
-                 <div style='position:relative;width:100%;height:0;padding-bottom:56.25%;'><iframe class='rumble' src='https://rumble.com/embed/v6yd16u/?pub=4ni0h4' style='position:absolute;top:0;left:0;width:100%;height:100%;' frameborder='0' allowfullscreen></iframe></div>
+                  ${HOWTO_PROCESS_1}
+                </div>
               </section>
             `;
-            document.getElementById('pro-episodes-row-wrap').innerHTML = html + tutorialTitle + tutorialVideo;
+
+            // Section 2: How to Watch (Old Process)
+            const tutorialTitle2 = `
+              <section class="pro-highlight-section">
+                <div class="pro-highlight-title">How to Watch (Old Process)</div>
+              </section>
+            `;
+            const tutorialVideo2 = `
+              <section class="pro-video-card">
+                <div class="pro-video-frame-wrap">
+                  ${HOWTO_PROCESS_2}
+                </div>
+              </section>
+            `;
+
+            document.getElementById('pro-episodes-row-wrap').innerHTML =
+              html + tutorialTitle1 + tutorialVideo1 + tutorialTitle2 + tutorialVideo2;
           })
           .catch(e => {
             document.getElementById('pro-episodes-row-wrap').innerHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
