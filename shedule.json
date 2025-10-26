@@ -12,11 +12,12 @@
     "day": "Wednesday",
     "time": "9:00 PM",
     "type": "💬 Subtitled",
-    "live": true
+    "live": false,
+    "countdown": "2025-10-29T12:30:00"
   },
   {
     "title": "Kurulus Orhan (Subtitled)",
-    "poster": "assests/posters/orhan.jpg",
+    "poster": "assets/posters/orhan.jpg",
     "day": "From 30 Oct",
     "time": "8:00 PM",
     "type": "💬 Subtitled",
