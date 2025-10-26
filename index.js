@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         box-shadow:0 1px 5px rgba(0,0,0,0.4);min-width:fit-content;">
               ${poster ? `
                 <img src="${poster}" alt="${title}" loading="lazy" decoding="async"
-                     style="width:26px;height:26px;object-fit:cover;border-radius:6px;">` : ''
+                     style="width:30px;height:30px;object-fit:cover;border-radius:6px;">` : ''
               }
               <div style="display:flex;flex-direction:column;line-height:1.15;min-width:0;">
                 <!-- Title -->
