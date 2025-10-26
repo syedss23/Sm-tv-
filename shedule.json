@@ -11,8 +11,9 @@
     "poster": "assets/posters/mehmet_fatih.jpg"
   },
   {
-    "title": "Destan",
-    "time": "Daily",
-    "poster": "assets/posters/destan.jpg"
+    "title": "Kurulus Orhan Subtitles",
+    "time": "From 30 Oct",
+    "poster": "posters/orhan.jpg",
+    "type": "Subtitles"
   }
 ]
