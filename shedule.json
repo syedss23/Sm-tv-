@@ -1,18 +1,25 @@
 [
   {
-    "title": "Salahuddin Ayyubi DuB",
-    "time": "Mon - Fri",
-    "type": "11:30 PM",
-    "poster": "assets/posters/salauddin_ayyubi.jpg"
+    "title": "Salahuddin Ayyubi (Urdu Dub)",
+    "day": "Mon – Fri",
+    "time": "11:30 PM",
+    "type": "🎧 Dubbed",
+    "live": false,
+    "countdown": "2025-10-26T23:30:00"
   },
   {
-    "title": "Sultan Mehmet Fatih Sub",
-    "time": "Wednesday",
-    "poster": "assets/posters/mehmet_fatih.jpg"
+    "title": "Sultan Mehmet Fatih (Subtitled)",
+    "day": "Wednesday",
+    "time": "9:00 PM",
+    "type": "💬 Subtitled",
+    "live": true
   },
   {
-    "title": "Kurulus Orhan Subtitles",
-    "time": "From 30 Oct",
-    "poster": "assests/posters/orhan.jpg"
+    "title": "Kurulus Orhan (Subtitled)",
+    "day": "From 30 Oct",
+    "time": "8:00 PM",
+    "type": "💬 Subtitled",
+    "live": false,
+    "countdown": "2025-10-30T20:00:00"
   }
 ]
