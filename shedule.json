@@ -1,6 +1,7 @@
 [
   {
     "title": "Salahuddin Ayyubi (Urdu Dub)",
+    "poster": "assets/posters/salauddin.jpg",
     "day": "Mon – Fri",
     "time": "11:30 PM",
     "type": "🎧 Dubbed",
@@ -9,6 +10,7 @@
   },
   {
     "title": "Sultan Mehmet Fatih (Subtitled)",
+    "poster": "assets/posters/mehmet.jpg",
     "day": "Wednesday",
     "time": "9:00 PM",
     "type": "💬 Subtitled",
@@ -17,6 +19,7 @@
   },
   {
     "title": "Kurulus Orhan (Subtitled)",
+    "poster": "assets/posters/orhan.jpg",
     "day": "From 30 Oct",
     "time": "8:00 PM",
     "type": "💬 Subtitled",
