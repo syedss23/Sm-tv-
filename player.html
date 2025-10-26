@@ -1,87 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Episode Player</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom Player</title>
+  <link href="https://vjs.zencdn.net/8.9.0/video-js.css" rel="stylesheet" />
   <style>
-    body {
-      background: #111;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-
-    #player-container {
-      width: 100%;
-      max-width: 900px;
-      margin: 20px auto;
-      background: #000;
-      position: relative;
-      padding-bottom: 56.25%; /* 16:9 aspect ratio */
-      height: 0;
-    }
-
-    #player-container iframe, 
-    #player-container video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-
-    #video-controls {
-      max-width: 900px;
-      margin: 10px auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    #video-controls button, #video-controls select {
-      padding: 10px 15px;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 5px;
-      border: none;
-      background: #222;
-      color: #fff;
-    }
-
-    #video-controls button:hover, #video-controls select:hover {
-      background: #444;
-    }
-
-    @media (max-width: 600px) {
-      #video-controls {
-        flex-direction: column;
-        gap: 5px;
-      }
-      #video-controls button, #video-controls select {
-        width: 100%;
-      }
-    }
+    body { background: #000; margin: 0; color: #fff; }
+    .video-js { width: 100%; height: 100vh; }
+    .vjs-menu-button-popup .vjs-menu { background: #222; }
   </style>
 </head>
 <body>
 
-  <div id="player-container"></div>
+  <video id="custom-player" class="video-js vjs-fluid vjs-default-skin" controls preload="auto"></video>
 
-  <div id="video-controls">
-    <button id="prev-btn">Previous</button>
-    <button id="next-btn">Next</button>
-    <select id="source-select">
-      <option value="embed2">VK</option>
-      <option value="embed">Other Embed</option>
-      <option value="watch3">MP4</option>
-    </select>
-  </div>
+  <script src="https://vjs.zencdn.net/8.9.0/video.min.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const season = params.get('season');
+    const epNum = parseInt(params.get('ep')) || 1;
 
-  <!-- Episode Loader JS -->
-  <script src="js/episodeLoader.js"></script>
+    fetch(`./json/${season}`)
+      .then(res => res.json())
+      .then(data => {
+        const episode = data.find(e => e.ep === epNum);
+        if (!episode || !episode.watch3) {
+          document.body.innerHTML = "<h2 style='text-align:center;margin-top:20px;'>Video not found</h2>";
+          return;
+        }
+
+        const player = videojs('custom-player', {
+          controls: true,
+          preload: 'auto',
+          playbackRates: [0.75, 1, 1.25, 1.5, 2]
+        });
+
+        // Load main source
+        player.src({ src: episode.watch3, type: 'video/mp4' });
+
+        // Optional: Add dummy quality selector (for future)
+        player.controlBar.addChild('QualitySelector', { text: 'Quality' });
+
+        // Optional: Add playback speed menu
+        player.controlBar.playbackRateMenuButton.show();
+      });
+  </script>
 </body>
 </html>
