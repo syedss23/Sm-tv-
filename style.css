@@ -426,3 +426,23 @@ button:hover{background:#272838}
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
 }
+/* Title row already added earlier */
+.schedule-title { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+
+/* Day + time row before meta */
+.schedule-when {
+  display:flex; align-items:center; gap:6px;
+  margin-top:4px; color:#9fd3ff; font-weight:600;
+  flex-wrap:wrap;
+}
+.schedule-when .day { color:#ffd267; }
+.schedule-when .time { color:#9fd3ff; }
+.schedule-when .sep { opacity:.6; }
+
+/* Meta row (type, icons) stays below */
+.meta { margin-top:2px; color:#cde4ff; opacity:.9; }
+
+/* Small screens: stack neatly */
+@media (max-width:420px){
+  .schedule-when { gap:4px; }
+}
