@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ====== MODERN SCHEDULE BAR (Compact + Countdown + LIVE) ======
   const scheduleBar = document.getElementById('schedule-bar');
   if (scheduleBar) {
-    fetch('shedule.json') // keep your existing filename
+    fetch('shedule.json')
       .then(r => r.json())
       .then(schedule => {
         if (!Array.isArray(schedule) || !schedule.length) {
@@ -28,11 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
 
-        // Build entries: Title, then Day + Time line, then Type, then Countdown
         scheduleBar.innerHTML = schedule.map(item => {
           const title = item.title || '';
           const poster = item.poster || '';
-          const day = item.day || '';             // <-- read "day" from JSON
+          const day = item.day || '';
           const time = item.time || '';
           const type = item.type || '';
           const live = !!item.live;
@@ -49,24 +48,25 @@ document.addEventListener('DOMContentLoaded', () => {
                      style="width:26px;height:26px;object-fit:cover;border-radius:6px;">` : ''
               }
               <div style="display:flex;flex-direction:column;line-height:1.15;min-width:0;">
+                <!-- Title -->
                 <div style="font-weight:700;font-size:0.92em;color:#23c6ed;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
                   <span class="title" style="overflow-wrap:anywhere;">${title}</span>
                   ${live ? '<span style="background:#ff2d2d;color:#fff;padding:1px 6px;border-radius:6px;font-size:0.7em;">LIVE</span>' : ''}
                 </div>
 
-                <!-- Day before time -->
-                <div class="schedule-when" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:2px;">
-                  ${day ? `<span class="day" style="color:#ffd267;font-weight:600;">${day}</span>` : ''}
-                  ${(day && time) ? '<span style="opacity:.6;">•</span>' : ''}
+                <!-- One compact line: day • time • type (small, old-style) -->
+                <div class="schedule-row"
+                     style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px;font-size:0.86em;line-height:1.25;">
+                  ${day  ? `<span class="day"  style="color:#ffd267;font-weight:600;">${day}</span>` : ''}
+                  ${(day && time) ? '<span class="dot" style="opacity:.6;">•</span>' : ''}
                   ${time ? `<span class="time" style="color:#9fd3ff;font-weight:600;">${time}</span>` : ''}
+                  ${type ? `<span class="dot" style="opacity:.6;">•</span><span class="type" style="color:#23c6ed;font-weight:600;">${type}</span>` : ''}
                 </div>
 
-                <!-- Type/meta -->
-                ${type ? `<div class="meta" style="font-size:0.8em;color:#23c6ed;margin-top:2px;">${type}</div>` : ''}
-
-                <!-- Countdown -->
-                ${countdown ? `<div class="countdown" data-time="${countdown}"
-                   style="color:#ffd84d;font-size:0.75em;margin-top:2px;"></div>` : ''}
+                <!-- Countdown below, slightly smaller -->
+                ${countdown ? `<div class="countdown"
+                                  data-time="${countdown}"
+                                  style="color:#ffd84d;font-size:0.78em;margin-top:2px;"></div>` : ''}
               </div>
             </div>
           `;
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Countdown updater
         const countdowns = scheduleBar.querySelectorAll('.countdown');
         countdowns.forEach(el => {
-          const targetTime = Date.parse(el.dataset.time); // ISO 8601 supported
+          const targetTime = Date.parse(el.dataset.time);
           if (isNaN(targetTime)) { el.textContent = ''; return; }
 
           const tick = () => {
