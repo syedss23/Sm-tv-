@@ -54,6 +54,8 @@
 
 <!-- Plyr JS -->
 <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.min.js"></script>
+<!-- HLS.js for MP4/HLS adaptive streaming -->
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.1/dist/hls.min.js"></script>
 
 <script>
 (async function() {
@@ -71,7 +73,6 @@
     return;
   }
 
-  // Set back button
   backBtn.href = `series.html?series=${slug}&season=${season}`;
 
   // Load episode JSON
@@ -88,25 +89,50 @@
 
     episodeTitleEl.textContent = ep.title || `Episode ${ep.ep}`;
 
-    // Initialize Plyr player
-    const player = new Plyr('#player', {
+    const video = document.getElementById('player');
+
+    // Initialize Plyr
+    const player = new Plyr(video, {
       controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
       settings: ['quality', 'speed', 'loop'],
       autoplay: false,
     });
 
-    // Set source (streamtape / mp4)
-    player.source = {
-      type: 'video',
-      title: ep.title || `Episode ${ep.ep}`,
-      sources: [
-        {
-          src: ep.watch3,
-          type: 'video/mp4',
-          size: 720
-        }
-      ]
-    };
+    // Check if HLS or MP4
+    const sourceURL = ep.watch3;
+    if (Hls.isSupported() && sourceURL.endsWith('.m3u8')) {
+      const hls = new Hls();
+      hls.loadSource(sourceURL);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, function() {
+        player.play();
+      });
+
+      // Set quality options from HLS levels
+      hls.on(Hls.Events.LEVEL_SWITCHING, (event, data) => {
+        const level = hls.levels[data.level];
+        console.log('Switching quality to', level.height);
+      });
+
+      // Audio tracks
+      hls.on(Hls.Events.AUDIO_TRACK_SWITCHED, (event, data) => {
+        console.log('Audio track switched to', hls.audioTracks[data.id].name);
+      });
+
+    } else {
+      // Fallback for MP4
+      player.source = {
+        type: 'video',
+        title: ep.title || `Episode ${ep.ep}`,
+        sources: [
+          {
+            src: sourceURL,
+            type: 'video/mp4',
+            size: 720
+          }
+        ]
+      };
+    }
 
   } catch (err) {
     container.innerHTML = `<div style="padding:50px;text-align:center;color:#ccc;">Error loading episode: ${err.message}</div>`;
