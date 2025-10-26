@@ -21,11 +21,36 @@
       margin-left:auto; display:inline-flex; align-items:center; justify-content:center;
       height:34px; padding:0 12px; border-radius:999px; background:#ffd400; color:#13263a; font-weight:800; box-shadow:0 3px 10px #ffd40055; line-height:1;}
 
+    /* Primary button used for pricing and bottom CTA */
+    .btn-primary{
+      display:inline-block;
+      background:#ffd400;
+      color:#13263a;
+      font-weight:800;
+      padding:10px 16px;
+      border-radius:999px;
+      box-shadow:0 4px 14px #ffd40055;
+      text-align:center;
+    }
+    .btn-primary:active{ transform:translateY(1px); }
+
     .hero{margin:16px 0; background:linear-gradient(136deg,#132a44 65%,#102030 100%); border:1px solid #1b3d59; border-radius:16px; padding:18px 14px; box-shadow:0 8px 28px #06233b5a;}
     .hero h2{margin:0 0 8px 0;font-size:1.35em;color:#1dedf0;text-shadow:0 3px 18px #09d3ff33}
     .hero p{margin:0 0 10px 0;opacity:.95}
     .trust{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:.92em;opacity:.9}
-    .pill{background:#0d2030;border:1px solid #284e70;color:#aee6ff;padding:6px 10px;border-radius:999px}
+
+    /* International note banner */
+    .intl-note{
+      width:100%;
+      background:#0d2030;
+      border:1px solid #284e70;
+      color:#aee6ff;
+      padding:8px 10px;
+      border-radius:10px;
+      font-weight:700;
+      text-align:center;
+      font-size:.95em;
+    }
 
     .panel{background:#101b28;border:1px solid #20364c;border-radius:14px;padding:14px;margin-top:14px;box-shadow:0 4px 18px #0004}
     .panel h3{margin:0 0 10px 0;color:#86e8ff;font-size:1.08em}
@@ -72,7 +97,7 @@
       <h2>Ad‑free + Early Access</h2>
       <p>Watch episodes directly with no ads, instant access, and fast download links for members.</p>
       <div class="trust">
-    <div class="intl-note">International users can join — contact on Telegram</div>
+        <div class="intl-note">International users can join — contact on Telegram</div>
       </div>
     </section>
 
@@ -87,12 +112,12 @@
         <div class="price-card">
           <div class="tag">Best value</div>
           <div class="amount">₹249 / quarter</div>
-          <a class="cta" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Join Quarterly</a>
+          <a class="btn-primary" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Join Quarterly</a>
           <div class="note">3 months access • Full benefits</div>
         </div>
         <div class="price-card">
           <div class="amount">₹99 / month</div>
-          <a class="cta" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Join Monthly</a>
+          <a class="btn-primary" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Join Monthly</a>
           <div class="note">1 month access • Full benefits</div>
         </div>
       </div>
@@ -136,7 +161,7 @@
     </section>
 
     <div class="bottom-cta">
-      <a class="cta" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Get Premium Now</a>
+      <a class="btn-primary" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Get Premium Now</a>
       <div class="muted" style="margin-top:6px">Instant access • Friendly support</div>
     </div>
   </main>
