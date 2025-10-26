@@ -1,50 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Custom Player</title>
-  <link href="https://vjs.zencdn.net/8.9.0/video-js.css" rel="stylesheet" />
-  <style>
-    body { background: #000; margin: 0; color: #fff; }
-    .video-js { width: 100%; height: 100vh; }
-    .vjs-menu-button-popup .vjs-menu { background: #222; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Watch Episode</title>
+
+<!-- Plyr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.css" />
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0d1117;
+    color: #fff;
+  }
+  .container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 15px;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  .header h1 {
+    font-size: 1.2em;
+    margin: 0;
+  }
+  .back-btn {
+    color: #23c6ed;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  .plyr__video-embed {
+    border-radius: 10px;
+    overflow: hidden;
+  }
+</style>
 </head>
 <body>
 
-  <video id="custom-player" class="video-js vjs-fluid vjs-default-skin" controls preload="auto"></video>
+<div class="container">
+  <div class="header">
+    <a href="#" class="back-btn" id="backBtn">← Back</a>
+    <h1 id="episodeTitle">Loading...</h1>
+  </div>
 
-  <script src="https://vjs.zencdn.net/8.9.0/video.min.js"></script>
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const season = params.get('season');
-    const epNum = parseInt(params.get('ep')) || 1;
+  <video id="player" controls crossorigin playsinline></video>
+</div>
 
-    fetch(`./json/${season}`)
-      .then(res => res.json())
-      .then(data => {
-        const episode = data.find(e => e.ep === epNum);
-        if (!episode || !episode.watch3) {
-          document.body.innerHTML = "<h2 style='text-align:center;margin-top:20px;'>Video not found</h2>";
-          return;
+<!-- Plyr JS -->
+<script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.min.js"></script>
+
+<script>
+(async function() {
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get('series');
+  const season = params.get('season');
+  const epNum = params.get('ep');
+
+  const container = document.querySelector('.container');
+  const episodeTitleEl = document.getElementById('episodeTitle');
+  const backBtn = document.getElementById('backBtn');
+
+  if (!slug || !season || !epNum) {
+    container.innerHTML = '<div style="padding:50px;text-align:center;color:#ccc;">Invalid episode URL</div>';
+    return;
+  }
+
+  // Set back button
+  backBtn.href = `series.html?series=${slug}&season=${season}`;
+
+  // Load episode JSON
+  const jsonFile = `episode-data/${slug}-s${season}.json`;
+  try {
+    const res = await fetch(jsonFile);
+    if (!res.ok) throw new Error('JSON not found');
+    const episodes = await res.json();
+    const ep = episodes.find(e => String(e.ep) === String(epNum));
+    if (!ep || !ep.watch3) {
+      container.innerHTML = '<div style="padding:50px;text-align:center;color:#ccc;">Video not available</div>';
+      return;
+    }
+
+    episodeTitleEl.textContent = ep.title || `Episode ${ep.ep}`;
+
+    // Initialize Plyr player
+    const player = new Plyr('#player', {
+      controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+      settings: ['quality', 'speed', 'loop'],
+      autoplay: false,
+    });
+
+    // Set source (streamtape / mp4)
+    player.source = {
+      type: 'video',
+      title: ep.title || `Episode ${ep.ep}`,
+      sources: [
+        {
+          src: ep.watch3,
+          type: 'video/mp4',
+          size: 720
         }
+      ]
+    };
 
-        const player = videojs('custom-player', {
-          controls: true,
-          preload: 'auto',
-          playbackRates: [0.75, 1, 1.25, 1.5, 2]
-        });
+  } catch (err) {
+    container.innerHTML = `<div style="padding:50px;text-align:center;color:#ccc;">Error loading episode: ${err.message}</div>`;
+  }
+})();
+</script>
 
-        // Load main source
-        player.src({ src: episode.watch3, type: 'video/mp4' });
-
-        // Optional: Add dummy quality selector (for future)
-        player.controlBar.addChild('QualitySelector', { text: 'Quality' });
-
-        // Optional: Add playback speed menu
-        player.controlBar.playbackRateMenuButton.show();
-      });
-  </script>
 </body>
 </html>
