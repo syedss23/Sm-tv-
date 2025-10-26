@@ -1,0 +1,128 @@
+[
+  {
+    "title": "Sultan Mehmet Fatih",
+    "seasons": ["Season 1", "Season 2"],
+    "tracks": ["Urdu Sub", "Hindi Sub", "English Sub", "Hindi/Urdu Dub"],
+    "tags": ["Historical", "TRT"]
+  },
+  {
+    "title": "Salahuddin Ayyubi",
+    "seasons": ["Season 1", "Season 2"],
+    "tracks": ["Hindi/Urdu Dub", "Subtitles: Hindi, English, Urdu", "Reviews"],
+    "tags": ["Historical", "Epic"]
+  },
+  {
+    "title": "Moulana Jalaluddin Rumi",
+    "seasons": ["Season 1", "Season 2", "Season 3"],
+    "tracks": ["Urdu/Hindi Dub"],
+    "tags": ["Spiritual", "Biographical"]
+  },
+  {
+    "title": "Alp Arslan (AAN TV)",
+    "seasons": [],
+    "tracks": [],
+    "tags": ["TV"]
+  },
+  {
+    "title": "Alp Arslan (TRT)",
+    "seasons": [],
+    "tracks": [],
+    "tags": ["TRT"]
+  },
+  {
+    "title": "The Rise of Ottoman Empire",
+    "seasons": [],
+    "tracks": [],
+    "tags": ["Docu-Drama"]
+  },
+  {
+    "title": "Kurulus Osman",
+    "seasons": ["Season 1", "Season 2", "Season 3", "Season 4", "Season 5", "Season 6"],
+    "tracks": ["Subtitles: Urdu, Hindi, English", "Dub"],
+    "tags": ["Action", "Historical"]
+  },
+  {
+    "title": "Destan",
+    "seasons": [],
+    "tracks": [],
+    "tags": ["Drama"]
+  },
+  {
+    "title": "Jalal al-Din Khwarazm",
+    "seasons": [],
+    "tracks": [],
+    "tags": ["Historical"]
+  },
+  {
+    "title": "Hazrat Umar (RA)",
+    "seasons": [],
+    "tracks": [],
+    "tags": ["Islamic"]
+  },
+  {
+    "title": "Young Ibn e Sina",
+    "seasons": [],
+    "tracks": [],
+    "tags": ["Biographical"]
+  },
+  {
+    "title": "Barbarossa (TRT) — Dub",
+    "seasons": [],
+    "tracks": ["Dub"],
+    "tags": ["Naval", "TRT"]
+  },
+  {
+    "title": "Mavera — Haji Ahmed",
+    "seasons": [],
+    "tracks": [],
+    "tags": ["Spiritual"]
+  },
+  {
+    "title": "The Great Conqueror — Golden Apple",
+    "seasons": ["Season 1"],
+    "tracks": [],
+    "tags": ["Historical"]
+  },
+  {
+    "title": "Gilani the Ascetic — Abdul Qadir Jilani",
+    "seasons": ["Season 1", "Season 2"],
+    "tracks": ["Urdu/Hindi Dub"],
+    "tags": ["Spiritual", "Biographical"]
+  },
+  {
+    "title": "The Great Seljuk",
+    "seasons": ["Season 1"],
+    "tracks": ["Urdu/Hindi Dubbed"],
+    "tags": ["Historical"]
+  },
+  {
+    "title": "Barbaros Hayreddin",
+    "seasons": [],
+    "tracks": [],
+    "tags": ["Naval"]
+  },
+  {
+    "title": "Zarb‑e‑Mehmet",
+    "seasons": [],
+    "tracks": [],
+    "tags": ["Action"]
+  },
+  {
+    "title": "Land of Loyals — Muhafiz‑e‑Watan",
+    "seasons": [],
+    "tracks": [],
+    "tags": ["Action"]
+  },
+  {
+    "title": "Akif",
+    "seasons": ["Season 1"],
+    "tracks": [],
+    "tags": ["Biographical"]
+  },
+  {
+    "title": "Haji Bayram Veli",
+    "seasons": [],
+    "tracks": [],
+    "tags": ["Spiritual"]
+  }
+]
