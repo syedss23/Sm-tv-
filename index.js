@@ -6,37 +6,79 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Utility: move filter bar under New Episodes
   function moveFilterBarBelowNewEpisodes() {
-    const filterBar = document.querySelector('.filter-bar');                // Dubbed/Subtitles wrapper
-    const newEpisodesSection = document.querySelector('.new-episodes-section'); // Section to insert after
+    const filterBar = document.querySelector('.filter-bar');
+    const newEpisodesSection = document.querySelector('.new-episodes-section');
     if (filterBar && newEpisodesSection && newEpisodesSection.parentNode) {
       newEpisodesSection.parentNode.insertBefore(filterBar, newEpisodesSection.nextSibling);
     }
   }
-  // Try immediately after DOM load
-  moveFilterBarBelowNewEpisodes(); // keeps DOM/tab order consistent with visuals [web:19]
-  // ===== SCHEDULE BAR (Above New Episodes) =====
+
+  moveFilterBarBelowNewEpisodes();
+
+  // ====== NEW MODERN SCHEDULE BAR (Compact + Countdown + LIVE) ======
   const scheduleBar = document.getElementById('schedule-bar');
   if (scheduleBar) {
     fetch('shedule.json')
       .then(r => r.json())
       .then(schedule => {
         if (!Array.isArray(schedule) || !schedule.length) {
-          scheduleBar.innerHTML = `<div style="color:#ffd700;font-size:1em;padding:1em;text-align:center;">No schedule yet.</div>`;
+          scheduleBar.innerHTML = `
+            <div style="color:#ffd700;font-size:1em;padding:1em;text-align:center;">
+              No schedule yet.
+            </div>`;
           return;
         }
+
         scheduleBar.innerHTML = schedule.map(item => `
-          <div class="schedule-entry" title="${item.title || ''}" style="display:flex;align-items:center;margin-right:10px;">
-            <img src="${item.poster || ''}" alt="${item.title || ''}" loading="lazy" decoding="async"
-                 style="width:27px;height:27px;object-fit:cover;border-radius:5px;margin-right:5px;">
-            <span class="title" style="color:#23c6ed;font-weight:700;margin-right:4px;">${item.title || ''}</span>
-            <span class="days" style="color: #ffe493; margin-left:4px; font-size: 0.92em;">${item.days || ''}</span>
-            ${item.time ? `<span class="time" style="color: #ffd700; font-size:0.97em; margin-left:3px;">${item.time}</span>` : ''}
-            ${item.type ? `<span class="type" style="color:#23c6ed; margin-left:6px; font-size:.91em;">${item.type}</span>` : ''}
+          <div class="schedule-entry" 
+               title="${item.title || ''}" 
+               style="display:flex;align-items:center;gap:6px;margin-right:12px;
+                      background:#14141a;padding:6px 10px;border-radius:12px;
+                      box-shadow:0 1px 5px rgba(0,0,0,0.4);min-width:fit-content;">
+            ${item.poster ? 
+              `<img src="${item.poster}" alt="${item.title || ''}" loading="lazy"
+                decoding="async" style="width:26px;height:26px;object-fit:cover;
+                border-radius:6px;">` : ''
+            }
+            <div style="display:flex;flex-direction:column;line-height:1.1;">
+              <div style="font-weight:700;font-size:0.92em;color:#23c6ed;">
+                ${item.title || ''}
+                ${item.live ? '<span style="background:#ff2d2d;color:#fff;padding:1px 6px;border-radius:6px;font-size:0.7em;margin-left:4px;">LIVE</span>' : ''}
+              </div>
+              <div style="font-size:0.8em;color:#ffd84d;">
+                ${item.days || ''} • ${item.time || ''}
+                ${item.type ? ` • <span style="color:#23c6ed;">${item.type}</span>` : ''}
+              </div>
+              ${item.countdown ? `<div class="countdown" data-time="${item.countdown}" 
+                 style="color:#ffd84d;font-size:0.75em;margin-top:2px;"></div>` : ''}
+            </div>
           </div>
         `).join('');
+
+        // Countdown updater
+        const countdowns = scheduleBar.querySelectorAll('.countdown');
+        countdowns.forEach(el => {
+          const targetTime = new Date(el.dataset.time).getTime();
+          const interval = setInterval(() => {
+            const now = Date.now();
+            const diff = targetTime - now;
+            if (diff <= 0) {
+              el.textContent = "Now Playing";
+              clearInterval(interval);
+              return;
+            }
+            const hrs = Math.floor(diff / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((diff % (1000 * 60)) / 1000);
+            el.textContent = `Starts in ${hrs}h ${mins}m ${secs}s`;
+          }, 1000);
+        });
       })
       .catch(() => {
-        scheduleBar.innerHTML = `<div style="color:#ffd700;font-size:1em;padding:1em;text-align:center;">Could not load schedule.</div>`;
+        scheduleBar.innerHTML = `
+          <div style="color:#ffd700;font-size:1em;padding:1em;text-align:center;">
+            Could not load schedule.
+          </div>`;
       });
   }
 
@@ -68,51 +110,65 @@ document.addEventListener('DOMContentLoaded', () => {
             `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">
               No new episodes found.
             </div>`;
-          // Ensure position even when empty
-          moveFilterBarBelowNewEpisodes(); // re-run after render [web:23]
+          moveFilterBarBelowNewEpisodes();
           return;
         }
 
-        // Render in horizontal scroll row with classic card styling
         newGrid.innerHTML = `
-          <div style="display: flex; gap: 14px; overflow-x: auto; padding: 0 2px 2px 2px;">
+          <div style="display:flex;gap:14px;overflow-x:auto;padding:0 2px 2px 2px;">
             ${latestEps.map(ep => `
               <div class="episode-card-pro"
-                style="flex:0 0 166px; min-width:150px; max-width:172px; border-radius:13px; background: #182837; box-shadow: 0 4px 18px #0fd1cec7, 0 2px 10px #0003;">
-                <img src="${ep.thumb || ep.poster || ''}" class="episode-img-pro" alt="${ep.title || ('Episode ' + (ep.ep || ''))}" 
-                  loading="lazy" decoding="async"
-                  style="display:block;border-radius:13px 13px 0 0;width:100%;height:110px;object-fit:cover;">
-                <div class="episode-title-pro" style="margin:15px 0 4px 0;font-family:'Montserrat',sans-serif;font-size:1.07em;font-weight:700;color:#fff;text-align:center;">
+                style="flex:0 0 166px;min-width:150px;max-width:172px;
+                       border-radius:13px;background:#182837;
+                       box-shadow:0 4px 18px #0fd1cec7,0 2px 10px #0003;">
+                <img src="${ep.thumb || ep.poster || ''}" 
+                     class="episode-img-pro" 
+                     alt="${ep.title || ('Episode ' + (ep.ep || ''))}" 
+                     loading="lazy" decoding="async"
+                     style="display:block;border-radius:13px 13px 0 0;width:100%;
+                            height:110px;object-fit:cover;">
+                <div class="episode-title-pro" 
+                     style="margin:15px 0 4px 0;font-family:'Montserrat',sans-serif;
+                            font-size:1.07em;font-weight:700;color:#fff;text-align:center;">
                   ${ep.title || 'Episode ' + (ep.ep || '')}
-                  <span class="new-badge-pro" style="margin-left:7px;background:#ffd700;color:#182734;font-size:.78em;border-radius:5px;padding:2.3px 9px 2.3px 9px;">NEW</span>
+                  <span class="new-badge-pro" 
+                        style="margin-left:7px;background:#ffd700;color:#182734;
+                               font-size:.78em;border-radius:5px;
+                               padding:2.3px 9px;">NEW</span>
                 </div>
-                <a href="${ep.shortlink || ep.download || '#'}" class="watch-btn-pro"
-                  target="_blank" rel="noopener"
-                  style="margin-bottom:13px;width:86%;display:block;background:linear-gradient(90deg,#009aff 65%,#ffd700 100%);color:#fff;font-weight:700;text-decoration:none;text-align:center;border-radius:5px;padding:8px 0 8px 0;font-family:'Montserrat',sans-serif;font-size:1em;box-shadow:0 1px 10px #0087ff14;margin-left:auto;margin-right:auto;">
+                <a href="${ep.shortlink || ep.download || '#'}" 
+                   class="watch-btn-pro"
+                   target="_blank" rel="noopener"
+                   style="margin-bottom:13px;width:86%;display:block;
+                          background:linear-gradient(90deg,#009aff 65%,#ffd700 100%);
+                          color:#fff;font-weight:700;text-decoration:none;text-align:center;
+                          border-radius:5px;padding:8px 0;font-family:'Montserrat',sans-serif;
+                          font-size:1em;box-shadow:0 1px 10px #0087ff14;
+                          margin-left:auto;margin-right:auto;">
                   Watch Now
                 </a>
               </div>
             `).join('')}
           </div>
         `;
-        // Re-position after content injection to be safe
-        moveFilterBarBelowNewEpisodes(); // maintains DOM order below the section [web:19]
+        moveFilterBarBelowNewEpisodes();
       })
       .catch(() => {
-        newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">
-          Could not load new episodes.
-        </div>`;
-        moveFilterBarBelowNewEpisodes(); // still ensure placement [web:23]
+        newGrid.innerHTML = `
+          <div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">
+            Could not load new episodes.
+          </div>`;
+        moveFilterBarBelowNewEpisodes();
       });
   }
 
-  // ------------- Series homepage grid: NO CHANGES -------------
+  // ------------- Series homepage grid: unchanged -------------
   const grid = document.getElementById('series-grid');
   if (grid) {
     const search   = document.getElementById('search');
     const pillDub  = document.getElementById('pill-dub');
     const pillSub  = document.getElementById('pill-sub');
-    const subLangs = document.getElementById('sub-langs'); // hidden by default in HTML
+    const subLangs = document.getElementById('sub-langs');
 
     let SERIES = [];
     const qs = new URLSearchParams(location.search);
@@ -168,9 +224,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Events
     pillDub?.addEventListener('click', () => { setPrimary('dubbed'); toggleSubLangs(); render(); });
-    pillSub?.addEventListener('click', () => { setPrimary('sub');    toggleSubLangs(); render(); });
+    pillSub?.addEventListener('click', () => { setPrimary('sub'); toggleSubLangs(); render(); });
     subLangs?.addEventListener('click', e => {
       const t = e.target;
       if (t && t.matches('.pill') && t.dataset.lang) { setLang(t.dataset.lang); render(); }
