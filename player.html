@@ -3,83 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Series Player</title>
+  <title>Episode Player</title>
   <style>
     body {
-      background-color: #0d0d0d;
+      background: #111;
       color: #fff;
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
     }
-    .container {
+
+    #player-container {
+      width: 100%;
       max-width: 900px;
-      margin: 0 auto;
-      padding: 20px;
+      margin: 20px auto;
+      background: #000;
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 aspect ratio */
+      height: 0;
     }
-    .player-card {
-      background: #1a1a1a;
-      border-radius: 16px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.1);
-      overflow: hidden;
-      margin-bottom: 20px;
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    iframe {
-      border: none;
+
+    #player-container iframe, 
+    #player-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
     }
-    .episode-title {
-      text-align: center;
-      font-size: 1.2rem;
-      margin: 15px 0;
+
+    #video-controls {
+      max-width: 900px;
+      margin: 10px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    #video-controls button, #video-controls select {
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      border: none;
+      background: #222;
+      color: #fff;
+    }
+
+    #video-controls button:hover, #video-controls select:hover {
+      background: #444;
+    }
+
+    @media (max-width: 600px) {
+      #video-controls {
+        flex-direction: column;
+        gap: 5px;
+      }
+      #video-controls button, #video-controls select {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>🎬 Series Player</h2>
-    <div id="player-container" class="player-card">
-      <div style="position:relative;width:100%;height:0;padding-bottom:56.25%;">
-        <iframe id="vk-player" src="" style="position:absolute;top:0;left:0;width:100%;height:100%;" allowfullscreen></iframe>
-      </div>
-    </div>
-    <div class="episode-title" id="episode-title">Loading...</div>
+
+  <div id="player-container"></div>
+
+  <div id="video-controls">
+    <button id="prev-btn">Previous</button>
+    <button id="next-btn">Next</button>
+    <select id="source-select">
+      <option value="embed2">VK</option>
+      <option value="embed">Other Embed</option>
+      <option value="watch3">MP4</option>
+    </select>
   </div>
 
-  <script>
-    // Example URL: player.html?series=salahuddin&ep=5
-    const params = new URLSearchParams(window.location.search);
-    const epNum = parseInt(params.get('ep')) || 1;
-
-    // Load your JSON file dynamically
-    fetch('episode-data.json')
-      .then(res => res.json())
-      .then(data => {
-        const episode = data[epNum - 1];
-        if (!episode) {
-          document.getElementById('episode-title').textContent = 'Episode not found!';
-          return;
-        }
-
-        document.getElementById('episode-title').textContent = episode.title;
-        
-        // Extract VK embed src link from your embed2 field
-        const match = episode.embed2.match(/src='([^']+)'/);
-        if (match) {
-          document.getElementById('vk-player').src = match[1];
-        } else {
-          document.getElementById('episode-title').textContent = 'Invalid embed code';
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        document.getElementById('episode-title').textContent = 'Error loading episode data.';
-      });
-  </script>
+  <!-- Episode Loader JS -->
+  <script src="js/episodeLoader.js"></script>
 </body>
 </html>
