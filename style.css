@@ -474,3 +474,27 @@ header{ display:flex; align-items:center; gap:10px; } /* if not already flex */
 @media (max-width:420px){
   .premium-cta{ height:32px; padding:0 10px; font-size:.92em; }
 }
+.intl-note{
+  width:100%;
+  background:#0d2030;
+  border:1px solid #284e70;
+  color:#aee6ff;
+  padding:8px 10px;
+  border-radius:10px;
+  font-weight:700;
+  text-align:center;
+  font-size:.95em;
+}
+.btn-primary{
+  display:inline-block;
+  background:#ffd400;
+  color:#13263a;
+  font-weight:800;
+  padding:10px 16px;
+  border-radius:999px;
+  box-shadow:0 4px 14px #ffd40055;
+  text-align:center;
+}
+.btn-primary:active{ transform:translateY(1px); }
+.hero p{ margin-bottom:8px; }
+.trust{ margin-top:8px; }
