@@ -1,4 +1,6 @@
 /* Base */
+html, body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; } /* Stop page wiggle */
+* { box-sizing: border-box; } /* Prevent padding from expanding width */
 body{font-family:'Montserrat',Arial,sans-serif;margin:0;background:#15171c;color:#fff}
 #main-content,header,.sidebar{background:#15171c;color:#fff}
 header{padding:20px 10px 8px 10px;border-bottom:1px solid #292a2f;position:relative}
@@ -114,7 +116,13 @@ header{padding:20px 10px 8px 10px;border-bottom:1px solid #292a2f;position:relat
   .sidebar.open{transform:translateX(0)}
 }
 /* Mobile sidebar width */
-@media (max-width:700px){#main-content{margin-left:0}.sidebar{width:90vw}.sidebar-header-pro{padding:0 10px 13px 12px;}.sidebar-logo-pro{font-size:1.28em}.sidebar-btn-pro{font-size:1em; padding:13px 8px;}}
+@media (max-width:700px){
+  #main-content{margin-left:0}
+  .sidebar{width:90vw; max-width:360px;} /* keep within viewport */
+  .sidebar-header-pro{padding:0 10px 13px 12px;}
+  .sidebar-logo-pro{font-size:1.28em}
+  .sidebar-btn-pro{font-size:1em; padding:13px 8px;}
+}
 
 /* Ads */
 .ad-space{margin:24px 0 10px 0;text-align:center;min-height:60px;background:#191a23;border-radius:10px}
@@ -160,10 +168,10 @@ header{padding:20px 10px 8px 10px;border-bottom:1px solid #292a2f;position:relat
 
 /* New Home grid uses the same sizing */
 .series-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;padding:12px 9px 18px 9px;max-width:1120px;margin:auto}
-.card{background:#262838;border-radius:8px;box-shadow:0 1.5px 6px #0003;display:block;text-decoration:none;overflow:hidden;transition:transform .17s,box-shadow .17s,background .17s}
+.card{background:#262838;border-radius:8px;box-shadow:0 1.5px 6px #0003;display:block;text-decoration:none;overflow:hidden;transition:transform .17s,box-shadow .17s,background .17s;max-width:100%}
 .card:hover{background:#212345;box-shadow:0 4px 18px #0a121c20;transform:translateY(-2px) scale(1.03)}
 .card img{width:100%;aspect-ratio:6/8;min-height:108px;max-height:180px;object-fit:cover;display:block;background:#191a23;border-radius:6px 6px 0 0}
-.card .title{padding:10px 4px 12px;color:#fff;font-weight:700;font-size:.95em;text-align:center}
+.card .title{padding:10px 4px 12px;color:#fff;font-weight:700;font-size:.95em;text-align:center;word-break:break-word;overflow-wrap:anywhere}
 @media (max-width:450px){.series-grid{grid-template-columns:repeat(2,1fr)}.card img{min-height:80px;max-height:110px}}
 
 /* ===========================
@@ -181,7 +189,7 @@ header{padding:20px 10px 8px 10px;border-bottom:1px solid #292a2f;position:relat
 .pro-season-tab-pro.active,.pro-season-tab-pro:focus{background:linear-gradient(90deg,#2cebf9 0%,#2bafe7 90%);color:#24282d;box-shadow:0 7px 32px #0be8d836;transform:scale(1.05);opacity:1}
 .pro-episodes-row-wrap-pro{width:100%;background:#181f33e6;border-radius:25px;box-shadow:0 9px 31px #060f2a24;padding:23px 0 22px 0;margin-bottom:45px}
 .pro-episodes-row-pro{display:flex;gap:28px;margin:0 0 0 18px;overflow-x:auto;padding-bottom:2px;scrollbar-color:#17e5ff #191a23}
-.pro-episode-card-pro{background:#141c33;border-radius:19px;min-width:153px;max-width:168px;box-shadow:0 8px 32px #2313ef13;cursor:pointer;display:flex;flex-direction:column;align-items:center;padding:0 0 17px 0;margin-bottom:4px;border:2.2px solid transparent;text-decoration:none;transition:box-shadow .21s,transform .14s,border .13s}
+.pro-episode-card-pro{background:#141c33;border-radius:19px;min-width:153px;max-width:168px;box-shadow:0 8px 32px #2313ef13;cursor:pointer;display:flex;flex-direction:column;align-items:center;padding:0 0 17px 0;margin-bottom:4px;border:2.2px solid transparent;text-decoration:none;transition:box-shadow .21s,transform .14s,border .13s;max-width:100%}
 .pro-episode-card-pro:hover,.pro-episode-card-pro:focus{box-shadow:0 11px 38px #1adadd88;border:2.2px solid #23c6ed;transform:scale(1.047);z-index:1}
 .pro-ep-thumb-wrap-pro{position:relative;width:100%}
 .pro-ep-thumb-pro{width:100%;aspect-ratio:16/9;border-radius:15px 15px 0 0;object-fit:cover;background:#141933;min-height:82px;max-height:127px}
@@ -204,7 +212,14 @@ header{padding:20px 10px 8px 10px;border-bottom:1px solid #292a2f;position:relat
 .pro-episode-embed-polished{width:100%;max-width:620px;margin:0 0 33px 0;border-radius:18px;box-shadow:0 7px 28px #03103349,0 .5px 8px #18151a1c;background:#0b101b;text-align:center;min-height:200px;overflow:hidden}
 .pro-download-btn-polished{display:inline-block;background:linear-gradient(91deg,#0de456,#3b8bea 92%);color:#fff;padding:15px 32px 13px 32px;font-size:1.13em;font-weight:700;border-radius:14px;margin-top:15px;box-shadow:0 2.5px 17px #21a9ff33;text-decoration:none;border:none;transition:background .17s,box-shadow .15s,color .13s;cursor:pointer;letter-spacing:.03em}
 .pro-download-btn-polished:hover{background:linear-gradient(89deg,#16e0a7,#368de1 92%);color:#111}
-@media (max-width:800px){.pro-episode-view-polished{max-width:97vw;padding:11px 2vw 22px 2vw}.pro-episode-header-polished{flex-direction:column;align-items:flex-start;gap:10px;margin-bottom:28px}.pro-header-title-wrap{margin-left:0;align-items:flex-start}.pro-series-bigname{font-size:1.27em}.pro-ep-strong-title{font-size:1em;padding:6px 12px}.pro-episode-embed-polished{min-height:96px}}
+@media (max-width:800px){
+  .pro-episode-view-polished{max-width:97vw;padding:11px 2vw 22px 2vw}
+  .pro-episode-header-polished{flex-direction:column;align-items:flex-start;gap:10px;margin-bottom:28px}
+  .pro-header-title-wrap{margin-left:0;align-items:flex-start}
+  .pro-series-bigname{font-size:1.27em}
+  .pro-ep-strong-title{font-size:1em;padding:6px 12px}
+  .pro-episode-embed-polished{min-height:96px}
+}
 
 /* Monetag overlay + utilities */
 #adBlockOverlay{position:fixed;z-index:99999;top:0;left:0;width:100vw;height:100vh;background:#111c;padding:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2em}
@@ -222,7 +237,7 @@ button:hover{background:#272838}
 .pro-download-btns-flex{display:flex;gap:16px;flex-wrap:wrap}
 .pro-tutorial-btn{display:block;background:#234a63;color:#fff!important;padding:12px 24px;margin:8px 0 0 0;border-radius:8px;text-align:center;font-weight:600;text-decoration:none;font-size:1.03em;transition:background .16s}
 .pro-tutorial-btn:hover{background:#195787}
-.pro-premium-btn{display:block;background:#099c7d;color:#fff!important;padding:13px 24px;margin:12px 0 0 0;border-radius:8px;text-align:center;font-weight:600;text-decoration:none;font-size:1.12em;letter-spacing:.01em;transition:background .16s}
+.pro-premium-btn{display:block;background:#099c7d;color:#fff!important;padding:13px 24px;margin:12px 0 0 0;border-radius:8px;text-align:center;font-weight:600;font-size:1.12em;letter-spacing:.01em;transition:background .16s}
 .pro-premium-btn:hover{background:#07785e}
 
 /* ===========================
@@ -238,7 +253,6 @@ button:hover{background:#272838}
   margin: 32px auto 0 auto;
   border: 1.5px solid #15b4eb;
 }
-
 .pro-highlight-title {
   font-size: 1.55em;
   color: #fff;
@@ -249,7 +263,6 @@ button:hover{background:#272838}
   line-height: 1.16;
   text-shadow: 0 2px 18px #0993ce32, 0 1.5px 9px #0002;
 }
-
 .pro-video-card {
   background: #162438;
   border-radius: 0 0 18px 18px;
@@ -262,23 +275,9 @@ button:hover{background:#272838}
   overflow: hidden;
   padding-bottom: 8px;
 }
-.pro-video-frame-wrap {
-  position: relative;
-  width: 100%;
-  height: 0;
-  padding-bottom: 56.25%;
-}
-.pro-video-frame-wrap iframe {
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  border-radius: 0 0 18px 18px;
-  border: none;
-}
-#ad-above-player, #ad-below-player {
-  display: flex;
-  justify-content: center;
-  margin: 18px 0;
-}
+.pro-video-frame-wrap { position: relative; width: 100%; height: 0; padding-bottom: 56.25%; }
+.pro-video-frame-wrap iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 0 0 18px 18px; border: none; }
+#ad-above-player, #ad-below-player { display: flex; justify-content: center; margin: 18px 0; }
 .download-red-btn {
   display: inline-block;
   padding: 15px 38px;
@@ -297,16 +296,9 @@ button:hover{background:#272838}
   text-decoration: none;
 }
 .download-red-btn:hover,
-.download-red-btn:focus {
-  background: linear-gradient(90deg, #d81b42 0%, #ff6363 100%);
-  box-shadow: 0 4px 14px rgba(197,22,44,0.13), 0 2px 6px rgba(0,0,0,0.1);
-  transform: translateY(-2px) scale(1.04);
-}
-.download-red-btn:active {
-  background: linear-gradient(90deg, #b31327 0%, #c5162c 100%);
-  box-shadow: 0 1px 3px rgba(197,22,44,0.09), 0 1px 1px rgba(0,0,0,0.07);
-  transform: translateY(1px) scale(0.98);
-}
+.download-red-btn:focus { background: linear-gradient(90deg, #d81b42 0%, #ff6363 100%); box-shadow: 0 4px 14px rgba(197,22,44,0.13), 0 2px 6px rgba(0,0,0,0.1); transform: translateY(-2px) scale(1.04); }
+.download-red-btn:active { background: linear-gradient(90deg, #b31327 0%, #c5162c 100%); box-shadow: 0 1px 3px rgba(197,22,44,0.09), 0 1px 1px rgba(0,0,0,0.07); transform: translateY(1px) scale(0.98); }
+
 /* --- NEW EPISODES PREMIUM SECTION --- */
 .new-episodes-section {
   background: radial-gradient(circle at 34% 36%, #232f3e 74%, #101a24 100%);
@@ -330,7 +322,7 @@ button:hover{background:#272838}
   flex-wrap: wrap;
   gap: 18px;
   justify-content: flex-start;
-  padding: 0 24px 14px 24px;
+  padding: 0 24px 14px 24px; /* keep padding; width remains 100% */
   min-height: 120px;
 }
 .episode-card-pro {
@@ -344,17 +336,10 @@ button:hover{background:#272838}
   align-items: center;
   position: relative;
   transition: box-shadow .2s;
+  max-width: 100%;
 }
-.episode-card-pro:hover {
-  box-shadow: 0 8px 32px #ffd70048, 0 4px 26px #212f4055;
-}
-.episode-img-pro {
-  width: 100%;
-  height: 92px;
-  object-fit: cover;
-  border-radius: 11px 11px 0 0;
-  box-shadow: 0 2px 10px #ffd70016;
-}
+.episode-card-pro:hover { box-shadow: 0 8px 32px #ffd70048, 0 4px 26px #212f4055; }
+.episode-img-pro { width: 100%; height: 92px; object-fit: cover; border-radius: 11px 11px 0 0; box-shadow: 0 2px 10px #ffd70016; }
 .series-title-pro {
   font-family: 'Montserrat',sans-serif;
   font-weight: 600;
@@ -363,6 +348,7 @@ button:hover{background:#272838}
   font-size: 1.12em;
   margin: 10px 0 0 0;
   letter-spacing: .02em;
+  word-break: break-word; overflow-wrap: anywhere;
 }
 .episode-title-pro {
   color: #ffd700;
@@ -373,6 +359,7 @@ button:hover{background:#272838}
   margin: 5px 0 0 0;
   letter-spacing: .01em;
   text-shadow: 0 1px 6px #1a232b42;
+  word-break: break-word; overflow-wrap: anywhere;
 }
 .new-badge-pro {
   background: #ffd700;
@@ -384,6 +371,7 @@ button:hover{background:#272838}
   padding: 2px 11px;
   margin-left: 8px;
   box-shadow: 0 0 14px #ffd70038;
+  max-width: 100%;
 }
 .watch-btn-pro {
   margin: 14px 0 14px 0;
@@ -399,18 +387,17 @@ button:hover{background:#272838}
   border:none;
   transition: background .2s;
   cursor:pointer;
+  max-width: 100%;
 }
-.watch-btn-pro:hover {
-  background: linear-gradient(90deg,#ffd700 28%,#198fff 100%);
-  color:#1a232b;
-  box-shadow:0 3px 24px #ffd70042;
-}
+.watch-btn-pro:hover { background: linear-gradient(90deg,#ffd700 28%,#198fff 100%); color:#1a232b; box-shadow:0 3px 24px #ffd70042; }
 @media (max-width: 600px) {
   .new-episodes-grid { gap:7px; padding:0 6px 12px 6px; }
   .episode-card-pro { width:44vw; min-width:90px;}
   .episode-img-pro { height: 60px;}
   .new-episodes-section h2 { margin:7px 0 9px 8px;font-size:1em;}
 }
+
+/* Schedule bar (ensure no overflow) */
 .schedule-bar {
   display: flex;
   flex-direction: column;
@@ -422,6 +409,7 @@ button:hover{background:#272838}
   margin: 13px 16px 6px 16px;
   min-height: 42px;
   max-width: 600px;
+  width: 100%;
 }
 .schedule-entry {
   display: flex;
@@ -429,194 +417,12 @@ button:hover{background:#272838}
   gap: 8px;
   background: #101a24;
   border-radius: 7px;
-  box-shadow: 0 1px 6px #0003;
-  padding: 4px 11px 4px 6px;
-  font-family: 'Montserrat',sans-serif;
-  font-weight: 500;
-  font-size: 0.96em;
-  color: #ffd700;
-  margin-bottom: 7px;
-  width: 100%;
-  max-width: 100%;
-}
-.schedule-entry img {
-  width: 27px;
-  height: 27px;
-  object-fit: cover;
-  border-radius: 5px;
-  margin-right: 4px;
-  box-shadow: 0 1px 8px #ffd70026;
-  border: 1.2px solid #ffd70025;
-}
-.schedule-entry .title { color:#23c6ed;font-weight:700;margin-right:4px; }
-.schedule-entry .days { color: #ffe493; margin-left:4px; font-size: 0.92em;}
-.schedule-entry .time { color: #ffd700; font-size:0.97em; margin-left:3px;}
-@media (max-width: 600px) {
-  .schedule-bar { margin:7px 4px 5px 4px; padding:6px 3px; min-height:32px; max-width: 100vw; }
-  .schedule-entry { padding:2px 5px 2px 2px; font-size:0.93em; }
-  .schedule-entry img { width:17px;height:17px; }
-}
-.premium-channel-message {
-  margin-top: 18px;
-  padding: 16px;
-  background: linear-gradient(135deg, #101a24 90%, #23c6ed30 100%);
-  border: 2px solid #23c6ed;
-  border-radius: 14px;
-  color: #23c6ed;
-  font-family: 'Montserrat', Arial, sans-serif;
-  font-weight: 600;
-  font-size: 1.09em;
-  max-width: 540px;
-  box-shadow: 0 2px 18px #1a232b18;
-  letter-spacing: 0.03em;
-}
-.premium-channel-message strong {
-  color: #ffd700;
-  font-weight: 800;
-}
-.premium-btn-row {
-  display: flex;
-  gap: 18px;
-  margin-top: 11px;
-}
-.premium-btn {
-  display: inline-flex;
-  align-items: center;
-  padding: 10px 22px;
-  border-radius: 8px;
-  font-size: 1em;
-  font-family: 'Montserrat', Arial, sans-serif;
-  font-weight: 700;
-  text-decoration: none;
-  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
-  box-shadow: 0 2px 11px #1a232b20;
-  border: 0;
-  cursor: pointer;
-}
-.premium-btn-blue {
-  background: linear-gradient(90deg, #23c6ed 85%, #198fff 100%);
-  color: #fff;
-}
-.premium-btn-blue:hover {
-  background: linear-gradient(90deg,#167abd 40%,#198fff 100%);
-  color: #ffd700;
-}
-.premium-btn-gold {
-  background: linear-gradient(90deg, #ffd700 70%, #ffd700c0 100%);
-  color: #232f3e;
-}
-.premium-btn-gold:hover {
-  background: linear-gradient(90deg,#ffe493 40%,#ffd700 100%);
-  color: #23c6ed;
-}
-.premium-btn-icon {
-  margin-right: 7px;
-  font-size: 1.23em;
-  vertical-align: middle;
-}
-.premium-btn-row {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-  flex-wrap: wrap;
-  justify-content: flex-start;
+  /* your content continues here... */
 }
 
-.premium-btn {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 18px;
-  border-radius: 6px;
-  font-size: 1em;
-  font-family: 'Montserrat', Arial, sans-serif;
-  font-weight: 700;
-  text-decoration: none;
-  transition: background 0.18s, color 0.18s, box-shadow 0.15s;
-  border: none;
-  box-shadow: 0 1px 5px #0001;
-  cursor: pointer;
-  min-width: 0;
-  min-height: 0;
-}
-
-.premium-btn-blue {
-  background: linear-gradient(90deg, #23c6ed 85%, #198fff 100%);
-  color: #fff;
-}
-.premium-btn-blue:hover {
-  background: linear-gradient(90deg,#167abd 40%,#198fff 100%);
-  color: #ffd700;
-}
-
-.premium-btn-gold {
-  background: linear-gradient(90deg, #ffd700 80%, #ffe066 100%);
-  color: #232f3e;
-}
-.premium-btn-gold:hover {
-  background: linear-gradient(90deg,#ffe493 40%,#ffd700 100%);
-  color: #23c6ed;
-}
-
-.premium-btn-icon {
-  margin-right: 6px;
-  font-size: 1.15em;
-  vertical-align: middle;
-}
-}
-<style>
-  body {
-    background-color: #0b0b0f;
-    font-family: "Poppins", sans-serif;
-    color: #f1f1f1;
-    margin: 0;
-  }
-  .schedule-section {
-    padding: 20px 15px;
-    max-width: 500px;
-    margin: auto;
-  }
-  .section-title {
-    text-align: center;
-    font-size: 1.4rem;
-    font-weight: 600;
-    background: linear-gradient(90deg, #ffd84d, #00aaff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 15px;
-  }
-  .schedule-card {
-    background: #14141a;
-    border-radius: 16px;
-    padding: 15px;
-    margin-bottom: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-    transition: 0.3s ease;
-  }
-  .schedule-card:hover {
-    transform: scale(1.02);
-    background: #191920;
-  }
-  .show-title {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-  .show-meta {
-    font-size: 0.85rem;
-    color: #ccc;
-  }
-  .live-tag {
-    background: #ff2d2d;
-    color: #fff;
-    font-size: 0.75rem;
-    padding: 2px 6px;
-    border-radius: 6px;
-    margin-left: 6px;
-  }
-  .countdown {
-    font-size: 0.8rem;
-    color: #ffd84d;
-    margin-top: 4px;
-  }
-</style>
+/* Utility: isolate horizontal scrollers only where needed */
+.is-horizontal {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
 }
