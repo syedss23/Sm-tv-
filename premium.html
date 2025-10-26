@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Go Premium — SmTv Urdu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0d171f" />
+  <meta name="description" content="Ad‑free streaming, early episodes, and priority links. Join SmTv Urdu Premium." />
+  <link rel="icon" href="/favicon.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    body{background:#0d171f;color:#eaf6ff;font-family:'Montserrat',Arial,sans-serif;margin:0}
+    a{text-decoration:none}
+
+    .wrap{max-width:760px;margin:0 auto;padding:12px}
+    header#site-header{position:sticky; top:0; z-index:20; background:#111c28; display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:1px solid #1e2b3a;}
+    header #back{background:#17263a;border:1px solid #203447;color:#8fd8ff;border-radius:8px;padding:7px 12px;font-weight:700}
+    header h1{font-size:1.12em;margin:0;color:#fff;font-weight:800;letter-spacing:.02em}
+    .premium-cta{
+      margin-left:auto; display:inline-flex; align-items:center; justify-content:center;
+      height:34px; padding:0 12px; border-radius:999px; background:#ffd400; color:#13263a; font-weight:800; box-shadow:0 3px 10px #ffd40055; line-height:1;}
+    .hero{margin:16px 0; background:linear-gradient(136deg,#132a44 65%,#102030 100%); border:1px solid #1b3d59; border-radius:16px; padding:18px 14px; box-shadow:0 8px 28px #06233b5a;}
+    .hero h2{margin:0 0 8px 0;font-size:1.35em;color:#1dedf0;text-shadow:0 3px 18px #09d3ff33}
+    .hero p{margin:0 0 14px 0;opacity:.95}
+    .cta{display:inline-block;background:#ffd400;color:#13263a;font-weight:800;padding:12px 18px;border-radius:999px;box-shadow:0 4px 14px #ffd40055}
+    .trust{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:.92em;opacity:.9}
+    .pill{background:#0d2030;border:1px solid #284e70;color:#aee6ff;padding:6px 10px;border-radius:999px}
+    .panel{background:#101b28;border:1px solid #20364c;border-radius:14px;padding:14px;margin-top:14px;box-shadow:0 4px 18px #0004}
+    .panel h3{margin:0 0 10px 0;color:#86e8ff;font-size:1.08em}
+    .plist{ display:grid; grid-template-columns:1fr; gap:10px; }
+    .pitem{ background:#0f1e2d; border:1px solid #1b3752; border-radius:10px; padding:10px 12px; }
+    .pitem h4{ margin:0 0 6px; color:#86e8ff; font-size:1.02em; }
+    .ptags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+    .ptag{ background:#0d2030; border:1px solid #284e70; color:#aee6ff; padding:3px 8px; border-radius:999px; font-size:.86em; }
+    .psub{ font-size:.92em; opacity:.9; margin-top:4px; }
+    .pricing{display:grid;grid-template-columns:1fr;gap:12px}
+    .price-card{background:#0f1e2d;border:1px solid #1b3752;border-radius:12px;padding:14px;text-align:center;position:relative}
+    .tag{position:absolute;top:-10px;right:10px;background:#ffd400;color:#13263a;font-weight:800;padding:3px 8px;border-radius:999px;font-size:.82em}
+    .amount{font-size:1.35em;font-weight:900;margin:6px 0 10px}
+    .note{font-size:.9em;opacity:.8;margin-top:6px}
+    .grid2{display:grid;grid-template-columns:1fr;gap:10px}
+    .grid2 .box{background:#0f1e2d;border:1px solid #1b3752;border-radius:10px;padding:12px}
+    .grid2 a.btn{display:inline-block;background:#19b3ff;color:#081624;font-weight:800;padding:10px 14px;border-radius:10px}
+    .faq details{background:#0f1e2d;border:1px solid #1b3752;border-radius:10px;padding:10px 12px;margin-top:10px}
+    .faq summary{cursor:pointer;font-weight:700;color:#aee6ff}
+    .bottom-cta{margin:18px 0 24px;text-align:center}
+    .muted{opacity:.7;font-size:.92em;}
+    @media (min-width:680px){
+      .pricing{grid-template-columns:repeat(2,1fr)}
+      .grid2{grid-template-columns:repeat(2,1fr)}
+      .plist{ grid-template-columns:1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header id="site-header" class="wrap" style="padding-left:12px;padding-right:12px">
+    <a id="back" href="/" aria-label="Back">← Home</a>
+    <h1>SmTv Urdu Premium</h1>
+    <a class="premium-cta" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Join</a>
+  </header>
+  <main class="wrap">
+    <section class="hero">
+      <h2>Ad‑free + Early Access</h2>
+      <p>Watch episodes earlier, skip ads, and get priority links and support on Telegram—exclusively for Premium members.</p>
+      <a class="cta" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Join on Telegram</a>
+      <div class="trust">
+        <span class="pill">Cancel anytime</span>
+        <span class="pill">Instant access</span>
+        <span class="pill">Mobile‑friendly</span>
+      </div>
+    </section>
+    <section class="panel" id="premium-list">
+      <h3>Paid channel series list</h3>
+      <div id="plist" class="plist"></div>
+    </section>
+    <section class="panel">
+      <h3>Plans and pricing</h3>
+      <div class="pricing">
+        <div class="price-card">
+          <div class="tag">Best value</div>
+          <div class="amount">₹249 / quarter</div>
+          <a class="cta" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Join Quarterly</a>
+          <div class="note">3 months access • Full benefits</div>
+        </div>
+        <div class="price-card">
+          <div class="amount">₹99 / month</div>
+          <a class="cta" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Join Monthly</a>
+          <div class="note">1 month access • Full benefits</div>
+        </div>
+      </div>
+      <p class="muted">Subscription is non‑refundable.</p>
+    </section>
+    <section class="panel">
+      <h3>Contact and details</h3>
+      <div class="grid2">
+        <div class="box">
+          <p><strong>Contact on Telegram</strong></p>
+          <a class="btn" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Open Telegram</a>
+          <p class="muted" style="margin-top:6px">Fast support for payments and activation.</p>
+        </div>
+        <div class="box">
+          <p><strong>Details Bot</strong></p>
+          <a class="btn" href="https://t.me/itzmezain1/2905" target="_blank" rel="noopener">Open Bot</a>
+          <p class="muted" style="margin-top:6px">Plan info and instructions via Telegram.</p>
+        </div>
+      </div>
+    </section>
+    <section class="panel faq">
+      <h3>FAQ</h3>
+      <details>
+        <summary>What do I get with Premium?</summary>
+        <p>Ad‑free streaming, early access to episodes, priority download links, and Telegram support.</p>
+      </details>
+      <details>
+        <summary>How do I pay?</summary>
+        <p>Message the Telegram contact to receive payment options and instant activation after confirmation.</p>
+      </details>
+      <details>
+        <summary>Can I cancel?</summary>
+        <p>You can stop renewal anytime. Current period remains active. Subscription is non‑refundable.</p>
+      </details>
+      <details>
+        <summary>Devices and languages?</summary>
+        <p>Works on mobile and modern browsers. Subtitles and dubs are listed per series as available.</p>
+      </details>
+    </section>
+    <div class="bottom-cta">
+      <a class="cta" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Get Premium Now</a>
+      <div class="muted" style="margin-top:6px">Instant access • Friendly support</div>
+    </div>
+  </main>
+  <script>
+    fetch('/premium-series.json')
+      .then(r => r.json())
+      .then(items => {
+        const wrap = document.getElementById('plist');
+        wrap.innerHTML = items.map(s => `
+          <div class="pitem">
+            <h4>${s.title}</h4>
+            ${s.seasons?.length ? `<div class="psub"><strong>Seasons:</strong> ${s.seasons.join(', ')}</div>` : ''}
+            ${s.tracks?.length ? `<div class="psub"><strong>Tracks:</strong> ${s.tracks.join(' • ')}</div>` : ''}
+            ${s.tags?.length ? `<div class="ptags">${s.tags.map(t => `<span class="ptag">${t}</span>`).join('')}</div>` : ''}
+          </div>
+        `).join('');
+      })
+      .catch(() => {
+        document.getElementById('plist').innerHTML = '<div class="pitem">Could not load Premium series list.</div>';
+      });
+  </script>
+</body>
+</html>
