@@ -460,3 +460,17 @@ button:hover{background:#272838}
 @media (max-width:420px){
   .schedule-row{ font-size:0.84em; gap:6px; }
 }
+/* Header premium CTA */
+header{ display:flex; align-items:center; gap:10px; } /* if not already flex */
+#mainTitle{ flex:0 1 auto; } /* prevent title from consuming all space */
+.premium-cta{
+  margin-left:auto; /* push to right side */
+  display:inline-flex; align-items:center; justify-content:center;
+  height:34px; padding:0 12px; border-radius:999px;
+  background:#ffd400; color:#13263a; font-weight:800; text-decoration:none;
+  box-shadow:0 3px 10px #ffd40055; line-height:1;
+}
+.premium-cta:active{ transform:translateY(1px); }
+@media (max-width:420px){
+  .premium-cta{ height:32px; padding:0 10px; font-size:.92em; }
+}
