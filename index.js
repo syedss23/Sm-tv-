@@ -12,13 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
       newEpisodesSection.parentNode.insertBefore(filterBar, newEpisodesSection.nextSibling);
     }
   }
-
   moveFilterBarBelowNewEpisodes();
 
-  // ====== NEW MODERN SCHEDULE BAR (Compact + Countdown + LIVE) ======
+  // ====== MODERN SCHEDULE BAR (Compact + Countdown + LIVE) ======
   const scheduleBar = document.getElementById('schedule-bar');
   if (scheduleBar) {
-    fetch('shedule.json')
+    fetch('shedule.json') // keep your existing filename
       .then(r => r.json())
       .then(schedule => {
         if (!Array.isArray(schedule) || !schedule.length) {
@@ -29,49 +28,70 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
 
-        scheduleBar.innerHTML = schedule.map(item => `
-          <div class="schedule-entry" 
-               title="${item.title || ''}" 
-               style="display:flex;align-items:center;gap:6px;margin-right:12px;
-                      background:#14141a;padding:6px 10px;border-radius:12px;
-                      box-shadow:0 1px 5px rgba(0,0,0,0.4);min-width:fit-content;">
-            ${item.poster ? 
-              `<img src="${item.poster}" alt="${item.title || ''}" loading="lazy"
-                decoding="async" style="width:26px;height:26px;object-fit:cover;
-                border-radius:6px;">` : ''
-            }
-            <div style="display:flex;flex-direction:column;line-height:1.1;">
-              <div style="font-weight:700;font-size:0.92em;color:#23c6ed;">
-                ${item.title || ''}
-                ${item.live ? '<span style="background:#ff2d2d;color:#fff;padding:1px 6px;border-radius:6px;font-size:0.7em;margin-left:4px;">LIVE</span>' : ''}
+        // Build entries: Title, then Day + Time line, then Type, then Countdown
+        scheduleBar.innerHTML = schedule.map(item => {
+          const title = item.title || '';
+          const poster = item.poster || '';
+          const day = item.day || '';             // <-- read "day" from JSON
+          const time = item.time || '';
+          const type = item.type || '';
+          const live = !!item.live;
+          const countdown = item.countdown || '';
+
+          return `
+            <div class="schedule-entry"
+                 title="${title}"
+                 style="display:flex;align-items:center;gap:8px;margin-right:12px;
+                        background:#14141a;padding:6px 10px;border-radius:12px;
+                        box-shadow:0 1px 5px rgba(0,0,0,0.4);min-width:fit-content;">
+              ${poster ? `
+                <img src="${poster}" alt="${title}" loading="lazy" decoding="async"
+                     style="width:26px;height:26px;object-fit:cover;border-radius:6px;">` : ''
+              }
+              <div style="display:flex;flex-direction:column;line-height:1.15;min-width:0;">
+                <div style="font-weight:700;font-size:0.92em;color:#23c6ed;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                  <span class="title" style="overflow-wrap:anywhere;">${title}</span>
+                  ${live ? '<span style="background:#ff2d2d;color:#fff;padding:1px 6px;border-radius:6px;font-size:0.7em;">LIVE</span>' : ''}
+                </div>
+
+                <!-- Day before time -->
+                <div class="schedule-when" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:2px;">
+                  ${day ? `<span class="day" style="color:#ffd267;font-weight:600;">${day}</span>` : ''}
+                  ${(day && time) ? '<span style="opacity:.6;">•</span>' : ''}
+                  ${time ? `<span class="time" style="color:#9fd3ff;font-weight:600;">${time}</span>` : ''}
+                </div>
+
+                <!-- Type/meta -->
+                ${type ? `<div class="meta" style="font-size:0.8em;color:#23c6ed;margin-top:2px;">${type}</div>` : ''}
+
+                <!-- Countdown -->
+                ${countdown ? `<div class="countdown" data-time="${countdown}"
+                   style="color:#ffd84d;font-size:0.75em;margin-top:2px;"></div>` : ''}
               </div>
-              <div style="font-size:0.8em;color:#ffd84d;">
-                ${item.days || ''} • ${item.time || ''}
-                ${item.type ? ` • <span style="color:#23c6ed;">${item.type}</span>` : ''}
-              </div>
-              ${item.countdown ? `<div class="countdown" data-time="${item.countdown}" 
-                 style="color:#ffd84d;font-size:0.75em;margin-top:2px;"></div>` : ''}
             </div>
-          </div>
-        `).join('');
+          `;
+        }).join('');
 
         // Countdown updater
         const countdowns = scheduleBar.querySelectorAll('.countdown');
         countdowns.forEach(el => {
-          const targetTime = new Date(el.dataset.time).getTime();
-          const interval = setInterval(() => {
-            const now = Date.now();
-            const diff = targetTime - now;
+          const targetTime = Date.parse(el.dataset.time); // ISO 8601 supported
+          if (isNaN(targetTime)) { el.textContent = ''; return; }
+
+          const tick = () => {
+            const diff = targetTime - Date.now();
             if (diff <= 0) {
-              el.textContent = "Now Playing";
-              clearInterval(interval);
+              el.textContent = 'Now Playing';
+              clearInterval(id);
               return;
             }
-            const hrs = Math.floor(diff / (1000 * 60 * 60));
+            const hrs  = Math.floor(diff / (1000 * 60 * 60));
             const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const secs = Math.floor((diff % (1000 * 60)) / 1000);
             el.textContent = `Starts in ${hrs}h ${mins}m ${secs}s`;
-          }, 1000);
+          };
+          tick();
+          const id = setInterval(tick, 1000);
         });
       })
       .catch(() => {
@@ -91,12 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
         files.map(path =>
           fetch(path)
             .then(res => res.ok ? res.json() : [])
-            .then(data =>
-              (Array.isArray(data) ? data.map(ep => ({
-                ...ep,
-                _src: path
-              })) : [])
-            )
+            .then(data => (Array.isArray(data) ? data.map(ep => ({ ...ep, _src: path })) : []))
             .catch(() => [])
         )
       ))
@@ -106,10 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const latestEps = allEpisodes.slice(0, 5);
 
         if (!latestEps.length) {
-          newGrid.innerHTML =
-            `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">
-              No new episodes found.
-            </div>`;
+          newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">No new episodes found.</div>`;
           moveFilterBarBelowNewEpisodes();
           return;
         }
@@ -118,25 +130,24 @@ document.addEventListener('DOMContentLoaded', () => {
           <div style="display:flex;gap:14px;overflow-x:auto;padding:0 2px 2px 2px;">
             ${latestEps.map(ep => `
               <div class="episode-card-pro"
-                style="flex:0 0 166px;min-width:150px;max-width:172px;
-                       border-radius:13px;background:#182837;
-                       box-shadow:0 4px 18px #0fd1cec7,0 2px 10px #0003;">
-                <img src="${ep.thumb || ep.poster || ''}" 
-                     class="episode-img-pro" 
-                     alt="${ep.title || ('Episode ' + (ep.ep || ''))}" 
+                   style="flex:0 0 166px;min-width:150px;max-width:172px;
+                          border-radius:13px;background:#182837;
+                          box-shadow:0 4px 18px #0fd1cec7,0 2px 10px #0003;">
+                <img src="${ep.thumb || ep.poster || ''}"
+                     class="episode-img-pro"
+                     alt="${ep.title || ('Episode ' + (ep.ep || ''))}"
                      loading="lazy" decoding="async"
                      style="display:block;border-radius:13px 13px 0 0;width:100%;
                             height:110px;object-fit:cover;">
-                <div class="episode-title-pro" 
+                <div class="episode-title-pro"
                      style="margin:15px 0 4px 0;font-family:'Montserrat',sans-serif;
                             font-size:1.07em;font-weight:700;color:#fff;text-align:center;">
                   ${ep.title || 'Episode ' + (ep.ep || '')}
-                  <span class="new-badge-pro" 
+                  <span class="new-badge-pro"
                         style="margin-left:7px;background:#ffd700;color:#182734;
-                               font-size:.78em;border-radius:5px;
-                               padding:2.3px 9px;">NEW</span>
+                               font-size:.78em;border-radius:5px;padding:2.3px 9px;">NEW</span>
                 </div>
-                <a href="${ep.shortlink || ep.download || '#'}" 
+                <a href="${ep.shortlink || ep.download || '#'}"
                    class="watch-btn-pro"
                    target="_blank" rel="noopener"
                    style="margin-bottom:13px;width:86%;display:block;
@@ -154,10 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         moveFilterBarBelowNewEpisodes();
       })
       .catch(() => {
-        newGrid.innerHTML = `
-          <div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">
-            Could not load new episodes.
-          </div>`;
+        newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">Could not load new episodes.</div>`;
         moveFilterBarBelowNewEpisodes();
       });
   }
@@ -179,18 +187,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     fetch('series.json')
-      .then(r => {
-        if (!r.ok) throw new Error('Series JSON not found. Check /series.json');
-        return r.json();
-      })
-      .then(data => {
-        SERIES = Array.isArray(data) ? data : [];
-        hydrateUI();
-        render();
-      })
-      .catch(err => {
-        grid.innerHTML = `<div style="color:#f44;padding:1.2em;">Error: ${err.message}</div>`;
-      });
+      .then(r => { if (!r.ok) throw new Error('Series JSON not found. Check /series.json'); return r.json(); })
+      .then(data => { SERIES = Array.isArray(data) ? data : []; hydrateUI(); render(); })
+      .catch(err => { grid.innerHTML = `<div style="color:#f44;padding:1.2em;">Error: ${err.message}</div>`; });
 
     function hydrateUI() {
       setPrimary(state.track);
