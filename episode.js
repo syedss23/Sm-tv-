@@ -1,4 +1,4 @@
-// episode.js (original drop-in)
+// episode.js (drop-in)
 
 const params = new URLSearchParams(window.location.search);
 const slug = params.get('series');
@@ -40,6 +40,9 @@ Promise.all([
   renderEpisode();
 
   function renderEpisode() {
+    const server3EmbedHTML = ep.embed3 || null;
+    const server3URL = ep.watch3 || null;
+
     container.innerHTML = `
       <div class="pro-episode-view-polished">
         <div class="pro-episode-header-polished">
@@ -88,12 +91,12 @@ Promise.all([
           ${ep.embed2 ? ep.embed2 : '<div style="padding:50px 0;color:#ccc;text-align:center;">Second video not available</div>'}
         </div>
 
-        <!-- Watch Server 3 Button -->
+        <!-- Watch Server 3 -->
         <div style="margin:22px 0 10px 0;">
           <button id="watch3Btn"
                   class="pro-download-btn-polished"
                   style="display:block;width:100%;max-width:500px;margin:0 auto 12px auto;background:#e53935;color:#fff;"
-                  ${ep.watch3 ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#6b2a2a;color:#ddd;'"}>▶️ Watch (Server 3)</button>
+                  ${server3EmbedHTML || server3URL ? "" : "tabindex='-1' aria-disabled='true' style='pointer-events:none;opacity:0.7;background:#6b2a2a;color:#ddd;'"}>▶️ Watch (Server 3)</button>
         </div>
 
         <!-- Download Buttons -->
@@ -128,7 +131,54 @@ Promise.all([
           🌟 Join Premium Channel
         </a>
       </div>
+
+      <!-- Modal for Watch Server 3 -->
+      <div id="watch3Modal" style="position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:1000;padding:16px;">
+        <div id="watch3Box" style="width:100%;max-width:920px;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden;position:relative;">
+          <button id="watch3Close" aria-label="Close" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:6px;padding:8px 10px;cursor:pointer;z-index:3;">✕</button>
+          <div id="watch3Content" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#bbb;font:600 14px system-ui;">Loading…</div>
+        </div>
+      </div>
     `;
+
+    // --- Lazy load video embeds ---
+    const embedWraps = container.querySelectorAll('.pro-episode-embed-polished');
+    embedWraps.forEach(embedWrap => {
+      const placeholders = embedWrap.querySelectorAll('[data-embed-src]');
+      if (placeholders.length) {
+        const io = new IntersectionObserver(entries => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              const src = e.target.getAttribute('data-embed-src');
+              const i = document.createElement("iframe");
+              i.src = src;
+              i.loading = 'lazy';
+              i.width = '100%';
+              i.height = '100%';
+              i.setAttribute('frameborder', "0");
+              i.setAttribute('allow', "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share");
+              i.setAttribute('referrerpolicy', "strict-origin-when-cross-origin");
+              i.setAttribute('allowfullscreen', "");
+              e.target.replaceWith(i);
+              io.unobserve(e.target);
+            }
+          });
+        }, { rootMargin: '400px' });
+        placeholders.forEach(el => io.observe(el));
+      }
+
+      embedWrap.querySelectorAll('iframe').forEach((f, idx) => {
+        const shouldLazy = idx > 0 || window.matchMedia('(max-width: 767px)').matches;
+        if (shouldLazy && !f.hasAttribute('loading')) f.setAttribute('loading', 'lazy');
+        if (!f.hasAttribute('referrerpolicy')) f.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        if (!f.hasAttribute('allow')) f.setAttribute('allow', "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share");
+        if (!f.hasAttribute('width')) f.setAttribute('width', "100%");
+        if (!f.hasAttribute('height')) f.setAttribute('height', "100%");
+        if (!f.hasAttribute('frameborder')) f.setAttribute('frameborder', "0");
+        if (!f.hasAttribute('allowfullscreen')) f.setAttribute('allowfullscreen', '');
+        if (!f.hasAttribute('decoding')) f.setAttribute('decoding', 'async');
+      });
+    });
 
     // Download 2 Button Action
     const download2Btn = document.getElementById("download2Btn");
@@ -139,11 +189,58 @@ Promise.all([
       });
     }
 
-    // Watch Server 3 button action
+    // Watch Server 3 behavior
     const watch3Btn = document.getElementById("watch3Btn");
-    if (watch3Btn && ep.watch3) {
-      watch3Btn.addEventListener("click", function () {
-        window.open(ep.watch3, "_blank");
+    const watch3Modal = document.getElementById("watch3Modal");
+    const watch3Content = document.getElementById("watch3Content");
+    const watch3Close = document.getElementById("watch3Close");
+
+    if (watch3Btn && (server3EmbedHTML || server3URL)) {
+      watch3Btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        // If a direct URL is provided, open in new tab
+        if (server3URL) {
+          window.open(server3URL, "_blank", "noopener");
+          return;
+        }
+        // Otherwise, show modal with provided HTML (iframe/snippet)
+        if (server3EmbedHTML) {
+          watch3Content.innerHTML = server3EmbedHTML;
+          const iframe = watch3Content.querySelector("iframe");
+          if (iframe) {
+            if (!iframe.hasAttribute('width')) iframe.setAttribute('width', '100%');
+            if (!iframe.hasAttribute('height')) iframe.setAttribute('height', '100%');
+            iframe.setAttribute('loading', 'lazy');
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('allow', "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share");
+            iframe.setAttribute('referrerpolicy', "strict-origin-when-cross-origin");
+            iframe.setAttribute('allowfullscreen', '');
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.display = 'block';
+          }
+          watch3Modal.style.display = 'flex';
+          document.body.style.overflow = 'hidden';
+        }
+      });
+    }
+
+    // Close modal handlers
+    if (watch3Close && watch3Modal) {
+      const closeModal = () => {
+        watch3Modal.style.display = 'none';
+        document.body.style.overflow = '';
+        watch3Content.innerHTML = '';
+      };
+      watch3Close.addEventListener('click', closeModal);
+      watch3Modal.addEventListener('click', (e) => {
+        if (e.target === watch3Modal) closeModal();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && watch3Modal.style.display === 'flex') {
+          e.preventDefault();
+          watch3Close.click();
+        }
       });
     }
   }
