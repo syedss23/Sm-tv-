@@ -446,3 +446,17 @@ button:hover{background:#272838}
 @media (max-width:420px){
   .schedule-when { gap:4px; }
 }
+/* Compact single line under title */
+.schedule-row{
+  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  font-size:0.86em; line-height:1.25;
+}
+.schedule-row .day  { color:#ffd267; font-weight:600; }
+.schedule-row .time { color:#9fd3ff; font-weight:600; }
+.schedule-row .type { color:#23c6ed; font-weight:600; }
+.schedule-row .dot  { opacity:.6; }
+
+/* Optional: even tighter on very small screens */
+@media (max-width:420px){
+  .schedule-row{ font-size:0.84em; gap:6px; }
+}
