@@ -562,129 +562,61 @@ button:hover{background:#272838}
   font-size: 1.15em;
   vertical-align: middle;
 }
-/* ==== SmTv Urdu Schedule Section ==== */
-#schedule-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
-  padding: 12px 10px;
-  background: #10141b;
-  border-radius: 14px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-  overflow-x: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #00aaff #10141b;
-  margin: 10px auto;
-  max-width: 95%;
 }
-
-/* Individual schedule entries */
-#schedule-bar .schedule-entry {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  background: #171c25;
-  padding: 6px 10px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-  transition: transform 0.25s ease, background 0.25s ease;
-}
-
-#schedule-bar .schedule-entry:hover {
-  transform: scale(1.03);
-  background: #1e2430;
-}
-
-/* Thumbnail image */
-#schedule-bar .schedule-entry img {
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
-  object-fit: cover;
-  margin-right: 7px;
-  border: 1px solid #00aaff44;
-}
-
-/* Title text */
-#schedule-bar .schedule-entry .title {
-  color: #00aaff;
-  font-weight: 700;
-  font-size: 0.95rem;
-  white-space: nowrap;
-}
-
-/* Day text */
-#schedule-bar .schedule-entry .days {
-  color: #ffd84d;
-  font-size: 0.85rem;
-  margin-left: 5px;
-}
-
-/* Time text */
-#schedule-bar .schedule-entry .time {
-  color: #fff;
-  font-size: 0.83rem;
-  margin-left: 6px;
-}
-
-/* Type (e.g. LIVE, Premiere, etc.) */
-#schedule-bar .schedule-entry .type {
-  font-size: 0.78rem;
-  font-weight: 600;
-  margin-left: 7px;
-  padding: 2px 6px;
-  border-radius: 6px;
-  background: linear-gradient(90deg, #009aff, #ffd84d);
-  color: #10141b;
-}
-
-/* LIVE highlight */
-#schedule-bar .schedule-entry .type.live {
-  background: #ff2d2d;
-  color: #fff;
-}
-
-/* Countdown timer text (if you add it later) */
-#schedule-bar .countdown {
-  font-size: 0.8rem;
-  color: #ffd84d;
-  margin-left: 6px;
-  white-space: nowrap;
-}
-
-/* Scrollbar styling */
-#schedule-bar::-webkit-scrollbar {
-  height: 5px;
-}
-#schedule-bar::-webkit-scrollbar-thumb {
-  background: #00aaff;
-  border-radius: 10px;
-}
-#schedule-bar::-webkit-scrollbar-track {
-  background: #10141b;
-}
-
-/* ==== Mobile adjustments ==== */
-@media (max-width: 480px) {
-  #schedule-bar {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding: 10px 8px;
+<style>
+  body {
+    background-color: #0b0b0f;
+    font-family: "Poppins", sans-serif;
+    color: #f1f1f1;
+    margin: 0;
   }
-
-  #schedule-bar .schedule-entry {
-    min-width: 170px;
-    padding: 6px 8px;
+  .schedule-section {
+    padding: 20px 15px;
+    max-width: 500px;
+    margin: auto;
   }
-
-  #schedule-bar .schedule-entry img {
-    width: 26px;
-    height: 26px;
+  .section-title {
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 600;
+    background: linear-gradient(90deg, #ffd84d, #00aaff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 15px;
   }
-
-  #schedule-bar .schedule-entry .title {
-    font-size: 0.88rem;
+  .schedule-card {
+    background: #14141a;
+    border-radius: 16px;
+    padding: 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    transition: 0.3s ease;
   }
+  .schedule-card:hover {
+    transform: scale(1.02);
+    background: #191920;
+  }
+  .show-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .show-meta {
+    font-size: 0.85rem;
+    color: #ccc;
+  }
+  .live-tag {
+    background: #ff2d2d;
+    color: #fff;
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 6px;
+    margin-left: 6px;
+  }
+  .countdown {
+    font-size: 0.8rem;
+    color: #ffd84d;
+    margin-top: 4px;
+  }
+</style>
 }
