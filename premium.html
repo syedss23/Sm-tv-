@@ -21,7 +21,6 @@
       margin-left:auto; display:inline-flex; align-items:center; justify-content:center;
       height:34px; padding:0 12px; border-radius:999px; background:#ffd400; color:#13263a; font-weight:800; box-shadow:0 3px 10px #ffd40055; line-height:1;}
 
-    /* Primary button used for pricing and bottom CTA */
     .btn-primary{
       display:inline-block;
       background:#ffd400;
@@ -39,7 +38,6 @@
     .hero p{margin:0 0 10px 0;opacity:.95}
     .trust{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:.92em;opacity:.9}
 
-    /* International note banner */
     .intl-note{
       width:100%;
       background:#0d2030;
@@ -112,13 +110,15 @@
         <div class="price-card">
           <div class="tag">Best value</div>
           <div class="amount">₹249 / 3 Months</div>
-          <a class="btn-primary" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Join Quarterly</a>
+          <a class="btn-primary" href="upi://pay?pa=dubbedseriespremiu@ybl&pn=SmTv%20Urdu&am=249&cu=INR&tn=Quarterly%20Premium&tr=smtv-qtr-249-{{ts}}">Join Quarterly</a>
           <div class="note">3 months access • Full benefits</div>
+          <div class="note">After payment, send the screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener" style="color:#8fd8ff;text-decoration:underline">Telegram</a> for instant activation.</div>
         </div>
         <div class="price-card">
           <div class="amount">₹99 / Monthly</div>
-          <a class="btn-primary" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Join Monthly</a>
+          <a class="btn-primary" href="upi://pay?pa=dubbedseriespremiu@ybl&pn=SmTv%20Urdu&am=99&cu=INR&tn=Monthly%20Premium&tr=smtv-month-99-{{ts}}">Join Monthly</a>
           <div class="note">1 month access • Full benefits</div>
+          <div class="note">After payment, send the screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener" style="color:#8fd8ff;text-decoration:underline">Telegram</a> for instant activation.</div>
         </div>
       </div>
       <p class="muted">Subscription is non‑refundable.</p>
@@ -161,7 +161,7 @@
     </section>
 
     <div class="bottom-cta">
-      <a class="btn-primary" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Get Premium Now</a>
+      <a class="btn-primary" href="upi://pay?pa=dubbedseriespremiu@ybl&pn=SmTv%20Urdu&am=99&cu=INR&tn=Monthly%20Premium&tr=smtv-bottom-99-{{ts}}">Get Premium Now</a>
       <div class="muted" style="margin-top:6px">Instant access • Friendly support</div>
     </div>
   </main>
@@ -183,6 +183,18 @@
       .catch(() => {
         document.getElementById('plist').innerHTML = '<div class="pitem">Could not load Premium series list.</div>';
       });
+
+    // Insert unique reference id for each UPI link; add fallback for non-Android
+    (function(){
+      const ts = Date.now();
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      document.querySelectorAll('a[href^="upi://pay"]').forEach(a=>{
+        a.href = a.href.replace('{{ts}}', ts);
+        if(!isAndroid){
+          a.href = 'https://t.me/Shaikhyder7861';
+        }
+      });
+    })();
   </script>
 </body>
 </html>
