@@ -31,7 +31,7 @@
     setTimeout(() => t.remove(), 2600);
   }
 
-  // Styles (existing + small helpers for tutorial cards)
+  // Styles (existing + helpers)
   const premiumStyles = `
     .premium-channel-message {
       margin-top: 18px;
@@ -54,80 +54,22 @@
     }
     .premium-btn-row {
       display: flex;
-      gap: 18px;
+      gap: 12px;
       margin-top: 11px;
       flex-wrap: wrap;
-    }
-    .premium-btn {
-      display: inline-flex;
       align-items: center;
-      padding: 10px 22px;
-      border-radius: 8px;
-      font-size: 1em;
-      font-family: 'Montserrat', Arial, sans-serif;
-      font-weight: 700;
-      text-decoration: none;
-      transition: background 0.18s, color 0.18s, box-shadow 0.18s;
-      box-shadow: 0 2px 11px #1a232b20;
-      border: 0;
-      cursor: pointer;
     }
-    .premium-btn-blue {
-      background: linear-gradient(90deg, #23c6ed 85%, #198fff 100%);
-      color: #fff;
+    .btn-primary{
+      display:inline-block;
+      background:#ffd400;
+      color:#13263a;
+      font-weight:800;
+      padding:10px 16px;
+      border-radius:999px;
+      box-shadow:0 4px 14px #ffd40055;
+      text-align:center;
     }
-    .premium-btn-blue:hover {
-      background: linear-gradient(90deg,#167abd 40%,#198fff 100%);
-      color: #ffd700;
-    }
-    .premium-btn-gold {
-      background: linear-gradient(90deg, #ffd700 70%, #ffd700c0 100%);
-      color: #232f3e;
-    }
-    .premium-btn-gold:hover {
-      background: linear-gradient(90deg,#ffe493 40%,#ffd700 100%);
-      color: #23c6ed;
-    }
-    .premium-btn-icon { margin-right: 7px; font-size: 1.23em; vertical-align: middle; }
-
-    /* Tutorial sections */
-    .pro-highlight-section { margin: 14px auto 8px auto; max-width: 900px; }
-    .pro-highlight-title {
-      background: linear-gradient(90deg, #23c6ed, #198fff);
-      color: #fff;
-      font-weight: 800;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-family: 'Montserrat', Arial, sans-serif;
-      font-size: 1.02em;
-      letter-spacing: .02em;
-      text-shadow: 0 1px 0 #0b1d2c;
-    }
-    .pro-video-card {
-      background: #0e1824;
-      border-radius: 12px;
-      padding: 12px 10px 16px 10px;
-      margin: 0 auto 14px auto;
-      max-width: 900px;
-      box-shadow: 0 2px 12px #0a111740;
-      border: 1px solid #1a2d3e;
-    }
-    .pro-video-frame-wrap {
-      position: relative;
-      width: 100%;
-      height: 0;
-      padding-bottom: 56.25%; /* 16:9 */
-      overflow: hidden;
-      border-radius: 10px;
-      background: #000;
-    }
-    .pro-video-frame-wrap iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
+    .btn-primary:active{ transform:translateY(1px); }
   `;
   const styleTag = document.createElement('style');
   styleTag.textContent = premiumStyles;
@@ -143,17 +85,12 @@
       }
       document.title = `${meta.title} – SmTv Urdu`;
 
+      // Updated promo: single Join Premium button linking to /premium
       const premiumMsg = `
         <div class="premium-channel-message">
-          <strong>Go Ad-Free!</strong> Get direct access to all episodes by joining our <strong>Premium Channel</strong>.<br>
+          <strong>Go Ad-Free!</strong> Get direct access to all episodes by joining our <strong>Premium Channel</strong>.
           <div class="premium-btn-row">
-            <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener" class="premium-btn premium-btn-blue">
-              📱 Contact on Telegram
-            </a>
-            <a href="https://t.me/itzmezain1/2905" target="_blank" rel="noopener" class="premium-btn premium-btn-gold">
-              <span class="premium-btn-icon">🎥</span>
-              Details Video
-            </a>
+            <a href="/premium" class="btn-primary" rel="noopener">Join Premium</a>
           </div>
         </div>
       `;
