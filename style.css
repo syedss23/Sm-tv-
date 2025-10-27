@@ -509,3 +509,7 @@ header{ display:flex; align-items:center; gap:10px; } /* if not already flex */
   text-align:center;
 }
 .btn-primary:active{ transform:translateY(1px); }
+.premium-channel-message a{
+  text-decoration:none;
+}
+.premium-channel-message a:hover{ text-decoration:none; }
