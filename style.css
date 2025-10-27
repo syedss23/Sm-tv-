@@ -509,18 +509,3 @@ header{ display:flex; align-items:center; gap:10px; } /* if not already flex */
   text-align:center;
 }
 .btn-primary:active{ transform:translateY(1px); }
-.premium-channel-message{
-  margin-top:18px;
-  padding:16px;
-  background:linear-gradient(135deg,#101a24 90%,#23c6ed30 100%);
-  border:2px solid #23c6ed;
-  border-radius:14px;
-  color:#23c6ed;
-  font-family:'Montserrat',Arial,sans-serif;
-  font-weight:600;
-  font-size:1.09em;
-  max-width:540px;
-  box-shadow:0 2px 18px #1a232b18;
-  letter-spacing:.03em;
-}
-.premium-channel-message strong{ color:#ffd700; font-weight:800; letter-spacing:.01em; }
