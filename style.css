@@ -498,3 +498,14 @@ header{ display:flex; align-items:center; gap:10px; } /* if not already flex */
 .btn-primary:active{ transform:translateY(1px); }
 .hero p{ margin-bottom:8px; }
 .trust{ margin-top:8px; }
+.btn-primary{
+  display:inline-block;
+  background:#ffd400;
+  color:#13263a;
+  font-weight:800;
+  padding:10px 16px;
+  border-radius:999px;
+  box-shadow:0 4px 14px #ffd40055;
+  text-align:center;
+}
+.btn-primary:active{ transform:translateY(1px); }
