@@ -43,6 +43,9 @@
     }
     .chip{display:inline-block;background:#0d2030;border:1px solid #284e70;color:#aee6ff;padding:6px 10px;border-radius:999px;font-weight:800}
 
+    .faq details{background:#0f1e2d;border:1px solid #1b3752;border-radius:10px;padding:10px 12px;margin-top:10px}
+    .faq summary{cursor:pointer;font-weight:700;color:#aee6ff}
+
     @media(min-width:700px){
       .grid{grid-template-columns:1fr 1fr}
     }
@@ -64,7 +67,6 @@
     </section>
 
     <section class="grid">
-      <!-- QR Payment -->
       <div class="box">
         <h3 class="title">Option 1: Scan QR</h3>
         <div class="qrwrap">
@@ -80,7 +82,6 @@
         </p>
       </div>
 
-      <!-- UPI ID Payment -->
       <div class="box">
         <h3 class="title">Option 2: Pay by UPI ID</h3>
         <p class="note">Open any UPI app → “Pay by UPI ID” → paste the ID below → enter amount → pay.</p>
@@ -99,13 +100,32 @@
       <p class="muted">Support available 10:00–22:00 IST, usually instant.</p>
     </section>
 
-    <section class="card">
-      <h3 class="title">Notes & help</h3>
-      <div class="note">
-        • If one UPI app shows “risk” or fails, try another UPI app or scan the QR from inside that app.<br/>
-        • Double‑check the payee name before sending: “Syed abuddin”.<br/>
-        • For users outside India, payment methods vary by country — please contact on Telegram to proceed.
-      </div>
+    <section class="card faq">
+      <h3 class="title">FAQ</h3>
+      <details>
+        <summary>How do I pay?</summary>
+        <p class="note">Use Option 1 (scan QR) or Option 2 (copy UPI ID). Enter the plan amount manually and complete the payment in your UPI app.</p>
+      </details>
+      <details>
+        <summary>What happens after payment?</summary>
+        <p class="note">Click “Activate subscription” to open Telegram and send your screenshot. Access is activated after quick verification.</p>
+      </details>
+      <details>
+        <summary>Payment shows “risk” or fails</summary>
+        <p class="note">Try another UPI app or scan the QR from inside your preferred app. You can also retry after a few minutes.</p>
+      </details>
+      <details>
+        <summary>I’m outside India</summary>
+        <p class="note">UPI may not work internationally. Please contact on Telegram to receive an alternative method for your country.</p>
+      </details>
+      <details>
+        <summary>Refunds and cancellations</summary>
+        <p class="note">Subscriptions are non‑refundable. You can stop renewal any time; the current period stays active.</p>
+      </details>
+      <details>
+        <summary>Support hours</summary>
+        <p class="note">Daily 10:00–22:00 IST. Messages after hours are answered the next day.</p>
+      </details>
     </section>
 
     <p class="center muted">Manual amount entry • QR or UPI ID • Telegram support</p>
