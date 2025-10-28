@@ -23,6 +23,7 @@
     .title{font-weight:800;color:#86e8ff;margin:0 0 8px 0}
     .note{font-size:.92em;color:var(--muted)}
     .row{display:grid;grid-template-columns:1fr;gap:10px}
+
     .buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
     .btn{
       display:inline-flex;align-items:center;justify-content:center;gap:8px;
@@ -34,12 +35,15 @@
     .btn.gpay{background:#34a853;color:#fff}
     .btn.other{background:#ffd400;color:#13263a}
     .btn:active{transform:translateY(1px)}
+
     .pill{display:inline-block;background:var(--chip);border:1px solid var(--chip-b);border-radius:999px;padding:6px 10px;color:#aee6ff;font-weight:700}
     .upi-copy{display:flex;align-items:center;gap:8px;background:#0f2131;border:1px solid #23445f;border-radius:10px;padding:10px 12px}
     .copy-btn{background:#17314a;color:#9fe0ff;border:1px solid #28577b;border-radius:8px;padding:6px 10px;font-weight:800}
+
     .qrwrap{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
     .qr{width:220px;height:220px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center}
     .qr img{width:100%;height:100%;object-fit:contain;border-radius:12px}
+
     .muted{opacity:.75}
     .cta{
       display:inline-block;background:var(--accent2);color:#13263a;font-weight:800;
@@ -84,6 +88,9 @@
         <a id="ptmBtn" class="btn paytm" href="#">Paytm</a>
         <a id="otherBtn" class="btn other" href="#">Other UPI</a>
       </div>
+      <p class="note" style="margin-top:8px">
+        Your device will show available UPI apps to complete the payment. If one app shows “risk” or fails, try another app or scan the QR.
+      </p>
     </section>
 
     <section class="card row two">
@@ -96,11 +103,14 @@
             - If QR doesn’t open, use the UPI ID shown above.
           </div>
         </div>
+        <p style="margin-top:10px">
+          <a class="cta" href="/assets/posters/upi-qr.png" download="SmTv-UPI-QR.png">Download QR</a>
+        </p>
       </div>
       <div>
         <h3 class="title">After payment</h3>
         <p class="note">Tap below to open Telegram with a prefilled message, then attach the payment screenshot for instant activation.</p>
-        <p><a id="activateBtn" class="cta" href="#" target="_blank" rel="noopener">Activate subscription</a></p>
+        <p><a id="activateBtn" class="cta" href="#" rel="noopener">Activate subscription</a></p>
         <p class="muted" style="margin-top:6px">If any app shows “risk” or fails, try another UPI app or use the QR/UPI ID.</p>
       </div>
     </section>
@@ -132,18 +142,18 @@
     const PAYEE_NAME = 'Syed abuddin';
     const TELEGRAM_USERNAME = 'Shaikhyder7861';
 
-    // Optional labels for the page (amount will be entered manually by user)
+    // Optional label only (amount is manual)
     const params = new URLSearchParams(location.search);
     const label = (params.get('label') || 'Premium').trim();
     document.getElementById('planTitle').textContent = `SmTv Urdu — ${label}`;
 
-    // Build UPI deep link WITHOUT amount so user enters it manually
+    // UPI deep link WITHOUT amount (user enters manually)
     const epoch = Date.now();
     const tn = 'SmTv Premium';
     const tr = `smtv-${label.toLowerCase().slice(0,1)}-${epoch}`;
     const upi = `upi://pay?pa=${encodeURIComponent(VPA)}&pn=${encodeURIComponent(PAYEE_NAME)}&cu=INR&tn=${encodeURIComponent(tn)}&tr=${encodeURIComponent(tr)}`;
 
-    // Set UPI buttons (Android chooses the app)
+    // Deep link buttons (browser will show app chooser)
     document.getElementById('gpayBtn').href = upi;
     document.getElementById('ppBtn').href = upi;
     document.getElementById('ptmBtn').href = upi;
@@ -162,19 +172,21 @@
       }
     });
 
-    // Telegram activation prefilled message
-    const tgText =
-      `Payment done for SmTv Premium (${label})\
-UPI Ref: ${tr}\
-VPA: ${VPA}\
+    // Telegram activation with prefilled text; use share first, then chat
+    const tgText = `Payment done for SmTv Premium (${label})
+UPI Ref: ${tr}
+VPA: ${VPA}
 Please activate my subscription.`;
     const tgShare = `https://t.me/share/url?url=${encodeURIComponent('')}&text=${encodeURIComponent(tgText)}`;
-    const tgChat = `https://t.me/${TELEGRAM_USERNAME}`;
-    const activate = document.getElementById('activateBtn');
-    activate.href = tgShare;
-    activate.addEventListener('click', () => { setTimeout(() => { window.open(tgChat, '_blank'); }, 800); });
+    const tgChat  = `https://t.me/${TELEGRAM_USERNAME}`;
 
-    // iOS/desktop fallback: recommend QR/UPI ID
+    document.getElementById('activateBtn').addEventListener('click', (e)=>{
+      e.preventDefault();
+      location.href = tgShare;               // open share in same tab to avoid popup block
+      setTimeout(()=>{ window.open(tgChat, '_blank'); }, 900); // then open chat
+    });
+
+    // iOS/desktop guidance: steer to QR/UPI ID (deep links won’t open UPI apps)
     const isAndroid = /Android/i.test(navigator.userAgent);
     if(!isAndroid){
       document.getElementById('desc').textContent =
