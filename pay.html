@@ -36,7 +36,7 @@
     .btn.other{background:#ffd400;color:#13263a}
     .btn:active{transform:translateY(1px)}
 
-    .pill{display:inline-block;background:var(--chip);border:1px solid var(--chip-b);border-radius:999px;padding:6px 10px;color:#aee6ff;font-weight:700}
+    .pill{display:inline-block;background:var(--chip);border:1px solid --chip-b;border-radius:999px;padding:6px 10px;color:#aee6ff;font-weight:700}
     .upi-copy{display:flex;align-items:center;gap:8px;background:#0f2131;border:1px solid #23445f;border-radius:10px;padding:10px 12px}
     .copy-btn{background:#17314a;color:#9fe0ff;border:1px solid #28577b;border-radius:8px;padding:6px 10px;font-weight:800}
 
@@ -89,7 +89,7 @@
         <a id="otherBtn" class="btn other" href="#">Other UPI</a>
       </div>
       <p class="note" style="margin-top:8px">
-        Your device will show available UPI apps to complete the payment. If one app shows “risk” or fails, try another app or scan the QR.
+        Your device will open the selected app when supported; otherwise it will show the UPI app chooser. If one app shows “risk” or fails, try another or scan the QR.
       </p>
     </section>
 
@@ -142,22 +142,43 @@
     const PAYEE_NAME = 'Syed abuddin';
     const TELEGRAM_USERNAME = 'Shaikhyder7861';
 
-    // Optional label only (amount is manual)
+    // Optional label for header
     const params = new URLSearchParams(location.search);
     const label = (params.get('label') || 'Premium').trim();
     document.getElementById('planTitle').textContent = `SmTv Urdu — ${label}`;
 
-    // UPI deep link WITHOUT amount (user enters manually)
+    // UPI params WITHOUT amount (user enters manually)
     const epoch = Date.now();
     const tn = 'SmTv Premium';
     const tr = `smtv-${label.toLowerCase().slice(0,1)}-${epoch}`;
-    const upi = `upi://pay?pa=${encodeURIComponent(VPA)}&pn=${encodeURIComponent(PAYEE_NAME)}&cu=INR&tn=${encodeURIComponent(tn)}&tr=${encodeURIComponent(tr)}`;
+    const baseParams = `pa=${encodeURIComponent(VPA)}&pn=${encodeURIComponent(PAYEE_NAME)}&cu=INR&tn=${encodeURIComponent(tn)}&tr=${encodeURIComponent(tr)}`;
 
-    // Deep link buttons (browser will show app chooser)
-    document.getElementById('gpayBtn').href = upi;
-    document.getElementById('ppBtn').href = upi;
-    document.getElementById('ptmBtn').href = upi;
-    document.getElementById('otherBtn').href = upi;
+    // App-specific schemes (attempt direct open), plus generic fallback
+    const linkGPay    = `gpay://upi/pay?${baseParams}`;    // Google Pay
+    const linkPhonePe = `phonepe://pay?${baseParams}`;     // PhonePe
+    const linkPaytm   = `paytmmp://pay?${baseParams}`;     // Paytm
+    const linkGeneric = `upi://pay?${baseParams}`;         // Other UPI / chooser
+
+    // Graceful open with fallback to generic chooser if app doesn't launch
+    function openWithFallback(primaryUrl, fallbackUrl){
+      const start = Date.now();
+      location.href = primaryUrl;
+      setTimeout(()=>{
+        if (Date.now() - start < 1200) location.href = fallbackUrl;
+      }, 900);
+    }
+
+    // Wire buttons
+    document.getElementById('gpayBtn').addEventListener('click', (e)=>{
+      e.preventDefault(); openWithFallback(linkGPay, linkGeneric);
+    });
+    document.getElementById('ppBtn').addEventListener('click', (e)=>{
+      e.preventDefault(); openWithFallback(linkPhonePe, linkGeneric);
+    });
+    document.getElementById('ptmBtn').addEventListener('click', (e)=>{
+      e.preventDefault(); openWithFallback(linkPaytm, linkGeneric);
+    });
+    document.getElementById('otherBtn').href = linkGeneric;
 
     // Copy UPI ID
     document.getElementById('copyBtn').addEventListener('click', async () => {
@@ -182,16 +203,25 @@ Please activate my subscription.`;
 
     document.getElementById('activateBtn').addEventListener('click', (e)=>{
       e.preventDefault();
-      location.href = tgShare;               // open share in same tab to avoid popup block
+      location.href = tgShare;               // share first (prefill text)
       setTimeout(()=>{ window.open(tgChat, '_blank'); }, 900); // then open chat
     });
 
-    // iOS/desktop guidance: steer to QR/UPI ID (deep links won’t open UPI apps)
+    // iOS/desktop: steer to QR/UPI ID (app schemes won’t work)
     const isAndroid = /Android/i.test(navigator.userAgent);
     if(!isAndroid){
       document.getElementById('desc').textContent =
         'On iOS/desktop, scan the QR below or use the UPI ID to pay and enter the amount manually. After payment, tap “Activate subscription” to send the screenshot on Telegram.';
-      document.querySelectorAll('a[href^="upi://pay"]').forEach(a => { a.href = tgChat; });
+      // Replace app buttons with generic support link for iOS
+      document.getElementById('gpayBtn').href = tgChat;
+      document.getElementById('ppBtn').href   = tgChat;
+      document.getElementById('ptmBtn').href  = tgChat;
+      document.getElementById('otherBtn').href= tgChat;
+      // Remove JS handlers to avoid blocked navigation
+      ['gpayBtn','ppBtn','ptmBtn'].forEach(id=>{
+        const el=document.getElementById(id);
+        const clone=el.cloneNode(true); el.parentNode.replaceChild(clone,el);
+      });
     }
   </script>
 </body>
