@@ -68,7 +68,6 @@
     <section class="card">
       <h2 class="title" id="planTitle">SmTv Urdu Premium</h2>
 
-      <!-- UPI ID copy block (kept for manual transfers) -->
       <div class="upi-copy" style="margin:10px 0 6px">
         <div>
           <div class="note">Pay to UPI ID (if needed)</div>
@@ -78,17 +77,17 @@
       </div>
 
       <p class="note" id="desc">
-        Tap an app to open it. Search your contacts or paste the UPI ID to pay, and enter the amount manually. After payment, click “Activate subscription” to send the screenshot on Telegram.
+        Tap an app to open it. Use your app’s “Pay by UPI ID” and paste the ID if needed, and enter the amount manually. After payment, click “Activate subscription” to send the screenshot on Telegram.
       </p>
 
       <div class="buttons" style="margin-top:12px">
-        <a id="gpayBtn" class="btn gpay" href="#">Open Google Pay</a>
-        <a id="ppBtn" class="btn phonepe" href="#">Open PhonePe</a>
-        <a id="ptmBtn" class="btn paytm" href="#">Open Paytm</a>
-        <a id="otherBtn" class="btn other" href="#">Other UPI (chooser)</a>
+        <a id="gpayBtn" class="btn gpay" href="intent://upi/pay#Intent;scheme=gpay;package=com.google.android.apps.nbu.paisa.user;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.google.android.apps.nbu.paisa.user;end">Open Google Pay</a>
+        <a id="ppBtn" class="btn phonepe" href="intent://pay#Intent;scheme=phonepe;package=com.phonepe.app;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.phonepe.app;end">Open PhonePe</a>
+        <a id="ptmBtn" class="btn paytm" href="intent://pay#Intent;scheme=paytmmp;package=net.one97.paytm;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dnet.one97.paytm;end">Open Paytm</a>
+        <a id="otherBtn" class="btn other" href="upi://pay">Other UPI (chooser)</a>
       </div>
       <p class="note" style="margin-top:8px">
-        These buttons only open the app itself (no details prefilled). Use your app’s “Pay by UPI ID” and paste the ID if required.
+        These buttons open the app itself (no details prefilled). If one app shows “risk” or fails, try another or scan the QR.
       </p>
     </section>
 
@@ -136,40 +135,12 @@
   </main>
 
   <script>
-    // Config
     const VPA = 'dubbedseriespremiu@ybl';
     const TELEGRAM_USERNAME = 'Shaikhyder7861';
 
-    // Optional label for header
     const params = new URLSearchParams(location.search);
     const label = (params.get('label') || 'Premium').trim();
     document.getElementById('planTitle').textContent = `SmTv Urdu — ${label}`;
-
-    // App launcher links (no UPI params)
-    const linkGPayApp    = 'gpay://';       // opens Google Pay app
-    const linkPhonePeApp = 'phonepe://';    // opens PhonePe app
-    const linkPaytmApp   = 'paytmmp://';    // opens Paytm app
-    const linkChooser    = 'upi://pay';     // generic UPI chooser
-
-    function openWithFallback(primaryUrl, fallbackUrl){
-      const start = Date.now();
-      location.href = primaryUrl;
-      setTimeout(()=>{
-        if (Date.now() - start < 1200) location.href = fallbackUrl;
-      }, 900);
-    }
-
-    // Wire launchers
-    document.getElementById('gpayBtn').addEventListener('click', (e)=>{
-      e.preventDefault(); openWithFallback(linkGPayApp, linkChooser);
-    });
-    document.getElementById('ppBtn').addEventListener('click', (e)=>{
-      e.preventDefault(); openWithFallback(linkPhonePeApp, linkChooser);
-    });
-    document.getElementById('ptmBtn').addEventListener('click', (e)=>{
-      e.preventDefault(); openWithFallback(linkPaytmApp, linkChooser);
-    });
-    document.getElementById('otherBtn').href = linkChooser;
 
     // Copy UPI ID
     document.getElementById('copyBtn').addEventListener('click', async () => {
@@ -184,31 +155,28 @@
       }
     });
 
-    // Telegram activation with prefilled text; use share first, then chat
+    // Telegram activation prefilled
     const tgText = `Payment done for SmTv Premium (${label})
 VPA used: ${VPA}
 Please activate my subscription.`;
     const tgShare = `https://t.me/share/url?url=${encodeURIComponent('')}&text=${encodeURIComponent(tgText)}`;
     const tgChat  = `https://t.me/${TELEGRAM_USERNAME}`;
-
     document.getElementById('activateBtn').addEventListener('click', (e)=>{
       e.preventDefault();
       location.href = tgShare;
       setTimeout(()=>{ window.open(tgChat, '_blank'); }, 900);
     });
 
-    // iOS/desktop: deep app schemes won’t work; guide to QR/UPI ID instead
+    // iOS/desktop: intent URIs won’t work; guide users to QR/UPI ID
     const isAndroid = /Android/i.test(navigator.userAgent);
     if(!isAndroid){
       document.getElementById('desc').textContent =
         'On iOS/desktop, open your UPI app manually and use the QR or UPI ID to pay. After payment, tap “Activate subscription” to send the screenshot on Telegram.';
-      ['gpayBtn','ppBtn','ptmBtn'].forEach(id=>{
+      // Replace app anchors with Telegram support so taps don’t seem broken
+      ['gpayBtn','ppBtn','ptmBtn','otherBtn'].forEach(id=>{
         const el = document.getElementById(id);
         el.href = tgChat;
-        const clone = el.cloneNode(true);
-        el.parentNode.replaceChild(clone, el);
       });
-      document.getElementById('otherBtn').href = tgChat;
     }
   </script>
 </body>
