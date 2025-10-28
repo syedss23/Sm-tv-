@@ -10,49 +10,41 @@
   <style>
     :root{
       --bg:#0d171f; --card:#101b28; --line:#20364c; --text:#eaf6ff; --muted:#a8c7de;
-      --accent:#19b3ff; --accent2:#ffd400; --chip:#0d2030; --chip-b:#284e70;
+      --accent:#19b3ff; --accent2:#ffd400; --chip:#0d2030; --chip-b:#284e70; --good:#19d38e;
     }
     html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Montserrat',Arial,sans-serif}
     a{text-decoration:none}
-    .wrap{max-width:760px;margin:0 auto;padding:12px}
+    .wrap{max-width:780px;margin:0 auto;padding:12px}
     header{position:sticky;top:0;z-index:10;background:#111c28;border-bottom:1px solid #1e2b3a}
     header .bar{display:flex;align-items:center;gap:10px;padding:10px 12px}
     .back{background:#17263a;border:1px solid #203447;color:#8fd8ff;border-radius:8px;padding:7px 12px;font-weight:700}
     h1{margin:0;font-size:1.12em;font-weight:800}
+
     .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:14px;box-shadow:0 4px 18px #0004}
     .title{font-weight:800;color:#86e8ff;margin:0 0 8px 0}
     .note{font-size:.92em;color:var(--muted)}
-    .row{display:grid;grid-template-columns:1fr;gap:10px}
+    .muted{opacity:.75}
+    .center{text-align:center}
 
-    .buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;gap:8px;
-      padding:12px;border-radius:12px;font-weight:800;color:#081624;background:#19b3ff;
-      box-shadow:0 4px 14px #19b3ff33;text-align:center
-    }
-    .btn.paytm{background:#00baf2}
-    .btn.phonepe{background:#6739b7;color:#fff}
-    .btn.gpay{background:#34a853;color:#fff}
-    .btn.other{background:#ffd400;color:#13263a}
-    .btn:active{transform:translateY(1px)}
-
-    .upi-copy{display:flex;align-items:center;gap:8px;background:#0f2131;border:1px solid #23445f;border-radius:10px;padding:10px 12px}
-    .copy-btn{background:#17314a;color:#9fe0ff;border:1px solid #28577b;border-radius:8px;padding:6px 10px;font-weight:800}
+    .grid{display:grid;grid-template-columns:1fr;gap:12px}
+    .box{background:#0f1e2d;border:1px solid #1b3752;border-radius:12px;padding:14px}
 
     .qrwrap{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-    .qr{width:220px;height:220px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center}
+    .qr{width:240px;height:240px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center}
     .qr img{width:100%;height:100%;object-fit:contain;border-radius:12px}
 
-    .muted{opacity:.75}
+    .upi-copy{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#0f2131;border:1px solid #23445f;border-radius:10px;padding:12px}
+    .id-text{font-weight:800;color:#aee6ff;word-break:break-all}
+    .copy-btn{background:#17314a;color:#9fe0ff;border:1px solid #28577b;border-radius:8px;padding:8px 12px;font-weight:800}
+
     .cta{
       display:inline-block;background:var(--accent2);color:#13263a;font-weight:800;
-      padding:10px 16px;border-radius:999px;box-shadow:0 4px 14px #ffd40055
+      padding:12px 18px;border-radius:999px;box-shadow:0 4px 14px #ffd40055;text-align:center
     }
-    details summary{cursor:pointer;font-weight:800;color:#aee6ff}
-    .center{text-align:center}
-    @media(min-width:680px){
-      .buttons{grid-template-columns:repeat(4,1fr)}
-      .row.two{grid-template-columns:1fr 1fr}
+    .chip{display:inline-block;background:#0d2030;border:1px solid #284e70;color:#aee6ff;padding:6px 10px;border-radius:999px;font-weight:800}
+
+    @media(min-width:700px){
+      .grid{grid-template-columns:1fr 1fr}
     }
   </style>
 </head>
@@ -66,78 +58,64 @@
 
   <main class="wrap">
     <section class="card">
-      <h2 class="title" id="planTitle">SmTv Urdu Premium</h2>
-
-      <div class="upi-copy" style="margin:10px 0 6px">
-        <div>
-          <div class="note">Pay to UPI ID (if needed)</div>
-          <div id="upiText" style="font-weight:800;color:#aee6ff">dubbedseriespremiu@ybl</div>
-        </div>
-        <button id="copyBtn" class="copy-btn">Copy</button>
-      </div>
-
-      <p class="note" id="desc">
-        Tap an app to open it. Use your app’s “Pay by UPI ID” and paste the ID if needed, and enter the amount manually. After payment, click “Activate subscription” to send the screenshot on Telegram.
-      </p>
-
-      <div class="buttons" style="margin-top:12px">
-        <a id="gpayBtn" class="btn gpay" href="intent://upi/pay#Intent;scheme=gpay;package=com.google.android.apps.nbu.paisa.user;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.google.android.apps.nbu.paisa.user;end">Open Google Pay</a>
-        <a id="ppBtn" class="btn phonepe" href="intent://pay#Intent;scheme=phonepe;package=com.phonepe.app;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.phonepe.app;end">Open PhonePe</a>
-        <a id="ptmBtn" class="btn paytm" href="intent://pay#Intent;scheme=paytmmp;package=net.one97.paytm;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dnet.one97.paytm;end">Open Paytm</a>
-        <a id="otherBtn" class="btn other" href="upi://pay">Other UPI (chooser)</a>
-      </div>
-      <p class="note" style="margin-top:8px">
-        These buttons open the app itself (no details prefilled). If one app shows “risk” or fails, try another or scan the QR.
-      </p>
+      <h2 class="title" id="planTitle">SmTv Urdu — Premium</h2>
+      <p class="note">Choose one of the options below, enter the amount manually in your UPI app, then click “Activate subscription” to share your payment screenshot on Telegram.</p>
+      <p class="note" style="margin-top:8px"><span class="chip">International users</span> If you’re outside India, please contact on Telegram to get available payment methods for your country.</p>
     </section>
 
-    <section class="card row two">
-      <div>
-        <h3 class="title">Scan UPI QR</h3>
+    <section class="grid">
+      <!-- QR Payment -->
+      <div class="box">
+        <h3 class="title">Option 1: Scan QR</h3>
         <div class="qrwrap">
           <div class="qr"><img src="/assets/posters/upi-qr.png" alt="UPI QR" /></div>
           <div class="note">
-            - Open your UPI app and scan this QR, then enter the plan amount manually.<br/>
-            - If QR doesn’t open, use the UPI ID shown above.
+            - Open your UPI app and scan this QR.<br/>
+            - Enter your plan amount manually (e.g., ₹99 or ₹249).<br/>
+            - If the QR doesn’t open, use the UPI ID in Option 2.
           </div>
         </div>
         <p style="margin-top:10px">
           <a class="cta" href="/assets/posters/upi-qr.png" download="SmTv-UPI-QR.png">Download QR</a>
         </p>
       </div>
-      <div>
-        <h3 class="title">After payment</h3>
-        <p class="note">Tap below to open Telegram with a prefilled message, then attach the payment screenshot for instant activation.</p>
-        <p><a id="activateBtn" class="cta" href="#" rel="noopener">Activate subscription</a></p>
-        <p class="muted" style="margin-top:6px">If one app shows “risk” or fails, try another UPI app or use the QR/UPI ID.</p>
+
+      <!-- UPI ID Payment -->
+      <div class="box">
+        <h3 class="title">Option 2: Pay by UPI ID</h3>
+        <p class="note">Open any UPI app → “Pay by UPI ID” → paste the ID below → enter amount → pay.</p>
+        <div class="upi-copy">
+          <span class="id-text" id="upiText">dubbedseriespremiu@ybl</span>
+          <button id="copyBtn" class="copy-btn">Copy</button>
+        </div>
+        <p class="muted" style="margin-top:8px">Payee name should display as “Syed abuddin”.</p>
       </div>
     </section>
 
-    <section class="card">
-      <h3 class="title">Help</h3>
-      <details>
-        <summary>Payment not going through?</summary>
-        <div class="note">
-          • Update your UPI app and retry after a minute.<br/>
-          • Try another UPI app or use the QR/UPI ID and enter amount manually.<br/>
-          • Payee name should show as “Syed abuddin”.
-        </div>
-      </details>
-      <details>
-        <summary>Need support?</summary>
-        <div class="note">
-          Message on Telegram: <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener" style="color:#8fd8ff;text-decoration:underline">@Shaikhyder7861</a>.
-        </div>
-      </details>
+    <section class="card center">
+      <h3 class="title">After payment</h3>
+      <p class="note">Tap below to open Telegram and send your payment screenshot for instant activation.</p>
+      <p><a id="activateBtn" class="cta" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Activate subscription</a></p>
+      <p class="muted">Support available 10:00–22:00 IST, usually instant.</p>
     </section>
 
-    <p class="center muted">Open your UPI app • Manual amount entry</p>
+    <section class="card">
+      <h3 class="title">Notes & help</h3>
+      <div class="note">
+        • If one UPI app shows “risk” or fails, try another UPI app or scan the QR from inside that app.<br/>
+        • Double‑check the payee name before sending: “Syed abuddin”.<br/>
+        • For users outside India, payment methods vary by country — please contact on Telegram to proceed.
+      </div>
+    </section>
+
+    <p class="center muted">Manual amount entry • QR or UPI ID • Telegram support</p>
   </main>
 
   <script>
+    // Config
     const VPA = 'dubbedseriespremiu@ybl';
-    const TELEGRAM_USERNAME = 'Shaikhyder7861';
 
+    // Optional label for header
     const params = new URLSearchParams(location.search);
     const label = (params.get('label') || 'Premium').trim();
     document.getElementById('planTitle').textContent = `SmTv Urdu — ${label}`;
@@ -151,33 +129,9 @@
         btn.textContent = 'Copied';
         setTimeout(()=>btn.textContent=old,1200);
       } catch(e) {
-        alert('Copy failed. Long-press to copy: ' + VPA);
+        alert('Copy failed. Long‑press to copy: ' + VPA);
       }
     });
-
-    // Telegram activation prefilled
-    const tgText = `Payment done for SmTv Premium (${label})
-VPA used: ${VPA}
-Please activate my subscription.`;
-    const tgShare = `https://t.me/share/url?url=${encodeURIComponent('')}&text=${encodeURIComponent(tgText)}`;
-    const tgChat  = `https://t.me/${TELEGRAM_USERNAME}`;
-    document.getElementById('activateBtn').addEventListener('click', (e)=>{
-      e.preventDefault();
-      location.href = tgShare;
-      setTimeout(()=>{ window.open(tgChat, '_blank'); }, 900);
-    });
-
-    // iOS/desktop: intent URIs won’t work; guide users to QR/UPI ID
-    const isAndroid = /Android/i.test(navigator.userAgent);
-    if(!isAndroid){
-      document.getElementById('desc').textContent =
-        'On iOS/desktop, open your UPI app manually and use the QR or UPI ID to pay. After payment, tap “Activate subscription” to send the screenshot on Telegram.';
-      // Replace app anchors with Telegram support so taps don’t seem broken
-      ['gpayBtn','ppBtn','ptmBtn','otherBtn'].forEach(id=>{
-        const el = document.getElementById(id);
-        el.href = tgChat;
-      });
-    }
   </script>
 </body>
 </html>
