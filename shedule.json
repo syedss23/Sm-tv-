@@ -1,12 +1,12 @@
 [
   {
-    "title": "Salahuddin Ayyubi Season 2 Episode 57",
+    "title": "Salahuddin Ayyubi Season 2 Episode 58",
     "poster": "assets/posters/salauddin_ayyubi.jpg",
     "day": "Mon – Fri",
     "time": "11:30 PM",
     "type": "🎧 Dubbed",
-    "live": true,
-    "countdown": false
+    "live": false,
+    "countdown": "2025-10-30T23:30:00"
   },
   {
     "title": "Sultan Mehmet Fatih Bolum 56",
@@ -14,7 +14,7 @@
     "day": "Wednesday",
     "time": false,
     "type": "💬 Subtitled",
-    "live": false,
+    "live": true,
     "countdown": false
   },
   {
