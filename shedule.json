@@ -1,12 +1,12 @@
 [
   {
-    "title": "Salahuddin Ayyubi Season 2 Episode 58",
+    "title": "Salahuddin Ayyubi Season 2 Episode 59",
     "poster": "assets/posters/salauddin_ayyubi.jpg",
     "day": "Mon – Fri",
     "time": "11:30 PM",
     "type": "🎧 Dubbed",
-    "live": true,
-    "countdown": false
+    "live": false,
+    "countdown": "2025-10-31T23:30:00"
   },
   {
     "title": "Sultan Mehmet Fatih Bolum 57",
@@ -18,12 +18,12 @@
     "countdown": "2025-11-05T12:30:00"
   },
   {
-    "title": "Kurulus Orhan Bolum 1",
+    "title": "Kurulus Orhan Bolum 2",
     "poster": "assets/posters/orhan.jpg",
     "day": "From 30 Oct",
     "time": false,
     "type": "💬 Subtitled",
-    "live": true,
-    "countdown": false
+    "live": false,
+    "countdown": "2025-11-06T12:30:00"
   }
 ]
