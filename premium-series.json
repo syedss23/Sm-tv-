@@ -8,121 +8,121 @@
   {
     "title": "Sultan Mehmet Fatih",
     "seasons": ["Season 1,2"],
-    "tracks": ["Urdu,Hindi,English Subtitles", "Hindi/Urdu DuB"],
+    "tracks": ["Urdu,Hindi,English Subtitles", "Hindi/Urdu Dubbed"],
     "tags": ["Historical", "TRT"]
   },
   {
     "title": "Salahuddin Ayyubi",
     "seasons": ["Season 1,2"],
-    "tracks": ["Hindi/Urdu DuB", "Subtitles: Hindi, English, Urdu"],
+    "tracks": ["Hindi/Urdu Dubbed", "Subtitles: Hindi, English, Urdu"],
     "tags": ["Historical", "Epic"]
   },
   {
     "title": "Moulana Jalaluddin Rumi",
     "seasons": ["Season 1,2,3"],
-    "tracks": ["Urdu/Hindi DuB"],
+    "tracks": ["Urdu/Hindi Dubbed"],
     "tags": ["Spiritual", "Biographical"]
   },
   {
     "title": "Alp Arslan (AAN TV)",
     "seasons": ["Season 1"],
-    "tracks": ["Complete DuB"],
-    "tags": ["TV", "Dub"]
+    "tracks": ["Complete Dubbed"],
+    "tags": ["TV"]
   },
   {
     "title": "Alp Arslan (TRT)",
     "seasons": ["Season 1"],
-    "tracks": ["Complete Dub"],
-    "tags": ["TRT", "Dub"]
+    "tracks": ["Complete Dubbed"],
+    "tags": ["TRT"]
   },
   {
     "title": "The Rise of Ottoman Empire",
-    "seasons": ["Season 1", "Season 2"],
-    "tracks": ["Dub"],
-    "tags": ["Docu-Drama", "Dub"]
+    "seasons": ["Season 1,2"],
+    "tracks": ["DuB"],
+    "tags": ["Docu-Drama"]
   },
   {
     "title": "Kurulus Osman",
-    "seasons": ["Season 1", "Season 2", "Season 3", "Season 4", "Season 5", "Season 6"],
-    "tracks": ["Subtitles: Urdu, Hindi, English", "Dub"],
+    "seasons": ["Season 1 to 6"],
+    "tracks": ["Subtitles: Urdu, Hindi, English", "Dubbed"],
     "tags": ["Action", "Historical"]
   },
   {
     "title": "Destan",
     "seasons": ["Season 1"],
-    "tracks": ["Dub"],
-    "tags": ["Drama", "Dub"]
+    "tracks": ["Dubbed"],
+    "tags": ["Drama", "history"]
   },
   {
     "title": "Young Ibn‑e‑Sina",
-    "seasons": ["Season 1", "Season 2"],
-    "tracks": ["Dub"],
-    "tags": ["Biographical", "Dub"]
+    "seasons": ["Season 1,2"],
+    "tracks": ["Dubbed"],
+    "tags": ["Biographical"]
   },
   {
-    "title": "Barbarossa (TRT) — Dub",
+    "title": "Barbarossa (TRT) — DuB",
     "seasons": ["Complete Series"],
-    "tracks": ["Dub"],
-    "tags": ["Naval", "TRT", "Dub"]
+    "tracks": ["Dubbed"],
+    "tags": ["Naval", "TRT"]
   },
   {
     "title": "Mavera — Haji Ahmed",
     "seasons": ["Season 1"],
-    "tracks": ["Dub"],
-    "tags": ["Spiritual", "Dub"]
+    "tracks": ["Dubbed"],
+    "tags": ["Spiritual"]
   },
   {
     "title": "The Great Conqueror — Golden Apple",
     "seasons": ["Season 1"],
-    "tracks": ["Dub"],
-    "tags": ["Historical", "Dub"]
+    "tracks": ["Dubbed"],
+    "tags": ["Historical"]
   },
   {
     "title": "Gilani the Ascetic — Abdul Qadir Jilani",
-    "seasons": ["Season 1", "Season 2"],
-    "tracks": ["Urdu/Hindi Dub"],
-    "tags": ["Spiritual", "Biographical", "Dub"]
+    "seasons": ["Season 1,2"],
+    "tracks": ["Urdu/Hindi Dubbed"],
+    "tags": ["Spiritual", "Biographical"]
   },
   {
     "title": "The Great Seljuk",
     "seasons": ["Season 1"],
     "tracks": ["Urdu/Hindi Dubbed"],
-    "tags": ["Historical", "Dub"]
+    "tags": ["Historical"]
   },
   {
     "title": "Barbaros Hayreddin",
     "seasons": ["Complete Series"],
-    "tracks": ["Dub"],
-    "tags": ["Naval", "Dub"]
+    "tracks": ["Dubbed"],
+    "tags": ["Naval"]
   },
   {
     "title": "Zarb‑e‑Mehmet",
     "seasons": ["Season 1"],
-    "tracks": ["Complete Series • Dub"],
-    "tags": ["Action", "Dub"]
+    "tracks": ["Complete Series • Dubbed"],
+    "tags": ["Action"]
   },
   {
     "title": "Land of Loyals — Muhafiz‑e‑Watan",
-    "seasons": ["Season 1", "Season 2"],
-    "tracks": ["Dub (Season 2 confirmed)"],
-    "tags": ["Action", "Dub"]
+    "seasons": ["Season 1,2"],
+    "tracks": ["Dubbed"],
+    "tags": ["Action"]
   },
   {
     "title": "Akif",
     "seasons": ["Season 1"],
-    "tracks": ["Dub"],
-    "tags": ["Biographical", "Dub"]
+    "tracks": ["Dubbed"],
+    "tags": ["Biographical"]
   },
   {
     "title": "Haji Bayram Veli",
     "seasons": ["Season 1"],
-    "tracks": ["Dub"],
-    "tags": ["Spiritual", "Dub"]
+    "tracks": ["Dubbed"],
+    "tags": ["Spiritual"]
   },
   {
     "title": "Mehmet the Conqueror",
     "seasons": ["Complete Series"],
-    "tracks": ["Dub"],
-    "tags": ["Historical", "Dub"]
+    "tracks": ["Dubbed"],
+    "tags": ["Historical"]
   }
 ]
