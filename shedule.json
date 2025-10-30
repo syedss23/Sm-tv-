@@ -23,7 +23,7 @@
     "day": "From 30 Oct",
     "time": false,
     "type": "💬 Subtitled",
-    "live": false,
-    "countdown": "2025-10-30T20:00:00"
+    "live": true,
+    "countdown": false
   }
 ]
