@@ -1,26 +1,32 @@
 [
   {
+    "title": "Kurulus Orhan",
+    "seasons": ["Season 1"],
+    "tracks": ["Subtitles: Urdu, Hindi, English"],
+    "tags": ["Action", "Historical"]
+  },
+  {
     "title": "Sultan Mehmet Fatih",
-    "seasons": ["Season 1", "Season 2"],
-    "tracks": ["Urdu Sub", "Hindi Sub", "English Sub", "Hindi/Urdu Dub"],
+    "seasons": ["Season 1,2"],
+    "tracks": ["Urdu,Hindi,English Subtitles", "Hindi/Urdu DuB"],
     "tags": ["Historical", "TRT"]
   },
   {
     "title": "Salahuddin Ayyubi",
-    "seasons": ["Season 1", "Season 2"],
-    "tracks": ["Hindi/Urdu Dub", "Subtitles: Hindi, English, Urdu", "Reviews"],
+    "seasons": ["Season 1,2"],
+    "tracks": ["Hindi/Urdu DuB", "Subtitles: Hindi, English, Urdu"],
     "tags": ["Historical", "Epic"]
   },
   {
     "title": "Moulana Jalaluddin Rumi",
-    "seasons": ["Season 1", "Season 2", "Season 3"],
-    "tracks": ["Urdu/Hindi Dub"],
+    "seasons": ["Season 1,2,3"],
+    "tracks": ["Urdu/Hindi DuB"],
     "tags": ["Spiritual", "Biographical"]
   },
   {
     "title": "Alp Arslan (AAN TV)",
     "seasons": ["Season 1"],
-    "tracks": ["Complete Dub"],
+    "tracks": ["Complete DuB"],
     "tags": ["TV", "Dub"]
   },
   {
