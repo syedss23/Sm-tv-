@@ -169,6 +169,19 @@
     "track": "dubbed"
     },
   {
+    "id": 13,
+    "title": "Land Of Loyals",
+    "slug": "land-of-loyals",
+    "poster": "assets/posters/land.jpg",
+    "desc": {
+      "en": "Land of Loyals Muhafiz e Watan is an epic Turkish historical drama that tells the story of Mustafa, a brave and loyal warrior who dedicates his life to protecting his watan (homeland) and his faith (imaan).",
+      "hi": "बारबरोस हैरेद्दीन – उस्मानिया एडमिरल की महागाथा। तुर्की सीरीज, उर्दू डब्ड।",
+      "ur": "باربروس ہےریددین، عثمانی بحری ایڈمرل کی شاندار کہانی۔ اردو ڈبbed ترکش سیریز."
+    },
+    "seasons": 2,
+    "track": "dubbed"
+    },
+  {
     "id": 101,
     "title": "Kuruluş: Orhan (English Subtitles)",
     "slug": "kurulus-orhan-en",
