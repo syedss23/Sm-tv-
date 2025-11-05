@@ -182,6 +182,19 @@
     "track": "dubbed"
     },
   {
+    "id": 15,
+    "title": "Mehmetcik (Battle of Glory)",
+    "slug": "mehmetcik",
+    "poster": "assets/posters/mehmetcik.jpg",
+    "desc": {
+      "en": "Follow the brave journey of Mehmet, a fearless soldier of the Ottoman Empire, who fights with faith and courage to protect his homeland during World War I. A tale of sacrifice, honor, and brotherhood.",
+      "hi": "बारबरोस हैरेद्दीन – उस्मानिया एडमिरल की महागाथा। तुर्की सीरीज, उर्दू डब्ड।",
+      "ur": "باربروس ہےریددین، عثمانی بحری ایڈمرل کی شاندار کہانی۔ اردو ڈبbed ترکش سیریز."
+    },
+    "seasons": 1,
+    "track": "dubbed"
+    },
+  {
     "id": 101,
     "title": "Kuruluş: Orhan (English Subtitles)",
     "slug": "kurulus-orhan-en",
