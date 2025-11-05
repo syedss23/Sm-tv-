@@ -5,8 +5,8 @@
     "day": "Mon – Thu",
     "time": "11:30 PM",
     "type": "🎧 Dubbed",
-    "live": false,
-    "countdown": "2025-11-05T23:30:00"
+    "live": true,
+    "countdown": false
   },
   {
     "title": "Sultan Mehmet Fatih Bolum 57",
