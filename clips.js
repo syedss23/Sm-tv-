@@ -1,8 +1,8 @@
-// clips.js — handles clips.json where embed is a URL (not an iframe string)
+// clips.js — reel-style viewer with autoplay & fullscreen overlay + swipe up/down navigation
 (function(){
   'use strict';
 
-  const FEED_PATH = './clips.json';
+  const FEED_PATH = './clips.json'; // keep same folder
   const root = document.getElementById('clips-root');
   const loadingEl = document.getElementById('clips-loading');
 
@@ -23,25 +23,30 @@
     });
   }
 
-  // build iframe from URL (URL should be an embed URL like: https://rumble.com/embed/....)
+  // build iframe element from an embed URL
   function buildIframeFromUrl(url){
     try {
+      // add autoplay param if not present
+      let src = String(url);
+      if (!/autoplay=/.test(src)) {
+        src += (src.includes('?') ? '&' : '?') + 'autoplay=1';
+      }
       const iframe = document.createElement('iframe');
-      iframe.setAttribute('src', url);
+      iframe.className = 'reel-iframe';
+      iframe.setAttribute('src', src);
       iframe.setAttribute('frameborder', '0');
       iframe.setAttribute('allowfullscreen', '');
       iframe.setAttribute('loading', 'lazy');
-      iframe.style.width = '100%';
-      iframe.style.height = '100%';
-      iframe.setAttribute('allow', 'autoplay; fullscreen');
+      // allow autoplay features
+      iframe.setAttribute('allow', 'autoplay; fullscreen; encrypted-media; picture-in-picture');
       return iframe;
     } catch (e) {
       return null;
     }
   }
 
-  // create card element; iframe is injected only after Play click
-  function createClipCard(item){
+  // create the standard card shown in list (Play opens full-screen overlay)
+  function createClipCard(item, index, onPlay){
     const card = document.createElement('article');
     card.className = 'clip-card';
 
@@ -57,35 +62,19 @@
     playBtn.className = 'clip-play-btn';
     playBtn.type = 'button';
     playBtn.innerHTML = '▶ Play';
+    playBtn.addEventListener('click', () => onPlay(index));
 
-    playBtn.addEventListener('click', function(){
-      // if iframe present, do nothing
-      if (playerWrap.querySelector('iframe')) return;
-      const url = item.embed || '';
-      if (!url) { toast('Embed missing'); return; }
-      const iframe = buildIframeFromUrl(url);
-      if (!iframe) { toast('Invalid embed URL'); return; }
-      // replace content
-      playerWrap.innerHTML = '';
-      playerWrap.appendChild(iframe);
-      // try to focus the iframe (no scroll because we do not call scrollIntoView)
-      try { iframe.setAttribute('tabindex','-1'); } catch(e){}
-    });
-
-    // append play button into placeholder bottom-left
     placeholder.appendChild(playBtn);
     playerWrap.appendChild(placeholder);
 
     const meta = document.createElement('div');
     meta.className = 'clip-meta';
-    const titleHtml = `<div class="clip-title">${escapeHtml(item.title || '')}</div>`;
-    const descHtml = `<div class="clip-desc">${escapeHtml(item.desc || '')}</div>`;
-    meta.innerHTML = titleHtml + descHtml;
+    meta.innerHTML = `<div class="clip-title">${escapeHtml(item.title||'')}</div>
+                      <div class="clip-desc">${escapeHtml(item.desc||'')}</div>`;
 
     const actions = document.createElement('div');
     actions.className = 'clip-actions';
 
-    // Share
     const shareBtn = document.createElement('button');
     shareBtn.className = 'btn';
     shareBtn.type = 'button';
@@ -99,9 +88,7 @@
     });
     actions.appendChild(shareBtn);
 
-    // Open on Rumble (if we can derive a page URL)
     if (item.embed && typeof item.embed === 'string') {
-      // Prefer an explicit "open" field; otherwise attempt to convert embed URL to public url
       const openUrl = item.open || (item.embed.includes('/embed/') ? item.embed.replace('/embed/','/') : null);
       if (openUrl) {
         const a = document.createElement('a');
@@ -115,12 +102,148 @@
     }
 
     meta.appendChild(actions);
-
     card.appendChild(playerWrap);
     card.appendChild(meta);
     return card;
   }
 
+  // overlay reel player
+  function createOverlay(clips, startIndex){
+    // overlay elements
+    const overlay = document.createElement('div');
+    overlay.className = 'reel-overlay';
+    overlay.setAttribute('role','dialog');
+    overlay.setAttribute('aria-label','Clips viewer');
+    overlay.tabIndex = -1;
+
+    const counter = document.createElement('div');
+    counter.className = 'reel-counter';
+    overlay.appendChild(counter);
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'reel-close';
+    closeBtn.type = 'button';
+    closeBtn.innerText = 'Close';
+    closeBtn.addEventListener('click', closeOverlay);
+    overlay.appendChild(closeBtn);
+
+    const playerContainer = document.createElement('div');
+    playerContainer.className = 'reel-player';
+    overlay.appendChild(playerContainer);
+
+    const hint = document.createElement('div');
+    hint.className = 'reel-swipe-hint';
+    hint.innerText = 'Swipe up/down to navigate';
+    overlay.appendChild(hint);
+
+    let idx = startIndex;
+    let currentIframe = null;
+
+    function showIndex(i){
+      if (i < 0) i = 0;
+      if (i >= clips.length) i = clips.length - 1;
+      idx = i;
+      counter.innerText = `${idx+1} / ${clips.length}`;
+      // remove existing iframe
+      playerContainer.innerHTML = '';
+      currentIframe = null;
+      // build iframe and append
+      const url = clips[idx].embed || '';
+      const iframe = buildIframeFromUrl(url);
+      if (!iframe) {
+        playerContainer.innerHTML = `<div style="color:#fff;padding:20px;">Cannot load clip</div>`;
+        return;
+      }
+      playerContainer.appendChild(iframe);
+      currentIframe = iframe;
+      // try request fullscreen for immersive feel (best effort)
+      try {
+        // allow user gesture triggered: requestFullscreen on playerContainer element
+        if (playerContainer.requestFullscreen) {
+          playerContainer.requestFullscreen().catch(()=>{ /* ignore */ });
+        } else if (playerContainer.webkitRequestFullscreen) {
+          playerContainer.webkitRequestFullscreen();
+        }
+      } catch(e){}
+    }
+
+    // navigation helpers
+    function next(){
+      if (idx < clips.length - 1) { showIndex(idx+1); }
+      else { /* bounce / end */ hintFlash('End of clips'); }
+    }
+    function prev(){
+      if (idx > 0) { showIndex(idx-1); }
+      else { hintFlash('Start of clips'); }
+    }
+
+    // small hint flash
+    function hintFlash(text){
+      hint.innerText = text;
+      setTimeout(()=> { hint.innerText = 'Swipe up/down to navigate'; }, 900);
+    }
+
+    // touch swipe handling
+    let startY = null;
+    let startTime = 0;
+    overlay.addEventListener('touchstart', function(e){
+      const t = e.touches && e.touches[0];
+      if (!t) return;
+      startY = t.clientY;
+      startTime = Date.now();
+    }, {passive:true});
+    overlay.addEventListener('touchend', function(e){
+      if (startY == null) return;
+      const t = (e.changedTouches && e.changedTouches[0]) || null;
+      if (!t) { startY = null; return; }
+      const dy = startY - t.clientY; // positive => swipe up
+      const dt = Date.now() - startTime;
+      startY = null;
+      // threshold
+      if (Math.abs(dy) < 40 || dt > 800) return;
+      if (dy > 0) next(); else prev();
+    }, {passive:true});
+
+    // mouse wheel (desktop) to navigate
+    let wheelDebounce = 0;
+    overlay.addEventListener('wheel', function(e){
+      const now = Date.now();
+      if (now < wheelDebounce) return;
+      wheelDebounce = now + 250;
+      if (e.deltaY > 0) next(); else prev();
+    });
+
+    // keyboard navigation: ArrowUp/ArrowDown/Escape
+    overlay.addEventListener('keydown', function(e){
+      if (e.key === 'ArrowUp') { e.preventDefault(); prev(); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); next(); }
+      else if (e.key === 'Escape') { closeOverlay(); }
+    });
+
+    // close overlay
+    function closeOverlay(){
+      try {
+        // exit fullscreen if active
+        if (document.fullscreenElement) {
+          document.exitFullscreen && document.exitFullscreen().catch(()=>{});
+        }
+      } catch(e){}
+      overlay.remove();
+      // restore focus to root
+      try { root && root.focus && root.focus(); } catch(e){}
+    }
+
+    // attach to DOM
+    document.body.appendChild(overlay);
+    // set initial focus for keyboard events
+    try { overlay.focus(); } catch(e){}
+
+    showIndex(idx);
+
+    return { overlay, showIndex, closeOverlay };
+  }
+
+  // load feed and render cards
   async function loadClips(){
     try {
       const res = await fetch(FEED_PATH, { cache: 'no-cache' });
@@ -146,9 +269,16 @@
         return;
       }
 
-      // Append cards (newest first)
-      sorted.forEach(item => {
-        const card = createClipCard(item);
+      // convert to array and attach play handler that opens overlay
+      const clipsArray = sorted.map(x => x);
+
+      // render cards (newest first)
+      clipsArray.forEach((item, idx) => {
+        const card = createClipCard(item, idx, (indexToPlay) => {
+          // open overlay starting at this index
+          const overlay = createOverlay(clipsArray, indexToPlay);
+          // overlay returns object but we don't need to store globally
+        });
         root.appendChild(card);
       });
 
