@@ -3,80 +3,84 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Clips — SmTv Urdu</title>
-  <meta name="description" content="Shorts and clips — scrollable reel-style videos embedded from Rumble." />
-  <link rel="stylesheet" href="style.css" />
-  <!-- small page-specific styling -->
+  <title>Clips & Shorts — SmTv Urdu</title>
+
+  <!-- main site css -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- small page-specific styles (keeps look similar to rest of site) -->
   <style>
     :root{
       --bg:#0b0d10;
-      --card:#0f1720;
-      --muted:#cdd6e0;
-      --accent:#23c6ed;
-      --container-max:1100px;
+      --card-bg:#0f1317;
+      --muted:#bfcfd8;
+      --accent:#00d0f0;
+      --pill:#ffd400;
     }
-    html,body{height:100%;margin:0;background:var(--bg);color:#fff;font-family:Segoe UI,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-    #main-content{max-width:var(--container-max);margin:0 auto;padding:14px}
-    h1.page-title{font-size:1.35rem;margin:8px 0 14px;color:var(--accent);font-weight:900}
-    .clips-list{display:flex;flex-direction:column;gap:18px;padding-bottom:90px}
+    body{background:var(--bg);color:#fff;margin:0;font-family:Segoe UI,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+    #main-content{max-width:1100px;margin:0 auto;padding:18px}
+    h1.page-title{font-size:1.8rem;color:var(--accent);margin:6px 0 14px 0;font-weight:800}
+    .clips-wrap{display:flex;flex-direction:column;gap:18px}
+    .loading{color:#9fd3ff;font-weight:700;padding:28px 8px}
+    .error{color:#ffd700;background:#111;padding:14px;border-radius:10px}
+
+    /* card */
     .clip-card{
-      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));
+      background:linear-gradient(180deg,#0d1114, #091018);
       border-radius:14px;
       overflow:hidden;
-      box-shadow:0 10px 32px rgba(0,0,0,0.6);
+      box-shadow:0 8px 32px rgba(0,0,0,0.5);
       border:1px solid rgba(255,255,255,0.02);
-      display:flex;
-      flex-direction:column;
     }
-    .clip-media{
+    .clip-player-wrap{
       position:relative;
       width:100%;
-      padding-bottom:56.25%; /* 16:9 */
-      background:#111;
+      /* tall portrait area for mobile reels */
+      aspect-ratio: 9 / 16;
+      background:#000;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
     }
-    .clip-thumb{
-      position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+    /* fallback for browsers not supporting aspect-ratio */
+    @supports not (aspect-ratio: 9/16) {
+      .clip-player-wrap{height:62vh; min-height:360px; max-height:720px;}
     }
-    .clip-overlay{
-      position:absolute;left:12px;bottom:12px;display:flex;gap:10px;align-items:center;
+    .clip-placeholder{
+      position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center;border-bottom-left-radius:0;border-bottom-right-radius:0;
     }
-    .btn-play{
-      display:inline-flex;align-items:center;justify-content:center;
-      background:linear-gradient(90deg,#ffd400,#ffb357);
-      color:#111;font-weight:800;padding:10px 14px;border-radius:999px;border:none;cursor:pointer;
-      box-shadow:0 8px 26px rgba(255,160,40,0.14);
+    .clip-play-btn{
+      display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border-radius:999px;background:linear-gradient(90deg,#ffd400,#ffb357);color:#111;font-weight:800;border:none;cursor:pointer;box-shadow:0 8px 30px rgba(255,160,40,0.14);
     }
-    .clip-meta{padding:12px 14px 16px 14px}
-    .clip-title{font-size:1.06rem;font-weight:800;color:#fff;margin:0 0 6px}
-    .clip-desc{font-size:.94rem;color:var(--muted);margin:0}
-    /* placeholder box where iframe is inserted */
-    .clip-embed-slot{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
-    /* only show embed container when iframe inserted */
-    .clip-embed-slot iframe{width:100%;height:100%;border:0;display:block}
-    /* tiny controls row */
-    .clip-controls{display:flex;gap:10px;align-items:center;margin-top:8px}
-    .small-btn{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.03);color:#fff;padding:6px 10px;border-radius:8px;cursor:pointer}
-    /* single-active indicator */
-    .active-embed{outline:3px solid rgba(34,193,195,0.12);box-shadow:0 16px 48px rgba(0,0,0,0.6)}
-    @media (min-width:900px){
-      .clip-card{flex-direction:row;gap:14px}
-      .clip-media{flex:0 0 460px;padding-bottom:56.25% /* maintains ratio */}
-      .clip-meta{flex:1;padding:18px}
+    .clip-meta{padding:14px 16px;border-top:1px solid rgba(255,255,255,0.02)}
+    .clip-title{font-size:1.05rem;font-weight:800;color:#fff;margin:0 0 6px 0}
+    .clip-desc{color:var(--muted);margin:0 0 12px 0}
+
+    .clip-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:10px;color:var(--muted);font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+    .btn:hover{background:rgba(255,255,255,0.02);color:#fff}
+
+    /* responsive spacing */
+    @media (min-width:700px){
+      .clip-player-wrap{aspect-ratio:16/9;height:auto}
+      .clip-card{display:flex;gap:12px;align-items:flex-start}
+      .clip-player-wrap{flex:1;min-width:420px;border-radius:12px}
+      .clip-meta{flex:1;padding:16px}
     }
   </style>
+
 </head>
 <body>
   <div id="main-content">
-    <header><h1 class="page-title">Clips & Shorts</h1></header>
+    <h1 class="page-title">Clips & Shorts</h1>
 
-    <main>
-      <section id="clips-area" aria-live="polite">
-        <div id="clips-loading" style="color:#9fd3ff;padding:8px 0">Loading clips...</div>
-        <div class="clips-list" id="clips-list" role="list"></div>
-      </section>
-    </main>
+    <div id="clips-root" class="clips-wrap" aria-live="polite">
+      <div class="loading" id="clips-loading">Loading clips...</div>
+    </div>
   </div>
 
-  <script src="clips.js" defer></script>
+  <!-- clips script -->
+  <script defer src="clips.js"></script>
 </body>
 </html>
