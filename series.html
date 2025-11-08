@@ -2,205 +2,81 @@
 <html lang="en">
 <head>
   <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WM3KEDD127"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-WM3KEDD127');
-  </script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WM3KEDD127"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'G-WM3KEDD127');
+</script>
   <meta charset="UTF-8">
   <title>SmTv Urdu</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Watch Turkish drama series and historical shows in Urdu on SmTv Urdu. All series details and streaming links.">
   <link rel="stylesheet" href="style.css">
-
-  <style>
-    /* Page basics */
-    body { background:#0b0d10; color:#fff; margin:0; font-family: 'Segoe UI', Arial, sans-serif; }
-    #main-content { max-width:1100px; margin:0 auto; padding:14px; }
-    header { height:0; } /* back button inserted by JS */
-
-    /* Series details container */
-    #series-details { margin-top:10px; }
-
-    /* centered details card */
-    .pro-series-header-pro {
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      text-align:center;
-      gap:12px;
-      padding:18px;
-      border-radius:14px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
-      box-shadow: 0 8px 22px rgba(0,0,0,0.45);
-      position:relative;
-      margin-bottom:12px;
-    }
-    .pro-series-back-btn-pro {
-      position:absolute;
-      left:14px;
-      top:14px;
-      width:48px;
-      height:48px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      border-radius:12px;
-      background: rgba(0, 150, 200, 0.12);
-      border: 2px solid rgba(0,160,210,0.18);
-      box-shadow: 0 6px 18px rgba(0,140,200,0.08);
-      text-decoration:none;
-    }
-    .pro-series-poster-pro {
-      width:160px;
-      height:96px;
-      border-radius:10px;
-      object-fit:cover;
-      display:block;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.45);
-    }
-    .pro-series-title-pro { font-size:22px; margin:8px 0; color:#00d0f0; font-weight:800; }
-    .pro-series-desc-pro { color:#cfd8df; line-height:1.45; }
-
-    /* Premium message */
-    .premium-channel-message {
-      margin-top: 12px;
-      padding: 14px;
-      background: linear-gradient(135deg, #101a24 90%, #23c6ed15 100%);
-      border: 2px solid #23c6ed22;
-      border-radius: 12px;
-      color: #e6f9ff;
-      font-weight:700;
-      max-width:760px;
-    }
-    .btn-primary{ display:inline-block; background:#ffd400; color:#13263a; font-weight:800; padding:10px 16px; border-radius:999px; box-shadow:0 6px 18px #ffd40044; text-decoration:none; }
-
-    /* season tabs */
-    .pro-seasons-tabs-pro { display:flex; gap:10px; justify-content:center; margin-top:8px; flex-wrap:wrap; }
-    .pro-season-tab-pro { background:rgba(255,255,255,0.03); border:none; color:#ddd; padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:700; }
-    .pro-season-tab-pro.active { background: linear-gradient(90deg,#ffcf33,#ff7a5f); color:#111; transform:translateY(-4px); box-shadow:0 10px 28px rgba(255,120,80,0.12); }
-
-    /* HORIZONTAL episodes row */
-    .pro-episodes-row-pro {
-      display:flex;
-      gap:12px;
-      overflow-x:auto;
-      padding:12px 6px;
-      -webkit-overflow-scrolling:touch;
-      scroll-snap-type:x mandatory;
-      margin-top:12px;
-    }
-    .pro-episode-card-pro {
-      scroll-snap-align:center;
-      flex:0 0 320px; /* width of each horizontal card */
-      display:flex;
-      gap:12px;
-      align-items:center;
-      padding:12px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));
-      border-radius:12px;
-      text-decoration:none;
-      color:#fff;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.45);
-      min-height:96px;
-    }
-    .pro-ep-thumb-wrap-pro { flex:0 0 160px; width:160px; height:90px; position:relative; border-radius:8px; overflow:hidden; background:#111; }
-    .pro-ep-thumb-pro { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
-    .pro-ep-num-pro {
-      position:absolute; right:8px; top:8px;
-      background: linear-gradient(90deg,#ffcf33,#ff7a5f);
-      color:#111; font-weight:800; padding:6px 10px; border-radius:999px; box-shadow:0 8px 22px rgba(255,120,60,0.12);
-      font-size:13px;
-    }
-    .pro-ep-title-pro { flex:1; font-size:16px; font-weight:800; line-height:1.15; color:#fff; }
-
-    .pro-video-frame-wrap { margin-top:18px; border-radius:10px; overflow:hidden; }
-
-    /* responsive tweaks */
-    @media(max-width:420px){
-      .pro-episode-card-pro { flex:0 0 260px; }
-      .pro-ep-thumb-wrap-pro { width:120px; height:72px; }
-    }
-
-    /* footer safe area */
-    @media (max-width:600px) {
-      body { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
-    }
-  </style>
-
-  <script defer src="/series.js"></script>
+  <script defer src="series.js"></script>
 </head>
 <body>
   <div id="main-content">
-    <header></header>
-
-    <div id="series-details" aria-live="polite"></div>
+    <header>
+      <!-- Beautiful back button will be rendered by JS for consistent style -->
+    </header>
+      </script>
+      <script type="text/javascript" src="//www.highperformanceformat.com/c91a82435d260630918ecc80c95125ac/invoke.js"></script>
+    </div>
+    
+    <div id="series-details"></div>
   </div>
 
-  <!-- dynamic meta/title updater for ?series=slug (keeps your behavior) -->
+  <!-- Inline JS to dynamically update <title> and meta description -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const params = new URLSearchParams(window.location.search);
       const slug = params.get('series');
-      if(!slug) return;
-      (async function(){
-        try {
-          const r = await fetch('/series.json', {cache:'no-cache'});
-          if(!r.ok) return;
-          const arr = await r.json();
-          const meta = Array.isArray(arr) ? arr.find(s => s.slug === slug) : null;
-          if(meta && meta.title){
-            document.title = `${meta.title} – SmTv Urdu`;
-            const metaDesc = document.querySelector('meta[name="description"]');
-            if (metaDesc) metaDesc.setAttribute('content', `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu.`);
+      fetch('series.json').then(res => res.json()).then(seriesArr => {
+        const meta = Array.isArray(seriesArr) ? seriesArr.find(s => s.slug === slug) : null;
+        if (meta && meta.title) {
+          document.title = `${meta.title} – SmTv Urdu`;
+          const metaDesc = document.querySelector('meta[name="description"]');
+          if (metaDesc) {
+            metaDesc.setAttribute('content', `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`);
           }
-        } catch(e){ /* ignore */ }
-      })();
+        }
+      });
     });
   </script>
 
-  <!-- WhatsApp Popup -->
-  <div id="whatsappPopup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); max-width:340px; width:90vw; box-shadow:0 8px 24px rgba(15,18,30,.13); border-radius:22px; background:#232936; color:#fff; padding:28px;">
+  <!-- Centered WhatsApp Update Popup Notification -->
+  <div id="whatsappPopup"
+       style="display:none; position:fixed; top:50%; left:50%; z-index:99999; transform:translate(-50%, -50%); max-width:340px; width:90vw; box-shadow:0 8px 24px rgba(15,18,30,.13); border-radius:22px; background:#232936; color:#fff; padding:28px 28px 22px 28px; font-size:1.09em; text-align:left; font-family: 'Segoe UI', Arial, sans-serif;">
     <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
-      <img src="favicon.png" alt="Logo" style="width:40px;height:40px;border-radius:10px;">
-      <strong style="font-size:1.1em">Stay Updated!</strong>
+      <img src="favicon.png" alt="Channel Logo" style="width:40px; height:40px; border-radius:18px; object-fit:cover; box-shadow:0 2px 8px rgba(40,52,70,.10);">
+      <span style="font-weight:700; font-size:1.18em;">Stay Updated!</span>
     </div>
-    <div style="margin-bottom:16px;">Get instant notifications for new episodes. Join our WhatsApp Channel.</div>
+    <div style="margin-bottom:16px; color:#f1f1f1;">Get instant notifications for new episodes and exclusive news.<br>Join our WhatsApp Channel now.</div>
     <div style="text-align:center;">
-      <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k" target="_blank" style="background:#29a345;color:#fff;padding:10px 18px;border-radius:10px;text-decoration:none;font-weight:700;">🟢 Join on WhatsApp</a>
-      <div style="margin-top:10px;"><button id="closeWhatsAppPopup" style="background:none;border:none;color:#ff6868;font-weight:700;cursor:pointer;">✖ Close</button></div>
+      <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k" target="_blank"
+         style="display:inline-block; background:#29a345; color:#fff; font-weight:600; border-radius:11px; padding:11px 26px; text-decoration:none; font-size:1em; box-shadow:0 2px 8px rgba(40,52,70,.09); margin-bottom:15px; transition:background 0.2s;">
+        🟢 Join on WhatsApp
+      </a>
+      <br>
+      <button id="closeWhatsAppPopup"
+              style="background:none; border:none; color:#ff6868; font-weight:600; font-size:1.12em; margin-top:7px; cursor:pointer; display:block; margin-left:auto; margin-right:auto;">
+        ✖ Close
+      </button>
     </div>
   </div>
-
   <script>
     window.addEventListener('DOMContentLoaded', function() {
-      setTimeout(()=> { const p=document.getElementById('whatsappPopup'); if(p) p.style.display='block'; },2000);
-      const closeBtn=document.getElementById('closeWhatsAppPopup'); if(closeBtn) closeBtn.onclick=()=>document.getElementById('whatsappPopup').style.display='none';
-    });
-  </script>
+      setTimeout(function() {
+        document.getElementById('whatsappPopup').style.display = "block";
+      }, 2000);
 
-  <!-- Footer placeholder -->
-  <div id="footer-placeholder"></div>
-  <script>
-  (async function loadFooter(){
-    if (document.readyState !== 'complete') await new Promise(r=>window.addEventListener('load',r,{once:true}));
-    try {
-      const res = await fetch('/includes/footer.html', {cache:'no-cache'});
-      if(!res.ok) return;
-      document.getElementById('footer-placeholder').innerHTML = await res.text();
-      // activate nav item
-      const nav = document.getElementById('smtv-bottom-nav');
-      if(nav){
-        const items = Array.from(nav.querySelectorAll('.nav-item'));
-        items.forEach(i=>i.classList.remove('active'));
-        const seriesItem = items.find(i=> (i.dataset.name||'').toLowerCase() === 'series' || (i.getAttribute('href')||'').toLowerCase().includes('series'));
-        if(seriesItem) seriesItem.classList.add('active');
-      }
-    } catch(e){}
-  })();
+      document.getElementById('closeWhatsAppPopup').onclick = function() {
+        document.getElementById('whatsappPopup').style.display = "none";
+      };
+    });
   </script>
 </body>
 </html>
