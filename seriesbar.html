@@ -172,5 +172,124 @@
       });
     })();
   </script>
+  <!-- FOOTER: load includes/footer.html (robust loader + fallback) -->
+<div id="footer-placeholder"></div>
+
+<script>
+(async function loadFooterRobust(){
+  // candidate footer paths (tries multiple common locations)
+  const candidates = [
+    '/includes/footer.html',
+    'includes/footer.html',
+    './includes/footer.html',
+    '/footer.html',
+    'footer.html'
+  ];
+
+  const placeholder = document.getElementById('footer-placeholder');
+
+  // helper to insert and initialize nav
+  function initNav(html) {
+    try {
+      placeholder.innerHTML = html;
+      // Ensure body has space so content isn't hidden under nav
+      try {
+        const curPad = parseInt(getComputedStyle(document.body).paddingBottom) || 0;
+        const minPad = 96;
+        if (curPad < minPad) document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))';
+      } catch(e){}
+
+      // Activate the "Series" nav item (look for dataset.name or href)
+      const nav = placeholder.querySelector('#smtv-bottom-nav') || placeholder.querySelector('.smtv-bottom-nav');
+      if (!nav) return;
+
+      const items = Array.from(nav.querySelectorAll('.nav-item'));
+      items.forEach(i => i.classList.remove('active'));
+
+      // Prefer explicit dataset.name === 'series', otherwise href contains 'series'
+      let seriesItem = items.find(i => ((i.dataset && (i.dataset.name || '').toLowerCase()) === 'series'));
+      if (!seriesItem) {
+        seriesItem = items.find(i => {
+          const href = (i.getAttribute && i.getAttribute('href') || '').toLowerCase();
+          return href && href.includes('series');
+        });
+      }
+
+      // If opened from a series page (query param ?series=), prefer the series nav
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('series') && seriesItem) {
+        seriesItem.classList.add('active');
+      } else {
+        // fallback: match by pathname
+        const path = location.pathname.toLowerCase();
+        const byPath = items.find(i => (i.getAttribute('href')||'').toLowerCase().includes(path.split('/').pop()));
+        if (byPath) byPath.classList.add('active');
+        else if (seriesItem) seriesItem.classList.add('active');
+      }
+
+      // Attach click handlers to nav items to highlight immediately and persist last-click
+      items.forEach(a => {
+        if (a._smtvInit) return;
+        a._smtvInit = true;
+        a.addEventListener('click', function(e){
+          try { e.preventDefault && e.preventDefault(); } catch(err){}
+          items.forEach(i => i.classList.remove('active'));
+          this.classList.add('active');
+          try { localStorage.setItem('smtv_last_nav', this.dataset.name || this.getAttribute('href')); } catch(e){}
+          const href = this.getAttribute('href');
+          if (href) location.assign(href);
+        }, { passive: false });
+      });
+
+    } catch (e) {
+      console.warn('initNav error', e);
+    }
+  }
+
+  // try fetch candidates sequentially
+  for (const cand of candidates) {
+    try {
+      const url = cand;
+      const res = await fetch(url, { cache: 'no-cache' });
+      if (!res.ok) continue;
+      const text = await res.text();
+
+      // quick sanity: must contain nav element marker
+      if (text.includes('smtv-bottom-nav') || text.includes('smtv-bottom')) {
+        initNav(text);
+        return;
+      } else {
+        // still accept it (some builds may not use same class names)
+        initNav(text);
+        return;
+      }
+    } catch (e) {
+      // try next candidate
+      continue;
+    }
+  }
+
+  // If all fetch attempts failed, insert a small inline fallback nav so page isn't missing the bar
+  placeholder.innerHTML = `
+    <nav class="smtv-bottom-nav" id="smtv-bottom-nav" role="navigation" aria-label="Main">
+      <a href="/index.html" class="nav-item" data-name="home"><span class="icon-wrap"><i class="fa-solid fa-house"></i></span><span class="label">Home</span></a>
+      <a href="/series.html" class="nav-item active" data-name="series"><span class="icon-wrap"><i class="fa-solid fa-film"></i></span><span class="label">Series</span></a>
+      <a href="/clips.html" class="nav-item" data-name="clips"><span class="icon-wrap"><i class="fa-solid fa-play-circle"></i></span><span class="label">Clips</span></a>
+      <a href="/premium.html" class="nav-item" data-name="premium"><span class="icon-wrap"><i class="fa-solid fa-star"></i></span><span class="label">Premium</span></a>
+      <a href="/more.html" class="nav-item" data-name="more"><span class="icon-wrap"><i class="fa-solid fa-circle-info"></i></span><span class="label">More</span></a>
+    </nav>
+    <style>
+      /* minimal inline style for fallback (keeps appearance acceptable) */
+      .smtv-bottom-nav{position:fixed;left:12px;right:12px;bottom:12px;height:64px;display:flex;gap:6px;padding:8px;border-radius:14px;background:rgba(10,10,12,0.9);align-items:center;z-index:1200;padding-bottom:calc(env(safe-area-inset-bottom) + 8px);}
+      .smtv-bottom-nav .nav-item{flex:1;text-align:center;color:#bdbdbd;text-decoration:none;padding:6px;border-radius:10px;}
+      .smtv-bottom-nav .nav-item.active{color:#fff;transform:translateY(-6px);}
+      .smtv-bottom-nav .icon-wrap{display:inline-flex;width:40px;height:40px;align-items:center;justify-content:center;border-radius:10px;}
+      .smtv-bottom-nav .label{display:block;font-size:12px;margin-top:3px;}
+    </style>
+  `;
+  // ensure padding
+  try { document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))'; } catch(e){}
+})();
+</script>
 </body>
 </html>
