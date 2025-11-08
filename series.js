@@ -1,267 +1,259 @@
-(function() {
+// series.js â€” ready to replace (prevents auto-scrolling; opens series at top)
+(function () {
+  'use strict';
+
   const qs = new URLSearchParams(location.search);
   const slug = (qs.get('series') || '').trim();
   const lang = (qs.get('lang') || '').toLowerCase();
-  let season = qs.get('season') || '1';
+  const seasonQuery = qs.get('season') || '1';
 
-  // Tutorial embeds (keep as you had them)
   const HOWTO_PROCESS_1 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v6yg466/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
   const HOWTO_PROCESS_2 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v6yg45g/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
 
-  // Small UI/transition CSS injected so we don't require external edits
-  (function injectStyles(){
-    const css = `
-      .pro-episodes-row-wrap-pro { overflow-anchor: none; transition: opacity .28s ease, filter .28s ease; will-change: opacity, filter; }
-      .pro-episodes-row-wrap-pro.is-loading { opacity:.6; filter:blur(1px) saturate(.95); pointer-events:none; }
-      .pro-episodes-row-pro { transition: transform .28s ease, opacity .28s ease; will-change: transform, opacity; }
-      .pro-ep-loading { transition: opacity .28s ease, transform .28s ease; opacity:.95; transform: translateY(0); display:flex; align-items:center; justify-content:center; color:#9fd3ff; font-weight:800; border-radius:12px; min-width:120px; min-height:120px; background:linear-gradient(90deg,#0b1220,#111827); }
-    `;
-    const s = document.createElement('style');
-    s.textContent = css;
-    document.head.appendChild(s);
-  })();
-
-  function jsonFor(s) {
-    if (lang === 'dub') return `episode-data/${slug}-s${s}.json`;
-    if (['en','hi','ur'].includes(lang)) return `episode-data/${slug}-s${s}-${lang}.json`;
-    return `episode-data/${slug}-s${s}.json`;
+  function jsonFor(season) {
+    if (!slug) return null;
+    if (lang === 'dub') return `episode-data/${slug}-s${season}.json`;
+    if (lang && ['en', 'hi', 'ur'].includes(lang)) return `episode-data/${slug}-s${season}-${lang}.json`;
+    return `episode-data/${slug}-s${season}.json`;
   }
 
   function bust(url) {
     const v = (qs.get('v') || '1');
-    return url + (url.includes('?') ? '&' : '?') + 'v=' + v;
+    return url + (url.includes('?') ? '&' : '?') + 'v=' + encodeURIComponent(v);
   }
 
   function toast(msg) {
-    const t = document.createElement('div');
-    t.textContent = msg;
-    t.style.cssText = 'position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#122231;color:#9fe6ff;padding:10px 14px;border-radius:9px;border:1px solid #2d4b6a;font-weight:700;z-index:9999;font-family:Montserrat,sans-serif;';
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 2600);
+    try {
+      const t = document.createElement('div');
+      t.textContent = msg;
+      t.style.cssText = 'position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#122231;color:#9fe6ff;padding:10px 14px;border-radius:9px;border:1px solid #2d4b6a;font-weight:700;z-index:99999;font-family:Montserrat,sans-serif;';
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 2600);
+    } catch (e) { console.warn('toast error', e); }
   }
 
-  // Simple fetch with one retry and timeout
-  function fetchWithRetry(url, retries = 1, timeout = 9000) {
-    return new Promise((resolve, reject) => {
-      let attempts = 0;
-      function attempt() {
-        attempts++;
-        const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), timeout);
-        fetch(url, { signal: controller.signal, cache: 'no-cache' })
-          .then(res => {
-            clearTimeout(timer);
-            if (!res.ok) throw new Error('Bad response ' + res.status);
-            return res.json();
-          })
-          .then(json => resolve(json))
-          .catch(err => {
-            clearTimeout(timer);
-            if (attempts <= retries) {
-              setTimeout(attempt, 300);
-            } else {
-              reject(err);
-            }
-          });
+  // injected styles (keeps cards compact if no CSS update)
+  const injectedStyles = `
+    /* minimal safety styles in case CSS doesn't load */
+    .pro-episodes-row-pro{ -webkit-overflow-scrolling: touch; }
+  `;
+  try { const s = document.createElement('style'); s.textContent = injectedStyles; document.head.appendChild(s); } catch(e){}
+
+  function escapeHtml(s) {
+    if (s === null || s === undefined) return '';
+    return String(s).replace(/[&<>"'`=\/]/g, function (c) {
+      return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','/':'&#x2F;','`':'&#x60;','=':'&#x3D;' }[c];
+    });
+  }
+
+  // Try several candidate episode JSON paths and return episodes + diagnostics
+  async function fetchEpisodesWithCandidates(season) {
+    const candidates = [
+      `episode-data/${slug}-s${season}.json`,
+      `episode-data/${slug}-s${season}-${lang}.json`,
+      `episode-data/${slug}-s${season}-en.json`,
+      `episode-data/${slug}-s${season}-hi.json`,
+      `episode-data/${slug}-s${season}-ur.json`,
+      `episode-data/${slug}-s${season}-.json`,
+      `episode-data/${slug}-s${season}-sub.json`,
+      `episode-data/${slug}-s${season}-en-sub.json`,
+      `episode-data/${slug}-s${season}-en-sub-s1.json`,
+      `episode-data/${slug}-s${season}-sub-s1.json`
+    ].filter(Boolean);
+
+    const tried = [];
+
+    for (const cand of candidates) {
+      try {
+        const path = cand.startsWith('/') ? cand : '/' + cand.replace(/^\/+/, '');
+        const url = bust(path);
+        const resp = await fetch(url, { cache: 'no-cache' });
+        const rec = { path: cand, ok: resp.ok, status: resp.status, err: null };
+        const text = await resp.text();
+        try {
+          const parsed = JSON.parse(text);
+          return { episodes: parsed, tried: [...tried, rec] };
+        } catch (parseErr) {
+          rec.err = 'json-parse: ' + (parseErr.message || parseErr);
+          tried.push(rec);
+          continue;
+        }
+      } catch (fetchErr) {
+        tried.push({ path: cand, ok: false, status: null, err: String(fetchErr) });
+        continue;
       }
-      attempt();
-    });
-  }
-
-  // prevent automatic focus-driven jumping by blurring any focused element
-  function safeBlur() {
-    try { const a = document.activeElement; if (a && a.blur) a.blur(); } catch(e){}
-  }
-
-  // restore scroll (if savedY provided). Use auto behavior to avoid additional scrolling animations.
-  function restoreScroll(savedY) {
-    if (savedY == null) return;
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        try { window.scrollTo({ top: savedY, left: 0, behavior: 'auto' }); }
-        catch(e) { window.scrollTo(0, savedY); }
-      });
-    });
-  }
-
-  const mount = document.getElementById('series-details');
-  if (!mount) return;
-
-  // initial load: series.json then build header/tabs + initial episodes
-  fetch('series.json').then(r => r.json()).then(all => {
-    const meta = Array.isArray(all) ? all.find(s => s.slug === slug) : null;
-    if (!meta) {
-      mount.innerHTML = `<div style="color:#fff;padding:20px;">Series not found.</div>`;
-      return;
     }
-    document.title = `${meta.title} – SmTv Urdu`;
 
-    const premiumMsg = `
-      <div class="premium-channel-message" role="region" aria-label="Premium">
-        <strong>Go Ad-Free!</strong> Get direct access to all episodes by joining our <strong>Premium Channel</strong>.
-        <div class="premium-btn-row" style="margin-top:10px;">
-          <a href="/premium" class="btn-primary" rel="noopener">Join Premium</a>
-        </div>
-      </div>
-    `;
-
-    mount.innerHTML = `
-      <section class="pro-series-header-pro" id="pro-series-header-pro">
-        <a href="index.html" class="pro-series-back-btn-pro" title="Back" aria-label="Back to home">
-          <svg width="20" height="20" viewBox="0 0 20 20"><polyline points="12 4 6 10 12 16" fill="none" stroke="#23c6ed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
-        </a>
-        <img class="pro-series-poster-pro" src="${meta.poster || 'default-poster.jpg'}" alt="${meta.title}">
-        <div class="pro-series-meta-pro">
-          <h2 class="pro-series-title-pro">${meta.title}</h2>
-          <div class="pro-series-desc-pro">${(meta.desc && (meta.desc.en || meta.desc)) || ''}</div>
-          ${premiumMsg}
-        </div>
-      </section>
-
-      <nav class="pro-seasons-tabs-pro" id="pro-seasons-tabs" aria-label="Seasons"></nav>
-
-      <section class="pro-episodes-row-wrap-pro" id="pro-episodes-row-wrap" aria-live="polite"></section>
-    `;
-
-    // prepare seasons array
-    let seasons = [];
-    if (typeof meta.seasons === 'number') for (let i = 1; i <= meta.seasons; i++) seasons.push(String(i));
-    else if (Array.isArray(meta.seasons)) seasons = meta.seasons.map(s => String(s));
-    else seasons = ['1'];
-
-    // render tabs as buttons (avoid anchor/href auto-jump)
-    const tabs = document.getElementById('pro-seasons-tabs');
-    tabs.innerHTML = '';
-    seasons.forEach(s => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'pro-season-tab-pro' + (s === season ? ' active' : '');
-      b.dataset.season = s;
-      b.setAttribute('aria-pressed', s === season ? 'true' : 'false');
-      b.textContent = 'Season ' + s;
-      b.addEventListener('click', onSeasonClick);
-      tabs.appendChild(b);
-    });
-
-    // initial render: ensure we start at top of this section on first load
-    // but we DO NOT force scroll on subsequent season changes (handled in handler)
-    renderSeason(season, null, { initial: true });
-  }).catch(err => {
-    console.warn(err);
-    mount.innerHTML = `<div style="color:#fff;padding:30px;">Could not load series info. Try again later.</div>`;
-  });
-
-  // season tab click: save current Y, switch visual, then load new season while restoring scroll
-  function onSeasonClick(e) {
-    const btn = e.currentTarget;
-    if (!btn || !btn.dataset) return;
-    try { e.preventDefault && e.preventDefault(); } catch(e){}
-    safeBlur();
-
-    const savedY = window.scrollY || window.pageYOffset || 0;
-    const tabs = document.getElementById('pro-seasons-tabs');
-    tabs.querySelectorAll('.pro-season-tab-pro').forEach(x => { x.classList.remove('active'); x.setAttribute('aria-pressed','false'); });
-    btn.classList.add('active');
-    btn.setAttribute('aria-pressed','true');
-
-    const newSeason = btn.dataset.season;
-    season = newSeason;
-    renderSeason(newSeason, savedY, { smooth: true });
+    throw { tried };
   }
 
-  // core renderer: show placeholders immediately, fetch, then replace with episodes + tutorial blocks
-  function renderSeason(seasonToLoad, savedScrollY = null, opts = {}) {
-    const wrap = document.getElementById('pro-episodes-row-wrap');
-    if (!wrap) return;
+  (async function init() {
+    try {
+      if (document.readyState !== 'complete') {
+        await new Promise(r => window.addEventListener('load', r, { once: true }));
+      }
+      // small pause so layout available
+      await new Promise(r => setTimeout(r, 20));
 
-    const doSmooth = !!opts.smooth;
-    if (doSmooth) wrap.classList.add('is-loading');
+      const detailsEl = document.getElementById('series-details');
+      if (!detailsEl) {
+        console.warn('series.js: #series-details not found');
+        return;
+      }
 
-    // placeholders: immediate visual feedback
-    wrap.innerHTML = `<div class="pro-episodes-row-pro" role="region" aria-busy="true" aria-label="Loading episodes">` +
-      Array.from({length:6}).map(() => `<div class="pro-ep-loading">Loading</div>`).join('') +
-      `</div>`;
+      // load series.json
+      let seriesList;
+      try {
+        const r = await fetch('/series.json', { cache: 'no-cache' });
+        if (!r.ok) throw new Error('series.json HTTP ' + r.status);
+        const j = await r.json();
+        seriesList = Array.isArray(j) ? j : (j && Array.isArray(j.series) ? j.series : null);
+      } catch (e) {
+        detailsEl.innerHTML = `<div style="color:#fff;padding:20px;">Could not load series list. Try again later.</div>`;
+        console.error('Failed loading series.json', e);
+        return;
+      }
 
-    // small paint delay before network to reduce perceived jank
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        const url = bust(jsonFor(seasonToLoad));
-        fetchWithRetry(url, 1, 9000).then(episodes => {
+      if (!slug) {
+        detailsEl.innerHTML = `<div style="color:#fff;padding:20px;">Open a series from Home or the Series tab.</div>`;
+        return;
+      }
+
+      const meta = Array.isArray(seriesList) ? seriesList.find(s => s.slug === slug) : null;
+      if (!meta) {
+        detailsEl.innerHTML = `<div style="color:#fff;padding:20px;">Series not found.</div>`;
+        return;
+      }
+
+      // Ensure view is at top of the page when opening a series
+      try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch(e){ window.scrollTo(0,0); }
+
+      document.title = `${meta.title} â€“ SmTv Urdu`;
+
+      const premiumMsg = `
+        <div class="premium-channel-message">
+          <strong>Go Ad-Free!</strong> Get direct access to all episodes by joining our <strong>Premium Channel</strong>.
+          <div class="premium-btn-row"><a href="/premium.html" class="btn-primary" rel="noopener">Join Premium</a></div>
+        </div>
+      `;
+
+      detailsEl.innerHTML = `
+        <section class="pro-series-header-pro">
+          <a href="/index.html" class="pro-series-back-btn-pro" title="Back" aria-label="Back">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><polyline points="12 4 6 10 12 16" fill="none" stroke="#23c6ed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+          </a>
+          <img class="pro-series-poster-pro" src="${escapeHtml(meta.poster || '')}" alt="${escapeHtml(meta.title || '')}">
+          <div class="pro-series-meta-pro">
+            <h2 class="pro-series-title-pro">${escapeHtml(meta.title || '')}</h2>
+            <div class="pro-series-desc-pro">${escapeHtml((meta.desc && meta.desc.en) ? meta.desc.en : (meta.desc || ''))}</div>
+            ${premiumMsg}
+          </div>
+        </section>
+
+        <nav class="pro-seasons-tabs-pro" id="pro-seasons-tabs" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px;"></nav>
+
+        <section class="pro-episodes-row-wrap-pro" id="pro-episodes-row-wrap" style="margin-top:14px;"></section>
+      `;
+
+      // build seasons
+      let seasons = [];
+      if (typeof meta.seasons === 'number') {
+        for (let i = 1; i <= meta.seasons; i++) seasons.push(String(i));
+      } else if (Array.isArray(meta.seasons)) {
+        seasons = meta.seasons.map(s => String(s));
+      } else seasons = ['1'];
+
+      const tabsEl = document.getElementById('pro-seasons-tabs');
+      tabsEl.innerHTML = seasons.map(s => `<button data-season="${s}" class="pro-season-tab-pro${s === seasonQuery ? ' active' : ''}">Season ${s}</button>`).join('');
+      tabsEl.querySelectorAll('.pro-season-tab-pro').forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabsEl.querySelectorAll('.pro-season-tab-pro').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          // ensure when switching seasons we keep user at top of series area
+          loadSeason(btn.dataset.season).then(() => {
+            try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch(e){ window.scrollTo(0,0); }
+          });
+        });
+      });
+
+      // initial load (keep at top)
+      await loadSeason(seasonQuery);
+      try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch(e){ window.scrollTo(0,0); }
+
+      async function loadSeason(season) {
+        const wrap = document.getElementById('pro-episodes-row-wrap');
+        if (!wrap) return;
+        wrap.innerHTML = `<div style="color:#ddd;padding:12px 0;">Loading episodes...</div>`;
+
+        try {
+          const { episodes, tried } = await (async () => {
+            try {
+              const res = await fetchEpisodesWithCandidates(season);
+              return { episodes: res.episodes, tried: res.tried || [] };
+            } catch (err) {
+              throw err;
+            }
+          })();
+
           if (!Array.isArray(episodes) || episodes.length === 0) {
-            wrap.innerHTML = `<div style="color:#fff;padding:28px 16px;">No episodes for this season.</div>`;
-            wrap.classList.remove('is-loading');
-            restoreScroll(savedScrollY);
+            wrap.innerHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
             return;
           }
 
-          const scroller = `<div class="pro-episodes-row-pro" role="list">` + episodes.map(ep => {
-            const thumb = (ep.thumb && ep.thumb.trim()) ? ep.thumb : 'default-thumb.jpg';
-            const title = ep.title ? ep.title : ('Episode ' + ep.ep);
-            const episodeUrl = ep.shortlink ? ep.shortlink : `episode.html?series=${encodeURIComponent(slug)}&season=${encodeURIComponent(seasonToLoad)}&ep=${encodeURIComponent(ep.ep)}${lang ? '&lang=' + encodeURIComponent(lang) : ''}`;
+          // build compact carousel cards
+          const cardsHtml = episodes.map(ep => {
+            const epNum = escapeHtml(String(ep.ep || ''));
+            const epTitle = escapeHtml(ep.title || ('Episode ' + epNum));
+            const thumb = escapeHtml(ep.thumb || 'default-thumb.jpg');
+            const episodeUrl = ep.shortlink ? ep.shortlink : `episode.html?series=${encodeURIComponent(slug)}&season=${encodeURIComponent(season)}&ep=${encodeURIComponent(ep.ep)}${lang?('&lang='+encodeURIComponent(lang)) : ''}`;
             const extra = ep.shortlink ? 'target="_blank" rel="noopener"' : '';
             return `
-              <a class="pro-episode-card-pro" href="${episodeUrl}" ${extra} role="listitem" aria-label="${title}">
-                <div class="pro-ep-thumb-wrap-pro" aria-hidden="true">
-                  <img src="${thumb}" class="pro-ep-thumb-pro" alt="${title}" loading="lazy">
-                  <span class="pro-ep-num-pro">Ep ${ep.ep}</span>
+              <a class="pro-episode-card-pro" href="${episodeUrl}" ${extra} tabindex="-1" aria-label="${epTitle}">
+                <div class="pro-ep-thumb-wrap-pro">
+                  <img class="pro-ep-thumb-pro" src="${thumb}" alt="${epTitle}">
+                  <span class="pro-ep-num-pro">Ep ${epNum}</span>
                 </div>
-                <div class="pro-ep-title-pro">${title}</div>
+                <div class="pro-ep-title-pro">${epTitle}</div>
               </a>
             `;
-          }).join('') + `</div>`;
+          }).join('');
 
-          const tutorialHtml = `
-            <section class="pro-highlight-section" aria-hidden="false" style="margin-top:28px;">
-              <div class="pro-highlight-title">How to Watch Episodes</div>
-            </section>
-            <section class="pro-video-card" aria-label="How to Watch video">
-              <div class="pro-video-frame-wrap">${HOWTO_PROCESS_1}</div>
-            </section>
-
-            <section class="pro-highlight-section" aria-hidden="false" style="margin-top:18px;">
-              <div class="pro-highlight-title">How to Watch (Old Process)</div>
-            </section>
-            <section class="pro-video-card" aria-label="How to Watch old process video">
-              <div class="pro-video-frame-wrap">${HOWTO_PROCESS_2}</div>
-            </section>
+          const tutorialBlock = `
+            <div class="pro-tutorial-title">How to Watch Episodes</div>
+            <div class="pro-video-frame-wrap">${HOWTO_PROCESS_1}</div>
+            <div style="height:14px"></div>
+            <div class="pro-tutorial-title" style="margin-top:12px;">How to Watch (Old Process)</div>
+            <div class="pro-video-frame-wrap">${HOWTO_PROCESS_2}</div>
           `;
 
-          // Replace content
-          wrap.innerHTML = scroller + tutorialHtml;
+          // render without focusing any element or calling scrollIntoView
+          wrap.innerHTML = `<div class="pro-episodes-row-pro" role="list">${cardsHtml}</div>` + tutorialBlock;
 
-          // subtle staggered reveal for cards to feel smooth
-          try {
-            const row = wrap.querySelector('.pro-episodes-row-pro');
-            if (row) {
-              const children = Array.from(row.children);
-              children.forEach((c, i) => {
-                c.style.opacity = '0';
-                c.style.transform = 'translateY(10px)';
-                setTimeout(() => {
-                  c.style.transition = 'opacity .28s ease, transform .28s ease';
-                  c.style.opacity = '1';
-                  c.style.transform = 'translateY(0)';
-                  setTimeout(()=> { c.style.transition=''; c.style.opacity=''; c.style.transform=''; }, 450);
-                }, 60 + i * 28);
-              });
-            }
-          } catch(e) { /* ignore animation errors */ }
+          // Do NOT scroll any episode into view and do NOT call focus().
+          // Instead ensure the page remains at top (caller controls scroll).
+        } catch (diag) {
+          if (diag && diag.tried) {
+            wrap.innerHTML = `
+              <div style="background:#0e1720;color:#ffd;padding:14px;border-radius:12px;">
+                <div style="font-weight:800;color:#ffd700;margin-bottom:8px;">Episodes not found for this season</div>
+                <div style="font-size:13px;color:#cfe6ff">Tried paths (server responded but JSON invalid / missing):</div>
+                <pre style="white-space:pre-wrap;color:#cfe6ff;font-size:12px;margin-top:8px;">${escapeHtml(JSON.stringify(diag.tried, null, 2))}</pre>
+              </div>
+            `;
+            toast('Episodes JSON missing or invalid for this season');
+          } else {
+            wrap.innerHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
+            toast('Episodes load error');
+          }
+          console.error('Episode load error / diagnostics', diag);
+        }
+      }
 
-          wrap.classList.remove('is-loading');
+    } catch (err) {
+      console.error('series.js fatal', err);
+      const el = document.getElementById('series-details');
+      if (el) el.innerHTML = `<div style="color:#fff;padding:30px;">Could not load series info. Try again later.</div>`;
+    }
+  })();
 
-          // blur any focused element to prevent mobile auto-scrolling
-          safeBlur();
-
-          // restore scroll position if provided
-          restoreScroll(savedScrollY);
-        }).catch(err => {
-          console.warn('episodes fetch error', err);
-          wrap.innerHTML = `<div style="color:#fff;padding:28px 16px;">Could not load episodes. Please try again.</div>`;
-          toast('Episode file missing or network error');
-          wrap.classList.remove('is-loading');
-          restoreScroll(savedScrollY);
-        });
-      });
-    });
-  }
 })();
