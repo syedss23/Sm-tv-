@@ -1,4 +1,4 @@
-// series.js â€” ready to replace (prevents auto-scrolling; opens series at top)
+// series.js — ready to replace (prevents auto-scrolling; opens series at top)
 (function () {
   'use strict';
 
@@ -32,10 +32,17 @@
     } catch (e) { console.warn('toast error', e); }
   }
 
-  // injected styles (keeps cards compact if no CSS update)
+  // injected styles (keeps cards compact if no CSS update) + small animations
   const injectedStyles = `
     /* minimal safety styles in case CSS doesn't load */
     .pro-episodes-row-pro{ -webkit-overflow-scrolling: touch; }
+
+    /* loading / smooth transition helpers */
+    .pro-episodes-row-wrap-pro { transition: min-height .18s ease; }
+    .pro-episodes-row-wrap-pro.is-loading { opacity: .72; pointer-events: none; filter: blur(.6px) contrast(.98); }
+    .pro-episode-card-pro { transition: transform .28s ease, opacity .28s ease; }
+    .reveal-item { opacity: 0; transform: translateY(10px); }
+    .reveal-item.show { opacity: 1; transform: translateY(0); }
   `;
   try { const s = document.createElement('style'); s.textContent = injectedStyles; document.head.appendChild(s); } catch(e){}
 
@@ -128,7 +135,7 @@
       // Ensure view is at top of the page when opening a series
       try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch(e){ window.scrollTo(0,0); }
 
-      document.title = `${meta.title} â€“ SmTv Urdu`;
+      document.title = `${meta.title} – SmTv Urdu`;
 
       const premiumMsg = `
         <div class="premium-channel-message">
@@ -169,9 +176,11 @@
         btn.addEventListener('click', () => {
           tabsEl.querySelectorAll('.pro-season-tab-pro').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
-          // ensure when switching seasons we keep user at top of series area
-          loadSeason(btn.dataset.season).then(() => {
-            try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch(e){ window.scrollTo(0,0); }
+
+          // call loadSeason but DO NOT force-scroll to top anymore.
+          // we preserve the user's current viewport position.
+          loadSeason(btn.dataset.season).catch(err => {
+            console.error('loadSeason error', err);
           });
         });
       });
@@ -183,6 +192,14 @@
       async function loadSeason(season) {
         const wrap = document.getElementById('pro-episodes-row-wrap');
         if (!wrap) return;
+
+        // lock current height to avoid jump during replacement
+        const prevMin = wrap.style.minHeight || '';
+        const prevClientH = wrap.clientHeight || 0;
+        if (prevClientH > 0) wrap.style.minHeight = prevClientH + 'px';
+
+        // show loading state
+        wrap.classList.add('is-loading');
         wrap.innerHTML = `<div style="color:#ddd;padding:12px 0;">Loading episodes...</div>`;
 
         try {
@@ -197,10 +214,12 @@
 
           if (!Array.isArray(episodes) || episodes.length === 0) {
             wrap.innerHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
+            wrap.classList.remove('is-loading');
+            wrap.style.minHeight = prevMin;
             return;
           }
 
-          // build compact carousel cards
+          // build compact carousel cards (add reveal-item class for animation)
           const cardsHtml = episodes.map(ep => {
             const epNum = escapeHtml(String(ep.ep || ''));
             const epTitle = escapeHtml(ep.title || ('Episode ' + epNum));
@@ -208,7 +227,7 @@
             const episodeUrl = ep.shortlink ? ep.shortlink : `episode.html?series=${encodeURIComponent(slug)}&season=${encodeURIComponent(season)}&ep=${encodeURIComponent(ep.ep)}${lang?('&lang='+encodeURIComponent(lang)) : ''}`;
             const extra = ep.shortlink ? 'target="_blank" rel="noopener"' : '';
             return `
-              <a class="pro-episode-card-pro" href="${episodeUrl}" ${extra} tabindex="-1" aria-label="${epTitle}">
+              <a class="pro-episode-card-pro reveal-item" href="${episodeUrl}" ${extra} tabindex="-1" aria-label="${epTitle}">
                 <div class="pro-ep-thumb-wrap-pro">
                   <img class="pro-ep-thumb-pro" src="${thumb}" alt="${epTitle}">
                   <span class="pro-ep-num-pro">Ep ${epNum}</span>
@@ -229,8 +248,25 @@
           // render without focusing any element or calling scrollIntoView
           wrap.innerHTML = `<div class="pro-episodes-row-pro" role="list">${cardsHtml}</div>` + tutorialBlock;
 
-          // Do NOT scroll any episode into view and do NOT call focus().
-          // Instead ensure the page remains at top (caller controls scroll).
+          // reveal animation: staggered
+          const scroller = wrap.querySelector('.pro-episodes-row-pro');
+          if (scroller) {
+            const items = Array.from(scroller.querySelectorAll('.reveal-item'));
+            items.forEach((it, i) => {
+              // small stagger; leaving layout stable so no jumps
+              setTimeout(() => {
+                try { it.classList.add('show'); } catch(e){}
+              }, 60 + i * 26);
+            });
+          }
+
+          // clear loading and restore minHeight after a short delay
+          setTimeout(() => {
+            wrap.classList.remove('is-loading');
+            wrap.style.minHeight = prevMin;
+          }, 360);
+
+          // do NOT auto-scroll. caller (initial load) already handled top-of-page.
         } catch (diag) {
           if (diag && diag.tried) {
             wrap.innerHTML = `
@@ -246,6 +282,8 @@
             toast('Episodes load error');
           }
           console.error('Episode load error / diagnostics', diag);
+          wrap.classList.remove('is-loading');
+          wrap.style.minHeight = prevMin;
         }
       }
 
@@ -255,5 +293,4 @@
       if (el) el.innerHTML = `<div style="color:#fff;padding:30px;">Could not load series info. Try again later.</div>`;
     }
   })();
-
 })();
