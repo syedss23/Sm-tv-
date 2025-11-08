@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-WM3KEDD127"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WM3KEDD127"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-WM3KEDD127');
+  </script>
 
-  gtag('config', 'G-WM3KEDD127');
-</script>
   <meta charset="UTF-8">
   <title>SmTv Urdu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -17,139 +17,15 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-    /* small page-local styles for series list + details */
+    /* minimal page-local styles so details layout looks correct */
     body { background:#0b0d10; color:#fff; margin:0; font-family: 'Segoe UI', Arial, sans-serif; }
-    .container { max-width:1100px; margin:0 auto; padding:14px; }
+    #main-content { max-width:1100px; margin:0 auto; padding:14px; }
+    /* Centered header placeholder */
+    header { display:block; height:0; }
+    /* Ensure series-details area has spacing */
+    #series-details { margin-top:10px; }
 
-    .page-title { color:#fff; font-size:20px; font-weight:700; margin:12px 0 18px; display:flex; align-items:center; justify-content:center; gap:8px; }
-
-    /* Filter bar */
-    .filter-bar { display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap; justify-content:center; }
-    .filter-btn {
-      border:none;
-      border-radius:30px;
-      padding:10px 18px;
-      font-size:15px;
-      font-weight:600;
-      cursor:pointer;
-      background:#1e2630;
-      color:#fff;
-      transition:all .15s;
-    }
-    .filter-btn.active {
-      background:linear-gradient(135deg,#00bcd4,#007bff);
-      color:#fff;
-      box-shadow:0 4px 18px rgba(0,188,212,0.18);
-    }
-
-    /* Language subfilter */
-    .sub-lang-bar { display:none; gap:10px; margin-bottom:18px; flex-wrap:wrap; justify-content:center; }
-    .sub-lang-bar.active { display:flex; }
-    .sub-btn {
-      border:none;
-      border-radius:20px;
-      padding:8px 16px;
-      font-size:14px;
-      cursor:pointer;
-      background:#1b2430;
-      color:#ddd;
-      transition:.12s;
-    }
-    .sub-btn.active {
-      background:linear-gradient(90deg,#ffcf33,#ff7a5f);
-      color:#111;
-      font-weight:800;
-      box-shadow:0 6px 18px rgba(255,140,38,0.12);
-    }
-
-    /* Grid (list) */
-    .series-grid {
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:12px;
-    }
-    @media(min-width:700px){ .series-grid{grid-template-columns:repeat(3,1fr);} }
-    @media(min-width:1000px){ .series-grid{grid-template-columns:repeat(4,1fr);} }
-
-    .series-card {
-      display:block;
-      background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.12));
-      border-radius:12px;
-      overflow:hidden;
-      color:#fff;
-      box-shadow:0 8px 20px rgba(0,0,0,0.45);
-      transition:transform .18s ease,box-shadow .18s ease;
-      text-decoration:none;
-    }
-    .series-card:hover { transform:translateY(-6px); box-shadow:0 12px 30px rgba(0,0,0,0.55); }
-    .series-thumb { width:100%; height:0; padding-bottom:56%; position:relative; background:#111; }
-    .series-thumb img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
-    .series-title { padding:10px 12px; font-size:15px; font-weight:700; color:#fff; background:rgba(0,0,0,0.08); text-align:center; }
-
-    #series-empty { display:none; color:#ccc; text-align:center; margin-top:30px; }
-
-    /* Series details base (will be injected by series.js) */
-    #series-details { display:none; margin-top:10px; }
-
-    /* centered details header */
-    .pro-series-header-pro {
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      text-align:center;
-      gap:12px;
-      padding:18px;
-      border-radius:14px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
-      box-shadow: 0 8px 22px rgba(0,0,0,0.45);
-      position:relative;
-      margin-bottom:12px;
-    }
-    .pro-series-back-btn-pro {
-      position:absolute;
-      left:14px;
-      top:14px;
-      width:48px;
-      height:48px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      border-radius:12px;
-      background: rgba(0, 150, 200, 0.12);
-      border: 2px solid rgba(0,160,210,0.18);
-      box-shadow: 0 6px 18px rgba(0,140,200,0.08);
-      text-decoration:none;
-    }
-    .pro-series-poster-pro { width:150px; height:90px; border-radius:10px; object-fit:cover; box-shadow:0 8px 18px rgba(0,0,0,0.45); }
-    .pro-series-title-pro { font-size:22px; margin:8px 0; color:#00d0f0; font-weight:800; }
-    .pro-series-desc-pro { color:#cfd8df; line-height:1.45; max-width:720px; }
-
-    /* Horizontal episode cards */
-    .pro-episodes-row-pro { display:flex; flex-direction:column; gap:12px; margin-top:12px; }
-    .pro-episode-card-pro {
-      display:flex;
-      gap:12px;
-      align-items:center;
-      padding:10px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));
-      border-radius:12px;
-      text-decoration:none;
-      color:#fff;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.45);
-      transition: transform .12s ease, box-shadow .12s ease;
-    }
-    .pro-episode-card-pro:hover { transform: translateY(-4px); box-shadow:0 12px 28px rgba(0,0,0,0.6); }
-    .pro-ep-thumb-wrap-pro { flex:0 0 140px; width:140px; height:80px; position:relative; border-radius:8px; overflow:hidden; background:#111; }
-    .pro-ep-thumb-pro { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
-    .pro-ep-title-pro { flex:1; font-size:15px; font-weight:700; color:#fff; }
-    .pro-ep-num-pro { position:absolute; left:8px; top:8px; background:rgba(0,0,0,0.45); padding:6px 8px; border-radius:8px; font-weight:700; color:#fff; font-size:13px; }
-    .pro-video-frame-wrap { margin-top:18px; border-radius:10px; overflow:hidden; }
-
-    @media(min-width:700px){
-      .pro-series-poster-pro { width:180px; height:110px; }
-      .pro-ep-thumb-wrap-pro { flex:0 0 180px; width:180px; height:100px; }
-    }
-
+    /* small responsive safety for bottom nav */
     @media (max-width:600px) {
       body { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
     }
@@ -158,34 +34,34 @@
   <script defer src="series.js"></script>
 </head>
 <body>
-  <div class="container" id="main-content">
-    <header class="page-title">Series</header>
+  <div id="main-content">
+    <header>
+      <!-- Back button is rendered by series.js so we keep header empty here -->
+    </header>
 
-    <!-- Filters -->
-    <div class="filter-bar" role="toolbar" aria-label="Series filters">
-      <button class="filter-btn active" id="dubbedBtn" aria-pressed="true">Dubbed</button>
-      <button class="filter-btn" id="subBtn" aria-pressed="false">Subtitles</button>
-    </div>
-
-    <!-- Sub-language buttons -->
-    <div class="sub-lang-bar" id="subLangBar" aria-hidden="true">
-      <button class="sub-btn" data-lang="en">English</button>
-      <button class="sub-btn" data-lang="hi">Hindi</button>
-      <button class="sub-btn" data-lang="ur">Urdu</button>
-    </div>
-
-    <!-- Series grid -->
-    <div id="series-list-area">
-      <div id="series-list" class="series-grid" aria-live="polite"></div>
-      <div id="series-empty">No Series found.</div>
-    </div>
-
-    <!-- Series details (populated by series.js when ?series=slug) -->
     <div id="series-details" aria-live="polite"></div>
-
   </div>
 
-  <!-- Centered WhatsApp Update Popup Notification (kept) -->
+  <!-- Inline JS to dynamically update <title> and meta description (keeps your old behavior) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const params = new URLSearchParams(window.location.search);
+      const slug = params.get('series');
+      if (!slug) return;
+      fetch('series.json').then(res => res.json()).then(seriesArr => {
+        const meta = Array.isArray(seriesArr) ? seriesArr.find(s => s.slug === slug) : null;
+        if (meta && meta.title) {
+          document.title = `${meta.title} – SmTv Urdu`;
+          const metaDesc = document.querySelector('meta[name="description"]');
+          if (metaDesc) {
+            metaDesc.setAttribute('content', `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`);
+          }
+        }
+      }).catch(()=>{/* ignore */});
+    });
+  </script>
+
+  <!-- Centered WhatsApp Update Popup Notification -->
   <div id="whatsappPopup"
        style="display:none; position:fixed; top:50%; left:50%; z-index:99999; transform:translate(-50%, -50%); max-width:340px; width:90vw; box-shadow:0 8px 24px rgba(15,18,30,.13); border-radius:22px; background:#232936; color:#fff; padding:28px 28px 22px 28px; font-size:1.09em; text-align:left; font-family: 'Segoe UI', Arial, sans-serif;">
     <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
@@ -205,60 +81,24 @@
       </button>
     </div>
   </div>
+
   <script>
     window.addEventListener('DOMContentLoaded', function() {
       setTimeout(function() {
-        document.getElementById('whatsappPopup').style.display = "block";
+        const popup = document.getElementById('whatsappPopup');
+        if (popup) popup.style.display = "block";
       }, 2000);
 
-      document.getElementById('closeWhatsAppPopup').onclick = function() {
-        document.getElementById('whatsappPopup').style.display = "none";
+      const closeBtn = document.getElementById('closeWhatsAppPopup');
+      if (closeBtn) closeBtn.onclick = function() {
+        const popup = document.getElementById('whatsappPopup');
+        if (popup) popup.style.display = "none";
       };
     });
   </script>
 
-  <!-- Preserve your external ad script if you want -->
+  <!-- Preserve your external ad / script if you want -->
   <script type="text/javascript" src="//www.highperformanceformat.com/c91a82435d260630918ecc80c95125ac/invoke.js"></script>
 
-  <!-- small meta updater (keeps your old behavior for ?series=slug) -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const params = new URLSearchParams(window.location.search);
-      const slug = params.get('series');
-      if(!slug) return;
-      fetch('series.json').then(res => res.json()).then(seriesArr => {
-        const meta = Array.isArray(seriesArr) ? seriesArr.find(s => s.slug === slug) : null;
-        if (meta && meta.title) {
-          document.title = `${meta.title} – SmTv Urdu`;
-          const metaDesc = document.querySelector('meta[name="description"]');
-          if (metaDesc) {
-            metaDesc.setAttribute('content', `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`);
-          }
-        }
-      }).catch(()=>{});
-    });
-  </script>
-
-  <!-- Footer Include -->
-  <div id="footer-placeholder"></div>
-  <script>
-  (async function loadFooterAndMark(){
-    if (document.readyState !== 'complete') await new Promise(r=>window.addEventListener('load', r, {once:true}));
-    try {
-      const res = await fetch('/includes/footer.html');
-      if (!res.ok) return;
-      const html = await res.text();
-      document.getElementById('footer-placeholder').innerHTML = html;
-      // mark series nav active
-      const nav = document.getElementById('smtv-bottom-nav');
-      if(nav) {
-        const items = Array.from(nav.querySelectorAll('.nav-item'));
-        items.forEach(i=>i.classList.remove('active'));
-        const found = items.find(i => (i.dataset.name||'').toLowerCase() === 'series');
-        if(found) found.classList.add('active');
-      }
-    } catch(e){ console.warn('Footer load failed', e); }
-  })();
-  </script>
 </body>
 </html>
