@@ -1,4 +1,4 @@
-// series.js — updated: refined premium banner + compact square episode cards + larger titles
+// series.js — updated: 3-across compact episode cards + improved premium banner + tutorial highlight
 (function () {
   'use strict';
 
@@ -32,27 +32,29 @@
     } catch (e) { console.warn('toast', e); }
   }
 
-  // Strong injected styles: make cards compact + improve premium banner + increase title size
+  // Injected CSS (stronger, ensures 3 cards in view and no empty vertical space)
   const injectedStyles = `
-  /* ===== series.js injected overrides ===== */
+  /* === injected by series.js === */
+
+  /* wrapper adjustments */
   .pro-episodes-row-wrap-pro { margin: 12px 0 !important; padding: 0 !important; box-sizing: border-box !important; }
 
-  .pro-episodes-row-pro {
+  .pro-episodes-row-pro{
     display:flex;
-    gap:12px;
+    gap:16px;
     overflow-x:auto;
     -webkit-overflow-scrolling:touch;
-    padding:12px 14px;
+    padding:14px 18px;
     scroll-snap-type:x proximity;
     align-items:flex-start;
     box-sizing: border-box;
   }
 
-  /* compact square card (smaller, no empty vertical space) */
+  /* 3-across cards: each card width is (100% - totalGap)/3 */
   .pro-episode-card-pro{
     scroll-snap-align:center;
-    flex:0 0 160px;         /* compact width */
-    max-width:160px;
+    flex: 0 0 calc((100% - 48px) / 3);
+    max-width: calc((100% - 48px) / 3);
     display:flex;
     flex-direction:column;
     gap:8px;
@@ -61,27 +63,26 @@
     border-radius:14px;
     text-decoration:none;
     color:#fff;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.5);
     background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.04));
+    box-shadow: 0 8px 24px rgba(0,0,0,0.55);
     min-height: auto;
     transition: transform .12s ease, box-shadow .12s ease;
   }
-  .pro-episode-card-pro:hover{ transform: translateY(-6px); box-shadow: 0 14px 36px rgba(0,0,0,0.55); }
+  .pro-episode-card-pro:focus, .pro-episode-card-pro:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(0,0,0,0.6); outline: none; }
 
-  /* thumbnail area: taller (to give poster feel) but keeps card compact */
+  /* thumbnail area taller but cards remain compact */
   .pro-ep-thumb-wrap-pro{
     width:100%;
-    height:140px;            /* slightly taller poster */
+    height:124px;
     border-radius:10px;
     overflow:hidden;
     position:relative;
-    background:#0c0f12;
+    background:#0b0e12;
     display:block;
-    box-shadow: inset 0 -8px 18px rgba(0,0,0,0.35);
+    box-shadow: inset 0 -6px 16px rgba(0,0,0,0.35);
   }
   .pro-ep-thumb-pro{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
 
-  /* Episode number badge */
   .pro-ep-num-pro{
     position:absolute;
     right:8px;
@@ -95,31 +96,25 @@
     box-shadow: 0 6px 18px rgba(255,120,60,0.12);
   }
 
-  /* title area: bigger, centered, no extra padding */
+  /* larger, bold centered episode label (no extra background/padding) */
   .pro-ep-title-pro{
     width:100%;
     text-align:center;
     font-size:17px;
     font-weight:900;
-    color:#fff;
-    padding:10px 6px 6px 6px;
-    border-radius:8px;
-    background: transparent;
-    box-shadow: none;
-    line-height:1.05;
+    color:#ffffff;
+    padding:6px 4px 0 4px;
+    line-height:1.02;
   }
 
-  /* ensure titles don't create excess height */
-  .pro-ep-title-pro small { display:block; font-weight:600; font-size:13px; color:#cfe6ff; }
-
-  /* smaller card on very small screens */
+  /* small screens: show 2 across to keep readable */
   @media (max-width:420px){
-    .pro-episode-card-pro { flex:0 0 140px; max-width:140px; padding:8px; }
-    .pro-ep-thumb-wrap-pro { height:120px; }
+    .pro-episode-card-pro { flex:0 0 calc((100% - 36px) / 2); max-width: calc((100% - 36px) / 2); }
+    .pro-ep-thumb-wrap-pro { height:110px; }
     .pro-ep-title-pro { font-size:15px; }
   }
 
-  /* premium banner (compact, styled like your screenshot) */
+  /* Premium banner styling */
   .premium-channel-message {
     margin-top:12px;
     padding:18px;
@@ -132,7 +127,7 @@
     text-align:center;
   }
   .premium-channel-message h3 { margin:0 0 8px 0; color:#00d6ef; font-size:20px; font-weight:900; }
-  .premium-channel-message p { margin:0 0 14px 0; color:#cfefff; font-size:15px; line-height:1.2; opacity:0.95; }
+  .premium-channel-message p { margin:0 0 14px 0; color:#cfefff; font-size:15px; line-height:1.2; opacity:0.96; }
   .premium-cta {
     display:inline-block;
     background: linear-gradient(90deg,#ffd400,#ff8a4a);
@@ -144,11 +139,9 @@
     text-decoration:none;
     font-size:16px;
   }
-
-  /* highlight small note below premium (optional) */
   .premium-note { margin-top:8px; font-size:13px; color:#9fe6ff; opacity:0.88; }
 
-  /* tutorial highlighted title consistent */
+  /* tutorial highlight */
   .pro-tutorial-title {
     margin-top:18px;
     font-weight:900;
@@ -162,8 +155,8 @@
     max-width:1100px;
   }
 
-  /* small safety: ensure no huge bottom gap */
-  .pro-episodes-row-pro::after { content:''; width:6px; display:block; }
+  /* tiny spacer fix to avoid a big trailing gap */
+  .pro-episodes-row-pro::after { content:''; display:block; width:8px; }
   `;
 
   try {
@@ -172,7 +165,6 @@
     document.head.appendChild(styleEl);
   } catch (e) { console.warn('inject style failed', e); }
 
-  // Attempt multiple candidate paths to find the episodes JSON
   async function fetchEpisodesWithCandidates(season) {
     const candidates = [
       `episode-data/${slug}-s${season}.json`,
@@ -186,12 +178,10 @@
     const tried = [];
     for (const cand of candidates) {
       try {
-        // ensure leading slash for fetch consistency
         const path = cand.startsWith('/') ? cand : '/' + cand.replace(/^\/+/, '');
         const url = bust(path);
         const resp = await fetch(url, { cache: 'no-cache' });
         const rec = { path: cand, ok: resp.ok, status: resp.status };
-        // try parse
         const text = await resp.text();
         try {
           const parsed = JSON.parse(text);
@@ -206,7 +196,6 @@
         continue;
       }
     }
-
     throw { tried };
   }
 
@@ -222,7 +211,6 @@
         return;
       }
 
-      // load series.json
       let seriesList;
       try {
         const r = await fetch('/series.json', { cache: 'no-cache' });
@@ -248,7 +236,6 @@
 
       document.title = `${meta.title} – SmTv Urdu`;
 
-      // premiumMessage HTML (improved visual)
       const premiumMsg = `
         <div class="premium-channel-message" role="region" aria-label="Premium channel">
           <h3>Go Ad-Free — Join Premium</h3>
@@ -275,7 +262,7 @@
         <section class="pro-episodes-row-wrap-pro" id="pro-episodes-row-wrap" aria-live="polite"></section>
       `;
 
-      // build seasons
+      // seasons
       let seasons = [];
       if (typeof meta.seasons === 'number') {
         for (let i = 1; i <= meta.seasons; i++) seasons.push(String(i));
@@ -293,7 +280,6 @@
         });
       });
 
-      // initial load
       await loadSeason(seasonQuery);
 
       async function loadSeason(season) {
@@ -316,7 +302,6 @@
             return;
           }
 
-          // build compact cards
           const cardsHtml = episodes.map(ep => {
             const epNum = escapeHtml(String(ep.ep || ''));
             const epTitle = escapeHtml(ep.title || ('Episode ' + epNum));
@@ -346,11 +331,11 @@
 
           wrap.innerHTML = `<div class="pro-episodes-row-pro">${cardsHtml}</div>` + tutorialBlock;
 
-          // set a focused scroll so first card is visible
+          // ensure visible start
           try {
             const first = wrap.querySelector('.pro-episode-card-pro');
             if (first) first.scrollIntoView({ behavior: 'auto', inline: 'start', block: 'nearest' });
-          } catch (e) { /* ignore */ }
+          } catch (e) {}
 
         } catch (diag) {
           if (diag && diag.tried) {
