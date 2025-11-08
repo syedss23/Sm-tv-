@@ -2,48 +2,103 @@
 <html lang="en">
 <head>
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-WM3KEDD127"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WM3KEDD127"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-WM3KEDD127');
+  </script>
 
-  gtag('config', 'G-WM3KEDD127');
-</script>
   <meta charset="UTF-8">
   <title>SmTv Urdu</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="Watch Turkish drama series and historical shows in Urdu on SmTv Urdu. All series details and streaming links.">
+
   <link rel="stylesheet" href="style.css">
-  <script defer src="series.js"></script>
+  <!-- basic grid styling for series (keeps page consistent if your main CSS doesn't include it) -->
+  <style>
+    /* Series grid styles (light, mobile-first) */
+    .container { max-width:1100px; margin:0 auto; padding:14px; }
+    .page-title { color:#fff; font-size:20px; font-weight:700; margin:12px 0 18px; }
+    .series-grid {
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:12px;
+    }
+    @media(min-width:700px){ .series-grid { grid-template-columns: repeat(3,1fr); } }
+    @media(min-width:1000px){ .series-grid { grid-template-columns: repeat(4,1fr); } }
+
+    .series-card{
+      display:block;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12));
+      border-radius:12px;
+      overflow:hidden;
+      color:#fff;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.45);
+      transition: transform .18s ease, box-shadow .18s ease;
+      text-decoration:none;
+    }
+    .series-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.55); }
+    .series-thumb { width:100%; height:0; padding-bottom:56%; position:relative; background:#111; }
+    .series-thumb img.thumb { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+    .series-title { padding:10px 12px; font-size:15px; font-weight:600; color:#fff; background:linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.12)); }
+    #series-empty { color:#ddd; padding:28px 12px; text-align:center; }
+    /* small utility */
+    .muted { color:#bdbdbd; font-size:13px; }
+  </style>
+
+  <!-- load series.js (loader) -->
+  <script defer src="/series.js"></script>
 </head>
 <body>
-  <div id="main-content">
-    <header>
-      <!-- Beautiful back button will be rendered by JS for consistent style -->
+  <div id="main-content" class="container">
+    <header style="display:flex;align-items:center;gap:10px;">
+      <a href="/index.html" style="text-decoration:none;color:#fff;display:inline-flex;align-items:center;gap:8px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="transform:translateY(1px)"><path d="M15 18l-6-6 6-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="page-title">Series</span>
+      </a>
     </header>
-      </script>
-      <script type="text/javascript" src="//www.highperformanceformat.com/c91a82435d260630918ecc80c95125ac/invoke.js"></script>
-    </div>
-    
-    <div id="series-details"></div>
+
+    <!-- series area: JS will populate here -->
+    <div id="series-list" class="series-grid" aria-live="polite"></div>
+    <div id="series-empty" style="display:none;">No Series found.</div>
   </div>
 
-  <!-- Inline JS to dynamically update <title> and meta description -->
+  <!-- ad / external script (kept) -->
+  <script type="text/javascript" src="//www.highperformanceformat.com/c91a82435d260630918ecc80c95125ac/invoke.js"></script>
+
+  <!-- dynamic meta/title updater for ?series=slug (keeps your behavior) -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const params = new URLSearchParams(window.location.search);
       const slug = params.get('series');
-      fetch('series.json').then(res => res.json()).then(seriesArr => {
-        const meta = Array.isArray(seriesArr) ? seriesArr.find(s => s.slug === slug) : null;
-        if (meta && meta.title) {
-          document.title = `${meta.title} – SmTv Urdu`;
-          const metaDesc = document.querySelector('meta[name="description"]');
-          if (metaDesc) {
-            metaDesc.setAttribute('content', `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`);
+      if(!slug) return;
+      (async function(){
+        try {
+          const paths = ['/series.json','/data/series.json','series.json'];
+          let data = null;
+          for(const p of paths){
+            try {
+              const r = await fetch(p, {cache:'no-cache'});
+              if(!r.ok) continue;
+              const j = await r.json();
+              data = Array.isArray(j) ? j : (j && j.series ? j.series : null);
+              if(Array.isArray(data)) break;
+            } catch(e){}
           }
-        }
-      });
+          if(Array.isArray(data)){
+            const meta = data.find(s => s.slug === slug);
+            if(meta && meta.title){
+              document.title = `${meta.title} – SmTv Urdu`;
+              const metaDesc = document.querySelector('meta[name="description"]');
+              if (metaDesc) {
+                metaDesc.setAttribute('content', `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`);
+              }
+            }
+          }
+        } catch(e){ console.warn('meta update error', e); }
+      })();
     });
   </script>
 
@@ -78,67 +133,73 @@
       };
     });
   </script>
+
   <!-- Footer Include -->
-<div id="footer-placeholder"></div>
-<script>
-(async function loadFooterAndInit(){
-  // wait until page load completes (helps avoid conflicts)
-  if (document.readyState !== 'complete') {
-    await new Promise(resolve => window.addEventListener('load', resolve, { once: true }));
-  }
-  try {
-    const res = await fetch('/includes/footer.html');
-    if (!res.ok) throw new Error('Footer not found: ' + res.status);
-    const html = await res.text();
-    const ph = document.getElementById('footer-placeholder');
-    ph.innerHTML = html;
-
-    // initialize active logic and click handlers
-    const nav = document.getElementById('smtv-bottom-nav');
-    if(!nav) return;
-    const items = Array.from(nav.querySelectorAll('.nav-item'));
-    function clearActive(){ items.forEach(i=>i.classList.remove('active')); }
-
-    // match by pathname
-    const path = window.location.pathname.toLowerCase();
-    let matched = items.find(a => {
-      const name = (a.dataset.name||'').toLowerCase();
-      if (name === 'home' && (path === '/' || path.includes('index'))) return true;
-      return name && path.includes(name);
-    });
-
-    // fallback to last clicked
-    if(!matched){
-      const last = localStorage.getItem('smtv_last_nav');
-      if(last) matched = items.find(a => a.dataset.name === last);
+  <div id="footer-placeholder"></div>
+  <script>
+  (async function loadFooterAndForceNav(){
+    // wait for page load so page JS runs first
+    if (document.readyState !== 'complete') {
+      await new Promise(r => window.addEventListener('load', r, { once: true }));
     }
-    if(matched) matched.classList.add('active');
 
-    // click handlers: immediate feedback + fallback navigation
-    items.forEach(a => {
-      a.addEventListener('click', function(e){
-        clearActive();
-        this.classList.add('active');
-        try { localStorage.setItem('smtv_last_nav', this.dataset.name); } catch(e){}
-        const href = this.getAttribute('href');
-        setTimeout(()=> {
-          if (location.pathname.toLowerCase() !== new URL(href, location.origin).pathname.toLowerCase()) {
-            location.href = href;
-          }
-        }, 200);
-      }, { passive: true });
-    });
-
-    // ensure body has enough bottom padding so content not hidden
     try {
-      const curPad = parseInt(getComputedStyle(document.body).paddingBottom)||0;
-      if(curPad < 96) document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))';
-    } catch(e){}
+      const res = await fetch('/includes/footer.html');
+      if (!res.ok) throw new Error('Footer not found: ' + res.status);
+      const html = await res.text();
+      const ph = document.getElementById('footer-placeholder');
+      ph.innerHTML = html;
 
-  } catch(err) {
-    console.warn('Footer load/init error:', err);
-  }
-})();
-</script>
+      const nav = document.getElementById('smtv-bottom-nav');
+      if(!nav) return;
+      const items = Array.from(nav.querySelectorAll('.nav-item'));
+
+      function clearActive(){ items.forEach(i => i.classList.remove('active')); }
+
+      // mark active by URL or last-click
+      const path = window.location.pathname.toLowerCase();
+      let matched = items.find(a=>{
+        const name = (a.dataset.name||'').toLowerCase();
+        if(name === 'home' && (path === '/' || path.includes('index'))) return true;
+        return name && path.includes(name);
+      });
+      if(!matched){
+        const last = localStorage.getItem('smtv_last_nav');
+        if(last) matched = items.find(a => a.dataset.name === last);
+      }
+      if(matched) matched.classList.add('active');
+
+      // Attach a robust click handler: prevent default, immediately force full navigation
+      items.forEach(a => {
+        a.addEventListener('click', function(e){
+          try { e.preventDefault && e.preventDefault(); } catch(err){}
+          clearActive();
+          this.classList.add('active');
+          try { localStorage.setItem('smtv_last_nav', this.dataset.name); } catch(e){}
+          const href = this.getAttribute('href');
+          // immediate navigation
+          location.assign(href);
+          // safety fallback: if navigation didn't happen in 300ms, try again with replace
+          setTimeout(()=> {
+            if (location.pathname.toLowerCase() !== (new URL(href, location.origin).pathname.toLowerCase())) {
+              console.warn('Forced nav fallback for', href);
+              location.replace(href);
+            }
+          }, 300);
+        }, { passive: false });
+      });
+
+      // ensure page content not hidden under footer
+      try {
+        const curPad = parseInt(getComputedStyle(document.body).paddingBottom) || 0;
+        if(curPad < 96) document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))';
+      } catch(e){}
+
+    } catch (err) {
+      console.warn('Footer load/init error:', err);
+    }
+  })();
+  </script>
+
 </body>
 </html>
