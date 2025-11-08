@@ -99,6 +99,73 @@
 
   <!-- Preserve your external ad / script if you want -->
   <script type="text/javascript" src="//www.highperformanceformat.com/c91a82435d260630918ecc80c95125ac/invoke.js"></script>
+<!-- Footer Include (bottom nav) -->
+  <div id="footer-placeholder"></div>
 
+  <script>
+  (async function loadFooterAndActivateNav(){
+    // wait until page is fully loaded so other scripts finish
+    if (document.readyState !== 'complete') {
+      await new Promise(r => window.addEventListener('load', r, { once: true }));
+    }
+
+    try {
+      const res = await fetch('/includes/footer.html', { cache: 'no-cache' });
+      if (!res.ok) throw new Error('Footer not found: ' + res.status);
+      const html = await res.text();
+      const ph = document.getElementById('footer-placeholder');
+      ph.innerHTML = html;
+
+      // activate bottom nav item correctly
+      const nav = document.getElementById('smtv-bottom-nav');
+      if (!nav) return;
+
+      const items = Array.from(nav.querySelectorAll('.nav-item'));
+
+      function clearActive(){ items.forEach(i => i.classList.remove('active')); }
+
+      // If user opened a series page (series.html?series=slug) we want the "Series" nav active
+      const path = location.pathname.toLowerCase();
+
+      // prefer rules: check dataset.name attribute or href for "series"
+      let matched = items.find(i => {
+        const name = (i.dataset.name || '').toLowerCase();
+        if (name && name === 'series') return true;
+        const href = (i.getAttribute('href') || '').toLowerCase();
+        return href.includes('series');
+      });
+
+      // fallback to last clicked
+      if (!matched) {
+        try {
+          const last = localStorage.getItem('smtv_last_nav');
+          if (last) matched = items.find(i => (i.dataset.name||'') === last);
+        } catch(e){}
+      }
+
+      if (matched) matched.classList.add('active');
+
+      // Add click handlers so nav highlights immediately and navigates
+      items.forEach(a => {
+        a.addEventListener('click', function(e){
+          try { e.preventDefault && e.preventDefault(); } catch(err){}
+          clearActive();
+          this.classList.add('active');
+          try { localStorage.setItem('smtv_last_nav', this.dataset.name); } catch(e){}
+          const href = this.getAttribute('href');
+          if (href) location.assign(href);
+        }, { passive: false });
+      });
+
+      // make sure body has space so content is not hidden under the nav
+      try {
+        const curPad = parseInt(getComputedStyle(document.body).paddingBottom) || 0;
+        if (curPad < 96) document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))';
+      } catch(e){}
+    } catch (err) {
+      console.warn('Footer load/init error:', err);
+    }
+  })();
+  </script>
 </body>
 </html>
