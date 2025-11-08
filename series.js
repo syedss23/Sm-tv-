@@ -1,4 +1,4 @@
-// series.js — fixed candidate generation (no "{ s }" bug) + compact square cards
+// series.js — compact square episode cards, tightened layout
 (function () {
   'use strict';
 
@@ -26,25 +26,24 @@
     } catch (e) { /* ignore */ }
   }
 
-  // Injected styles (compact square cards + highlighted tutorial titles)
+  // Inject compact card styles (overrides previous)
   const injectedStyles = `
-    .premium-channel-message{ margin-top:12px; padding:14px; background:linear-gradient(135deg,#071014 80%, #08323e 100%); border-radius:12px; border:1px solid rgba(35,198,237,0.12); color:#23c6ed; font-weight:700; }
-    .premium-btn-row{ margin-top:10px; }
-    .btn-primary{ background:#ffd400; color:#112; padding:8px 14px; border-radius:999px; text-decoration:none; font-weight:800; display:inline-block; }
-
+    /* compact square cards */
     .pro-episodes-row-pro{
       display:flex;
-      gap:12px;
+      gap:10px;
       overflow-x:auto;
-      padding:12px 10px;
+      padding:10px 8px;
       -webkit-overflow-scrolling:touch;
       scroll-snap-type:x proximity;
       align-items:flex-start;
+      margin-bottom:8px;
     }
 
+    /* each episode card: compact square */
     .pro-episode-card-pro{
       scroll-snap-align:center;
-      flex:0 0 150px;
+      flex:0 0 140px;          /* compact width */
       display:flex;
       flex-direction:column;
       gap:8px;
@@ -53,22 +52,23 @@
       border-radius:12px;
       text-decoration:none;
       color:#fff;
-      box-shadow:0 6px 18px rgba(0,0,0,0.38);
-      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.04));
-      min-height:auto;
+      box-shadow:0 6px 16px rgba(0,0,0,0.32);
+      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.03));
+      min-height: 0;
       transition:transform .12s ease;
     }
     .pro-episode-card-pro:hover{ transform:translateY(-6px); }
 
+    /* square thumbnail area (fills card top) */
     .pro-ep-thumb-wrap-pro{
-      width:120px;
-      height:120px;
+      width:100%;
+      height:110px;
       border-radius:10px;
       overflow:hidden;
       position:relative;
       background:#0c0f12;
       display:block;
-      box-shadow: inset 0 -6px 12px rgba(0,0,0,0.12);
+      box-shadow: inset 0 -6px 12px rgba(0,0,0,0.10);
     }
     .pro-ep-thumb-pro{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
 
@@ -88,15 +88,18 @@
     .pro-ep-title-pro{
       width:100%;
       text-align:center;
-      font-size:14px;
+      font-size:13px;
       font-weight:800;
       color:#fff;
-      padding:8px 6px;
-      border-radius:8px;
+      padding:6px 6px;
+      border-radius:6px;
       background: transparent;
-      line-height:1.1;
+      line-height:1.05;
+      height:38px;            /* keep titles same height, remove extra space */
+      overflow:hidden;
     }
 
+    /* tutorial highlight */
     .pro-tutorial-title {
       margin-top:18px;
       font-weight:900;
@@ -113,8 +116,8 @@
     .pro-video-frame-wrap { margin-top:12px; border-radius:10px; overflow:hidden; }
 
     @media(min-width:900px){
-      .pro-episode-card-pro{ flex:0 0 180px; }
-      .pro-ep-thumb-wrap-pro{ width:140px; height:140px; }
+      .pro-episode-card-pro{ flex:0 0 160px; }
+      .pro-ep-thumb-wrap-pro{ height:130px; }
     }
   `;
   try {
@@ -130,34 +133,24 @@
     });
   }
 
-  // Build explicit candidates (no placeholder formatting left to chance)
+  // Build candidate file list carefully (no placeholder mistakes)
   async function fetchEpisodesWithCandidates(season) {
     const base = `episode-data/${slug}-s${season}`;
     const candidates = [];
-
-    // language-specific favorites (respect lang if provided)
     if (lang) {
-      // common variants
       candidates.push(`${base}-${lang}.json`);
       candidates.push(`${base}-${lang}-sub.json`);
-      // explicit english/hindi/urdu if lang given but different formats needed
-      if (!['en','hi','ur','dub','sub'].includes(lang)) {
-        candidates.push(`${base}-en.json`);
-        candidates.push(`${base}-hi.json`);
-        candidates.push(`${base}-ur.json`);
-      }
     }
-
-    // standard fallbacks
-    candidates.push(`${base}.json`);
-    candidates.push(`${base}-.json`);
-    candidates.push(`${base}-sub.json`);
+    // helpful common patterns you said you had
+    candidates.push(`${base}-en-sub.json`);
     candidates.push(`${base}-en.json`);
     candidates.push(`${base}-hi.json`);
     candidates.push(`${base}-ur.json`);
+    candidates.push(`${base}.json`);
+    candidates.push(`${base}-.json`);
+    candidates.push(`${base}-sub.json`);
 
     const tried = [];
-
     for (const cand of candidates) {
       try {
         const url = bust(cand);
@@ -174,7 +167,7 @@
         if (!ct.includes('application/json') && !ct.includes('json')) {
           const text = await resp.text();
           rec.err = `invalid content-type: ${ct || 'unknown'}`;
-          rec.preview = (text || '').slice(0, 200);
+          rec.preview = (text || '').slice(0, 260);
           tried.push(rec);
           continue;
         }
@@ -186,7 +179,6 @@
         continue;
       }
     }
-
     throw { tried };
   }
 
