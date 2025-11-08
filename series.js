@@ -16,10 +16,6 @@
       .pro-episodes-row-wrap-pro.is-loading { opacity: .6; filter: blur(1px) saturate(.95); pointer-events: none; }
       .pro-episodes-row-pro { transition: transform .28s ease, opacity .28s ease; will-change: transform, opacity; }
       .pro-ep-loading { transition: opacity .28s ease, transform .28s ease; opacity: .9; transform: translateY(0); display:flex; align-items:center; justify-content:center; color:#9fd3ff; font-weight:800; }
-
-      /* reveal helpers for smoother entry */
-      .reveal-anim { opacity: 0; transform: translateY(10px); transition: opacity .32s ease, transform .32s ease; }
-      .reveal-anim.in { opacity: 1; transform: translateY(0); }
     `;
     const s = document.createElement('style');
     s.textContent = css;
@@ -75,7 +71,7 @@
         detailsMount.innerHTML = `<div style="color:#fff;padding:20px;">Series not found.</div>`;
         return;
       }
-      document.title = `${meta.title} – SmTv Urdu`;
+      document.title = `${meta.title} â€“ SmTv Urdu`;
 
       const premiumMsg = `
         <div class="premium-channel-message" role="region" aria-label="Premium">
@@ -172,15 +168,6 @@
       wrap.classList.add('is-loading');
     }
 
-    // --- PREVENT LAYOUT JUMPS: lock height and disable smooth scroll temporarily ---
-    const prevMin = wrap.style.minHeight || '';
-    const prevHeight = wrap.clientHeight || 0;
-    if (prevHeight > 0) wrap.style.minHeight = prevHeight + 'px';
-
-    const htmlEl = document.documentElement;
-    const prevScrollBehavior = htmlEl.style.scrollBehavior || '';
-    htmlEl.style.scrollBehavior = 'auto';
-
     // Insert immediate placeholders so user sees instant feedback
     wrap.innerHTML = `<div class="pro-episodes-row-pro" role="region" aria-busy="true" aria-label="Loading episodes">
       ${Array.from({length:6}).map(()=>`<div class="pro-ep-loading">Loading</div>`).join('')}
@@ -195,12 +182,10 @@
             wrap.innerHTML = `<div style="color:#fff;padding:28px 16px;">No episodes for this season.</div>`;
             if (doSmooth) restoreScroll(savedScrollY);
             wrap.classList.remove('is-loading');
-            wrap.style.minHeight = prevMin;
-            htmlEl.style.scrollBehavior = prevScrollBehavior;
             return;
           }
 
-          // Build episodes scroller HTML (add reveal-anim class for smoother entrance)
+          // Build episodes scroller HTML
           const scrollerHtml = `<div class="pro-episodes-row-pro" role="list">` + episodes.map(ep => {
             const episodeUrl = ep.shortlink
               ? ep.shortlink
@@ -208,7 +193,7 @@
             const extra = ep.shortlink ? 'target="_blank" rel="noopener"' : '';
             const thumb = (ep.thumb && ep.thumb.trim()) ? ep.thumb : 'default-thumb.jpg';
             return `
-              <a class="pro-episode-card-pro reveal-anim" href="${episodeUrl}" ${extra} aria-label="Episode ${ep.ep}" role="listitem">
+              <a class="pro-episode-card-pro" href="${episodeUrl}" ${extra} aria-label="Episode ${ep.ep}" role="listitem">
                 <div class="pro-ep-thumb-wrap-pro" aria-hidden="true">
                   <img src="${thumb}" class="pro-ep-thumb-pro" alt="Ep ${ep.ep} thumbnail" loading="lazy">
                   <span class="pro-ep-num-pro">Ep ${ep.ep}</span>
@@ -237,14 +222,20 @@
           // Replace content in one go
           wrap.innerHTML = scrollerHtml + tutorialHtml;
 
-          // small deferred activation: reveal items with stagger
+          // small deferred activation: briefly translate items in for a subtle motion
           const scroller = wrap.querySelector('.pro-episodes-row-pro');
           if (scroller) {
-            const items = Array.from(scroller.querySelectorAll('.reveal-anim'));
-            items.forEach((c, i) => {
+            Array.from(scroller.children).forEach((c, i) => {
+              c.style.opacity = '0';
+              c.style.transform = 'translateY(10px)';
+              // stagger the fade in slightly
               setTimeout(() => {
-                c.classList.add('in');
-              }, 60 + i * 28);
+                c.style.transition = 'opacity .28s ease, transform .28s ease';
+                c.style.opacity = '1';
+                c.style.transform = 'translateY(0)';
+                // clear inline styles after animation to keep CSS clean
+                setTimeout(()=>{ c.style.transition=''; c.style.transform=''; c.style.opacity=''; },420);
+              }, 50 + i * 30);
             });
           }
 
@@ -256,17 +247,12 @@
 
           // restore scroll (deferred so layout is stable)
           restoreScroll(savedScrollY);
-
-          // restore prior minHeight and scroll behavior after layout settles
-          setTimeout(()=> { wrap.style.minHeight = prevMin; htmlEl.style.scrollBehavior = prevScrollBehavior; }, 360);
         })
         .catch(err => {
           wrap.innerHTML = `<div style="color:#fff;padding:28px 16px;">Could not load episodes. Please try again.</div>`;
           wrap.classList.remove('is-loading');
           toast('Episode file missing or network error');
           restoreScroll(savedScrollY);
-          wrap.style.minHeight = prevMin;
-          htmlEl.style.scrollBehavior = prevScrollBehavior;
           console.warn('renderSeason error', err);
         });
     }));
@@ -307,8 +293,8 @@
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         try {
-          // Use 'auto' to restore instantly (supported)
-          window.scrollTo({ top: savedY, left: 0, behavior: 'auto' });
+          // Use instant behavior to avoid browser interpolating which can cause additional shifts
+          window.scrollTo({ top: savedY, left: 0, behavior: 'instant' });
         } catch (err) {
           window.scrollTo(0, savedY);
         }
