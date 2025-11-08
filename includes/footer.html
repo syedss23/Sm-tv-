@@ -1,54 +1,167 @@
-<!-- SmTv Urdu Bottom Navigation Bar -->
+<!-- includes/footer.html - SmTv Urdu Bottom Navigation Bar (polished) -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<div class="bottom-nav" id="smtv-bottom-nav">
-  <a href="/index.html" class="nav-item" data-name="home">
-    <i class="fa-solid fa-house"></i><span>Home</span>
+<nav class="smtv-bottom-nav" id="smtv-bottom-nav" role="navigation" aria-label="Main">
+  <a href="/index.html" class="nav-item" data-name="home" aria-label="Home">
+    <span class="icon-wrap"><i class="fa-solid fa-house"></i></span><span class="label">Home</span>
   </a>
-  <a href="/series.html" class="nav-item" data-name="series">
-    <i class="fa-solid fa-film"></i><span>Series</span>
+
+  <a href="/series.html" class="nav-item" data-name="series" aria-label="Series">
+    <span class="icon-wrap"><i class="fa-solid fa-film"></i></span><span class="label">Series</span>
   </a>
-  <a href="/clips.html" class="nav-item" data-name="clips">
-    <i class="fa-solid fa-play-circle"></i><span>Clips</span>
+
+  <a href="/clips.html" class="nav-item" data-name="clips" aria-label="Clips">
+    <span class="icon-wrap"><i class="fa-solid fa-play-circle"></i></span><span class="label">Clips</span>
   </a>
-  <a href="/premium.html" class="nav-item" data-name="premium">
-    <i class="fa-solid fa-star"></i><span>Premium</span>
+
+  <a href="/premium.html" class="nav-item" data-name="premium" aria-label="Premium">
+    <span class="icon-wrap"><i class="fa-solid fa-star"></i></span><span class="label">Premium</span>
   </a>
-  <a href="/more.html" class="nav-item" data-name="more">
-    <i class="fa-solid fa-circle-info"></i><span>More</span>
+
+  <a href="/more.html" class="nav-item" data-name="more" aria-label="More">
+    <span class="icon-wrap"><i class="fa-solid fa-circle-info"></i></span><span class="label">More</span>
   </a>
-</div>
+</nav>
 
 <style>
-:root{--bg:#0d0d0d;--muted:#aaa;--accent:#ffcc00}
-.bottom-nav{
-  position:fixed; left:0; right:0; bottom:0;
-  display:flex; justify-content:space-around; align-items:center;
-  background:var(--bg); border-top:1px solid rgba(255,255,255,0.03);
-  padding:10px 6px; z-index:1200;
-  padding-bottom: calc(env(safe-area-inset-bottom) + 10px);
-  box-shadow: 0 -6px 30px rgba(0,0,0,0.6);
-  font-family: 'Poppins', sans-serif;
+:root{
+  --nav-bg: rgba(10,10,12,0.92);
+  --muted: #bdbdbd;
+  --accent-1: #ffcf33;
+  --accent-2: #ff7a5f;
+  --active-bg: linear-gradient(135deg,var(--accent-1),var(--accent-2));
+  --glass: rgba(255,255,255,0.03);
 }
-.nav-item{ color:var(--muted); text-decoration:none; text-align:center; font-size:12px; flex:1; transition:all .18s; display:flex; flex-direction:column; align-items:center; gap:4px; }
-.nav-item i{ font-size:18px; display:block; line-height:1; }
-.nav-item span{ display:block; font-size:12px; }
-.nav-item:hover, .nav-item.active{ color:var(--accent); text-shadow:0 0 8px rgba(255,204,0,0.8); transform:translateY(-2px); }
-@media(min-width:900px){ .bottom-nav{ max-width:900px; margin:0 auto; border-radius:10px 10px 0 0; } .nav-item span{ font-size:13px; } }
-body { padding-bottom: calc(70px + env(safe-area-inset-bottom)); }
+
+/* container */
+.smtv-bottom-nav{
+  position:fixed;
+  left:12px;
+  right:12px;
+  bottom:12px;
+  height:64px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:6px;
+  padding:8px 10px;
+  background: linear-gradient(180deg, rgba(20,20,22,0.9), var(--nav-bg));
+  border-radius:14px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5), inset 0 1px 0 var(--glass);
+  z-index:1200;
+  backdrop-filter: blur(6px);
+  font-family: 'Poppins', system-ui, sans-serif;
+  /* safe-area on mobile */
+  padding-bottom: calc(env(safe-area-inset-bottom) + 8px);
+}
+
+/* each item */
+.nav-item{
+  flex:1;
+  text-decoration:none;
+  color:var(--muted);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  padding:6px 8px;
+  border-radius:10px;
+  transition: transform .18s ease, color .18s ease;
+  position:relative;
+  min-width:48px;
+}
+
+/* icon circle */
+.icon-wrap{
+  width:40px; height:40px; display:inline-flex; align-items:center; justify-content:center;
+  border-radius:10px;
+  transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
+  background: transparent;
+}
+.nav-item i { font-size:18px; line-height:1; }
+
+/* label */
+.label{ font-size:12px; opacity:0.95; }
+
+/* active state (URL OR last-click) */
+.nav-item.active{
+  color:#fff;
+  transform:translateY(-6px);
+}
+.nav-item.active .icon-wrap{
+  background: var(--active-bg);
+  box-shadow: 0 6px 18px rgba(255,120,60,0.22), 0 2px 6px rgba(0,0,0,0.5), 0 0 18px rgba(255,207,51,0.12);
+  transform: scale(1.08);
+}
+
+/* small indicator (dot) below active item */
+.nav-item.active::after{
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width:36px;
+  height:4px;
+  border-radius:6px;
+  background: linear-gradient(90deg, rgba(255,207,51,0.98), rgba(255,123,80,0.98));
+  box-shadow: 0 6px 14px rgba(255,110,60,0.12);
+  opacity:1;
+}
+
+/* hover feedback for non-active */
+.nav-item:hover{ color: #fff; transform: translateY(-4px); }
+.nav-item:hover .icon-wrap{ background: rgba(255,255,255,0.04); }
+
+/* larger screens: center bar */
+@media(min-width:900px){
+  .smtv-bottom-nav{ max-width:860px; left:calc(50% - 430px); right:calc(50% - 430px); bottom:24px; height:72px; padding:10px; }
+  .icon-wrap{ width:46px; height:46px; border-radius:12px;}
+  .nav-item i{ font-size:19px; }
+  .label{ font-size:13px; }
+}
+
+/* ensure body doesn't hide under nav (if footer include injects style this helps) */
 </style>
 
 <script>
+/* active logic: prefer pathname, otherwise use stored last-click for instant color feedback */
 (function(){
-  const nav = document.getElementById('smtv-bottom-nav');
-  if(!nav) return;
-  const path = window.location.pathname;
-  nav.querySelectorAll('.nav-item').forEach(a=>{
-    a.classList.remove('active');
-    const name = a.dataset.name;
-    if (path.includes(name) || (name==='home' && (path==='/' || path.includes('index')))) {
-      a.classList.add('active');
+  try {
+    const nav = document.getElementById('smtv-bottom-nav');
+    if(!nav) return;
+    const items = Array.from(nav.querySelectorAll('.nav-item'));
+
+    function clearActive(){ items.forEach(i => i.classList.remove('active')); }
+
+    // prefer actual path matching
+    const path = window.location.pathname.toLowerCase();
+    let matched = items.find(a=>{
+      const name = (a.dataset.name||'').toLowerCase();
+      if(name === 'home' && (path === '/' || path.includes('index'))) return true;
+      return name && path.includes(name);
+    });
+
+    // fallback to last clicked item (persisted), but only if it exists on this nav
+    if(!matched){
+      const last = localStorage.getItem('smtv_last_nav');
+      if(last) matched = items.find(a => a.dataset.name === last);
     }
-  });
+
+    if(matched) matched.classList.add('active');
+
+    // click handler: set active immediately (persist) then follow link
+    items.forEach(a=>{
+      a.addEventListener('click', function(e){
+        // make active visually before navigation
+        clearActive();
+        this.classList.add('active');
+        try { localStorage.setItem('smtv_last_nav', this.dataset.name); } catch(e){}
+        // allow default navigation to happen
+      });
+    });
+
+  } catch(err){ console.warn('footer nav err', err); }
 })();
 </script>
