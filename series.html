@@ -1,27 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WM3KEDD127"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-WM3KEDD127');
-  </script>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WM3KEDD127"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'G-WM3KEDD127');
+</script>
   <meta charset="UTF-8">
   <title>SmTv Urdu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="Watch Turkish drama series and historical shows in Urdu on SmTv Urdu. All series details and streaming links.">
-
   <link rel="stylesheet" href="style.css">
+
   <style>
-    /* Page basics */
+    /* small page-local styles for series list + details */
     body { background:#0b0d10; color:#fff; margin:0; font-family: 'Segoe UI', Arial, sans-serif; }
     .container { max-width:1100px; margin:0 auto; padding:14px; }
 
-    /* Top title (no duplicate back arrow) */
     .page-title { color:#fff; font-size:20px; font-weight:700; margin:12px 0 18px; display:flex; align-items:center; justify-content:center; gap:8px; }
 
     /* Filter bar */
@@ -35,12 +34,12 @@
       cursor:pointer;
       background:#1e2630;
       color:#fff;
-      transition:all .2s;
+      transition:all .15s;
     }
     .filter-btn.active {
       background:linear-gradient(135deg,#00bcd4,#007bff);
       color:#fff;
-      box-shadow:0 0 10px rgba(0,188,212,0.4);
+      box-shadow:0 4px 18px rgba(0,188,212,0.18);
     }
 
     /* Language subfilter */
@@ -54,12 +53,13 @@
       cursor:pointer;
       background:#1b2430;
       color:#ddd;
-      transition:.2s;
+      transition:.12s;
     }
     .sub-btn.active {
-      background:#ff9800;
-      color:#000;
-      font-weight:700;
+      background:linear-gradient(90deg,#ffcf33,#ff7a5f);
+      color:#111;
+      font-weight:800;
+      box-shadow:0 6px 18px rgba(255,140,38,0.12);
     }
 
     /* Grid (list) */
@@ -70,6 +70,7 @@
     }
     @media(min-width:700px){ .series-grid{grid-template-columns:repeat(3,1fr);} }
     @media(min-width:1000px){ .series-grid{grid-template-columns:repeat(4,1fr);} }
+
     .series-card {
       display:block;
       background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.12));
@@ -83,13 +84,14 @@
     .series-card:hover { transform:translateY(-6px); box-shadow:0 12px 30px rgba(0,0,0,0.55); }
     .series-thumb { width:100%; height:0; padding-bottom:56%; position:relative; background:#111; }
     .series-thumb img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
-    .series-title { padding:10px 12px; font-size:15px; font-weight:600; color:#fff; background:rgba(0,0,0,0.1); text-align:center; }
+    .series-title { padding:10px 12px; font-size:15px; font-weight:700; color:#fff; background:rgba(0,0,0,0.08); text-align:center; }
+
     #series-empty { display:none; color:#ccc; text-align:center; margin-top:30px; }
 
-    /* Series details base (series.js will inject content into this) */
+    /* Series details base (will be injected by series.js) */
     #series-details { display:none; margin-top:10px; }
 
-    /* --------- Ensure details header is centered & back button overlay ---------- */
+    /* centered details header */
     .pro-series-header-pro {
       display:flex;
       flex-direction:column;
@@ -118,19 +120,11 @@
       box-shadow: 0 6px 18px rgba(0,140,200,0.08);
       text-decoration:none;
     }
-    .pro-series-poster-pro {
-      width:150px;
-      height:90px;
-      border-radius:10px;
-      object-fit:cover;
-      display:block;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.45);
-    }
-    .pro-series-meta-pro { width:100%; max-width:720px; }
+    .pro-series-poster-pro { width:150px; height:90px; border-radius:10px; object-fit:cover; box-shadow:0 8px 18px rgba(0,0,0,0.45); }
     .pro-series-title-pro { font-size:22px; margin:8px 0; color:#00d0f0; font-weight:800; }
-    .pro-series-desc-pro { color:#cfd8df; line-height:1.45; }
+    .pro-series-desc-pro { color:#cfd8df; line-height:1.45; max-width:720px; }
 
-    /* --------- Horizontal episode cards (thumb left, title right) --------- */
+    /* Horizontal episode cards */
     .pro-episodes-row-pro { display:flex; flex-direction:column; gap:12px; margin-top:12px; }
     .pro-episode-card-pro {
       display:flex;
@@ -150,33 +144,31 @@
     .pro-ep-title-pro { flex:1; font-size:15px; font-weight:700; color:#fff; }
     .pro-ep-num-pro { position:absolute; left:8px; top:8px; background:rgba(0,0,0,0.45); padding:6px 8px; border-radius:8px; font-weight:700; color:#fff; font-size:13px; }
     .pro-video-frame-wrap { margin-top:18px; border-radius:10px; overflow:hidden; }
+
     @media(min-width:700px){
       .pro-series-poster-pro { width:180px; height:110px; }
       .pro-ep-thumb-wrap-pro { flex:0 0 180px; width:180px; height:100px; }
     }
 
-    /* Footer safe area */
     @media (max-width:600px) {
       body { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
     }
   </style>
 
-  <!-- details loader (keeps your existing behavior in series.js) -->
   <script defer src="series.js"></script>
 </head>
 <body>
-  <div class="container">
-    <!-- Centered title (no duplicate back arrow) -->
+  <div class="container" id="main-content">
     <header class="page-title">Series</header>
 
     <!-- Filters -->
-    <div class="filter-bar">
-      <button class="filter-btn active" id="dubbedBtn">Dubbed</button>
-      <button class="filter-btn" id="subBtn">Subtitles</button>
+    <div class="filter-bar" role="toolbar" aria-label="Series filters">
+      <button class="filter-btn active" id="dubbedBtn" aria-pressed="true">Dubbed</button>
+      <button class="filter-btn" id="subBtn" aria-pressed="false">Subtitles</button>
     </div>
 
     <!-- Sub-language buttons -->
-    <div class="sub-lang-bar" id="subLangBar">
+    <div class="sub-lang-bar" id="subLangBar" aria-hidden="true">
       <button class="sub-btn" data-lang="en">English</button>
       <button class="sub-btn" data-lang="hi">Hindi</button>
       <button class="sub-btn" data-lang="ur">Urdu</button>
@@ -188,132 +180,84 @@
       <div id="series-empty">No Series found.</div>
     </div>
 
-    <!-- Series details (populated by /series.js when ?series=slug) -->
-    <div id="series-details"></div>
+    <!-- Series details (populated by series.js when ?series=slug) -->
+    <div id="series-details" aria-live="polite"></div>
+
   </div>
 
-  <!-- WhatsApp Popup -->
+  <!-- Centered WhatsApp Update Popup Notification (kept) -->
   <div id="whatsappPopup"
-       style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); max-width:340px; width:90vw; box-shadow:0 8px 24px rgba(15,18,30,.13); border-radius:22px; background:#232936; color:#fff; padding:28px; font-size:1.09em; text-align:left;">
+       style="display:none; position:fixed; top:50%; left:50%; z-index:99999; transform:translate(-50%, -50%); max-width:340px; width:90vw; box-shadow:0 8px 24px rgba(15,18,30,.13); border-radius:22px; background:#232936; color:#fff; padding:28px 28px 22px 28px; font-size:1.09em; text-align:left; font-family: 'Segoe UI', Arial, sans-serif;">
     <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
-      <img src="favicon.png" alt="Channel Logo" style="width:40px; height:40px; border-radius:18px;">
+      <img src="favicon.png" alt="Channel Logo" style="width:40px; height:40px; border-radius:18px; object-fit:cover; box-shadow:0 2px 8px rgba(40,52,70,.10);">
       <span style="font-weight:700; font-size:1.18em;">Stay Updated!</span>
     </div>
-    <div style="margin-bottom:16px;">Get instant notifications for new episodes and exclusive news.<br>Join our WhatsApp Channel now.</div>
+    <div style="margin-bottom:16px; color:#f1f1f1;">Get instant notifications for new episodes and exclusive news.<br>Join our WhatsApp Channel now.</div>
     <div style="text-align:center;">
       <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k" target="_blank"
-         style="display:inline-block; background:#29a345; color:#fff; font-weight:600; border-radius:11px; padding:11px 26px; text-decoration:none;">🟢 Join on WhatsApp</a>
+         style="display:inline-block; background:#29a345; color:#fff; font-weight:600; border-radius:11px; padding:11px 26px; text-decoration:none; font-size:1em; box-shadow:0 2px 8px rgba(40,52,70,.09); margin-bottom:15px; transition:background 0.2s;">
+        🟢 Join on WhatsApp
+      </a>
       <br>
-      <button id="closeWhatsAppPopup" style="background:none; border:none; color:#ff6868; font-weight:600; font-size:1.12em; margin-top:7px; cursor:pointer;">✖ Close</button>
+      <button id="closeWhatsAppPopup"
+              style="background:none; border:none; color:#ff6868; font-weight:600; font-size:1.12em; margin-top:7px; cursor:pointer; display:block; margin-left:auto; margin-right:auto;">
+        ✖ Close
+      </button>
     </div>
   </div>
   <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => document.getElementById('whatsappPopup').style.display="block", 2000);
-      document.getElementById('closeWhatsAppPopup').onclick = () => document.getElementById('whatsappPopup').style.display="none";
+    window.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        document.getElementById('whatsappPopup').style.display = "block";
+      }, 2000);
+
+      document.getElementById('closeWhatsAppPopup').onclick = function() {
+        document.getElementById('whatsappPopup').style.display = "none";
+      };
     });
   </script>
 
-  <!-- Series filter and list loader -->
+  <!-- Preserve your external ad script if you want -->
+  <script type="text/javascript" src="//www.highperformanceformat.com/c91a82435d260630918ecc80c95125ac/invoke.js"></script>
+
+  <!-- small meta updater (keeps your old behavior for ?series=slug) -->
   <script>
-  (async function(){
-    const qs = new URLSearchParams(location.search);
-    const slug = qs.get('series');
-    const listArea = document.getElementById('series-list-area');
-    const details = document.getElementById('series-details');
-    const grid = document.getElementById('series-list');
-    const empty = document.getElementById('series-empty');
-
-    // If a slug exists we show details area (series.js populates it)
-    if (slug) {
-      listArea.style.display='none';
-      details.style.display='';
-      return;
-    }
-
-    // otherwise load series list for the grid
-    let allSeries = [];
-    try {
-      const res = await fetch('/series.json');
-      if(res.ok) allSeries = await res.json();
-    } catch(e){ console.warn('Could not load series.json', e); }
-
-    const dubbedBtn = document.getElementById('dubbedBtn');
-    const subBtn = document.getElementById('subBtn');
-    const subLangBar = document.getElementById('subLangBar');
-    const subBtns = subLangBar.querySelectorAll('.sub-btn');
-
-    function render(filter){
-      const filtered = (Array.isArray(allSeries) ? allSeries : []).filter(s=>{
-        if(filter.type === 'dubbed') return s.track === 'dubbed';
-        if(filter.type === 'sub') {
-          if(!filter.lang) return s.track === 'sub';
-          return s.track === 'sub' && s.subLang === filter.lang;
+    document.addEventListener('DOMContentLoaded', function() {
+      const params = new URLSearchParams(window.location.search);
+      const slug = params.get('series');
+      if(!slug) return;
+      fetch('series.json').then(res => res.json()).then(seriesArr => {
+        const meta = Array.isArray(seriesArr) ? seriesArr.find(s => s.slug === slug) : null;
+        if (meta && meta.title) {
+          document.title = `${meta.title} – SmTv Urdu`;
+          const metaDesc = document.querySelector('meta[name="description"]');
+          if (metaDesc) {
+            metaDesc.setAttribute('content', `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`);
+          }
         }
-        return false;
-      });
-      if(filtered.length===0){ grid.innerHTML=''; empty.style.display='block'; return;}
-      empty.style.display='none';
-      grid.innerHTML = filtered.map(s=>`
-        <a class="series-card" href="series.html?series=${encodeURIComponent(s.slug)}">
-          <div class="series-thumb"><img class="thumb" src="${s.poster}" alt="${s.title}"></div>
-          <div class="series-title">${escapeHtml(s.title || '')}</div>
-        </a>
-      `).join('');
-    }
-
-    let currentFilter = { type:'dubbed' };
-    render(currentFilter);
-
-    dubbedBtn.onclick = ()=>{
-      currentFilter = { type:'dubbed' };
-      dubbedBtn.classList.add('active');
-      subBtn.classList.remove('active');
-      subLangBar.classList.remove('active');
-      render(currentFilter);
-    };
-    subBtn.onclick = ()=>{
-      currentFilter = { type:'sub' };
-      subBtn.classList.add('active');
-      dubbedBtn.classList.remove('active');
-      subLangBar.classList.add('active');
-      subBtns.forEach(b=>b.classList.remove('active'));
-      render(currentFilter);
-    };
-    subBtns.forEach(b=>{
-      b.onclick = ()=>{
-        subBtns.forEach(x=>x.classList.remove('active'));
-        b.classList.add('active');
-        currentFilter = { type:'sub', lang:b.dataset.lang };
-        render(currentFilter);
-      };
+      }).catch(()=>{});
     });
-
-    function escapeHtml(str){ if(!str && str !== 0) return ''; return String(str).replace(/[&<>"'`=\/]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','/':'&#x2F;','`':'&#x60;','=':'&#x3D;'}[c]; }); }
-  })();
   </script>
 
   <!-- Footer Include -->
   <div id="footer-placeholder"></div>
   <script>
-  (async function(){
-    if (document.readyState !== 'complete')
-      await new Promise(r=>window.addEventListener('load',r,{once:true}));
-    try{
+  (async function loadFooterAndMark(){
+    if (document.readyState !== 'complete') await new Promise(r=>window.addEventListener('load', r, {once:true}));
+    try {
       const res = await fetch('/includes/footer.html');
-      if(!res.ok) throw new Error('Footer not found: ' + res.status);
+      if (!res.ok) return;
       const html = await res.text();
       document.getElementById('footer-placeholder').innerHTML = html;
-      // activate bottom nav highlight based on pathname
+      // mark series nav active
       const nav = document.getElementById('smtv-bottom-nav');
-      if(nav){
+      if(nav) {
         const items = Array.from(nav.querySelectorAll('.nav-item'));
-        const path = location.pathname.toLowerCase();
-        items.forEach(i => i.classList.remove('active'));
-        const matched = items.find(i => (i.dataset.name||'').toLowerCase() === 'series');
-        if(matched) matched.classList.add('active');
+        items.forEach(i=>i.classList.remove('active'));
+        const found = items.find(i => (i.dataset.name||'').toLowerCase() === 'series');
+        if(found) found.classList.add('active');
       }
-    }catch(e){console.warn('Footer load failed',e);}
+    } catch(e){ console.warn('Footer load failed', e); }
   })();
   </script>
 </body>
