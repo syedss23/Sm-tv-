@@ -93,5 +93,60 @@
     } catch(e){ console.warn('Footer load failed:', e); }
   })();
 </script>
+  <!-- Footer Include (fetch + init) -->
+<div id="footer-placeholder"></div>
+<script>
+(async function loadFooterAndInit(){
+  try {
+    // fetch footer html
+    const res = await fetch('/includes/footer.html');
+    if (!res.ok) throw new Error('Footer not found');
+    const html = await res.text();
+
+    // insert markup into placeholder
+    const ph = document.getElementById('footer-placeholder');
+    ph.innerHTML = html;
+
+    // now footer markup exists in DOM — run initialization for active state & clicks
+    (function initFooterNav(){
+      const nav = document.getElementById('smtv-bottom-nav');
+      if(!nav) return;
+      const items = Array.from(nav.querySelectorAll('.nav-item'));
+
+      function clearActive(){ items.forEach(i => i.classList.remove('active')); }
+
+      // prefer actual path matching
+      const path = window.location.pathname.toLowerCase();
+      let matched = items.find(a=>{
+        const name = (a.dataset.name||'').toLowerCase();
+        if(name === 'home' && (path === '/' || path.includes('index'))) return true;
+        return name && path.includes(name);
+      });
+
+      // fallback to last clicked item (persisted)
+      if(!matched){
+        const last = localStorage.getItem('smtv_last_nav');
+        if(last) matched = items.find(a => a.dataset.name === last);
+      }
+
+      if(matched) matched.classList.add('active');
+
+      // click handler: set active immediately (persist) then follow link
+      items.forEach(a=>{
+        a.addEventListener('click', function(e){
+          // visual feedback immediately
+          clearActive();
+          this.classList.add('active');
+          try { localStorage.setItem('smtv_last_nav', this.dataset.name); } catch(e){}
+          // allow default navigation to happen
+        });
+      });
+    })();
+
+  } catch (err) {
+    console.warn('Footer load/init error:', err);
+  }
+})();
+</script>
 </body>
 </html>
