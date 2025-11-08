@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>More – SmTv Urdu</title>
+  <meta name="description" content="Connect with SmTv Urdu on Telegram, WhatsApp, and Instagram.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body {
+      background: #0b0d10;
+      color: #fff;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      padding-bottom: calc(120px + env(safe-area-inset-bottom));
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 24px 18px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: #00d4ff;
+      margin-bottom: 12px;
+    }
+
+    p.subtitle {
+      color: #cfd8df;
+      margin-bottom: 24px;
+      font-size: 15px;
+    }
+
+    .social-card {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .social-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #fff;
+      width: 90%;
+      max-width: 420px;
+      padding: 14px 20px;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 16px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .social-link:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.6);
+    }
+
+    .social-link i {
+      font-size: 24px;
+    }
+
+    .telegram { background: linear-gradient(90deg, #2AABEE, #229ED9); }
+    .whatsapp { background: linear-gradient(90deg, #25D366, #128C7E); }
+    .instagram { background: linear-gradient(90deg, #833AB4, #E1306C, #F77737); }
+
+    footer {
+      margin-top: 36px;
+      font-size: 13px;
+      color: #aaa;
+    }
+
+    @media (max-width: 420px) {
+      h1 { font-size: 24px; }
+      .social-link { font-size: 15px; padding: 12px 18px; }
+      .social-link i { font-size: 22px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Connect With SmTv Urdu</h1>
+    <p class="subtitle">Follow us on our official social channels to get instant updates about new Turkish series, episodes, and news.</p>
+
+    <div class="social-card">
+      <a href="https://t.me/smtv_official1" class="social-link telegram" target="_blank" rel="noopener">
+        <i class="fab fa-telegram-plane"></i> Join our Telegram Channel
+      </a>
+
+      <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k" class="social-link whatsapp" target="_blank" rel="noopener">
+        <i class="fab fa-whatsapp"></i> Join on WhatsApp
+      </a>
+
+      <a href="https://www.instagram.com/smtv.urdu?igsh=NWowMWlhZGoyM3I=" class="social-link instagram" target="_blank" rel="noopener">
+        <i class="fab fa-instagram"></i> Follow us on Instagram
+      </a>
+    </div>
+
+    <footer>
+      © 2025 SmTv Urdu – All Rights Reserved
+    </footer>
+  </div>
+
+  <!-- Footer nav loader -->
+  <div id="footer-placeholder"></div>
+  <script>
+  (async function(){
+    try{
+      const res = await fetch('/includes/footer.html',{cache:'no-cache'});
+      if(!res.ok) return;
+      const html = await res.text();
+      document.getElementById('footer-placeholder').innerHTML = html;
+
+      // Highlight the "More" tab
+      const nav = document.getElementById('smtv-bottom-nav');
+      if(nav){
+        const items = Array.from(nav.querySelectorAll('.nav-item'));
+        items.forEach(i => i.classList.remove('active'));
+        const more = items.find(i => (i.dataset.name||'').toLowerCase() === 'more');
+        if(more) more.classList.add('active');
+      }
+    }catch(e){ console.warn('footer load fail',e); }
+  })();
+  </script>
+</body>
+</html>
