@@ -1,4 +1,4 @@
-// series.js — compact square episode cards, tightened layout
+// series.js — stronger style enforcement + compact square cards
 (function () {
   'use strict';
 
@@ -11,9 +11,15 @@
   const HOWTO_PROCESS_2 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v6yg45g/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
 
   function bust(url) {
-    const v = (qs.get('v') || '1');
-    const path = url.startsWith('/') ? url : '/' + url.replace(/^\/+/, '');
-    return path + (path.includes('?') ? '&' : '?') + 'v=' + encodeURIComponent(v);
+    const v = (qs.get('v') || Date.now());
+    return url + (url.includes('?') ? '&' : '?') + 'v=' + encodeURIComponent(v);
+  }
+
+  function escapeHtml(s) {
+    if (!s && s !== 0) return '';
+    return String(s).replace(/[&<>"'`=\/]/g, function (c) {
+      return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','/':'&#x2F;','`':'&#x60;','=':'&#x3D;' }[c];
+    });
   }
 
   function toast(msg) {
@@ -23,159 +29,145 @@
       t.style.cssText = 'position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#122231;color:#9fe6ff;padding:10px 14px;border-radius:9px;border:1px solid #2d4b6a;font-weight:700;z-index:99999;font-family:Montserrat,sans-serif;';
       document.body.appendChild(t);
       setTimeout(() => t.remove(), 2600);
-    } catch (e) { /* ignore */ }
+    } catch (e) { console.warn('toast error', e); }
   }
 
-  // Inject compact card styles (overrides previous)
-  const injectedStyles = `
-    /* compact square cards */
-    .pro-episodes-row-pro{
-      display:flex;
-      gap:10px;
-      overflow-x:auto;
-      padding:10px 8px;
-      -webkit-overflow-scrolling:touch;
-      scroll-snap-type:x proximity;
-      align-items:flex-start;
-      margin-bottom:8px;
-    }
-
-    /* each episode card: compact square */
-    .pro-episode-card-pro{
-      scroll-snap-align:center;
-      flex:0 0 140px;          /* compact width */
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      align-items:center;
-      padding:8px;
-      border-radius:12px;
-      text-decoration:none;
-      color:#fff;
-      box-shadow:0 6px 16px rgba(0,0,0,0.32);
-      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.03));
-      min-height: 0;
-      transition:transform .12s ease;
-    }
-    .pro-episode-card-pro:hover{ transform:translateY(-6px); }
-
-    /* square thumbnail area (fills card top) */
-    .pro-ep-thumb-wrap-pro{
-      width:100%;
-      height:110px;
-      border-radius:10px;
-      overflow:hidden;
-      position:relative;
-      background:#0c0f12;
-      display:block;
-      box-shadow: inset 0 -6px 12px rgba(0,0,0,0.10);
-    }
-    .pro-ep-thumb-pro{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
-
-    .pro-ep-num-pro{
-      position:absolute;
-      right:6px;
-      top:6px;
-      background:linear-gradient(90deg,#ffcf33,#ff7a5f);
-      color:#111;
-      font-weight:800;
-      padding:5px 8px;
-      border-radius:999px;
-      font-size:11px;
-      box-shadow: 0 6px 14px rgba(255,120,60,0.12);
-    }
-
-    .pro-ep-title-pro{
-      width:100%;
-      text-align:center;
-      font-size:13px;
-      font-weight:800;
-      color:#fff;
-      padding:6px 6px;
-      border-radius:6px;
-      background: transparent;
-      line-height:1.05;
-      height:38px;            /* keep titles same height, remove extra space */
-      overflow:hidden;
-    }
-
-    /* tutorial highlight */
-    .pro-tutorial-title {
-      margin-top:18px;
-      font-weight:900;
-      font-size:20px;
-      color:#fff;
-      background: linear-gradient(90deg, rgba(34,193,195,0.04), rgba(253,187,45,0.02));
-      border-left:6px solid #ffd400;
-      padding:10px 14px;
-      border-radius:10px;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.35);
-      max-width:1100px;
-    }
-
-    .pro-video-frame-wrap { margin-top:12px; border-radius:10px; overflow:hidden; }
-
-    @media(min-width:900px){
-      .pro-episode-card-pro{ flex:0 0 160px; }
-      .pro-ep-thumb-wrap-pro{ height:130px; }
-    }
+  // Inject a strong stylesheet at document end (very specific; uses #series-details scope)
+  const STRONG_CSS = `
+  /* Injected strong overrides for series page (won't affect other pages) */
+  #series-details .pro-episodes-row-pro {
+    display:flex !important;
+    gap:12px !important;
+    overflow-x:auto !important;
+    padding:12px 10px !important;
+    -webkit-overflow-scrolling:touch !important;
+    scroll-snap-type:x proximity !important;
+    align-items:flex-start !important;
+    margin-bottom:10px !important;
+    box-sizing:border-box !important;
+  }
+  #series-details .pro-episode-card-pro {
+    scroll-snap-align:center !important;
+    flex:0 0 150px !important; /* compact width */
+    display:flex !important;
+    flex-direction:column !important;
+    gap:8px !important;
+    align-items:center !important;
+    padding:10px !important;
+    border-radius:12px !important;
+    text-decoration:none !important;
+    color:#fff !important;
+    box-shadow:0 8px 18px rgba(0,0,0,0.38) !important;
+    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.03)) !important;
+    min-height:0 !important;
+    transition:transform .12s ease !important;
+    box-sizing:border-box !important;
+  }
+  @media(min-width:900px){
+    #series-details .pro-episode-card-pro { flex:0 0 180px !important; }
+  }
+  #series-details .pro-ep-thumb-wrap-pro {
+    width:100% !important;
+    height:112px !important;
+    border-radius:10px !important;
+    overflow:hidden !important;
+    position:relative !important;
+    background:#0c0f12 !important;
+    box-sizing:border-box !important;
+  }
+  #series-details .pro-ep-thumb-pro {
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+    display:block !important;
+  }
+  #series-details .pro-ep-num-pro {
+    position:absolute !important;
+    right:6px !important;
+    top:6px !important;
+    background:linear-gradient(90deg,#ffcf33,#ff7a5f) !important;
+    color:#111 !important;
+    font-weight:800 !important;
+    padding:5px 8px !important;
+    border-radius:999px !important;
+    font-size:11px !important;
+    box-shadow: 0 6px 14px rgba(255,120,60,0.12) !important;
+  }
+  #series-details .pro-ep-title-pro {
+    width:100% !important;
+    text-align:center !important;
+    font-size:13px !important;
+    font-weight:800 !important;
+    color:#fff !important;
+    padding:6px 6px !important;
+    border-radius:6px !important;
+    background:transparent !important;
+    line-height:1.05 !important;
+    height:40px !important;
+    overflow:hidden !important;
+    box-sizing:border-box !important;
+  }
+  #series-details .pro-tutorial-title {
+    margin-top:18px !important;
+    font-weight:900 !important;
+    font-size:20px !important;
+    color:#fff !important;
+    background: linear-gradient(90deg, rgba(34,193,195,0.04), rgba(253,187,45,0.02)) !important;
+    border-left:6px solid #ffd400 !important;
+    padding:10px 14px !important;
+    border-radius:10px !important;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.35) !important;
+    max-width:1100px !important;
+    box-sizing:border-box !important;
+  }
+  #series-details .pro-video-frame-wrap { margin-top:12px !important; border-radius:10px !important; overflow:hidden !important; }
   `;
-  try {
-    const styleEl = document.createElement('style');
-    styleEl.textContent = injectedStyles;
-    document.head.appendChild(styleEl);
-  } catch (e) { /* ignore */ }
 
-  function escapeHtml(s) {
-    if (!s && s !== 0) return '';
-    return String(s).replace(/[&<>"'`=\/]/g, function (c) {
-      return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','/':'&#x2F;','`':'&#x60;','=':'&#x3D;' }[c];
-    });
+  try {
+    const s = document.createElement('style');
+    s.id = 'smtv-series-strong-css';
+    s.textContent = STRONG_CSS;
+    document.head.appendChild(s);
+  } catch (e) {
+    console.warn('could not inject strong css', e);
   }
 
-  // Build candidate file list carefully (no placeholder mistakes)
+  // Candidate paths used originally — keep to preserve functionality diagnosing invalid JSON
   async function fetchEpisodesWithCandidates(season) {
     const base = `episode-data/${slug}-s${season}`;
-    const candidates = [];
-    if (lang) {
-      candidates.push(`${base}-${lang}.json`);
-      candidates.push(`${base}-${lang}-sub.json`);
-    }
-    // helpful common patterns you said you had
-    candidates.push(`${base}-en-sub.json`);
-    candidates.push(`${base}-en.json`);
-    candidates.push(`${base}-hi.json`);
-    candidates.push(`${base}-ur.json`);
-    candidates.push(`${base}.json`);
-    candidates.push(`${base}-.json`);
-    candidates.push(`${base}-sub.json`);
+    const candidates = [
+      `${base}.json`,
+      `${base}-${lang}.json`,
+      `${base}-en.json`,
+      `${base}-hi.json`,
+      `${base}-ur.json`,
+      `${base}-.json`,
+      `${base}-sub.json`,
+      `${base}-en-sub.json`,
+      `${base}-en-sub-s1.json`,
+      `${base}-sub-s1.json`
+    ].filter(Boolean);
 
     const tried = [];
     for (const cand of candidates) {
       try {
-        const url = bust(cand);
+        const path = cand.startsWith('/') ? cand : '/' + cand.replace(/^\/+/, '');
+        const url = bust(path);
         const resp = await fetch(url, { cache: 'no-cache' });
-        const rec = { path: cand, ok: resp.ok, status: resp.status, err: null, contentType: resp.headers.get('content-type') || '' };
-
-        if (!resp.ok) {
-          rec.err = `HTTP ${resp.status}`;
+        const rec = { path: cand, ok: resp.ok, status: resp.status, err: null };
+        const text = await resp.text();
+        try {
+          const parsed = JSON.parse(text);
+          return { episodes: parsed, tried: [...tried, rec] };
+        } catch (parseErr) {
+          rec.err = 'json-parse: ' + (parseErr.message || parseErr);
           tried.push(rec);
           continue;
         }
-
-        const ct = (resp.headers.get('content-type') || '').toLowerCase();
-        if (!ct.includes('application/json') && !ct.includes('json')) {
-          const text = await resp.text();
-          rec.err = `invalid content-type: ${ct || 'unknown'}`;
-          rec.preview = (text || '').slice(0, 260);
-          tried.push(rec);
-          continue;
-        }
-
-        const j = await resp.json();
-        return { episodes: j, tried: [...tried, rec] };
-      } catch (err) {
-        tried.push({ path: cand, ok: false, status: null, err: String(err) });
+      } catch (fetchErr) {
+        tried.push({ path: cand, ok: false, status: null, err: String(fetchErr) });
         continue;
       }
     }
@@ -273,14 +265,21 @@
         wrap.innerHTML = `<div style="color:#ddd;padding:12px 0;">Loading episodes...</div>`;
 
         try {
-          const { episodes, tried } = await fetchEpisodesWithCandidates(season);
+          const { episodes, tried } = await (async () => {
+            try {
+              const res = await fetchEpisodesWithCandidates(season);
+              return { episodes: res.episodes, tried: res.tried || [] };
+            } catch (err) {
+              throw err;
+            }
+          })();
 
           if (!Array.isArray(episodes) || episodes.length === 0) {
             wrap.innerHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
             return;
           }
 
-          // build compact square cards
+          // build compact carousel cards
           const cardsHtml = episodes.map(ep => {
             const epNum = escapeHtml(String(ep.ep || ''));
             const epTitle = escapeHtml(ep.title || ('Episode ' + epNum));
@@ -301,17 +300,60 @@
           const tutorialBlock = `
             <div class="pro-tutorial-title">How to Watch Episodes</div>
             <div class="pro-video-frame-wrap">${HOWTO_PROCESS_1}</div>
-
-            <div class="pro-tutorial-title">How to Watch (Old Process)</div>
+            <div style="height:14px"></div>
+            <div class="pro-tutorial-title-old" style="font-weight:900;margin-top:18px;font-size:20px;color:#fff;">How to Watch (Old Process)</div>
             <div class="pro-video-frame-wrap">${HOWTO_PROCESS_2}</div>
           `;
 
           wrap.innerHTML = `<div class="pro-episodes-row-pro">${cardsHtml}</div>` + tutorialBlock;
 
+          // Force inline tweaks (guarantees the visual size irrespective of other css)
           try {
-            const first = wrap.querySelector('.pro-episode-card-pro');
+            const row = wrap.querySelector('.pro-episodes-row-pro');
+            const cards = Array.from(row.querySelectorAll('.pro-episode-card-pro'));
+            cards.forEach((c, idx) => {
+              // compact inline styles to override any remaining CSS
+              c.style.flex = window.innerWidth >= 900 ? '0 0 180px' : '0 0 150px';
+              c.style.minHeight = '0';
+              c.style.padding = '10px';
+              c.style.margin = '0';
+              c.style.boxSizing = 'border-box';
+              const thumb = c.querySelector('.pro-ep-thumb-wrap-pro');
+              if (thumb) {
+                thumb.style.height = (window.innerWidth >= 900 ? '130px' : '112px');
+                thumb.style.width = '100%';
+                thumb.style.borderRadius = '10px';
+                thumb.style.overflow = 'hidden';
+              }
+              const img = c.querySelector('.pro-ep-thumb-pro');
+              if (img) {
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                img.style.display = 'block';
+              }
+              const title = c.querySelector('.pro-ep-title-pro');
+              if (title) {
+                title.style.height = '40px';
+                title.style.fontSize = '13px';
+                title.style.padding = '6px';
+                title.style.boxSizing = 'border-box';
+              }
+            });
+
+            // make tutorial-old title match highlight style
+            const oldTitle = wrap.querySelector('.pro-tutorial-title-old');
+            if (oldTitle) {
+              oldTitle.classList.add('pro-tutorial-title');
+              oldTitle.style.marginTop = '18px';
+            }
+
+            // scroll first card into view
+            const first = row.querySelector('.pro-episode-card-pro');
             if (first) first.scrollIntoView({ behavior: 'auto', inline: 'start', block: 'nearest' });
-          } catch (e) {}
+          } catch (e) {
+            console.warn('post-render inline tweak failed', e);
+          }
 
         } catch (diag) {
           if (diag && diag.tried) {
