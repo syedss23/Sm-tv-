@@ -191,17 +191,28 @@
       box-shadow: 0 12px 34px rgba(0,0,0,0.45);
       text-align:center;
     }
-    .premium-channel-message .join-btn {
-      display:inline-block;
-      margin-top:12px;
-      background: linear-gradient(90deg,#ffd400,#ff8a55);
-      color:#13263a;
-      font-weight:800;
-      padding:12px 22px;
-      border-radius:999px;
-      box-shadow: 0 14px 36px rgba(255,136,65,0.18);
-      text-decoration:none;
+
+    /* Strong override: make Join Premium yellow with black text */
+    .premium-channel-message .join-btn,
+    .btn-primary {
+      background: linear-gradient(90deg, #ffd400 0%, #ffb357 100%) !important;
+      color: #111 !important;
+      font-weight: 800;
+      padding: 12px 24px;
+      border-radius: 999px;
+      box-shadow: 0 14px 36px rgba(255,160,40,0.18);
+      text-decoration: none;
+      display: inline-block;
+      transition: transform .12s ease, box-shadow .12s ease;
     }
+    .premium-channel-message .join-btn:hover,
+    .btn-primary:hover {
+      box-shadow: 0 18px 44px rgba(255,160,40,0.22);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+    .premium-channel-message .join-btn:active,
+    .btn-primary:active { transform: translateY(1px); }
 
     /* Tutorial title highlight */
     .pro-tutorial-title {
@@ -224,6 +235,10 @@
     @media (max-width:600px) {
       body { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
     }
+
+    /* Prevent browser automatic focus scrolling to break UX:
+       this keeps focusable elements from forcing the viewport to jump. */
+    :focus { outline: none; }
   </style>
 
   <!-- series.js (renders header + episodes) -->
@@ -275,6 +290,35 @@
       setTimeout(()=> { const p=document.getElementById('whatsappPopup'); if(p) p.style.display='block'; },2000);
       const closeBtn=document.getElementById('closeWhatsAppPopup'); if(closeBtn) closeBtn.onclick=()=>document.getElementById('whatsappPopup').style.display='none';
     });
+  </script>
+
+  <!-- Prevent auto-scroll caused by focus: capture focusin and restore current scroll -->
+  <script>
+    (function(){
+      // On initial load, ensure top-of-page view:
+      try { window.scrollTo(0,0); } catch(e){}
+
+      // Capture current scroll before the browser moves on focus, restore after
+      document.addEventListener('focusin', function(ev){
+        const x = window.scrollX || 0;
+        const y = window.scrollY || 0;
+        // Use small timeout to restore after any browser auto-scroll
+        setTimeout(function(){ try { window.scrollTo(x,y); } catch(e){} }, 0);
+      }, true);
+
+      // Also ensure when #series-details is populated the page remains at top:
+      const details = document.getElementById('series-details');
+      if (details) {
+        const obs = new MutationObserver((mutations) => {
+          // once children added (first time), scroll top and disconnect
+          if (details.childNodes.length > 0) {
+            try { window.scrollTo({ top: 0, left: 0, behavior: 'auto' }); } catch(e){}
+            obs.disconnect();
+          }
+        });
+        obs.observe(details, { childList: true, subtree: false });
+      }
+    })();
   </script>
 
   <!-- FOOTER: robust include loader + fallback (same logic as before) -->
