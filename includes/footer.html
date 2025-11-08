@@ -1,0 +1,54 @@
+<!-- SmTv Urdu Bottom Navigation Bar -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="bottom-nav" id="smtv-bottom-nav">
+  <a href="/index.html" class="nav-item" data-name="home">
+    <i class="fa-solid fa-house"></i><span>Home</span>
+  </a>
+  <a href="/series.html" class="nav-item" data-name="series">
+    <i class="fa-solid fa-film"></i><span>Series</span>
+  </a>
+  <a href="/clips.html" class="nav-item" data-name="clips">
+    <i class="fa-solid fa-play-circle"></i><span>Clips</span>
+  </a>
+  <a href="/premium.html" class="nav-item" data-name="premium">
+    <i class="fa-solid fa-star"></i><span>Premium</span>
+  </a>
+  <a href="/more.html" class="nav-item" data-name="more">
+    <i class="fa-solid fa-circle-info"></i><span>More</span>
+  </a>
+</div>
+
+<style>
+:root{--bg:#0d0d0d;--muted:#aaa;--accent:#ffcc00}
+.bottom-nav{
+  position:fixed; left:0; right:0; bottom:0;
+  display:flex; justify-content:space-around; align-items:center;
+  background:var(--bg); border-top:1px solid rgba(255,255,255,0.03);
+  padding:10px 6px; z-index:1200;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 10px);
+  box-shadow: 0 -6px 30px rgba(0,0,0,0.6);
+  font-family: 'Poppins', sans-serif;
+}
+.nav-item{ color:var(--muted); text-decoration:none; text-align:center; font-size:12px; flex:1; transition:all .18s; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.nav-item i{ font-size:18px; display:block; line-height:1; }
+.nav-item span{ display:block; font-size:12px; }
+.nav-item:hover, .nav-item.active{ color:var(--accent); text-shadow:0 0 8px rgba(255,204,0,0.8); transform:translateY(-2px); }
+@media(min-width:900px){ .bottom-nav{ max-width:900px; margin:0 auto; border-radius:10px 10px 0 0; } .nav-item span{ font-size:13px; } }
+body { padding-bottom: calc(70px + env(safe-area-inset-bottom)); }
+</style>
+
+<script>
+(function(){
+  const nav = document.getElementById('smtv-bottom-nav');
+  if(!nav) return;
+  const path = window.location.pathname;
+  nav.querySelectorAll('.nav-item').forEach(a=>{
+    a.classList.remove('active');
+    const name = a.dataset.name;
+    if (path.includes(name) || (name==='home' && (path==='/' || path.includes('index')))) {
+      a.classList.add('active');
+    }
+  });
+})();
+</script>
