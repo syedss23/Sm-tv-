@@ -1,219 +1,213 @@
-// clips.js — lazy Rumble embeds, single-active, mobile-first
-(function(){
-  const CLIPS_JSON = '/clips.json'; // change if your path differs
-  const clipsListEl = document.getElementById('clips-list');
-  const loadingEl = document.getElementById('clips-loading');
+// clips.js — updated: poster cover + play overlay + tap-to-load immediate embed + lazy on scroll
+(async function(){
+  const FEED_PATH = '/clips.json'; // adjust if stored elsewhere
+  const feedEl = document.getElementById('clips-feed');
+  if (!feedEl) return;
 
-  if (!clipsListEl) {
-    console.warn('clips.js: mount not found');
+  async function fetchClips() {
+    try {
+      const res = await fetch(FEED_PATH, { cache: 'no-cache' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const arr = await res.json();
+      if (!Array.isArray(arr)) return [];
+      const withAdded = arr.filter(c => c.added).slice();
+      if (withAdded.length) {
+        return arr.slice().sort((a,b) => {
+          const da = a.added ? Date.parse(a.added) : 0;
+          const db = b.added ? Date.parse(b.added) : 0;
+          return db - da;
+        });
+      }
+      return arr.slice().reverse();
+    } catch (err) {
+      console.error('clips fetch error', err);
+      return [];
+    }
+  }
+
+  function createEl(tag, props = {}, children = []) {
+    const el = document.createElement(tag);
+    for (const k in props) {
+      if (k === 'className') el.className = props[k];
+      else if (k === 'html') el.innerHTML = props[k];
+      else el.setAttribute(k, props[k]);
+    }
+    (Array.isArray(children) ? children : [children]).forEach(c => {
+      if (!c) return;
+      if (typeof c === 'string') el.appendChild(document.createTextNode(c));
+      else el.appendChild(c);
+    });
+    return el;
+  }
+
+  function buildClipNode(clip, idx) {
+    const article = createEl('article', { className: 'clip-card', 'data-clip-id': clip.id || ('clip' + idx) });
+
+    const meta = createEl('div', { className: 'clip-meta' }, [
+      createEl('div', { className: 'clip-title' }, clip.title || 'Clip'),
+      createEl('div', { className: 'clip-sub' }, clip.added ? (new Date(clip.added)).toLocaleString() : '')
+    ]);
+
+    const wrap = createEl('div', { className: 'clip-iframe-wrap' });
+    wrap.style.position = 'relative';
+
+    // thumbnail (if provided) - acts as poster/cover
+    if (clip.thumb) {
+      const img = createEl('img', { className: 'clip-thumb', src: clip.thumb, alt: clip.title || 'Clip thumbnail', loading: 'lazy' });
+      wrap.appendChild(img);
+    } else {
+      // subtle gradient background if no thumb
+      wrap.style.background = 'linear-gradient(180deg,#071022,#0b0f18)';
+    }
+
+    // holder for iframe (we fill src on demand)
+    const holder = createEl('div', { className: 'clip-iframe-holder', 'data-embed': clip.embed || '' });
+    holder.style.width = '100%';
+    holder.style.height = '100%';
+    holder.dataset.loaded = 'false';
+    wrap.appendChild(holder);
+
+    // small bottom-left rounded Play button (like reels)
+    const playBtn = createEl('button', { className: 'clip-play-btn', type: 'button', title: 'Play' }, [
+      createEl('i', { className: 'fa-solid fa-play' }), ' Play'
+    ]);
+    playBtn.style.border = 'none';
+    playBtn.style.cursor = 'pointer';
+    wrap.appendChild(playBtn);
+
+    // center semi-transparent play for visual cue
+    const center = createEl('div', { className: 'center-play', role: 'button', title: 'Play' }, '▶');
+    wrap.appendChild(center);
+
+    // description
+    const desc = clip.desc ? createEl('div', { className: 'clip-desc' }, clip.desc) : null;
+
+    article.appendChild(meta);
+    article.appendChild(wrap);
+    if (desc) article.appendChild(desc);
+
+    // click handlers: immediate load on click of card, play btn, or center
+    function loadNow() {
+      if (holder.dataset.loaded === 'true') return;
+      const embed = holder.dataset.embed && holder.dataset.embed.trim();
+      if (!embed) {
+        // fallback: open on Rumble in new tab
+        if (clip.rumble_url) window.open(clip.rumble_url, '_blank');
+        return;
+      }
+      // create iframe and insert
+      const ifr = document.createElement('iframe');
+      ifr.setAttribute('frameborder','0');
+      ifr.setAttribute('allowfullscreen','');
+      ifr.width = '100%'; ifr.height = '100%';
+      // If embed already contains full iframe url, use it; else assume it's embed src
+      const src = embed.indexOf('iframe') !== -1 ? embed : embed;
+      ifr.src = src;
+      // clear existing holder children (poster) so iframe sits on top
+      holder.innerHTML = '';
+      holder.appendChild(ifr);
+      holder.dataset.loaded = 'true';
+      // hide center play and poster smoothly
+      const thumb = wrap.querySelector('.clip-thumb');
+      if (thumb) thumb.style.display = 'none';
+      center.style.display = 'none';
+      // keep playBtn visible to allow user to click for something (but optional)
+    }
+
+    // attach click
+    playBtn.addEventListener('click', (e) => { e.stopPropagation(); loadNow(); });
+    center.addEventListener('click', (e) => { e.stopPropagation(); loadNow(); });
+    article.addEventListener('click', (e) => {
+      // if clicking controls inside the embed, ignore
+      if (e.target.closest('.clip-play-btn') || e.target.closest('.clip-iframe-holder')) return;
+      loadNow();
+    });
+
+    return article;
+  }
+
+  // lazy-load when mostly visible
+  function setupObserver(rootEl) {
+    const options = { root: rootEl, rootMargin: '0px', threshold: 0.6 };
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        const el = entry.target;
+        const holder = el.querySelector('.clip-iframe-holder');
+        if (!holder) return;
+        if (entry.isIntersecting && holder.dataset.loaded === 'false') {
+          // load lazily after a tiny delay so quick scrolls don't eagerly load many
+          setTimeout(() => {
+            if (holder.dataset.loaded === 'false') {
+              const embed = holder.dataset.embed;
+              if (embed) {
+                // create iframe but keep poster hidden only after load
+                const ifr = document.createElement('iframe');
+                ifr.setAttribute('frameborder','0');
+                ifr.setAttribute('allowfullscreen','');
+                ifr.width = '100%'; ifr.height = '100%';
+                ifr.src = embed;
+                holder.appendChild(ifr);
+                holder.dataset.loaded = 'true';
+                // hide central play after small fade
+                const center = el.querySelector('.center-play');
+                if (center) center.style.display = 'none';
+                const thumb = el.querySelector('.clip-thumb');
+                if (thumb) thumb.style.display = 'none';
+              }
+            }
+          }, 300);
+        }
+      });
+    }, options);
+
+    rootEl.querySelectorAll('.clip-card').forEach(card => io.observe(card));
+    return io;
+  }
+
+  // arrow / page keyboard nav (smooth center)
+  function setupKeyboardNav(rootEl) {
+    window.addEventListener('keydown', (ev) => {
+      const keys = ['ArrowDown','ArrowUp','PageDown','PageUp'];
+      if (!keys.includes(ev.key)) return;
+      const cards = Array.from(rootEl.querySelectorAll('.clip-card'));
+      if (!cards.length) return;
+      const centerY = rootEl.scrollTop + (rootEl.clientHeight / 2);
+      let current = cards.findIndex(c => {
+        const top = c.offsetTop;
+        const bottom = top + c.offsetHeight;
+        return centerY >= top && centerY <= bottom;
+      });
+      if (current === -1) current = Math.max(0, cards.findIndex(c => c.offsetTop >= rootEl.scrollTop));
+      if (ev.key === 'ArrowDown' || ev.key === 'PageDown') current = Math.min(cards.length - 1, current + 1);
+      if (ev.key === 'ArrowUp' || ev.key === 'PageUp') current = Math.max(0, current - 1);
+      const target = cards[current];
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      ev.preventDefault();
+    }, { passive: false });
+  }
+
+  // render feed
+  feedEl.innerHTML = '<div class="clips-loading">Loading clips…</div>';
+  const clips = await fetchClips();
+  feedEl.innerHTML = '';
+  if (!clips || clips.length === 0) {
+    feedEl.innerHTML = '<div class="clips-loading">No clips yet.</div>';
     return;
   }
 
-  // keep track of currently active iframe (only one at a time)
-  let activeEmbed = null;
-  let activeCard = null;
+  clips.forEach((c,i) => feedEl.appendChild(buildClipNode(c, i)));
+  // start at top
+  feedEl.scrollTop = 0;
 
-  // build a clip card DOM
-  function renderClipCard(clip) {
-    const card = document.createElement('article');
-    card.className = 'clip-card';
-    card.setAttribute('role','listitem');
-    card.dataset.clipId = clip.id || '';
+  // set up observer & keyboard nav
+  setupObserver(feedEl);
+  setupKeyboardNav(feedEl);
 
-    // media area (thumb + embed slot)
-    const media = document.createElement('div');
-    media.className = 'clip-media';
-    media.innerHTML = `
-      <img class="clip-thumb" src="${escapeAttr(clip.thumb)}" alt="${escapeAttr(clip.title)}">
-      <div class="clip-embed-slot" data-embed="${escapeAttr(clip.embed)}" aria-hidden="true"></div>
-      <div class="clip-overlay">
-        <button class="btn-play" type="button" aria-label="Play ${escapeAttr(clip.title)}">▶ Play</button>
-      </div>
-    `;
-
-    // meta
-    const meta = document.createElement('div');
-    meta.className = 'clip-meta';
-    meta.innerHTML = `
-      <h3 class="clip-title">${escapeHtml(clip.title || '')}</h3>
-      <p class="clip-desc">${escapeHtml(clip.desc || '')}</p>
-      <div class="clip-controls">
-        <button class="small-btn" type="button" data-action="share">Share</button>
-        <button class="small-btn" type="button" data-action="open">Open on Rumble</button>
-      </div>
-    `;
-
-    // wire play button
-    const playBtn = media.querySelector('.btn-play');
-    playBtn.addEventListener('click', () => {
-      ensureEmbedForCard(card, /*userInitiated*/ true);
-      // scroll the card a bit into view on tall pages (smooth but not jumpy)
-      try { card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch(e){}
-    });
-
-    // controls: share / open
-    meta.querySelectorAll('.small-btn').forEach(btn=>{
-      btn.addEventListener('click', (ev)=>{
-        const action = btn.dataset.action;
-        if (action === 'share') {
-          navigator.share ? navigator.share({ title: clip.title, url: clip.embed }).catch(()=>{}) : copyToClipboard(clip.embed);
-          btn.textContent = 'Shared';
-          setTimeout(()=> btn.textContent = 'Share', 1200);
-        } else if (action === 'open') {
-          window.open(clip.embed, '_blank', 'noopener');
-        }
-      });
-    });
-
-    card.appendChild(media);
-    card.appendChild(meta);
-    return card;
-  }
-
-  // safe html escaping for text nodes
-  function escapeHtml(s) { if (!s) return ''; return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-  function escapeAttr(s){ return (s===undefined || s===null) ? '' : String(s).replace(/"/g,'&quot;'); }
-
-  // copy fallback
-  function copyToClipboard(text){
-    try { navigator.clipboard.writeText(text); alert('Link copied'); } catch(e){ prompt('Copy link', text); }
-  }
-
-  // Create iframe element for a given embed URL
-  function createIframe(embedUrl){
-    const ifr = document.createElement('iframe');
-    ifr.setAttribute('allowfullscreen','');
-    ifr.setAttribute('frameborder','0');
-    ifr.setAttribute('loading','lazy');
-    ifr.style.width = '100%';
-    ifr.style.height = '100%';
-    // the embedUrl is usually the full embed src like https://rumble.com/embed/v6yg466/?pub=...
-    ifr.src = embedUrl;
-    return ifr;
-  }
-
-  // Ensure embed is present for a card. If another embed is active, unload it first.
-  function ensureEmbedForCard(card, userInitiated=false){
-    if (!card) return;
-    const slot = card.querySelector('.clip-embed-slot');
-    if (!slot) return;
-    // if this card already has iframe — nothing to do
-    if (slot.querySelector('iframe')) {
-      // mark active
-      setActiveCard(card);
-      return;
-    }
-    const embedUrl = slot.dataset.embed;
-    if (!embedUrl) return;
-
-    // unload previous active embed to save memory
-    if (activeEmbed && activeCard && activeCard !== card) {
-      unloadActiveEmbed();
-    }
-
-    // insert iframe
-    const ifr = createIframe(embedUrl);
-    slot.appendChild(ifr);
-    slot.setAttribute('aria-hidden', 'false');
-    setActiveCard(card);
-  }
-
-  function unloadActiveEmbed(){
-    if (!activeCard) return;
-    const slot = activeCard.querySelector('.clip-embed-slot');
-    if (!slot) return;
-    slot.innerHTML = ''; // remove iframe
-    slot.setAttribute('aria-hidden','true');
-    activeCard.classList.remove('active-embed');
-    activeEmbed = null;
-    activeCard = null;
-  }
-
-  function setActiveCard(card){
-    if (activeCard && activeCard !== card) {
-      // remove previous highlight
-      activeCard.classList.remove('active-embed');
-      // remove previous iframe to keep single active
-      const prevSlot = activeCard.querySelector('.clip-embed-slot');
-      if (prevSlot) prevSlot.innerHTML = ''; 
-    }
-    activeCard = card;
-    activeEmbed = card.querySelector('iframe') || null;
-    if (card) card.classList.add('active-embed');
-  }
-
-  // IntersectionObserver lazy loader: load when >60% visible, unload when <20%
-  const observerOptions = { root: null, rootMargin: '0px', threshold: [0.2,0.6] };
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      const card = entry.target;
-      if (entry.intersectionRatio >= 0.6) {
-        // visible enough -> lazy load embed but only if user hasn't forced another
-        ensureEmbedForCard(card, false);
-      } else if (entry.intersectionRatio < 0.2) {
-        // if this card is not active (or even if it is) unload to save resources
-        // only unload if it isn't the currently focused/active card (user may have tapped play)
-        if (activeCard && activeCard !== card) {
-          // safe to unload any non-active card
-          const slot = card.querySelector('.clip-embed-slot');
-          if (slot) slot.innerHTML = '';
-        } else if (!activeCard) {
-          // no user active — unload non-visible
-          const slot = card.querySelector('.clip-embed-slot');
-          if (slot) slot.innerHTML = '';
-        }
-      }
-    });
-  }, observerOptions);
-
-  // load clips.json and render
-  fetch(CLIPS_JSON, { cache:'no-cache' })
-    .then(res => {
-      if (!res.ok) throw new Error('clips.json not found');
-      return res.json();
-    })
-    .then(arr => {
-      loadingEl && (loadingEl.style.display = 'none');
-      if (!Array.isArray(arr) || arr.length === 0) {
-        clipsListEl.innerHTML = '<div style="color:#fff;padding:12px">No clips found.</div>';
-        return;
-      }
-      // render all
-      arr.forEach((clip) => {
-        try {
-          const card = renderClipCard(clip);
-          clipsListEl.appendChild(card);
-          // observe media area
-          io.observe(card);
-        } catch (e) {
-          console.warn('render error for clip', clip, e);
-        }
-      });
-
-      // On pagehide/unload cleanup to remove iframes
-      window.addEventListener('pagehide', () => { document.querySelectorAll('.clip-embed-slot').forEach(s => s.innerHTML = '') });
-
-      // keyboard: Space toggles embed load on the currently centered card (best-effort)
-      document.addEventListener('keydown', (ev) => {
-        if (ev.code === 'Space') {
-          ev.preventDefault();
-          const cards = Array.from(document.querySelectorAll('.clip-card'));
-          // choose the one closest to viewport center
-          let best = null; let bestScore = Infinity;
-          const mid = window.scrollY + (window.innerHeight/2);
-          cards.forEach(c => {
-            const r = c.getBoundingClientRect();
-            const center = window.scrollY + r.top + r.height/2;
-            const score = Math.abs(center - mid);
-            if (score < bestScore) { bestScore = score; best = c; }
-          });
-          if (best) ensureEmbedForCard(best, true);
-        }
-      });
-    })
-    .catch(err => {
-      console.error('Failed to load clips.json', err);
-      loadingEl && (loadingEl.textContent = 'Could not load clips.');
-    });
-
+  // convenience refresh
+  window.smtvClipsRefresh = async function() {
+    const latest = await fetchClips();
+    feedEl.innerHTML = '';
+    latest.forEach((c,i) => feedEl.appendChild(buildClipNode(c,i)));
+    setupObserver(feedEl);
+  };
 })();
