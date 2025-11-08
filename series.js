@@ -1,4 +1,4 @@
-// series.js — improved robust loader for series page
+// series.js — improved robust loader for series page (centered header + horizontal episode cards)
 (function () {
   'use strict';
 
@@ -9,12 +9,11 @@
   const seasonQuery = qs.get('season') || '1';
   const JSON_PATHS = ['/series.json', '/data/series.json', 'series.json'];
 
-  // How-to video embeds (kept from original)
+  // How-to video embeds
   const HOWTO_PROCESS_1 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v6yg466/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
   const HOWTO_PROCESS_2 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v6yg45g/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
 
   function jsonFor(season) {
-    // builds the episode JSON filename depending on lang & slug
     if (!slug) return null;
     if (lang === 'dub') {
       return `episode-data/${slug}-s${season}.json`;
@@ -40,7 +39,7 @@
     } catch (e) { console.warn('toast error', e); }
   }
 
-  // --- small premium styles injection (kept) -------------------------------
+  // --- styles: centered header, overlay back button, horizontal cards ----------
   const premiumStyles = `
     .premium-channel-message {
       margin-top: 18px;
@@ -79,16 +78,77 @@
       text-align:center;
     }
     .btn-primary:active{ transform:translateY(1px); }
+
+    /* centered header and overlay back button */
+    .pro-series-header-pro {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+      gap:12px;
+      padding:18px;
+      border-radius:14px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
+      box-shadow: 0 8px 22px rgba(0,0,0,0.45);
+      position:relative;
+      margin-bottom:12px;
+    }
+    .pro-series-back-btn-pro {
+      position:absolute;
+      left:14px;
+      top:14px;
+      width:48px;
+      height:48px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:12px;
+      background: rgba(0, 150, 200, 0.12);
+      border: 2px solid rgba(0,160,210,0.18);
+      box-shadow: 0 6px 18px rgba(0,140,200,0.08);
+      text-decoration:none;
+    }
+    .pro-series-poster-pro {
+      width:150px;
+      height:90px;
+      border-radius:10px;
+      object-fit:cover;
+      display:block;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.45);
+    }
+    .pro-series-meta-pro { width:100%; max-width:720px; }
+    .pro-series-title-pro { font-size:22px; margin:8px 0; color:#00d0f0; font-weight:800; }
+    .pro-series-desc-pro { color:#cfd8df; line-height:1.45; }
+
+    /* season tab */
     .pro-season-tab-pro { margin-right:8px; background:rgba(255,255,255,0.03); border:none; color:#ddd; padding:8px 12px; border-radius:10px; cursor:pointer; }
     .pro-season-tab-pro.active { background: linear-gradient(90deg,#ffcf33,#ff7a5f); color:#111; font-weight:700; transform:translateY(-2px); }
-    .pro-episodes-row-pro { display:flex; flex-wrap:wrap; gap:12px; margin-top:12px; }
-    .pro-episode-card-pro { display:block; width:calc(50% - 6px); text-decoration:none; color:#fff; border-radius:10px; overflow:hidden; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.08)); box-shadow: 0 8px 20px rgba(0,0,0,0.45); }
-    @media(min-width:700px){ .pro-episode-card-pro { width:calc(33.333% - 8px); } }
-    .pro-ep-thumb-wrap-pro { position:relative; width:100%; padding-bottom:56%; background:#111; }
+
+    /* horizontal episode cards */
+    .pro-episodes-row-pro { display:flex; flex-direction:column; gap:12px; margin-top:12px; }
+    .pro-episode-card-pro {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      padding:10px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));
+      border-radius:12px;
+      text-decoration:none;
+      color:#fff;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.45);
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .pro-episode-card-pro:hover { transform: translateY(-4px); box-shadow:0 12px 28px rgba(0,0,0,0.6); }
+    .pro-ep-thumb-wrap-pro { flex:0 0 140px; width:140px; height:80px; position:relative; border-radius:8px; overflow:hidden; background:#111; }
     .pro-ep-thumb-pro { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
-    .pro-ep-num-pro { position:absolute; left:8px; top:8px; background:rgba(0,0,0,0.5); padding:6px 8px; border-radius:8px; font-weight:700; color:#fff; font-size:13px; }
-    .pro-ep-title-pro { padding:10px; font-size:14px; font-weight:700; color:#fff; }
+    .pro-ep-num-pro { position:absolute; left:8px; top:8px; background:rgba(0,0,0,0.45); padding:6px 8px; border-radius:8px; font-weight:700; color:#fff; font-size:13px; }
+    .pro-ep-title-pro { flex:1; font-size:15px; font-weight:700; color:#fff; }
     .pro-video-frame-wrap { margin-top:18px; border-radius:10px; overflow:hidden; }
+
+    @media(min-width:700px){
+      .pro-series-poster-pro { width:180px; height:110px; }
+      .pro-ep-thumb-wrap-pro { flex:0 0 180px; width:180px; height:100px; }
+    }
   `;
   try {
     const styleTag = document.createElement('style');
@@ -155,7 +215,7 @@
       // update title
       document.title = `${meta.title} – SmTv Urdu`;
 
-      // build premium message (kept)
+      // build premium message
       const premiumMsg = `
         <div class="premium-channel-message">
           <strong>Go Ad-Free!</strong> Get direct access to all episodes by joining our <strong>Premium Channel</strong>.
@@ -165,21 +225,23 @@
         </div>
       `;
 
-      // render main details markup
+      // render main details markup (centered poster + overlay back button)
       detailsEl.innerHTML = `
-        <section class="pro-series-header-pro" style="display:flex;gap:12px;align-items:flex-start;">
-          <a href="/index.html" class="pro-series-back-btn-pro" title="Back" style="text-decoration:none;display:inline-flex;align-items:center;">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="vertical-align:middle"><polyline points="12 4 6 10 12 16" fill="none" stroke="#23c6ed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+        <section class="pro-series-header-pro">
+          <a href="/series.html" class="pro-series-back-btn-pro" title="Back" aria-label="Back">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><polyline points="12 4 6 10 12 16" fill="none" stroke="#00d0f0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
           </a>
-          <img class="pro-series-poster-pro" src="${meta.poster || ''}" alt="${escapeHtml(meta.title || '')}" style="width:120px;border-radius:10px;object-fit:cover;">
-          <div class="pro-series-meta-pro" style="flex:1;">
-            <h2 class="pro-series-title-pro" style="margin:0 0 8px 0;">${escapeHtml(meta.title || '')}</h2>
-            <div class="pro-series-desc-pro muted">${escapeHtml((meta.desc && meta.desc.en) ? meta.desc.en : (meta.desc || ''))}</div>
+
+          <img class="pro-series-poster-pro" src="${meta.poster || ''}" alt="${escapeHtml(meta.title || '')}">
+          <div class="pro-series-meta-pro">
+            <h2 class="pro-series-title-pro">${escapeHtml(meta.title || '')}</h2>
+            <div class="pro-series-desc-pro">${escapeHtml((meta.desc && meta.desc.en) ? meta.desc.en : (meta.desc || ''))}</div>
             ${premiumMsg}
           </div>
         </section>
-        <nav class="pro-seasons-tabs-pro" id="pro-seasons-tabs" style="margin-top:14px;"></nav>
-        <section class="pro-episodes-row-wrap-pro" id="pro-episodes-row-wrap" style="margin-top:12px;"></section>
+
+        <nav class="pro-seasons-tabs-pro" id="pro-seasons-tabs"></nav>
+        <section class="pro-episodes-row-wrap-pro" id="pro-episodes-row-wrap"></section>
       `;
 
       // determine seasons array
@@ -233,7 +295,7 @@
             return;
           }
 
-          // build episodes grid
+          // build horizontal episodes list
           const html = `<div class="pro-episodes-row-pro">` + episodes.map(ep => {
             const episodeUrl = ep.shortlink
               ? ep.shortlink
@@ -244,7 +306,7 @@
             return `
               <a class="pro-episode-card-pro" href="${episodeUrl}" ${extra}>
                 <div class="pro-ep-thumb-wrap-pro">
-                  <img src="${thumb}" class="pro-ep-thumb-pro" alt="Ep ${ep.ep}">
+                  <img src="${thumb}" class="pro-ep-thumb-pro" alt="Ep ${escapeHtml(String(ep.ep))}">
                   <span class="pro-ep-num-pro">Ep ${escapeHtml(String(ep.ep))}</span>
                 </div>
                 <div class="pro-ep-title-pro">${epTitle}</div>
@@ -252,7 +314,7 @@
             `;
           }).join('') + `</div>`;
 
-          // add tutorial sections after episodes
+          // tutorial sections appended after episodes
           const tutorialTitle1 = `
             <section class="pro-highlight-section">
               <div class="pro-highlight-title" style="color:#fff;font-weight:700;margin-top:18px;">How to Watch Episodes</div>
