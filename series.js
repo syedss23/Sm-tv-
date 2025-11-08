@@ -1,4 +1,4 @@
-// series.js — updated: compact horizontal carousel cards + consistent highlighted tutorial title
+// series.js — updated: better carousel sizing, consistent tutorial highlights, safer JSON detection
 (function () {
   'use strict';
 
@@ -10,16 +10,15 @@
   const HOWTO_PROCESS_1 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v6yg466/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
   const HOWTO_PROCESS_2 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v6yg45g/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
 
-  function jsonFor(season) {
-    if (!slug) return null;
-    if (lang === 'dub') return `episode-data/${slug}-s${season}.json`;
-    if (lang && ['en', 'hi', 'ur'].includes(lang)) return `episode-data/${slug}-s${season}-${lang}.json`;
-    return `episode-data/${slug}-s${season}.json`;
+  function jsonForCandidate(season, candidatePattern) {
+    return candidatePattern.replace(/\{slug\}/g, slug).replace(/\{s\}/g, season).replace(/\{lang\}/g, lang);
   }
 
   function bust(url) {
     const v = (qs.get('v') || '1');
-    return url + (url.includes('?') ? '&' : '?') + 'v=' + encodeURIComponent(v);
+    // If url already absolute (starts with /) keep, else prefix with /
+    const path = url.startsWith('/') ? url : '/' + url.replace(/^\/+/, '');
+    return path + (path.includes('?') ? '&' : '?') + 'v=' + encodeURIComponent(v);
   }
 
   function toast(msg) {
@@ -29,24 +28,15 @@
       t.style.cssText = 'position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#122231;color:#9fe6ff;padding:10px 14px;border-radius:9px;border:1px solid #2d4b6a;font-weight:700;z-index:99999;font-family:Montserrat,sans-serif;';
       document.body.appendChild(t);
       setTimeout(() => t.remove(), 2600);
-    } catch (e) { console.warn('toast error', e); }
+    } catch (e) { /* ignore */ }
   }
 
-  // Stronger injected styles to force compact carousel cards and consistent tutorial highlight
+  // Injected styles tuned for compact horizontal cards and consistent tutorial title
   const injectedStyles = `
-    /* premium */
     .premium-channel-message{ margin-top:12px; padding:14px; background:linear-gradient(135deg,#071014 80%, #08323e 100%); border-radius:12px; border:1px solid rgba(35,198,237,0.12); color:#23c6ed; font-weight:700; }
     .premium-btn-row{ margin-top:10px; }
     .btn-primary{ background:#ffd400; color:#112; padding:8px 14px; border-radius:999px; text-decoration:none; font-weight:800; display:inline-block; }
 
-    /* header / poster */
-    .pro-series-header-pro{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px; padding:18px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06)); box-shadow: 0 8px 22px rgba(0,0,0,0.45); position:relative; }
-    .pro-series-back-btn-pro{ position:absolute; left:14px; top:14px; width:48px; height:48px; display:inline-flex; align-items:center; justify-content:center; border-radius:12px; background: rgba(0,150,200,0.08); border:2px solid rgba(0,160,210,0.14); text-decoration:none; }
-    .pro-series-poster-pro{ width:200px; height:110px; border-radius:10px; object-fit:cover; box-shadow:0 8px 18px rgba(0,0,0,0.45); }
-    .pro-series-title-pro{ color:#00d0f0; font-size:20px; margin:8px 0; font-weight:800; }
-    .pro-series-desc-pro{ color:#cfd8df; line-height:1.45; max-width:820px; }
-
-    /* COMPACT carousel: thumbnail on top, title below */
     .pro-episodes-row-pro{
       display:flex;
       gap:14px;
@@ -59,7 +49,7 @@
 
     .pro-episode-card-pro{
       scroll-snap-align:center;
-      flex:0 0 200px; /* compact width */
+      flex:0 0 200px;
       display:flex;
       flex-direction:column;
       gap:10px;
@@ -75,15 +65,7 @@
     }
     .pro-episode-card-pro:hover{ transform:translateY(-6px); }
 
-    .pro-ep-thumb-wrap-pro{
-      width:100%;
-      height:110px;
-      border-radius:10px;
-      overflow:hidden;
-      position:relative;
-      background:#0c0f12;
-      display:block;
-    }
+    .pro-ep-thumb-wrap-pro{ width:100%; height:110px; border-radius:10px; overflow:hidden; position:relative; background:#0c0f12; display:block; }
     .pro-ep-thumb-pro{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
 
     .pro-ep-num-pro{
@@ -111,7 +93,6 @@
       box-shadow: inset 0 -6px 12px rgba(0,0,0,0.18);
     }
 
-    /* highlighted tutorial title (consistent look) */
     .pro-tutorial-title {
       margin-top:18px;
       font-weight:900;
@@ -146,45 +127,69 @@
     });
   }
 
-  // try several candidate episode JSON paths and return episodes + diagnostics
+  // Try candidate paths. If content-type isn't JSON, treat as invalid (gives clearer diagnostics).
   async function fetchEpisodesWithCandidates(season) {
-    const candidates = [
-      `episode-data/${slug}-s${season}.json`,
-      `episode-data/${slug}-s${season}-${lang}.json`,
-      `episode-data/${slug}-s${season}-en.json`,
-      `episode-data/${slug}-s${season}-hi.json`,
-      `episode-data/${slug}-s${season}-ur.json`,
-      `episode-data/${slug}-s${season}-.json`,
-      `episode-data/${slug}-s${season}-sub.json`,
-      `episode-data/${slug}-s${season}-en-sub.json`,
-      `episode-data/${slug}-s${season}-en-sub-s1.json`,
-      `episode-data/${slug}-s${season}-sub-s1.json`
-    ].filter(Boolean);
+    // Build candidate list: prefer lang-specific when lang provided
+    const base = 'episode-data/{slug}-s{ s }.json'.replace('{ s }','{s}'); // placeholder only
+    const candidates = [];
+
+    // If lang present and valid, try that first
+    const langCandidates = [];
+    if (lang && ['en','hi','ur','dub','sub'].includes(lang)) {
+      langCandidates.push(`episode-data/{slug}-s{ s }-{lang}.json`);
+      langCandidates.push(`episode-data/{slug}-s{ s }-{lang}-sub.json`);
+    }
+    // general candidates
+    const fallback = [
+      `episode-data/{slug}-s{ s }.json`,
+      `episode-data/{slug}-s{ s }-.json`,
+      `episode-data/{slug}-s{ s }-sub.json`,
+      `episode-data/{slug}-s{ s }-en.json`,
+      `episode-data/{slug}-s{ s }-hi.json`,
+      `episode-data/{slug}-s{ s }-ur.json`
+    ];
+
+    candidates.push(...langCandidates, ...fallback);
 
     const tried = [];
 
-    for (const cand of candidates) {
+    for (const pat of candidates) {
       try {
-        const path = cand.startsWith('/') ? cand : '/' + cand.replace(/^\/+/, '');
-        const url = bust(path);
+        const cand = jsonForCandidate(season, pat.replace(/\{ s \}/g,'{s}'));
+        // normalize placeholders
+        const candNorm = cand.replace(/\{s\}/g, season).replace(/\{slug\}/g, slug).replace(/\{lang\}/g, lang);
+        const url = bust(candNorm);
         const resp = await fetch(url, { cache: 'no-cache' });
-        const rec = { path: cand, ok: resp.ok, status: resp.status, err: null };
-        // try to read text and parse JSON (some servers return HTML for 200)
-        const text = await resp.text();
-        try {
-          const parsed = JSON.parse(text);
-          return { episodes: parsed, tried: [...tried, rec] };
-        } catch (parseErr) {
-          rec.err = 'json-parse:SyntaxError: ' + (parseErr.message || parseErr);
+        const rec = { path: candNorm, ok: resp.ok, status: resp.status, err: null, contentType: resp.headers.get('content-type') || '' };
+
+        // If not OK status, record and continue
+        if (!resp.ok) {
+          rec.err = `HTTP ${resp.status}`;
           tried.push(rec);
           continue;
         }
-      } catch (fetchErr) {
-        tried.push({ path: cand, ok: false, status: null, err: String(fetchErr) });
+
+        const ct = (resp.headers.get('content-type') || '').toLowerCase();
+        if (!ct.includes('application/json') && !ct.includes('json')) {
+          // read text for diagnostics but don't attempt JSON.parse
+          const text = await resp.text();
+          rec.err = `invalid content-type: ${ct || 'unknown'}`;
+          // Optionally capture snippet (first 120 chars) for easier debug
+          rec.preview = (text || '').slice(0, 180);
+          tried.push(rec);
+          continue;
+        }
+
+        // Now parse json
+        const j = await resp.json();
+        return { episodes: j, tried: [...tried, rec] };
+      } catch (err) {
+        tried.push({ path: pat.replace(/\{s\}/g, season).replace(/\{slug\}/g, slug).replace(/\{lang\}/g, lang), ok: false, status: null, err: String(err) });
         continue;
       }
     }
 
+    // nothing found
     throw { tried };
   }
 
@@ -314,8 +319,8 @@
           const tutorialBlock = `
             <div class="pro-tutorial-title">How to Watch Episodes</div>
             <div class="pro-video-frame-wrap">${HOWTO_PROCESS_1}</div>
-            <div style="height:14px"></div>
-            <div style="font-weight:800;margin-top:8px;color:#fff;">How to Watch (Old Process)</div>
+
+            <div class="pro-tutorial-title">How to Watch (Old Process)</div>
             <div class="pro-video-frame-wrap">${HOWTO_PROCESS_2}</div>
           `;
 
@@ -332,7 +337,7 @@
             wrap.innerHTML = `
               <div style="background:#0e1720;color:#ffd;padding:14px;border-radius:12px;">
                 <div style="font-weight:800;color:#ffd700;margin-bottom:8px;">Episodes not found for this season</div>
-                <div style="font-size:13px;color:#cfe6ff">Tried paths (server responded but JSON invalid / missing):</div>
+                <div style="font-size:13px;color:#cfe6ff">Tried paths (server responded but not JSON / missing):</div>
                 <pre style="white-space:pre-wrap;color:#cfe6ff;font-size:12px;margin-top:8px;">${escapeHtml(JSON.stringify(diag.tried, null, 2))}</pre>
               </div>
             `;
