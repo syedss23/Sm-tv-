@@ -1,4 +1,4 @@
-// series.js — compact square episode cards + consistent tutorial highlights
+// series.js — fixed candidate generation (no "{ s }" bug) + compact square cards
 (function () {
   'use strict';
 
@@ -9,10 +9,6 @@
 
   const HOWTO_PROCESS_1 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v6yg466/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
   const HOWTO_PROCESS_2 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v6yg45g/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
-
-  function jsonForCandidate(season, candidatePattern) {
-    return candidatePattern.replace(/\{slug\}/g, slug).replace(/\{s\}/g, season).replace(/\{lang\}/g, lang);
-  }
 
   function bust(url) {
     const v = (qs.get('v') || '1');
@@ -30,7 +26,7 @@
     } catch (e) { /* ignore */ }
   }
 
-  // Injected styles for compact square cards
+  // Injected styles (compact square cards + highlighted tutorial titles)
   const injectedStyles = `
     .premium-channel-message{ margin-top:12px; padding:14px; background:linear-gradient(135deg,#071014 80%, #08323e 100%); border-radius:12px; border:1px solid rgba(35,198,237,0.12); color:#23c6ed; font-weight:700; }
     .premium-btn-row{ margin-top:10px; }
@@ -46,15 +42,14 @@
       align-items:flex-start;
     }
 
-    /* Compact square card */
     .pro-episode-card-pro{
       scroll-snap-align:center;
-      flex:0 0 150px;               /* card width */
+      flex:0 0 150px;
       display:flex;
       flex-direction:column;
       gap:8px;
       align-items:center;
-      padding:8px;                  /* small padding */
+      padding:8px;
       border-radius:12px;
       text-decoration:none;
       color:#fff;
@@ -65,10 +60,9 @@
     }
     .pro-episode-card-pro:hover{ transform:translateY(-6px); }
 
-    /* square thumbnail */
     .pro-ep-thumb-wrap-pro{
-      width:120px;                  /* thumbnail box width inside card */
-      height:120px;                 /* square */
+      width:120px;
+      height:120px;
       border-radius:10px;
       overflow:hidden;
       position:relative;
@@ -136,32 +130,39 @@
     });
   }
 
-  // Try candidate paths. If content-type isn't JSON, treat as invalid (gives clearer diagnostics).
+  // Build explicit candidates (no placeholder formatting left to chance)
   async function fetchEpisodesWithCandidates(season) {
+    const base = `episode-data/${slug}-s${season}`;
     const candidates = [];
 
-    if (lang && ['en','hi','ur','dub','sub'].includes(lang)) {
-      candidates.push(`episode-data/{slug}-s{ s }-{lang}.json`);
-      candidates.push(`episode-data/{slug}-s{ s }-{lang}-sub.json`);
+    // language-specific favorites (respect lang if provided)
+    if (lang) {
+      // common variants
+      candidates.push(`${base}-${lang}.json`);
+      candidates.push(`${base}-${lang}-sub.json`);
+      // explicit english/hindi/urdu if lang given but different formats needed
+      if (!['en','hi','ur','dub','sub'].includes(lang)) {
+        candidates.push(`${base}-en.json`);
+        candidates.push(`${base}-hi.json`);
+        candidates.push(`${base}-ur.json`);
+      }
     }
 
-    candidates.push(
-      `episode-data/{slug}-s{ s }.json`,
-      `episode-data/{slug}-s{ s }-.json`,
-      `episode-data/{slug}-s{ s }-sub.json`,
-      `episode-data/{slug}-s{ s }-en.json`,
-      `episode-data/{slug}-s{ s }-hi.json`,
-      `episode-data/{slug}-s{ s }-ur.json`
-    );
+    // standard fallbacks
+    candidates.push(`${base}.json`);
+    candidates.push(`${base}-.json`);
+    candidates.push(`${base}-sub.json`);
+    candidates.push(`${base}-en.json`);
+    candidates.push(`${base}-hi.json`);
+    candidates.push(`${base}-ur.json`);
 
     const tried = [];
 
-    for (const pat of candidates) {
+    for (const cand of candidates) {
       try {
-        const candNorm = pat.replace(/\{s\}/g, season).replace(/\{slug\}/g, slug).replace(/\{lang\}/g, lang);
-        const url = bust(candNorm);
+        const url = bust(cand);
         const resp = await fetch(url, { cache: 'no-cache' });
-        const rec = { path: candNorm, ok: resp.ok, status: resp.status, err: null, contentType: resp.headers.get('content-type') || '' };
+        const rec = { path: cand, ok: resp.ok, status: resp.status, err: null, contentType: resp.headers.get('content-type') || '' };
 
         if (!resp.ok) {
           rec.err = `HTTP ${resp.status}`;
@@ -173,7 +174,7 @@
         if (!ct.includes('application/json') && !ct.includes('json')) {
           const text = await resp.text();
           rec.err = `invalid content-type: ${ct || 'unknown'}`;
-          rec.preview = (text || '').slice(0, 180);
+          rec.preview = (text || '').slice(0, 200);
           tried.push(rec);
           continue;
         }
@@ -181,7 +182,7 @@
         const j = await resp.json();
         return { episodes: j, tried: [...tried, rec] };
       } catch (err) {
-        tried.push({ path: pat.replace(/\{s\}/g, season).replace(/\{slug\}/g, slug).replace(/\{lang\}/g, lang), ok: false, status: null, err: String(err) });
+        tried.push({ path: cand, ok: false, status: null, err: String(err) });
         continue;
       }
     }
@@ -280,14 +281,7 @@
         wrap.innerHTML = `<div style="color:#ddd;padding:12px 0;">Loading episodes...</div>`;
 
         try {
-          const { episodes, tried } = await (async () => {
-            try {
-              const res = await fetchEpisodesWithCandidates(season);
-              return { episodes: res.episodes, tried: res.tried || [] };
-            } catch (err) {
-              throw err;
-            }
-          })();
+          const { episodes, tried } = await fetchEpisodesWithCandidates(season);
 
           if (!Array.isArray(episodes) || episodes.length === 0) {
             wrap.innerHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
