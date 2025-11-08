@@ -1,4 +1,4 @@
-<!-- includes/footer.html - SmTv Urdu Bottom Navigation Bar (polished) -->
+<!-- includes/footer.html - SmTv Urdu Bottom Navigation Bar (markup + style only) -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <nav class="smtv-bottom-nav" id="smtv-bottom-nav" role="navigation" aria-label="Main">
@@ -51,7 +51,6 @@
   z-index:1200;
   backdrop-filter: blur(6px);
   font-family: 'Poppins', system-ui, sans-serif;
-  /* safe-area on mobile */
   padding-bottom: calc(env(safe-area-inset-bottom) + 8px);
 }
 
@@ -121,47 +120,4 @@
   .nav-item i{ font-size:19px; }
   .label{ font-size:13px; }
 }
-
-/* ensure body doesn't hide under nav (if footer include injects style this helps) */
 </style>
-
-<script>
-/* active logic: prefer pathname, otherwise use stored last-click for instant color feedback */
-(function(){
-  try {
-    const nav = document.getElementById('smtv-bottom-nav');
-    if(!nav) return;
-    const items = Array.from(nav.querySelectorAll('.nav-item'));
-
-    function clearActive(){ items.forEach(i => i.classList.remove('active')); }
-
-    // prefer actual path matching
-    const path = window.location.pathname.toLowerCase();
-    let matched = items.find(a=>{
-      const name = (a.dataset.name||'').toLowerCase();
-      if(name === 'home' && (path === '/' || path.includes('index'))) return true;
-      return name && path.includes(name);
-    });
-
-    // fallback to last clicked item (persisted), but only if it exists on this nav
-    if(!matched){
-      const last = localStorage.getItem('smtv_last_nav');
-      if(last) matched = items.find(a => a.dataset.name === last);
-    }
-
-    if(matched) matched.classList.add('active');
-
-    // click handler: set active immediately (persist) then follow link
-    items.forEach(a=>{
-      a.addEventListener('click', function(e){
-        // make active visually before navigation
-        clearActive();
-        this.classList.add('active');
-        try { localStorage.setItem('smtv_last_nav', this.dataset.name); } catch(e){}
-        // allow default navigation to happen
-      });
-    });
-
-  } catch(err){ console.warn('footer nav err', err); }
-})();
-</script>
