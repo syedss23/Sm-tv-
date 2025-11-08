@@ -8,6 +8,20 @@
   const HOWTO_PROCESS_1 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v6yg466/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
   const HOWTO_PROCESS_2 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v6yg45g/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
 
+  // Inject small CSS to improve transitions & prevent anchor jumps
+  (function injectStyles(){
+    const css = `
+      /* prevent browser auto anchor jumps */
+      .pro-episodes-row-wrap-pro { overflow-anchor: none; transition: opacity .28s ease, filter .28s ease; will-change: opacity, filter; }
+      .pro-episodes-row-wrap-pro.is-loading { opacity: .6; filter: blur(1px) saturate(.95); pointer-events: none; }
+      .pro-episodes-row-pro { transition: transform .28s ease, opacity .28s ease; will-change: transform, opacity; }
+      .pro-ep-loading { transition: opacity .28s ease, transform .28s ease; opacity: .9; transform: translateY(0); display:flex; align-items:center; justify-content:center; color:#9fd3ff; font-weight:800; }
+    `;
+    const s = document.createElement('style');
+    s.textContent = css;
+    document.head.appendChild(s);
+  })();
+
   function jsonFor(season) {
     if (lang === 'dub') {
       return `episode-data/${slug}-s${season}.json`;
@@ -31,40 +45,24 @@
     setTimeout(() => t.remove(), 2600);
   }
 
-  const premiumStyles = `
-    .premium-channel-message {
-      margin-top: 18px;
-      padding: 16px;
-      background: linear-gradient(135deg, #101a24 90%, #23c6ed30 100%);
-      border: 2px solid #23c6ed;
-      border-radius: 14px;
-      color: #23c6ed;
-      font-family: 'Montserrat', Arial, sans-serif;
-      font-weight: 600;
-      font-size: 1.09em;
-      max-width: 540px;
-      box-shadow: 0 2px 18px #1a232b18;
-      letter-spacing: 0.03em;
-    }
+  const uiStyles = `
+    .premium-channel-message { margin-top: 18px; padding: 16px; background: linear-gradient(135deg, #101a24 90%, #23c6ed30 100%); border: 2px solid #23c6ed; border-radius: 14px; color: #23c6ed; font-family: 'Montserrat', Arial, sans-serif; font-weight: 600; font-size: 1.09em; max-width: 540px; box-shadow: 0 2px 18px #1a232b18; letter-spacing: 0.03em; }
     .premium-channel-message strong { color: #ffd700; font-weight:800; }
     .premium-btn-row { display:flex; gap:12px; margin-top:11px; flex-wrap:wrap; align-items:center; }
     .btn-primary{ display:inline-block; background:#ffd400; color:#13263a; font-weight:800; padding:10px 16px; border-radius:999px; box-shadow:0 4px 14px #ffd40055; text-align:center; }
-    .btn-primary:active{ transform:translateY(1px); }
-    /* loading skeleton for episodes scroller */
-    .pro-ep-loading { width:150px; min-height:200px; border-radius:12px; background:linear-gradient(90deg,#111827,#141a26); display:flex; align-items:center; justify-content:center; color:#9fbfd0; font-weight:700; }
+    .pro-ep-loading { width:150px; min-height:200px; border-radius:12px; background:linear-gradient(90deg,#0b1220,#111827); display:flex; align-items:center; justify-content:center; color:#9fbfd0; font-weight:700; }
   `;
   const styleTag = document.createElement('style');
-  styleTag.textContent = premiumStyles;
+  styleTag.textContent = uiStyles;
   document.head.appendChild(styleTag);
 
-  // ensure we have a mount
   const detailsMount = document.getElementById('series-details');
   if (!detailsMount) {
     console.warn('series-details mount not found');
     return;
   }
 
-  // Load series metadata, render header and tabs
+  // initial load of series meta and render header
   fetch('series.json')
     .then(r => r.json())
     .then(arr => {
@@ -102,7 +100,7 @@
         <section class="pro-episodes-row-wrap-pro" id="pro-episodes-row-wrap" aria-live="polite"></section>
       `;
 
-      // Create seasons array
+      // build seasons list
       let seasons = [];
       if (typeof meta.seasons === 'number') {
         for (let i = 1; i <= meta.seasons; i++) seasons.push(String(i));
@@ -112,12 +110,12 @@
         seasons = ['1'];
       }
 
-      // Render season tabs
+      // render tabs (use button elements to avoid anchor/focus jumps)
       const tabs = document.getElementById('pro-seasons-tabs');
-      tabs.innerHTML = ''; // clear
+      tabs.innerHTML = '';
       seasons.forEach(s => {
         const btn = document.createElement('button');
-        btn.type = 'button'; // critical: prevent default focus/submit behaviour
+        btn.type = 'button';
         btn.className = 'pro-season-tab-pro' + (s === season ? ' active' : '');
         btn.dataset.season = s;
         btn.textContent = 'Season ' + s;
@@ -126,26 +124,24 @@
         tabs.appendChild(btn);
       });
 
-      // Render initial season
-      renderSeason(season);
+      // initial render
+      renderSeason(season, null, { initial:true });
     })
     .catch(() => {
       detailsMount.innerHTML = `<div style="color:#fff;padding:30px;">Could not load series info. Try again later.</div>`;
     });
 
-  // Click handler for season buttons
+  // Season click handler: save scrollY, set visual active, then render with smooth transition
   function seasonTabClick(e) {
     const btn = e.currentTarget;
     if (!btn || !btn.dataset) return;
-    // Prevent any default behaviour and avoid focus-driven scrolling:
-    try { e.preventDefault && e.preventDefault(); } catch (er){}
-    // Save the current scroll position so we can restore after update:
-    const savedScrollY = window.scrollY || window.pageYOffset || 0;
+    try { e.preventDefault && e.preventDefault(); } catch(e){}
+    // blur to avoid focus scrolling
+    try { btn.blur(); } catch(e){}
+    // save scroll position
+    const savedY = window.scrollY || window.pageYOffset || 0;
 
-    // immediately blur to avoid focus jump
-    try { btn.blur(); } catch (er) {}
-
-    // set active class visually
+    // mark visual active
     const tabs = document.getElementById('pro-seasons-tabs');
     tabs.querySelectorAll('.pro-season-tab-pro').forEach(b => {
       b.classList.remove('active');
@@ -157,46 +153,47 @@
     const newSeason = btn.dataset.season;
     season = newSeason;
 
-    // render but keep scroll stable
-    renderSeason(newSeason, savedScrollY);
+    // call render with savedY to restore scroll after load
+    renderSeason(newSeason, savedY, { smooth:true });
   }
 
-  // Render season (with optional saved scroll position)
-  function renderSeason(seasonToLoad, savedScrollY = null) {
+  // renderSeason: shows placeholders + fades, fetches episodes and replaces with content
+  function renderSeason(seasonToLoad, savedScrollY = null, opts = {}) {
     const wrap = document.getElementById('pro-episodes-row-wrap');
     if (!wrap) return;
 
-    // show compact loading placeholders in the scroller so user sees immediate feedback
-    wrap.innerHTML = `
-      <div class="pro-episodes-row-pro" role="region" aria-busy="true" aria-label="Loading episodes">
-        ${Array.from({length:5}).map(()=>`<div class="pro-ep-loading">Loading</div>`).join('')}
-      </div>
-    `;
+    // If we already have content and user wants smooth transition, do a small fade out
+    const doSmooth = !!opts.smooth;
+    if (doSmooth) {
+      wrap.classList.add('is-loading');
+    }
 
-    // small delay to allow loading placeholders to paint before heavy fetch
-    setTimeout(() => {
+    // Insert immediate placeholders so user sees instant feedback
+    wrap.innerHTML = `<div class="pro-episodes-row-pro" role="region" aria-busy="true" aria-label="Loading episodes">
+      ${Array.from({length:6}).map(()=>`<div class="pro-ep-loading">Loading</div>`).join('')}
+    </div>`;
+
+    // allow the placeholder to paint before fetching to reduce perceived jank
+    requestAnimationFrame(() => requestAnimationFrame(() => {
       const url = bust(jsonFor(seasonToLoad));
-      // try fetch with a single retry for transient network issues
       fetchWithRetry(url, 1, 9000)
         .then(episodes => {
-          // if episodes isn't an array or empty -> show friendly message
           if (!Array.isArray(episodes) || episodes.length === 0) {
             wrap.innerHTML = `<div style="color:#fff;padding:28px 16px;">No episodes for this season.</div>`;
-            // restore scroll if provided
-            restoreScroll(savedScrollY);
+            if (doSmooth) restoreScroll(savedScrollY);
+            wrap.classList.remove('is-loading');
             return;
           }
 
-          // Build scroller HTML
-          const html = `<div class="pro-episodes-row-pro">` + episodes.map(ep => {
+          // Build episodes scroller HTML
+          const scrollerHtml = `<div class="pro-episodes-row-pro" role="list">` + episodes.map(ep => {
             const episodeUrl = ep.shortlink
               ? ep.shortlink
               : `episode.html?series=${encodeURIComponent(slug)}&season=${encodeURIComponent(seasonToLoad)}&ep=${encodeURIComponent(ep.ep)}&lang=${encodeURIComponent(lang)}`;
             const extra = ep.shortlink ? 'target="_blank" rel="noopener"' : '';
-            // ensure thumbnails lazy load and fill the small square (no gaps)
             const thumb = (ep.thumb && ep.thumb.trim()) ? ep.thumb : 'default-thumb.jpg';
             return `
-              <a class="pro-episode-card-pro" href="${episodeUrl}" ${extra} aria-label="Episode ${ep.ep}">
+              <a class="pro-episode-card-pro" href="${episodeUrl}" ${extra} aria-label="Episode ${ep.ep}" role="listitem">
                 <div class="pro-ep-thumb-wrap-pro" aria-hidden="true">
                   <img src="${thumb}" class="pro-ep-thumb-pro" alt="Ep ${ep.ep} thumbnail" loading="lazy">
                   <span class="pro-ep-num-pro">Ep ${ep.ep}</span>
@@ -206,60 +203,69 @@
             `;
           }).join('') + `</div>`;
 
-          // Tutorial sections below scroller
-          const tutorialTitle1 = `
+          // Tutorial blocks (kept below)
+          const tutorialHtml = `
             <section class="pro-highlight-section" aria-hidden="false">
               <div class="pro-highlight-title">How to Watch Episodes</div>
             </section>
-          `;
-          const tutorialVideo1 = `
             <section class="pro-video-card" aria-label="How to Watch video">
-              <div class="pro-video-frame-wrap">
-                ${HOWTO_PROCESS_1}
-              </div>
+              <div class="pro-video-frame-wrap">${HOWTO_PROCESS_1}</div>
             </section>
-          `;
-          const tutorialTitle2 = `
             <section class="pro-highlight-section" aria-hidden="false">
               <div class="pro-highlight-title">How to Watch (Old Process)</div>
             </section>
-          `;
-          const tutorialVideo2 = `
             <section class="pro-video-card" aria-label="How to Watch old process video">
-              <div class="pro-video-frame-wrap">
-                ${HOWTO_PROCESS_2}
-              </div>
+              <div class="pro-video-frame-wrap">${HOWTO_PROCESS_2}</div>
             </section>
           `;
 
-          // Replace innerHTML in one go
-          wrap.innerHTML = html + tutorialTitle1 + tutorialVideo1 + tutorialTitle2 + tutorialVideo2;
+          // Replace content in one go
+          wrap.innerHTML = scrollerHtml + tutorialHtml;
 
-          // Small accessibility: remove focus from any element that may cause scroll
+          // small deferred activation: briefly translate items in for a subtle motion
+          const scroller = wrap.querySelector('.pro-episodes-row-pro');
+          if (scroller) {
+            Array.from(scroller.children).forEach((c, i) => {
+              c.style.opacity = '0';
+              c.style.transform = 'translateY(10px)';
+              // stagger the fade in slightly
+              setTimeout(() => {
+                c.style.transition = 'opacity .28s ease, transform .28s ease';
+                c.style.opacity = '1';
+                c.style.transform = 'translateY(0)';
+                // clear inline styles after animation to keep CSS clean
+                setTimeout(()=>{ c.style.transition=''; c.style.transform=''; c.style.opacity=''; },420);
+              }, 50 + i * 30);
+            });
+          }
+
+          // remove loading state
+          wrap.classList.remove('is-loading');
+
+          // ensure nothing retains focus (prevents some mobile jumps)
           try { document.activeElement && document.activeElement.blur && document.activeElement.blur(); } catch(e){}
 
-          // restore any saved scroll position (defer to next frames so layout is settled)
+          // restore scroll (deferred so layout is stable)
           restoreScroll(savedScrollY);
         })
-        .catch(e => {
+        .catch(err => {
           wrap.innerHTML = `<div style="color:#fff;padding:28px 16px;">Could not load episodes. Please try again.</div>`;
+          wrap.classList.remove('is-loading');
           toast('Episode file missing or network error');
           restoreScroll(savedScrollY);
-          console.warn('renderSeason error', e);
+          console.warn('renderSeason error', err);
         });
-    }, 60); // tiny delay
+    }));
   }
 
-  // fetch with one retry (retriesCount times)
+  // fetch with one retry (retries times)
   function fetchWithRetry(url, retries = 1, timeout = 8000) {
     return new Promise((resolve, reject) => {
       let attempts = 0;
-
       function doFetch() {
         attempts++;
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), timeout);
-
         fetch(url, { signal: controller.signal, cache: 'no-cache' })
           .then(res => {
             clearTimeout(timer);
@@ -270,28 +276,26 @@
           .catch(err => {
             clearTimeout(timer);
             if (attempts <= retries) {
-              // small backoff then retry
               setTimeout(doFetch, 350);
             } else {
               reject(err);
             }
           });
       }
-
       doFetch();
     });
   }
 
-  // restore scroll position (if provided). If null -> do nothing.
+  // Restore scroll position if provided. If null -> do nothing.
   function restoreScroll(savedY) {
     if (savedY == null) return;
-    // wait for layout/paint then restore to avoid janky jumps
+    // Wait a couple frames for layout to finish before restoring
     requestAnimationFrame(() => {
-      // double frame for robust layout done
       requestAnimationFrame(() => {
         try {
+          // Use instant behavior to avoid browser interpolating which can cause additional shifts
           window.scrollTo({ top: savedY, left: 0, behavior: 'instant' });
-        } catch (e) {
+        } catch (err) {
           window.scrollTo(0, savedY);
         }
       });
