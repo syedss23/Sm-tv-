@@ -1,4 +1,4 @@
-// series.js — updated: better carousel sizing, consistent tutorial highlights, safer JSON detection
+// series.js — compact square episode cards + consistent tutorial highlights
 (function () {
   'use strict';
 
@@ -16,7 +16,6 @@
 
   function bust(url) {
     const v = (qs.get('v') || '1');
-    // If url already absolute (starts with /) keep, else prefix with /
     const path = url.startsWith('/') ? url : '/' + url.replace(/^\/+/, '');
     return path + (path.includes('?') ? '&' : '?') + 'v=' + encodeURIComponent(v);
   }
@@ -31,7 +30,7 @@
     } catch (e) { /* ignore */ }
   }
 
-  // Injected styles tuned for compact horizontal cards and consistent tutorial title
+  // Injected styles for compact square cards
   const injectedStyles = `
     .premium-channel-message{ margin-top:12px; padding:14px; background:linear-gradient(135deg,#071014 80%, #08323e 100%); border-radius:12px; border:1px solid rgba(35,198,237,0.12); color:#23c6ed; font-weight:700; }
     .premium-btn-row{ margin-top:10px; }
@@ -39,58 +38,69 @@
 
     .pro-episodes-row-pro{
       display:flex;
-      gap:14px;
+      gap:12px;
       overflow-x:auto;
-      padding:14px 8px;
+      padding:12px 10px;
       -webkit-overflow-scrolling:touch;
       scroll-snap-type:x proximity;
       align-items:flex-start;
     }
 
+    /* Compact square card */
     .pro-episode-card-pro{
       scroll-snap-align:center;
-      flex:0 0 200px;
+      flex:0 0 150px;               /* card width */
       display:flex;
       flex-direction:column;
-      gap:10px;
+      gap:8px;
       align-items:center;
-      padding:12px;
+      padding:8px;                  /* small padding */
       border-radius:12px;
       text-decoration:none;
       color:#fff;
-      box-shadow:0 10px 30px rgba(0,0,0,0.45);
-      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));
-      min-height:180px;
-      transition:transform .14s ease;
+      box-shadow:0 6px 18px rgba(0,0,0,0.38);
+      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.04));
+      min-height:auto;
+      transition:transform .12s ease;
     }
     .pro-episode-card-pro:hover{ transform:translateY(-6px); }
 
-    .pro-ep-thumb-wrap-pro{ width:100%; height:110px; border-radius:10px; overflow:hidden; position:relative; background:#0c0f12; display:block; }
+    /* square thumbnail */
+    .pro-ep-thumb-wrap-pro{
+      width:120px;                  /* thumbnail box width inside card */
+      height:120px;                 /* square */
+      border-radius:10px;
+      overflow:hidden;
+      position:relative;
+      background:#0c0f12;
+      display:block;
+      box-shadow: inset 0 -6px 12px rgba(0,0,0,0.12);
+    }
     .pro-ep-thumb-pro{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
 
     .pro-ep-num-pro{
       position:absolute;
-      right:8px;
-      top:8px;
+      right:6px;
+      top:6px;
       background:linear-gradient(90deg,#ffcf33,#ff7a5f);
       color:#111;
       font-weight:800;
-      padding:6px 10px;
+      padding:5px 8px;
       border-radius:999px;
-      font-size:12px;
-      box-shadow: 0 6px 18px rgba(255,120,60,0.12);
+      font-size:11px;
+      box-shadow: 0 6px 14px rgba(255,120,60,0.12);
     }
 
     .pro-ep-title-pro{
       width:100%;
       text-align:center;
-      font-size:15px;
+      font-size:14px;
       font-weight:800;
       color:#fff;
-      padding:10px 6px;
+      padding:8px 6px;
       border-radius:8px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.03));
-      box-shadow: inset 0 -6px 12px rgba(0,0,0,0.18);
+      background: transparent;
+      line-height:1.1;
     }
 
     .pro-tutorial-title {
@@ -109,9 +119,8 @@
     .pro-video-frame-wrap { margin-top:12px; border-radius:10px; overflow:hidden; }
 
     @media(min-width:900px){
-      .pro-episode-card-pro{ flex:0 0 260px; min-height:200px; }
-      .pro-ep-thumb-wrap-pro{ height:140px; }
-      .pro-series-poster-pro{ width:260px; height:140px; }
+      .pro-episode-card-pro{ flex:0 0 180px; }
+      .pro-ep-thumb-wrap-pro{ width:140px; height:140px; }
     }
   `;
   try {
@@ -129,40 +138,31 @@
 
   // Try candidate paths. If content-type isn't JSON, treat as invalid (gives clearer diagnostics).
   async function fetchEpisodesWithCandidates(season) {
-    // Build candidate list: prefer lang-specific when lang provided
-    const base = 'episode-data/{slug}-s{ s }.json'.replace('{ s }','{s}'); // placeholder only
     const candidates = [];
 
-    // If lang present and valid, try that first
-    const langCandidates = [];
     if (lang && ['en','hi','ur','dub','sub'].includes(lang)) {
-      langCandidates.push(`episode-data/{slug}-s{ s }-{lang}.json`);
-      langCandidates.push(`episode-data/{slug}-s{ s }-{lang}-sub.json`);
+      candidates.push(`episode-data/{slug}-s{ s }-{lang}.json`);
+      candidates.push(`episode-data/{slug}-s{ s }-{lang}-sub.json`);
     }
-    // general candidates
-    const fallback = [
+
+    candidates.push(
       `episode-data/{slug}-s{ s }.json`,
       `episode-data/{slug}-s{ s }-.json`,
       `episode-data/{slug}-s{ s }-sub.json`,
       `episode-data/{slug}-s{ s }-en.json`,
       `episode-data/{slug}-s{ s }-hi.json`,
       `episode-data/{slug}-s{ s }-ur.json`
-    ];
-
-    candidates.push(...langCandidates, ...fallback);
+    );
 
     const tried = [];
 
     for (const pat of candidates) {
       try {
-        const cand = jsonForCandidate(season, pat.replace(/\{ s \}/g,'{s}'));
-        // normalize placeholders
-        const candNorm = cand.replace(/\{s\}/g, season).replace(/\{slug\}/g, slug).replace(/\{lang\}/g, lang);
+        const candNorm = pat.replace(/\{s\}/g, season).replace(/\{slug\}/g, slug).replace(/\{lang\}/g, lang);
         const url = bust(candNorm);
         const resp = await fetch(url, { cache: 'no-cache' });
         const rec = { path: candNorm, ok: resp.ok, status: resp.status, err: null, contentType: resp.headers.get('content-type') || '' };
 
-        // If not OK status, record and continue
         if (!resp.ok) {
           rec.err = `HTTP ${resp.status}`;
           tried.push(rec);
@@ -171,16 +171,13 @@
 
         const ct = (resp.headers.get('content-type') || '').toLowerCase();
         if (!ct.includes('application/json') && !ct.includes('json')) {
-          // read text for diagnostics but don't attempt JSON.parse
           const text = await resp.text();
           rec.err = `invalid content-type: ${ct || 'unknown'}`;
-          // Optionally capture snippet (first 120 chars) for easier debug
           rec.preview = (text || '').slice(0, 180);
           tried.push(rec);
           continue;
         }
 
-        // Now parse json
         const j = await resp.json();
         return { episodes: j, tried: [...tried, rec] };
       } catch (err) {
@@ -189,7 +186,6 @@
       }
     }
 
-    // nothing found
     throw { tried };
   }
 
@@ -298,7 +294,7 @@
             return;
           }
 
-          // build compact carousel cards
+          // build compact square cards
           const cardsHtml = episodes.map(ep => {
             const epNum = escapeHtml(String(ep.ep || ''));
             const epTitle = escapeHtml(ep.title || ('Episode ' + epNum));
@@ -326,7 +322,6 @@
 
           wrap.innerHTML = `<div class="pro-episodes-row-pro">${cardsHtml}</div>` + tutorialBlock;
 
-          // ensure a nice initial scroll focus
           try {
             const first = wrap.querySelector('.pro-episode-card-pro');
             if (first) first.scrollIntoView({ behavior: 'auto', inline: 'start', block: 'nearest' });
