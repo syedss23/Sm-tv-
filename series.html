@@ -12,80 +12,138 @@
 
   <meta charset="UTF-8">
   <title>SmTv Urdu</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="Watch Turkish drama series and historical shows in Urdu on SmTv Urdu. All series details and streaming links.">
 
   <!-- main site CSS -->
   <link rel="stylesheet" href="style.css">
 
-  <!-- font awesome (icons used by footer nav & fallback) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-p1CmXnKk7kKqz9KQ4X/6yZb0yGf0hQmKq9YkZ5M8ZL6YfG7J8a9A5NQdYHf6i2h3QJ1s2n7e9d3b2Q6m7x3Mw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- FontAwesome for footer icons (used by fallback nav) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-  <!-- series-specific inline styles (compact episode cards, premium message, tutorial highlight) -->
+  <!-- SERIES PAGE INLINE STYLES (ready-to-use, tuned for compact cards & header) -->
   <style>
-    /* Page basics override if needed */
-    body { background:#0b0d10; color:#fff; margin:0; font-family: 'Segoe UI', Arial, sans-serif; }
+    /* Page basics */
+    body { background:#0b0d10; color:#fff; margin:0; font-family: 'Segoe UI', Arial, sans-serif; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
     #main-content { max-width:1100px; margin:0 auto; padding:14px; }
 
-    /* -------- episodes / cards / premium / tutorial styles -------- */
+    /* Header / poster block */
+    .pro-series-header-pro {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+      gap:12px;
+      padding:18px;
+      border-radius:14px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
+      box-shadow: 0 10px 36px rgba(0,0,0,0.55);
+      position:relative;
+      margin-bottom:12px;
+    }
+    .pro-series-back-btn-pro {
+      position:absolute;
+      left:14px;
+      top:14px;
+      width:48px;
+      height:48px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:12px;
+      background: rgba(0,150,200,0.08);
+      border: 2px solid rgba(0,160,210,0.14);
+      box-shadow: 0 6px 18px rgba(0,140,200,0.08);
+      text-decoration:none;
+    }
+    .pro-series-poster-pro {
+      width:220px;
+      height:120px;
+      border-radius:12px;
+      object-fit:cover;
+      display:block;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+    .pro-series-title-pro { font-size:22px; margin:8px 0 4px 0; color:#00d0f0; font-weight:900; }
+    .pro-series-desc-pro { color:#cfd8df; line-height:1.45; max-width:820px; }
 
-    /* Container for the episodes area */
-    .pro-episodes-row-wrap-pro {
-      margin-top: 14px;
+    /* Seasons tabs */
+    .pro-seasons-tabs-pro { display:flex; gap:12px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+    .pro-season-tab-pro {
+      background:rgba(255,255,255,0.03);
+      border:none;
+      color:#ddd;
+      padding:10px 18px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.45) inset;
+    }
+    .pro-season-tab-pro.active {
+      background: linear-gradient(90deg,#29f0ff,#00a9ff);
+      color:#05222b;
+      transform:translateY(-6px);
+      box-shadow: 0 18px 40px rgba(0,160,210,0.14);
     }
 
-    /* The horizontal scroller that holds cards */
+    /* Episodes container */
+    .pro-episodes-row-wrap-pro { margin-top:16px; }
+
+    /* horizontal scroller */
     .pro-episodes-row-pro {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      padding: 12px 16px 18px 16px;
-      -webkit-overflow-scrolling: touch;
-      scroll-snap-type: x mandatory;
-      align-items: flex-start;
+      display:flex;
+      gap:14px;
+      overflow-x:auto;
+      padding:12px 14px 10px 14px;
+      -webkit-overflow-scrolling:touch;
+      scroll-snap-type:x proximity;
+      align-items:flex-start;
     }
 
     /* Compact square-style card */
     .pro-episode-card-pro {
-      scroll-snap-align: center;
-      flex: 0 0 150px;        /* card width */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-      color: #fff;
-      padding: 10px;
-      border-radius: 12px;
+      scroll-snap-align:center;
+      flex:0 0 150px;        /* card width; adjust to make smaller/bigger */
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      align-items:center;
+      padding:8px;
+      text-decoration:none;
+      color:#fff;
+      border-radius:12px;
       background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));
-      box-shadow: 0 8px 22px rgba(0,0,0,0.5);
-      min-height: 210px;      /* ensures thumbnail + title fit */
-      transition: transform .14s ease, box-shadow .14s ease;
-      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+      min-height:200px;
+      transition:transform .14s ease, box-shadow .14s ease;
+      position:relative;
     }
-
-    /* smaller card on mobile */
-    @media (max-width:420px){
-      .pro-episode-card-pro { flex: 0 0 140px; min-height:200px; padding:8px; }
+    @media (max-width:420px) {
+      .pro-episode-card-pro { flex:0 0 140px; min-height:190px; padding:8px; }
+    }
+    @media (min-width:900px) {
+      .pro-episode-card-pro { flex:0 0 200px; min-height:220px; }
     }
 
     /* thumbnail area - fixed square so image visible */
     .pro-ep-thumb-wrap-pro {
-      width: 120px;
-      height: 120px;
-      border-radius:10px;
+      width:120px;
+      height:120px;
+      border-radius:12px;
       overflow:hidden;
       position:relative;
       background:#0b0d10;
       display:block;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.5) inset;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.55) inset;
     }
+    @media (min-width:900px) { .pro-ep-thumb-wrap-pro{ width:160px; height:160px; border-radius:14px; } }
 
     /* image fills thumbnail and is cropped - no empty space */
     .pro-ep-thumb-pro {
       width:100%;
       height:100%;
-      object-fit:cover;  /* critical to show full thumb without gaps */
+      object-fit:cover;  /* critical for full thumbnail coverage */
       display:block;
     }
 
@@ -100,14 +158,14 @@
       padding:6px 10px;
       border-radius:999px;
       font-size:12px;
-      box-shadow:0 6px 18px rgba(255,120,60,0.12);
+      box-shadow: 0 6px 18px rgba(255,120,60,0.12);
     }
 
     /* Title area under thumbnail */
     .pro-ep-title-pro {
       width:100%;
       text-align:center;
-      font-size:16px;   /* increased title size */
+      font-size:16px;   /* slightly larger */
       font-weight:800;
       color:#fff;
       padding:8px 6px;
@@ -116,17 +174,16 @@
       box-shadow: inset 0 -6px 12px rgba(0,0,0,0.08);
     }
 
-    /* active/focused card look (optional) */
     .pro-episode-card-pro:focus,
     .pro-episode-card-pro:hover {
       transform: translateY(-6px);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+      box-shadow: 0 20px 48px rgba(0,0,0,0.6);
     }
 
-    /* Premium message style (like your screenshot) */
+    /* Premium message */
     .premium-channel-message {
       margin-top: 14px;
-      padding: 20px;
+      padding: 18px;
       border-radius: 14px;
       background: linear-gradient(180deg, #042430 0%, #08323e 100%);
       border: 1px solid rgba(0,160,200,0.12);
@@ -146,7 +203,7 @@
       text-decoration:none;
     }
 
-    /* Highlighted tutorial title used for both new & old processes */
+    /* Tutorial title highlight */
     .pro-tutorial-title {
       margin-top:18px;
       font-weight:900;
@@ -158,130 +215,88 @@
       border-radius:10px;
       box-shadow: 0 8px 18px rgba(0,0,0,0.35);
     }
+    .pro-video-frame-wrap { margin-top:12px; border-radius:10px; overflow:hidden; }
 
-    /* video wrapper */
-    .pro-video-frame-wrap {
-      margin-top:12px;
-      border-radius:10px;
-      overflow:hidden;
-    }
+    /* Keep small bottom padding so no large empty area after scroller */
+    .pro-episodes-row-wrap-pro { padding-bottom:8px; margin-bottom:6px; }
 
-    /* remove extra big paddings around episodes container (prevents empty space) */
-    .pro-episodes-row-wrap-pro .pro-episodes-row-pro { padding-bottom: 10px; }
-
-    /* Small accessibility: ensure footer area space (if not added elsewhere) */
+    /* Accessibility: ensure footer safe area */
     @media (max-width:600px) {
       body { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
     }
-
-    /* If you have a separate seasons tabs style, keep them — this keeps a consistent spacing */
-    .pro-seasons-tabs-pro { display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
-
   </style>
 
-  <!-- series script (renders episodes etc) -->
+  <!-- series.js (renders header + episodes) -->
   <script defer src="series.js"></script>
 </head>
 <body>
   <div id="main-content">
-    <header>
-      <!-- Beautiful back button will be rendered by JS for consistent style -->
-    </header>
+    <header><!-- back button added by JS --></header>
 
-    <!-- legacy inline ad script (kept as you had it) -->
+    <!-- inline ad/legacy script kept as-is -->
     <script type="text/javascript" src="//www.highperformanceformat.com/c91a82435d260630918ecc80c95125ac/invoke.js"></script>
 
-    <div id="series-details"></div>
+    <!-- main mount -->
+    <div id="series-details" aria-live="polite"></div>
   </div>
 
-  <!-- Inline JS to dynamically update <title> and meta description (keeps your behavior) -->
+  <!-- dynamic meta/title updater (keeps your behavior) -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const params = new URLSearchParams(window.location.search);
       const slug = params.get('series');
-      if (!slug) return;
-      fetch('series.json').then(res => res.json()).then(seriesArr => {
+      if(!slug) return;
+      fetch('/series.json').then(res => res.json()).then(seriesArr => {
         const meta = Array.isArray(seriesArr) ? seriesArr.find(s => s.slug === slug) : null;
         if (meta && meta.title) {
           document.title = `${meta.title} – SmTv Urdu`;
           const metaDesc = document.querySelector('meta[name="description"]');
-          if (metaDesc) {
-            metaDesc.setAttribute('content', `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`);
-          }
+          if (metaDesc) metaDesc.setAttribute('content', `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`);
         }
       }).catch(()=>{/* ignore */});
     });
   </script>
 
-  <!-- Centered WhatsApp Update Popup Notification -->
-  <div id="whatsappPopup"
-       style="display:none; position:fixed; top:50%; left:50%; z-index:99999; transform:translate(-50%, -50%); max-width:340px; width:90vw; box-shadow:0 8px 24px rgba(15,18,30,.13); border-radius:22px; background:#232936; color:#fff; padding:28px 28px 22px 28px; font-size:1.09em; text-align:left; font-family: 'Segoe UI', Arial, sans-serif;">
+  <!-- Centered WhatsApp Update Popup -->
+  <div id="whatsappPopup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); max-width:340px; width:90vw; z-index:99999; background:#232936; color:#fff; padding:28px; border-radius:22px; box-shadow:0 8px 24px rgba(15,18,30,.13);">
     <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
-      <img src="favicon.png" alt="Channel Logo" style="width:40px; height:40px; border-radius:18px; object-fit:cover; box-shadow:0 2px 8px rgba(40,52,70,.10);">
-      <span style="font-weight:700; font-size:1.18em;">Stay Updated!</span>
+      <img src="favicon.png" alt="Logo" style="width:40px;height:40px;border-radius:10px;">
+      <strong style="font-size:1.1em">Stay Updated!</strong>
     </div>
-    <div style="margin-bottom:16px; color:#f1f1f1;">Get instant notifications for new episodes and exclusive news.<br>Join our WhatsApp Channel now.</div>
+    <div style="margin-bottom:16px;">Get instant notifications for new episodes. Join our WhatsApp Channel.</div>
     <div style="text-align:center;">
-      <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k" target="_blank"
-         style="display:inline-block; background:#29a345; color:#fff; font-weight:600; border-radius:11px; padding:11px 26px; text-decoration:none; font-size:1em; box-shadow:0 2px 8px rgba(40,52,70,.09); margin-bottom:15px; transition:background 0.2s;">
-        🟢 Join on WhatsApp
-      </a>
-      <br>
-      <button id="closeWhatsAppPopup"
-              style="background:none; border:none; color:#ff6868; font-weight:600; font-size:1.12em; margin-top:7px; cursor:pointer; display:block; margin-left:auto; margin-right:auto;">
-        ✖ Close
-      </button>
+      <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k" target="_blank" style="background:#29a345;color:#fff;padding:10px 18px;border-radius:10px;text-decoration:none;font-weight:700;">🟢 Join on WhatsApp</a>
+      <div style="margin-top:10px;"><button id="closeWhatsAppPopup" style="background:none;border:none;color:#ff6868;font-weight:700;cursor:pointer;">✖ Close</button></div>
     </div>
   </div>
+
   <script>
     window.addEventListener('DOMContentLoaded', function() {
-      setTimeout(function() {
-        const p = document.getElementById('whatsappPopup');
-        if (p) p.style.display = "block";
-      }, 2000);
-
-      const closeBtn = document.getElementById('closeWhatsAppPopup');
-      if (closeBtn) closeBtn.onclick = function() {
-        document.getElementById('whatsappPopup').style.display = "none";
-      };
+      setTimeout(()=> { const p=document.getElementById('whatsappPopup'); if(p) p.style.display='block'; },2000);
+      const closeBtn=document.getElementById('closeWhatsAppPopup'); if(closeBtn) closeBtn.onclick=()=>document.getElementById('whatsappPopup').style.display='none';
     });
   </script>
 
-  <!-- FOOTER: load includes/footer.html (robust loader + fallback) -->
+  <!-- FOOTER: robust include loader + fallback (same logic as before) -->
   <div id="footer-placeholder"></div>
 
   <script>
   (async function loadFooterRobust(){
-    // candidate footer paths (tries multiple common locations)
-    const candidates = [
-      '/includes/footer.html',
-      'includes/footer.html',
-      './includes/footer.html',
-      '/footer.html',
-      'footer.html'
-    ];
-
+    const candidates = ['/includes/footer.html','includes/footer.html','./includes/footer.html','/footer.html','footer.html'];
     const placeholder = document.getElementById('footer-placeholder');
 
-    // helper to insert and initialize nav
     function initNav(html) {
       try {
         placeholder.innerHTML = html;
-        // Ensure body has space so content isn't hidden under nav
         try {
           const curPad = parseInt(getComputedStyle(document.body).paddingBottom) || 0;
           const minPad = 96;
           if (curPad < minPad) document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))';
         } catch(e){}
-
-        // Activate the "Series" nav item (look for dataset.name or href)
         const nav = placeholder.querySelector('#smtv-bottom-nav') || placeholder.querySelector('.smtv-bottom-nav');
         if (!nav) return;
-
         const items = Array.from(nav.querySelectorAll('.nav-item'));
         items.forEach(i => i.classList.remove('active'));
-
-        // Prefer explicit dataset.name === 'series', otherwise href contains 'series'
         let seriesItem = items.find(i => ((i.dataset && (i.dataset.name || '').toLowerCase()) === 'series'));
         if (!seriesItem) {
           seriesItem = items.find(i => {
@@ -289,20 +304,14 @@
             return href && href.includes('series');
           });
         }
-
-        // If opened from a series page (query param ?series=), prefer the series nav
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.has('series') && seriesItem) {
           seriesItem.classList.add('active');
         } else {
-          // fallback: match by pathname
           const path = location.pathname.toLowerCase();
           const byPath = items.find(i => (i.getAttribute('href')||'').toLowerCase().includes(path.split('/').pop()));
-          if (byPath) byPath.classList.add('active');
-          else if (seriesItem) seriesItem.classList.add('active');
+          if (byPath) byPath.classList.add('active'); else if (seriesItem) seriesItem.classList.add('active');
         }
-
-        // Attach click handlers to nav items to highlight immediately and persist last-click
         items.forEach(a => {
           if (a._smtvInit) return;
           a._smtvInit = true;
@@ -315,36 +324,22 @@
             if (href) location.assign(href);
           }, { passive: false });
         });
-
-      } catch (e) {
-        console.warn('initNav error', e);
-      }
+      } catch (e) { console.warn('initNav error', e); }
     }
 
-    // try fetch candidates sequentially
     for (const cand of candidates) {
       try {
-        const url = cand;
-        const res = await fetch(url, { cache: 'no-cache' });
+        const res = await fetch(cand, { cache: 'no-cache' });
         if (!res.ok) continue;
         const text = await res.text();
-
-        // quick sanity: must contain nav element marker
         if (text.includes('smtv-bottom-nav') || text.includes('smtv-bottom')) {
           initNav(text);
           return;
-        } else {
-          // still accept it (some builds may not use same class names)
-          initNav(text);
-          return;
-        }
-      } catch (e) {
-        // try next candidate
-        continue;
-      }
+        } else { initNav(text); return; }
+      } catch (e) { continue; }
     }
 
-    // If all fetch attempts failed, insert a small inline fallback nav so page isn't missing the bar
+    // fallback inline nav
     placeholder.innerHTML = `
       <nav class="smtv-bottom-nav" id="smtv-bottom-nav" role="navigation" aria-label="Main">
         <a href="/index.html" class="nav-item" data-name="home"><span class="icon-wrap"><i class="fa-solid fa-house"></i></span><span class="label">Home</span></a>
@@ -354,7 +349,6 @@
         <a href="/more.html" class="nav-item" data-name="more"><span class="icon-wrap"><i class="fa-solid fa-circle-info"></i></span><span class="label">More</span></a>
       </nav>
       <style>
-        /* minimal inline style for fallback (keeps appearance acceptable) */
         .smtv-bottom-nav{position:fixed;left:12px;right:12px;bottom:12px;height:64px;display:flex;gap:6px;padding:8px;border-radius:14px;background:rgba(10,10,12,0.9);align-items:center;z-index:1200;padding-bottom:calc(env(safe-area-inset-bottom) + 8px);}
         .smtv-bottom-nav .nav-item{flex:1;text-align:center;color:#bdbdbd;text-decoration:none;padding:6px;border-radius:10px;}
         .smtv-bottom-nav .nav-item.active{color:#fff;transform:translateY(-6px);}
@@ -362,7 +356,6 @@
         .smtv-bottom-nav .label{display:block;font-size:12px;margin-top:3px;}
       </style>
     `;
-    // ensure padding
     try { document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))'; } catch(e){}
   })();
   </script>
