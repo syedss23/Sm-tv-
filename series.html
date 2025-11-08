@@ -81,69 +81,61 @@
   <!-- Footer Include -->
 <div id="footer-placeholder"></div>
 <script>
-  (async function(){
-    const path = window.location.pathname;
-    // Don't show bar on episode pages
-    if (path.includes('episode')) return;
-    try {
-      const res = await fetch('/includes/footer.html');
-      if(res.ok){
-        document.getElementById('footer-placeholder').innerHTML = await res.text();
-      }
-    } catch(e){ console.warn('Footer load failed:', e); }
-  })();
-</script>
-  <!-- Footer Include (fetch + init) -->
-<div id="footer-placeholder"></div>
-<script>
 (async function loadFooterAndInit(){
+  // wait until page load completes (helps avoid conflicts)
+  if (document.readyState !== 'complete') {
+    await new Promise(resolve => window.addEventListener('load', resolve, { once: true }));
+  }
   try {
-    // fetch footer html
     const res = await fetch('/includes/footer.html');
-    if (!res.ok) throw new Error('Footer not found');
+    if (!res.ok) throw new Error('Footer not found: ' + res.status);
     const html = await res.text();
-
-    // insert markup into placeholder
     const ph = document.getElementById('footer-placeholder');
     ph.innerHTML = html;
 
-    // now footer markup exists in DOM — run initialization for active state & clicks
-    (function initFooterNav(){
-      const nav = document.getElementById('smtv-bottom-nav');
-      if(!nav) return;
-      const items = Array.from(nav.querySelectorAll('.nav-item'));
+    // initialize active logic and click handlers
+    const nav = document.getElementById('smtv-bottom-nav');
+    if(!nav) return;
+    const items = Array.from(nav.querySelectorAll('.nav-item'));
+    function clearActive(){ items.forEach(i=>i.classList.remove('active')); }
 
-      function clearActive(){ items.forEach(i => i.classList.remove('active')); }
+    // match by pathname
+    const path = window.location.pathname.toLowerCase();
+    let matched = items.find(a => {
+      const name = (a.dataset.name||'').toLowerCase();
+      if (name === 'home' && (path === '/' || path.includes('index'))) return true;
+      return name && path.includes(name);
+    });
 
-      // prefer actual path matching
-      const path = window.location.pathname.toLowerCase();
-      let matched = items.find(a=>{
-        const name = (a.dataset.name||'').toLowerCase();
-        if(name === 'home' && (path === '/' || path.includes('index'))) return true;
-        return name && path.includes(name);
-      });
+    // fallback to last clicked
+    if(!matched){
+      const last = localStorage.getItem('smtv_last_nav');
+      if(last) matched = items.find(a => a.dataset.name === last);
+    }
+    if(matched) matched.classList.add('active');
 
-      // fallback to last clicked item (persisted)
-      if(!matched){
-        const last = localStorage.getItem('smtv_last_nav');
-        if(last) matched = items.find(a => a.dataset.name === last);
-      }
+    // click handlers: immediate feedback + fallback navigation
+    items.forEach(a => {
+      a.addEventListener('click', function(e){
+        clearActive();
+        this.classList.add('active');
+        try { localStorage.setItem('smtv_last_nav', this.dataset.name); } catch(e){}
+        const href = this.getAttribute('href');
+        setTimeout(()=> {
+          if (location.pathname.toLowerCase() !== new URL(href, location.origin).pathname.toLowerCase()) {
+            location.href = href;
+          }
+        }, 200);
+      }, { passive: true });
+    });
 
-      if(matched) matched.classList.add('active');
+    // ensure body has enough bottom padding so content not hidden
+    try {
+      const curPad = parseInt(getComputedStyle(document.body).paddingBottom)||0;
+      if(curPad < 96) document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))';
+    } catch(e){}
 
-      // click handler: set active immediately (persist) then follow link
-      items.forEach(a=>{
-        a.addEventListener('click', function(e){
-          // visual feedback immediately
-          clearActive();
-          this.classList.add('active');
-          try { localStorage.setItem('smtv_last_nav', this.dataset.name); } catch(e){}
-          // allow default navigation to happen
-        });
-      });
-    })();
-
-  } catch (err) {
+  } catch(err) {
     console.warn('Footer load/init error:', err);
   }
 })();
