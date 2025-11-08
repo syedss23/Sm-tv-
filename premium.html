@@ -191,5 +191,48 @@
         document.getElementById('plist').innerHTML = '<div class="pitem">Could not load Premium series list.</div>';
       });
   </script>
+  <!-- Footer Include -->
+<div id="footer-placeholder"></div>
+<script>
+(async function loadFooterAndInit(){
+  try {
+    const res = await fetch('/includes/footer.html');
+    if (!res.ok) throw new Error('Footer not found');
+    const html = await res.text();
+    const ph = document.getElementById('footer-placeholder');
+    ph.innerHTML = html;
+
+    (function initFooterNav(){
+      const nav = document.getElementById('smtv-bottom-nav');
+      if(!nav) return;
+      const items = Array.from(nav.querySelectorAll('.nav-item'));
+      function clearActive(){ items.forEach(i => i.classList.remove('active')); }
+
+      const path = window.location.pathname.toLowerCase();
+      let matched = items.find(a=>{
+        const name = (a.dataset.name||'').toLowerCase();
+        if(name === 'home' && (path === '/' || path.includes('index'))) return true;
+        return name && path.includes(name);
+      });
+
+      if(!matched){
+        const last = localStorage.getItem('smtv_last_nav');
+        if(last) matched = items.find(a => a.dataset.name === last);
+      }
+
+      if(matched) matched.classList.add('active');
+
+      items.forEach(a=>{
+        a.addEventListener('click', function(){
+          clearActive();
+          this.classList.add('active');
+          try { localStorage.setItem('smtv_last_nav', this.dataset.name); } catch(e){}
+        });
+      });
+    })();
+
+  } catch (err) { console.warn('Footer load/init error:', err); }
+})();
+</script>
 </body>
 </html>
