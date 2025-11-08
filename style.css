@@ -1,11 +1,22 @@
+/* ==========================
+   style.css — ready to replace
+   Merged + fixed version
+   - preserves original look
+   - fixes broken rules
+   - tightens episodes card layout
+   - removes large empty top gaps
+   ========================== */
+
 /* Base */
 html, body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; } /* Stop page wiggle */
 * { box-sizing: border-box; } /* Prevent padding from expanding width */
 body{font-family:'Montserrat',Arial,sans-serif;margin:0;background:#15171c;color:#fff}
 #main-content,header,.sidebar{background:#15171c;color:#fff}
-header{padding:20px 10px 8px 10px;border-bottom:1px solid #292a2f;position:relative}
+
+/* header compacted so page opens at top (reduced top padding) */
+header{padding:14px 10px 8px 10px;border-bottom:1px solid #292a2f;position:relative;display:flex;align-items:center;gap:10px}
 #sidebarToggle{font-size:2em;background:none;border:none;color:#fff;margin-right:14px}
-#mainTitle{display:inline-block;margin:0;font-size:1.65em;color:#fff}
+#mainTitle{display:inline-block;margin:0;font-size:1.65em;color:#fff;flex:0 1 auto}
 .searchbar-container{display:flex;align-items:center;background:#23242a;border-radius:32px;margin:16px 0 6px 0;padding:5px 10px;color:#fff}
 .search-icon{margin-right:8px;font-size:1.1em;color:#bbb}
 #seriesSearch,#search{border:none;outline:none;background:transparent;font-size:1em;width:100%;padding:8px 0;color:#fff}
@@ -177,26 +188,73 @@ header{padding:20px 10px 8px 10px;border-bottom:1px solid #292a2f;position:relat
 /* ===========================
    Series/Episodes Page
 ========================== */
-.pro-series-header-pro{display:flex;align-items:flex-start;gap:23px;margin:26px 0 13px 0;background:#141926;border-radius:18px;box-shadow:0 2.5px 22px #07163a38;padding:22px 20px 19px 13px;position:relative}
-.pro-series-back-btn-pro{display:flex;align-items:center;background:#16233b;border-radius:11px;padding:7px 15px 7px 8px;color:#23c6ed;text-decoration:none;border:1.5px solid #23c6ed;font-size:1.15em;box-shadow:0 1px 9px #062a4744;margin-right:9px;position:absolute;left:14px;top:16px;transition:background .14s,border .14s,color .14s,box-shadow .13s;z-index:2}
+
+/* make header compact; reduces top gap so page opens at top */
+.pro-series-header-pro{
+  display:flex;
+  align-items:flex-start;
+  gap:18px;
+  margin:12px 0 8px 0; /* reduced top and bottom margins */
+  background:#141926;
+  border-radius:18px;
+  box-shadow:0 2.5px 22px #07163a38;
+  padding:16px 16px 14px 12px; /* slightly reduced padding */
+  position:relative;
+}
+.pro-series-back-btn-pro{display:flex;align-items:center;background:#16233b;border-radius:11px;padding:7px 12px;color:#23c6ed;text-decoration:none;border:1.5px solid #23c6ed;font-size:1.05em;box-shadow:0 1px 9px #062a4744;margin-right:9px;position:absolute;left:12px;top:12px;transition:background .14s,border .14s,color .14s,box-shadow .13s;z-index:2}
 .pro-series-back-btn-pro:hover{background:#1d2b44;color:#3de9fc;border-color:#3de9fc}
-.pro-series-poster-pro{width:120px;border-radius:12px;box-shadow:0 3.5px 30px #03152588;min-width:82px}
-.pro-series-meta-pro{flex:1;min-width:0;padding-left:10px}
-.pro-series-title-pro{font-size:1.32em;margin:0 0 11px 0;color:#00e0ef;line-height:1.14}
+.pro-series-poster-pro{width:140px;border-radius:12px;box-shadow:0 3.5px 30px #03152588;min-width:82px;object-fit:cover}
+.pro-series-meta-pro{flex:1;min-width:0;padding-left:12px}
+.pro-series-title-pro{font-size:1.44em;margin:0 0 8px 0;color:#00e0ef;line-height:1.12}
 .pro-series-desc-pro{color:#e2eaf5;font-size:1em;letter-spacing:.01em;text-shadow:0 1px 8px #0012151c}
-.pro-seasons-tabs-pro{display:flex;gap:14px;flex-wrap:wrap;margin:37px 0 19px 10px}
-.pro-season-tab-pro{background:linear-gradient(90deg,#1c285b 0%,#1ec9ee 100%);border:none;color:#fff;font-size:1.06em;padding:7px 27px;border-radius:18px;cursor:pointer;font-weight:700;letter-spacing:.04em;box-shadow:0 1.5px 8px #1a234a19;transition:background .14s,color .14s,box-shadow .18s,transform .12s;opacity:.93}
-.pro-season-tab-pro.active,.pro-season-tab-pro:focus{background:linear-gradient(90deg,#2cebf9 0%,#2bafe7 90%);color:#24282d;box-shadow:0 7px 32px #0be8d836;transform:scale(1.05);opacity:1}
-.pro-episodes-row-wrap-pro{width:100%;background:#181f33e6;border-radius:25px;box-shadow:0 9px 31px #060f2a24;padding:23px 0 22px 0;margin-bottom:45px}
-.pro-episodes-row-pro{display:flex;gap:28px;margin:0 0 0 18px;overflow-x:auto;padding-bottom:2px;scrollbar-color:#17e5ff #191a23}
-.pro-episode-card-pro{background:#141c33;border-radius:19px;min-width:153px;max-width:168px;box-shadow:0 8px 32px #2313ef13;cursor:pointer;display:flex;flex-direction:column;align-items:center;padding:0 0 17px 0;margin-bottom:4px;border:2.2px solid transparent;text-decoration:none;transition:box-shadow .21s,transform .14s,border .13s;max-width:100%}
-.pro-episode-card-pro:hover,.pro-episode-card-pro:focus{box-shadow:0 11px 38px #1adadd88;border:2.2px solid #23c6ed;transform:scale(1.047);z-index:1}
-.pro-ep-thumb-wrap-pro{position:relative;width:100%}
-.pro-ep-thumb-pro{width:100%;aspect-ratio:16/9;border-radius:15px 15px 0 0;object-fit:cover;background:#141933;min-height:82px;max-height:127px}
-.pro-ep-num-pro{position:absolute;right:13px;top:13px;background:linear-gradient(96deg,#095be5 30%,#11e2f2 90%);color:#fff;font-size:.99em;font-weight:700;padding:5px 14px 5px 11px;border-radius:21px;box-shadow:0 2px 12px #0297fd7c}
-.pro-ep-title-pro{width:93%;color:#fff;font-weight:700;font-size:1.10em;text-align:center;margin:17px 0 0 0;line-height:1.29;word-break:break-word;text-shadow:0 2px 11px #01162444}
-@media (max-width:850px){.pro-series-header-pro{flex-direction:column;align-items:center}.pro-series-poster-pro{width:80px}}
-@media (max-width:440px){.pro-episode-card-pro{min-width:103px;max-width:118px}.pro-ep-title-pro{font-size:.91em}}
+
+/* seasons */
+.pro-seasons-tabs-pro{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0 12px 10px}
+.pro-season-tab-pro{background:linear-gradient(90deg,#1c285b 0%,#1ec9ee 100%);border:none;color:#fff;font-size:1.02em;padding:8px 22px;border-radius:18px;cursor:pointer;font-weight:700;letter-spacing:.04em;box-shadow:0 1.5px 8px #1a234a19;transition:background .14s,color .14s,box-shadow .18s,transform .12s}
+.pro-season-tab-pro.active,.pro-season-tab-pro:focus{background:linear-gradient(90deg,#2cebf9 0%,#2bafe7 90%);color:#24282d;box-shadow:0 7px 32px #0be8d836;transform:scale(1.03)}
+
+/* Episodes container - reduced paddings to avoid empty space */
+.pro-episodes-row-wrap-pro{width:100%;background:#181f33e6;border-radius:20px;box-shadow:0 9px 31px #060f2a24;padding:12px 8px;margin-bottom:36px}
+
+/* horizontal scroller tightened */
+.pro-episodes-row-pro{display:flex;gap:14px;margin:0 8px;overflow-x:auto;padding:8px 10px 12px 10px;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;align-items:flex-start;scrollbar-color:#17e5ff #191a23}
+
+/* compact episode card */
+.pro-episode-card-pro{
+  background:#141c33;
+  border-radius:14px;
+  min-width:140px;    /* reduced size */
+  max-width:150px;
+  box-shadow:0 8px 22px #2313ef13;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:8px;
+  margin:0;
+  border:1.5px solid transparent;
+  text-decoration:none;
+  transition:box-shadow .16s,transform .12s,border-color .12s;
+  scroll-snap-align:center;
+}
+.pro-episode-card-pro:hover,.pro-episode-card-pro:focus{box-shadow:0 14px 34px rgba(0,0,0,0.48);border-color:rgba(35,198,237,0.12);transform:translateY(-6px);z-index:2}
+
+/* thumbnail box fixed height to avoid variable empty space and to show full thumb */
+.pro-ep-thumb-wrap-pro{position:relative;width:100%;height:110px;border-radius:10px;overflow:hidden;display:block;background:#0b0d10;flex-shrink:0}
+.pro-ep-thumb-pro{width:100%;height:100%;object-fit:cover;display:block;border-radius:10px}
+
+/* ep badge */
+.pro-ep-num-pro{position:absolute;right:8px;top:8px;background:linear-gradient(90deg,#ffcf33,#ff7a5f);color:#111;font-weight:800;padding:6px 10px;border-radius:999px;font-size:12px;box-shadow:0 6px 18px rgba(255,120,60,0.12)}
+
+/* title */
+.pro-ep-title-pro{width:94%;text-align:center;font-size:15px;font-weight:800;color:#fff;padding:10px 6px 6px 6px;border-radius:8px;margin-top:8px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));box-shadow:inset 0 -6px 12px rgba(0,0,0,0.06)}
+
+/* prevent extra big paddings */
+.pro-episodes-row-wrap-pro .pro-episodes-row-pro { padding-bottom: 8px; }
+
+/* Tutorial / premium look */
+.premium-channel-message{margin-top:14px;padding:16px;border-radius:14px;background:linear-gradient(180deg,#042430 0%,#08323e 100%);border:1px solid rgba(0,160,200,0.12);color:#c6f5ff;box-shadow:0 12px 34px #0008;text-align:center}
+.premium-channel-message .join-btn{display:inline-block;margin-top:12px;background:linear-gradient(90deg,#ffd400,#ff8a55);color:#13263a;font-weight:800;padding:12px 20px;border-radius:999px;box-shadow:0 12px 32px rgba(255,136,65,0.15);text-decoration:none}
 
 /* ============================
    Streaming page – Cinematic Pro Look
@@ -305,13 +363,13 @@ button:hover{background:#272838}
   margin: 28px 0 16px 0;
   border-radius: 16px;
   box-shadow: 0 5px 22px #0007, 0 2px 10px #ffd70033;
-  padding: 28px 0 13px 0;
+  padding: 18px 0 13px 0;
 }
 .new-episodes-section h2 {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   font-size: 1.17em;
-  margin: 0 0 18px 26px;
+  margin: 0 0 14px 26px;
   color: #ffd700;
   letter-spacing: .07em;
   text-shadow: 0 2px 8px #ffe49344, 0 1px 6px #1930407a;
@@ -329,7 +387,7 @@ button:hover{background:#272838}
   background: linear-gradient(135deg, #1a232b 85%, #ffd7001b 100%);
   border-radius: 12px;
   box-shadow: 0 3px 18px #0005, 0 1px 7px #ffd70030;
-  width: 165px; min-width: 110px; max-width: 184px;
+  width: 150px; min-width: 110px; max-width: 184px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -345,7 +403,7 @@ button:hover{background:#272838}
   font-weight: 600;
   color: #23c6ed;
   text-align: center;
-  font-size: 1.12em;
+  font-size: 1.02em;
   margin: 10px 0 0 0;
   letter-spacing: .02em;
   word-break: break-word; overflow-wrap: anywhere;
@@ -417,7 +475,8 @@ button:hover{background:#272838}
   gap: 8px;
   background: #101a24;
   border-radius: 7px;
-  /* your content continues here... */
+  padding: 6px 8px;
+  margin-bottom:6px;
 }
 
 /* Utility: isolate horizontal scrollers only where needed */
@@ -460,9 +519,8 @@ button:hover{background:#272838}
 @media (max-width:420px){
   .schedule-row{ font-size:0.84em; gap:6px; }
 }
+
 /* Header premium CTA */
-header{ display:flex; align-items:center; gap:10px; } /* if not already flex */
-#mainTitle{ flex:0 1 auto; } /* prevent title from consuming all space */
 .premium-cta{
   margin-left:auto; /* push to right side */
   display:inline-flex; align-items:center; justify-content:center;
@@ -474,6 +532,7 @@ header{ display:flex; align-items:center; gap:10px; } /* if not already flex */
 @media (max-width:420px){
   .premium-cta{ height:32px; padding:0 10px; font-size:.92em; }
 }
+
 .intl-note{
   width:100%;
   background:#0d2030;
@@ -485,6 +544,8 @@ header{ display:flex; align-items:center; gap:10px; } /* if not already flex */
   text-align:center;
   font-size:.95em;
 }
+
+/* Buttons */
 .btn-primary{
   display:inline-block;
   background:#ffd400;
@@ -496,20 +557,30 @@ header{ display:flex; align-items:center; gap:10px; } /* if not already flex */
   text-align:center;
 }
 .btn-primary:active{ transform:translateY(1px); }
+
 .hero p{ margin-bottom:8px; }
 .trust{ margin-top:8px; }
-.btn-primary{
-  display:inline-block;
-  background:#ffd400;
-  color:#13263a;
-  font-weight:800;
-  padding:10px 16px;
-  border-radius:999px;
-  box-shadow:0 4px 14px #ffd40055;
-  text-align:center;
-}
-.btn-primary:active{ transform:translateY(1px); }
-.premium-channel-message a{
-  text-decoration:none;
-}
+
+/* keep premium-channel-message links tidy */
+.premium-channel-message a{ text-decoration:none; color:inherit; }
 .premium-channel-message a:hover{ text-decoration:none; }
+
+/* Footer nav fallback spacing helper (ensures content not hidden) */
+@media (max-width:600px){
+  body { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+}
+
+/* Responsiveness adjustments */
+@media (max-width:850px){
+  .pro-series-header-pro{flex-direction:column;align-items:center}
+  .pro-series-poster-pro{width:92px}
+  .pro-series-title-pro{text-align:center}
+}
+@media (max-width:440px){
+  .pro-episode-card-pro{min-width:110px;max-width:122px;padding:6px}
+  .pro-ep-thumb-wrap-pro{height:92px}
+  .pro-ep-title-pro{font-size:.95em}
+  .pro-series-poster-pro{width:80px}
+}
+
+/* End of file */
