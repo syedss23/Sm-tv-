@@ -1,4 +1,4 @@
-// series.js — updated: horizontal episode cards (thumb left), nicer spacing, highlighted tutorial title
+// series.js — updated: compact horizontal carousel cards + consistent highlighted tutorial title
 (function () {
   'use strict';
 
@@ -11,6 +11,7 @@
   const HOWTO_PROCESS_2 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v6yg45g/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
 
   function jsonFor(season) {
+    if (!slug) return null;
     if (lang === 'dub') return `episode-data/${slug}-s${season}.json`;
     if (lang && ['en', 'hi', 'ur'].includes(lang)) return `episode-data/${slug}-s${season}-${lang}.json`;
     return `episode-data/${slug}-s${season}.json`;
@@ -31,7 +32,7 @@
     } catch (e) { console.warn('toast error', e); }
   }
 
-  // Improved injected styles for nicer horizontal cards + highlighted tutorial title
+  // Stronger injected styles to force compact carousel cards and consistent tutorial highlight
   const injectedStyles = `
     /* premium */
     .premium-channel-message{ margin-top:12px; padding:14px; background:linear-gradient(135deg,#071014 80%, #08323e 100%); border-radius:12px; border:1px solid rgba(35,198,237,0.12); color:#23c6ed; font-weight:700; }
@@ -41,11 +42,11 @@
     /* header / poster */
     .pro-series-header-pro{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:12px; padding:18px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06)); box-shadow: 0 8px 22px rgba(0,0,0,0.45); position:relative; }
     .pro-series-back-btn-pro{ position:absolute; left:14px; top:14px; width:48px; height:48px; display:inline-flex; align-items:center; justify-content:center; border-radius:12px; background: rgba(0,150,200,0.08); border:2px solid rgba(0,160,210,0.14); text-decoration:none; }
-    .pro-series-poster-pro{ width:220px; height:120px; border-radius:10px; object-fit:cover; box-shadow:0 8px 18px rgba(0,0,0,0.45); }
+    .pro-series-poster-pro{ width:200px; height:110px; border-radius:10px; object-fit:cover; box-shadow:0 8px 18px rgba(0,0,0,0.45); }
     .pro-series-title-pro{ color:#00d0f0; font-size:20px; margin:8px 0; font-weight:800; }
     .pro-series-desc-pro{ color:#cfd8df; line-height:1.45; max-width:820px; }
 
-    /* horizontal row container */
+    /* COMPACT carousel: thumbnail on top, title below */
     .pro-episodes-row-pro{
       display:flex;
       gap:14px;
@@ -56,12 +57,12 @@
       align-items:flex-start;
     }
 
-    /* episode card: thumbnail left, meta right */
     .pro-episode-card-pro{
       scroll-snap-align:center;
-      flex:0 0 330px;
+      flex:0 0 200px; /* compact width */
       display:flex;
-      gap:12px;
+      flex-direction:column;
+      gap:10px;
       align-items:center;
       padding:12px;
       border-radius:12px;
@@ -69,23 +70,54 @@
       color:#fff;
       box-shadow:0 10px 30px rgba(0,0,0,0.45);
       background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));
-      min-height:110px;
+      min-height:180px;
+      transition:transform .14s ease;
     }
-    .pro-episode-card-pro:hover{ transform: translateY(-6px); transition: transform .16s ease; }
+    .pro-episode-card-pro:hover{ transform:translateY(-6px); }
 
-    .pro-ep-thumb-wrap-pro{ flex:0 0 140px; width:140px; height:84px; position:relative; border-radius:8px; overflow:hidden; background:#0c0f12; box-shadow: inset 0 -6px 18px rgba(0,0,0,0.25); }
+    .pro-ep-thumb-wrap-pro{
+      width:100%;
+      height:110px;
+      border-radius:10px;
+      overflow:hidden;
+      position:relative;
+      background:#0c0f12;
+      display:block;
+    }
     .pro-ep-thumb-pro{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
-    .pro-ep-num-pro{ position:absolute; right:8px; top:8px; background:linear-gradient(90deg,#ffcf33,#ff7a5f); color:#111; font-weight:800; padding:6px 10px; border-radius:999px; font-size:12px; box-shadow: 0 6px 18px rgba(255,120,60,0.12); }
 
-    .pro-ep-title-pro{ flex:1; font-size:16px; font-weight:800; line-height:1.25; color:#fff; padding-right:6px; }
+    .pro-ep-num-pro{
+      position:absolute;
+      right:8px;
+      top:8px;
+      background:linear-gradient(90deg,#ffcf33,#ff7a5f);
+      color:#111;
+      font-weight:800;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      box-shadow: 0 6px 18px rgba(255,120,60,0.12);
+    }
 
-    /* highlighted tutorial title */
+    .pro-ep-title-pro{
+      width:100%;
+      text-align:center;
+      font-size:15px;
+      font-weight:800;
+      color:#fff;
+      padding:10px 6px;
+      border-radius:8px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.03));
+      box-shadow: inset 0 -6px 12px rgba(0,0,0,0.18);
+    }
+
+    /* highlighted tutorial title (consistent look) */
     .pro-tutorial-title {
       margin-top:18px;
       font-weight:900;
       font-size:20px;
       color:#fff;
-      background: linear-gradient(90deg, rgba(34,193,195,0.06), rgba(253,187,45,0.04));
+      background: linear-gradient(90deg, rgba(34,193,195,0.04), rgba(253,187,45,0.02));
       border-left:6px solid #ffd400;
       padding:10px 14px;
       border-radius:10px;
@@ -96,15 +128,15 @@
     .pro-video-frame-wrap { margin-top:12px; border-radius:10px; overflow:hidden; }
 
     @media(min-width:900px){
-      .pro-episode-card-pro{ flex:0 0 420px; }
-      .pro-ep-thumb-wrap-pro{ flex:0 0 200px; width:200px; height:110px; }
+      .pro-episode-card-pro{ flex:0 0 260px; min-height:200px; }
+      .pro-ep-thumb-wrap-pro{ height:140px; }
       .pro-series-poster-pro{ width:260px; height:140px; }
     }
   `;
   try {
-    const sty = document.createElement('style');
-    sty.textContent = injectedStyles;
-    document.head.appendChild(sty);
+    const styleEl = document.createElement('style');
+    styleEl.textContent = injectedStyles;
+    document.head.appendChild(styleEl);
   } catch (e) { /* ignore */ }
 
   function escapeHtml(s) {
@@ -114,7 +146,7 @@
     });
   }
 
-  // tries possible JSON candidates; returns {episodes, tried} or throws {tried}
+  // try several candidate episode JSON paths and return episodes + diagnostics
   async function fetchEpisodesWithCandidates(season) {
     const candidates = [
       `episode-data/${slug}-s${season}.json`,
@@ -123,29 +155,28 @@
       `episode-data/${slug}-s${season}-hi.json`,
       `episode-data/${slug}-s${season}-ur.json`,
       `episode-data/${slug}-s${season}-.json`,
-      `episode-data/${slug}-s${season}-${lang}-.json`,
       `episode-data/${slug}-s${season}-sub.json`,
       `episode-data/${slug}-s${season}-en-sub.json`,
-      `episode-data/${slug}-s${season}-en-sub-s1.json`
+      `episode-data/${slug}-s${season}-en-sub-s1.json`,
+      `episode-data/${slug}-s${season}-sub-s1.json`
     ].filter(Boolean);
 
     const tried = [];
 
     for (const cand of candidates) {
       try {
-        // ensure leading slash to avoid relative path weirdness
-        const url = bust(cand.startsWith('/') ? cand : '/' + cand.replace(/^\/+/, ''));
+        const path = cand.startsWith('/') ? cand : '/' + cand.replace(/^\/+/, '');
+        const url = bust(path);
         const resp = await fetch(url, { cache: 'no-cache' });
         const rec = { path: cand, ok: resp.ok, status: resp.status, err: null };
-        tried.push(rec);
-
+        // try to read text and parse JSON (some servers return HTML for 200)
         const text = await resp.text();
         try {
           const parsed = JSON.parse(text);
-          return { episodes: parsed, tried };
+          return { episodes: parsed, tried: [...tried, rec] };
         } catch (parseErr) {
           rec.err = 'json-parse:SyntaxError: ' + (parseErr.message || parseErr);
-          // continue to next candidate
+          tried.push(rec);
           continue;
         }
       } catch (fetchErr) {
@@ -221,12 +252,13 @@
         <section class="pro-episodes-row-wrap-pro" id="pro-episodes-row-wrap" style="margin-top:14px;"></section>
       `;
 
-      // seasons
+      // build seasons
       let seasons = [];
       if (typeof meta.seasons === 'number') {
         for (let i = 1; i <= meta.seasons; i++) seasons.push(String(i));
-      } else if (Array.isArray(meta.seasons)) seasons = meta.seasons.map(s => String(s));
-      else seasons = ['1'];
+      } else if (Array.isArray(meta.seasons)) {
+        seasons = meta.seasons.map(s => String(s));
+      } else seasons = ['1'];
 
       const tabsEl = document.getElementById('pro-seasons-tabs');
       tabsEl.innerHTML = seasons.map(s => `<button data-season="${s}" class="pro-season-tab-pro${s === seasonQuery ? ' active' : ''}">Season ${s}</button>`).join('');
@@ -252,7 +284,6 @@
               const res = await fetchEpisodesWithCandidates(season);
               return { episodes: res.episodes, tried: res.tried || [] };
             } catch (err) {
-              if (err && err.tried) throw err;
               throw err;
             }
           })();
@@ -262,7 +293,7 @@
             return;
           }
 
-          // build cards (thumb left, meta right)
+          // build compact carousel cards
           const cardsHtml = episodes.map(ep => {
             const epNum = escapeHtml(String(ep.ep || ''));
             const epTitle = escapeHtml(ep.title || ('Episode ' + epNum));
@@ -280,18 +311,17 @@
             `;
           }).join('');
 
-          // highlighted tutorial title + videos
           const tutorialBlock = `
             <div class="pro-tutorial-title">How to Watch Episodes</div>
             <div class="pro-video-frame-wrap">${HOWTO_PROCESS_1}</div>
-            <div style="height:12px"></div>
+            <div style="height:14px"></div>
             <div style="font-weight:800;margin-top:8px;color:#fff;">How to Watch (Old Process)</div>
             <div class="pro-video-frame-wrap">${HOWTO_PROCESS_2}</div>
           `;
 
           wrap.innerHTML = `<div class="pro-episodes-row-pro">${cardsHtml}</div>` + tutorialBlock;
 
-          // ensure first card visible
+          // ensure a nice initial scroll focus
           try {
             const first = wrap.querySelector('.pro-episode-card-pro');
             if (first) first.scrollIntoView({ behavior: 'auto', inline: 'start', block: 'nearest' });
