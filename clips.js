@@ -1,14 +1,11 @@
-// clips.js — lightweight clips/reels loader (drop-in)
+// clips.js — handles clips.json where embed is a URL (not an iframe string)
 (function(){
   'use strict';
 
-  // Path to your clips feed (user said file path is correct)
   const FEED_PATH = './clips.json';
-
   const root = document.getElementById('clips-root');
   const loadingEl = document.getElementById('clips-loading');
 
-  function el(html){ const d = document.createElement('div'); d.innerHTML = html.trim(); return d.firstElementChild; }
   function toast(msg){
     try{
       const t = document.createElement('div');
@@ -19,142 +16,6 @@
     }catch(e){console.warn(e)}
   }
 
-  // Normalize clip: supports embed as iframe HTML OR embed as URL string
-  function buildEmbedNode(embedValue){
-    // if the clip embed contains "<iframe", insert as-is (sanity check)
-    if (typeof embedValue === 'string' && embedValue.trim().startsWith('<iframe')){
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = embedValue.trim();
-      const iframe = wrapper.querySelector('iframe');
-      if (iframe) {
-        iframe.setAttribute('loading','lazy');
-        iframe.style.width = '100%';
-        iframe.style.height = '100%';
-        iframe.setAttribute('allowfullscreen','');
-        return iframe;
-      }
-    }
-    // else treat value as URL
-    try {
-      const url = embedValue && embedValue.trim();
-      if (!url) return null;
-      const ifr = document.createElement('iframe');
-      ifr.className = 'rumble';
-      ifr.setAttribute('loading','lazy');
-      ifr.setAttribute('frameborder','0');
-      ifr.setAttribute('allowfullscreen','');
-      ifr.style.width = '100%';
-      ifr.style.height = '100%';
-      // if provided a full URL like "https://rumble.com/embed/..." use it as src
-      ifr.src = url;
-      return ifr;
-    } catch(e){
-      return null;
-    }
-  }
-
-  // Build a single clip card element. We intentionally do NOT insert the iframe until user clicks Play.
-  function renderClipCard(clip){
-    const title = clip.title || 'Untitled';
-    const desc = clip.desc || '';
-    const thumb = clip.thumb || '';
-    const embed = clip.embed || '';
-    const openUrl = clip.open || ( (typeof embed === 'string' && embed.includes('rumble.com') && embed.indexOf('/embed/') > -1)
-      ? embed.replace('/embed/','/') // attempt to convert embed url to watch url if possible
-      : null
-    );
-
-    const card = document.createElement('article');
-    card.className = 'clip-card';
-
-    // player area placeholder
-    const playerWrap = document.createElement('div');
-    playerWrap.className = 'clip-player-wrap';
-
-    const placeholder = document.createElement('div');
-    placeholder.className = 'clip-placeholder';
-    if (thumb) placeholder.style.backgroundImage = `url("${thumb}")`;
-    placeholder.setAttribute('aria-hidden','true');
-
-    // Play button
-    const playBtn = document.createElement('button');
-    playBtn.className = 'clip-play-btn';
-    playBtn.type = 'button';
-    playBtn.innerHTML = '▶ Play';
-
-    // when clicked, create & insert the real iframe into playerWrap
-    playBtn.addEventListener('click', function(){
-      // guard: if iframe already exists, do nothing
-      if (playerWrap.querySelector('iframe')) return;
-      const embedNode = buildEmbedNode(embed);
-      if (!embedNode) {
-        toast('Embed not available');
-        return;
-      }
-      // replace placeholder with iframe
-      playerWrap.innerHTML = '';
-      // make sure iframe fills area
-      embedNode.style.width = '100%';
-      embedNode.style.height = '100%';
-      embedNode.setAttribute('allow','autoplay; fullscreen');
-      playerWrap.appendChild(embedNode);
-      // focus to keep keyboard users happy (but avoid auto-scroll)
-      try { embedNode.setAttribute('tabindex','-1'); } catch(e){}
-    });
-
-    // append placeholder + play button to playerWrap
-    placeholder.appendChild(playBtn);
-    playerWrap.appendChild(placeholder);
-
-    // meta area
-    const meta = document.createElement('div');
-    meta.className = 'clip-meta';
-    meta.innerHTML = `<div class="clip-title">${escapeHtml(title)}</div>
-                      <div class="clip-desc">${escapeHtml(desc)}</div>`;
-
-    const actions = document.createElement('div');
-    actions.className = 'clip-actions';
-
-    // Share button (uses Web Share if available; falls back to copy link)
-    const shareBtn = document.createElement('button');
-    shareBtn.className = 'btn';
-    shareBtn.type = 'button';
-    shareBtn.innerHTML = 'Share';
-    shareBtn.addEventListener('click', async function(){
-      const url = openUrl || document.location.href;
-      if (navigator.share) {
-        try { await navigator.share({ title: title, text: desc, url: url }); return; } catch(e){ /* ignore */ }
-      }
-      try {
-        await navigator.clipboard.writeText(url);
-        toast('Link copied to clipboard');
-      } catch(e) { toast('Could not copy link'); }
-    });
-
-    actions.appendChild(shareBtn);
-
-    // Open on Rumble button (if we have an openUrl)
-    if (openUrl) {
-      const openBtn = document.createElement('a');
-      openBtn.className = 'btn';
-      openBtn.href = openUrl;
-      openBtn.target = '_blank';
-      openBtn.rel = 'noopener';
-      openBtn.innerHTML = 'Open on Rumble';
-      actions.appendChild(openBtn);
-    }
-
-    meta.appendChild(actions);
-
-    // assemble card layout. On wide screens keep player left, meta right.
-    // For simple fallback we append player then meta.
-    card.appendChild(playerWrap);
-    card.appendChild(meta);
-
-    return card;
-  }
-
-  // helper to escape text for insertion to innerHTML when used
   function escapeHtml(s){
     if (s === null || s === undefined) return '';
     return String(s).replace(/[&<>"'`=\/]/g, function (c) {
@@ -162,50 +23,135 @@
     });
   }
 
-  // load feed and render
-  async function loadFeed(){
+  // build iframe from URL (URL should be an embed URL like: https://rumble.com/embed/....)
+  function buildIframeFromUrl(url){
     try {
-      const res = await fetch(FEED_PATH, {cache:'no-cache'});
-      if (!res.ok) throw new Error('HTTP '+res.status);
-      const j = await res.json();
-      if (!Array.isArray(j)) throw new Error('Invalid feed format (expected array)');
+      const iframe = document.createElement('iframe');
+      iframe.setAttribute('src', url);
+      iframe.setAttribute('frameborder', '0');
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.setAttribute('loading', 'lazy');
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
+      iframe.setAttribute('allow', 'autoplay; fullscreen');
+      return iframe;
+    } catch (e) {
+      return null;
+    }
+  }
 
-      // sort newest-first:
-      const withDates = j.map((c, idx) => {
-        let t = null;
-        if (c.added) {
-          const parsed = Date.parse(c.added);
-          if (!Number.isNaN(parsed)) t = parsed;
-        }
-        // use explicit order index if no date (higher idx = later in file)
-        return Object.assign({ __idx: idx, __ts: t }, c);
+  // create card element; iframe is injected only after Play click
+  function createClipCard(item){
+    const card = document.createElement('article');
+    card.className = 'clip-card';
+
+    const playerWrap = document.createElement('div');
+    playerWrap.className = 'clip-player-wrap';
+
+    const placeholder = document.createElement('div');
+    placeholder.className = 'clip-placeholder';
+    if (item.thumb) placeholder.style.backgroundImage = `url("${item.thumb}")`;
+    placeholder.setAttribute('aria-hidden','true');
+
+    const playBtn = document.createElement('button');
+    playBtn.className = 'clip-play-btn';
+    playBtn.type = 'button';
+    playBtn.innerHTML = '▶ Play';
+
+    playBtn.addEventListener('click', function(){
+      // if iframe present, do nothing
+      if (playerWrap.querySelector('iframe')) return;
+      const url = item.embed || '';
+      if (!url) { toast('Embed missing'); return; }
+      const iframe = buildIframeFromUrl(url);
+      if (!iframe) { toast('Invalid embed URL'); return; }
+      // replace content
+      playerWrap.innerHTML = '';
+      playerWrap.appendChild(iframe);
+      // try to focus the iframe (no scroll because we do not call scrollIntoView)
+      try { iframe.setAttribute('tabindex','-1'); } catch(e){}
+    });
+
+    // append play button into placeholder bottom-left
+    placeholder.appendChild(playBtn);
+    playerWrap.appendChild(placeholder);
+
+    const meta = document.createElement('div');
+    meta.className = 'clip-meta';
+    const titleHtml = `<div class="clip-title">${escapeHtml(item.title || '')}</div>`;
+    const descHtml = `<div class="clip-desc">${escapeHtml(item.desc || '')}</div>`;
+    meta.innerHTML = titleHtml + descHtml;
+
+    const actions = document.createElement('div');
+    actions.className = 'clip-actions';
+
+    // Share
+    const shareBtn = document.createElement('button');
+    shareBtn.className = 'btn';
+    shareBtn.type = 'button';
+    shareBtn.textContent = 'Share';
+    shareBtn.addEventListener('click', async () => {
+      const url = item.open || item.embed || location.href;
+      if (navigator.share) {
+        try { await navigator.share({ title: item.title, text: item.desc, url }); return; } catch(e){}
+      }
+      try { await navigator.clipboard.writeText(url); toast('Link copied'); } catch(e){ toast('Copy failed'); }
+    });
+    actions.appendChild(shareBtn);
+
+    // Open on Rumble (if we can derive a page URL)
+    if (item.embed && typeof item.embed === 'string') {
+      // Prefer an explicit "open" field; otherwise attempt to convert embed URL to public url
+      const openUrl = item.open || (item.embed.includes('/embed/') ? item.embed.replace('/embed/','/') : null);
+      if (openUrl) {
+        const a = document.createElement('a');
+        a.className = 'btn';
+        a.href = openUrl;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.textContent = 'Open on Rumble';
+        actions.appendChild(a);
+      }
+    }
+
+    meta.appendChild(actions);
+
+    card.appendChild(playerWrap);
+    card.appendChild(meta);
+    return card;
+  }
+
+  async function loadClips(){
+    try {
+      const res = await fetch(FEED_PATH, { cache: 'no-cache' });
+      if (!res.ok) throw new Error('HTTP '+res.status);
+      const json = await res.json();
+      if (!Array.isArray(json)) throw new Error('Invalid JSON — expected array');
+
+      // Normalize and sort newest-first by added ISO date (fallback to file order: last item = newest)
+      const normalized = json.map((c, idx) => {
+        const ts = c.added ? Date.parse(c.added) : null;
+        return Object.assign({ __idx: idx, __ts: Number.isFinite(ts) ? ts : null }, c);
       });
 
-      // If any have timestamps, sort by timestamp desc; otherwise preserve order but newest-first (reverse)
-      const anyTs = withDates.some(x => x.__ts !== null);
-      let sorted;
-      if (anyTs) {
-        sorted = withDates.sort((a,b) => {
-          const ta = a.__ts || 0;
-          const tb = b.__ts || 0;
-          return tb - ta || b.__idx - a.__idx;
-        });
-      } else {
-        sorted = withDates.slice().reverse(); // newest at top (file order newest at end)
-      }
+      const anyTs = normalized.some(x => x.__ts !== null);
+      const sorted = anyTs
+        ? normalized.sort((a,b) => (b.__ts || 0) - (a.__ts || 0) || (b.__idx - a.__idx))
+        : normalized.slice().reverse();
 
-      // clear loading
       if (loadingEl) loadingEl.remove();
 
-      // render cards
       if (sorted.length === 0) {
         root.innerHTML = '<div class="loading">No clips yet.</div>';
         return;
       }
-      sorted.forEach(c => {
-        const card = renderClipCard(c);
+
+      // Append cards (newest first)
+      sorted.forEach(item => {
+        const card = createClipCard(item);
         root.appendChild(card);
       });
+
     } catch (err) {
       console.error('clips load error', err);
       if (loadingEl) loadingEl.textContent = 'Could not load clips.';
@@ -213,7 +159,6 @@
     }
   }
 
-  // kick off
-  loadFeed();
+  loadClips();
 
 })();
