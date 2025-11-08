@@ -175,5 +175,20 @@
       document.getElementById('pill-sub').click();
     });
   </script>
+  <!-- Footer Include -->
+<div id="footer-placeholder"></div>
+<script>
+  (async function(){
+    const path = window.location.pathname;
+    // Don't show bar on episode pages
+    if (path.includes('episode')) return;
+    try {
+      const res = await fetch('/includes/footer.html');
+      if(res.ok){
+        document.getElementById('footer-placeholder').innerHTML = await res.text();
+      }
+    } catch(e){ console.warn('Footer load failed:', e); }
+  })();
+</script>
 </body>
 </html>
