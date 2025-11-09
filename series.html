@@ -107,7 +107,7 @@
     /* Compact square-style card */
     .pro-episode-card-pro {
       scroll-snap-align:center;
-      flex:0 0 150px;        /* card width; adjust to make smaller/bigger */
+      flex:0 0 150px;
       display:flex;
       flex-direction:column;
       gap:8px;
@@ -147,7 +147,7 @@
     .pro-ep-thumb-pro {
       width:100%;
       height:100%;
-      object-fit:cover;  /* critical for full thumbnail coverage */
+      object-fit:cover;
       display:block;
     }
 
@@ -169,7 +169,7 @@
     .pro-ep-title-pro {
       width:100%;
       text-align:center;
-      font-size:16px;   /* slightly larger */
+      font-size:16px;
       font-weight:800;
       color:#fff;
       padding:8px 6px;
@@ -266,6 +266,8 @@
 
     /* Prevent browser automatic focus scrolling to break UX */
     :focus { outline: none; }
+  </style>
+
   <!-- series.js (renders header + episodes) -->
   <script defer src="series.js"></script>
 </head>
@@ -329,47 +331,6 @@
         const y = window.scrollY || 0;
         setTimeout(function(){ try { window.scrollTo(x,y); } catch(e){} }, 0);
       }, true);
-
-      // Smoothly handle season switching:
-      document.addEventListener('click', function(e){
-        const btn = e.target.closest && e.target.closest('.pro-season-tab-pro');
-        if (!btn) return;
-        // Save user scroll Y to avoid jump
-        const savedY = window.scrollY || 0;
-        // add 'fade-out' to episodes container to create smooth swap
-        const wrap = document.getElementById('pro-episodes-row-wrap') || document.querySelector('.pro-episodes-row-wrap-pro');
-        if (wrap) {
-          const episodesRow = wrap.querySelector('.pro-episodes-row-pro') || wrap;
-          if (episodesRow) {
-            episodesRow.classList.remove('fade-in');
-            episodesRow.classList.add('fade-out');
-          }
-        }
-        // allow original click handlers (series.js) to load new content, but restore scroll after a brief delay
-        setTimeout(function(){
-          try { window.scrollTo({ top: savedY, left: 0, behavior: 'auto' }); } catch(e){}
-        }, 60);
-      }, true);
-
-      // Observe content changes in #pro-episodes-row-wrap and fade-in nicely
-      const carouselWrap = document.getElementById('pro-episodes-row-wrap') || document.querySelector('.pro-episodes-row-wrap-pro');
-      if (carouselWrap) {
-        const observer = new MutationObserver((mutations) => {
-          // small delay so inner HTML updates are applied
-          setTimeout(() => {
-            const row = carouselWrap.querySelector('.pro-episodes-row-pro') || carouselWrap;
-            if (row) {
-              row.classList.remove('fade-out');
-              row.classList.add('fade-in');
-              // remove classes after transition completes
-              setTimeout(() => {
-                row.classList.remove('fade-in');
-              }, 380);
-            }
-          }, 20);
-        });
-        observer.observe(carouselWrap, { childList: true, subtree: true });
-      }
 
       // Ensure first time series-details populated we start at top
       const details = document.getElementById('series-details');
