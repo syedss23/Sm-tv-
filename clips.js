@@ -1,4 +1,4 @@
-// Clips Manager with Expandable Description
+// Clips Manager with Watch Button & Newest First Sorting
 class ClipsManager {
     constructor() {
         this.clipsContainer = document.getElementById('clipsContainer');
@@ -13,11 +13,31 @@ class ClipsManager {
         this.channelLogo = "favicon.png";
         
         this.init();
+        this.setupBackButton();
+    }
+
+    setupBackButton() {
+        const backBtn = document.getElementById('backButton');
+        if (backBtn) {
+            backBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Try to go to homepage
+                if (document.referrer && document.referrer.includes(window.location.host)) {
+                    // If came from same site, go back
+                    window.history.back();
+                } else {
+                    // Otherwise go to homepage
+                    window.location.href = '/';
+                }
+            });
+        }
     }
 
     async init() {
         try {
             await this.loadClips();
+            this.sortClipsByDate(); // Sort newest first
             this.loadLikeStates();
             this.renderClips();
             this.setupScrollBehavior();
@@ -45,11 +65,21 @@ class ClipsManager {
                 comments: clip.comments || 0,
                 shares: clip.shares || 0,
                 isLiked: false,
-                isDescriptionExpanded: false
+                isDescriptionExpanded: false,
+                watchUrl: clip.watchUrl || clip.watch || '' // Support both field names
             }));
         } catch (error) {
             throw error;
         }
+    }
+
+    sortClipsByDate() {
+        // Sort by 'added' date field - newest first (descending)
+        this.clips.sort((a, b) => {
+            const dateA = new Date(a.added);
+            const dateB = new Date(b.added);
+            return dateB - dateA; // Descending order (newest first)
+        });
     }
 
     generateHashtags(title) {
@@ -140,6 +170,17 @@ class ClipsManager {
                         </button>
                         <div class="action-count">${this.formatCount(clip.shares)}</div>
                     </div>
+                    ${clip.watchUrl ? `
+                    <div>
+                        <button class="action-btn watch-btn" data-clip-id="${clip.id}" data-watch-url="${clip.watchUrl}" aria-label="Watch Full">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+                            </svg>
+                        </button>
+                        <div class="action-count">Watch</div>
+                    </div>
+                    ` : ''}
                 </div>
             </div>
         `).join('');
@@ -198,6 +239,16 @@ class ClipsManager {
             btn.addEventListener('click', (e) => {
                 const clipId = e.currentTarget.dataset.clipId;
                 this.handleShare(clipId);
+            });
+        });
+
+        // Watch Full Episode Button
+        document.querySelectorAll('.watch-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const watchUrl = e.currentTarget.dataset.watchUrl;
+                if (watchUrl) {
+                    window.location.href = watchUrl;
+                }
             });
         });
     }
