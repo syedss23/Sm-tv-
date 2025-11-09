@@ -13,37 +13,20 @@ class ClipsManager {
         this.channelLogo = "favicon.png";
         
         this.init();
-        this.setupBackButton();
+        // REMOVED: this.setupBackButton(); - Not needed anymore
     }
 
-    setupBackButton() {
-        const backBtn = document.getElementById('backButton');
-        if (backBtn) {
-            backBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                
-                // Try to go to homepage
-                if (document.referrer && document.referrer.includes(window.location.host)) {
-                    // If came from same site, go back
-                    window.history.back();
-                } else {
-                    // Otherwise go to homepage
-                    window.location.href = '/';
-                }
-            });
-        }
-    }
+    // REMOVED: setupBackButton() method - Not needed anymore
 
     async init() {
         try {
             await this.loadClips();
-            this.sortClipsByDate(); // Sort newest first
+            this.sortClipsByDate();
             this.loadLikeStates();
             this.renderClips();
             this.setupScrollBehavior();
             this.hideLoading();
             
-            // Auto-play first video
             setTimeout(() => {
                 this.autoPlayFirstVideo();
             }, 800);
@@ -66,7 +49,7 @@ class ClipsManager {
                 shares: clip.shares || 0,
                 isLiked: false,
                 isDescriptionExpanded: false,
-                watchUrl: clip.watchUrl || clip.watch || '' // Support both field names
+                watchUrl: clip.watchUrl || clip.watch || ''
             }));
         } catch (error) {
             throw error;
@@ -74,11 +57,10 @@ class ClipsManager {
     }
 
     sortClipsByDate() {
-        // Sort by 'added' date field - newest first (descending)
         this.clips.sort((a, b) => {
             const dateA = new Date(a.added);
             const dateB = new Date(b.added);
-            return dateB - dateA; // Descending order (newest first)
+            return dateB - dateA;
         });
     }
 
@@ -115,18 +97,14 @@ class ClipsManager {
                     </iframe>
                 </div>
                 
-                <!-- Channel Info & Description -->
                 <div class="clip-info">
-                    <!-- Channel Handle with Logo -->
                     <div class="channel-info">
                         <img src="${this.channelLogo}" alt="${this.channelName}" class="channel-logo">
                         <span class="channel-name">${this.channelName}</span>
                     </div>
                     
-                    <!-- Video Title -->
                     <div class="clip-title">${clip.title}</div>
                     
-                    <!-- Expandable Description -->
                     <div class="clip-description-container">
                         <div class="clip-description ${clip.isDescriptionExpanded ? 'expanded' : ''}" id="desc-${clip.id}">
                             ${clip.desc}
@@ -136,13 +114,11 @@ class ClipsManager {
                         </button>
                     </div>
                     
-                    <!-- Hashtags (shown when expanded) -->
                     <div class="clip-hashtags ${clip.isDescriptionExpanded ? 'visible' : ''}" id="hashtags-${clip.id}">
                         ${this.generateHashtags(clip.title).join(' ')}
                     </div>
                 </div>
                 
-                <!-- Action Buttons -->
                 <div class="action-buttons">
                     <div>
                         <button class="action-btn like-btn ${clip.isLiked ? 'liked' : ''}" data-clip-id="${clip.id}" aria-label="Like">
@@ -242,7 +218,6 @@ class ClipsManager {
             });
         });
 
-        // Watch Full Episode Button
         document.querySelectorAll('.watch-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const watchUrl = e.currentTarget.dataset.watchUrl;
@@ -461,7 +436,6 @@ class ClipsManager {
     }
 }
 
-// Initialize and make globally accessible
 let clipManager;
 document.addEventListener('DOMContentLoaded', () => {
     clipManager = new ClipsManager();
