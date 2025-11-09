@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="ur">
+<html lang="ur" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Watch short clips from popular Turkish drama series">
     <title>Clips - Turkish Drama Series</title>
     <link rel="stylesheet" href="clips.css">
 </head>
@@ -10,14 +11,15 @@
 
     <!-- Header -->
     <div class="header">
-        <button class="back-btn" onclick="window.history.back()">←</button>
+        <button class="back-btn" onclick="window.history.back()" aria-label="Go back">←</button>
         <span>Clips</span>
-        <button class="search-btn">🔍</button>
+        <button class="search-btn" aria-label="Search">🔍</button>
     </div>
 
     <!-- Loading Spinner -->
     <div id="loadingSpinner" class="loading-spinner">
         <div class="spinner"></div>
+        <p>Loading clips...</p>
     </div>
 
     <!-- Clips Container -->
@@ -50,8 +52,8 @@
     </div>
 
     <!-- Error Message -->
-    <div id="errorMessage" class="error-message" style="display: none;">
-        Unable to load clips. Please try again.
+    <div id="errorMessage" class="error-message">
+        ❌ Unable to load clips. Please check your connection and try again.
     </div>
 
     <script src="clips.js"></script>
