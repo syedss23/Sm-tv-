@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ur" dir="rtl">
+<html lang="ur">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -13,7 +13,7 @@
     <div class="header">
         <button class="back-btn" onclick="window.history.back()" aria-label="Go back">←</button>
         <span>Clips</span>
-        <button class="search-btn" aria-label="Search">🔍</button>
+        <div style="width: 40px;"></div>
     </div>
 
     <!-- Loading Spinner -->
@@ -27,29 +27,8 @@
         <!-- Clips will be dynamically loaded here from clips.json -->
     </div>
 
-    <!-- Footer Navigation -->
-    <div class="footer-nav">
-        <a href="/" class="nav-item">
-            <span class="nav-icon">🏠</span>
-            <span>Home</span>
-        </a>
-        <a href="/series" class="nav-item">
-            <span class="nav-icon">📺</span>
-            <span>Series</span>
-        </a>
-        <a href="/clips" class="nav-item active">
-            <span class="nav-icon">🎬</span>
-            <span>Clips</span>
-        </a>
-        <a href="/premium" class="nav-item">
-            <span class="nav-icon">⭐</span>
-            <span>Premium</span>
-        </a>
-        <a href="/more" class="nav-item">
-            <span class="nav-icon">ℹ️</span>
-            <span>More</span>
-        </a>
-    </div>
+    <!-- Footer Include -->
+    <div id="footer-placeholder"></div>
 
     <!-- Error Message -->
     <div id="errorMessage" class="error-message">
@@ -57,5 +36,61 @@
     </div>
 
     <script src="clips.js"></script>
+    
+    <!-- Footer Loader Script -->
+    <script>
+    (async function loadFooterAndInit(){
+      if (document.readyState !== 'complete') {
+        await new Promise(resolve => window.addEventListener('load', resolve, { once: true }));
+      }
+      try {
+        const res = await fetch('/includes/footer.html');
+        if (!res.ok) throw new Error('Footer not found: ' + res.status);
+        const html = await res.text();
+        const ph = document.getElementById('footer-placeholder');
+        ph.innerHTML = html;
+
+        const nav = document.getElementById('smtv-bottom-nav');
+        if(!nav) return;
+        const items = Array.from(nav.querySelectorAll('.nav-item'));
+        function clearActive(){ items.forEach(i=>i.classList.remove('active')); }
+
+        const path = window.location.pathname.toLowerCase();
+        let matched = items.find(a => {
+          const name = (a.dataset.name||'').toLowerCase();
+          if (name === 'home' && (path === '/' || path.includes('index'))) return true;
+          return name && path.includes(name);
+        });
+
+        if(!matched){
+          const last = localStorage.getItem('smtv_last_nav');
+          if(last) matched = items.find(a => a.dataset.name === last);
+        }
+        if(matched) matched.classList.add('active');
+
+        items.forEach(a => {
+          a.addEventListener('click', function(e){
+            clearActive();
+            this.classList.add('active');
+            try { localStorage.setItem('smtv_last_nav', this.dataset.name); } catch(e){}
+            const href = this.getAttribute('href');
+            setTimeout(()=> {
+              if (location.pathname.toLowerCase() !== new URL(href, location.origin).pathname.toLowerCase()) {
+                location.href = href;
+              }
+            }, 200);
+          }, { passive: true });
+        });
+
+        try {
+          const curPad = parseInt(getComputedStyle(document.body).paddingBottom)||0;
+          if(curPad < 96) document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))';
+        } catch(e){}
+
+      } catch(err) {
+        console.warn('Footer load/init error:', err);
+      }
+    })();
+    </script>
 </body>
 </html>
