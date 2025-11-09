@@ -1,4 +1,4 @@
-// Clips Manager with Auto-Play
+// Clips Manager with Auto-Play on Load
 class ClipsManager {
     constructor() {
         this.clipsContainer = document.getElementById('clipsContainer');
@@ -9,7 +9,7 @@ class ClipsManager {
         this.observer = null;
         this.isScrolling = false;
         this.scrollTimeout = null;
-        this.currentPlayingIframe = null;
+        this.isInitialized = false;
         
         this.init();
     }
@@ -22,10 +22,12 @@ class ClipsManager {
             this.setupScrollBehavior();
             this.hideLoading();
             
-            // Auto-play first video after short delay
+            // IMPORTANT: Auto-play first video immediately
             setTimeout(() => {
-                this.playVideo(0);
-            }, 500);
+                this.autoPlayFirstVideo();
+            }, 800);
+            
+            this.isInitialized = true;
         } catch (error) {
             console.error('Error initializing clips:', error);
             this.showError();
@@ -38,7 +40,6 @@ class ClipsManager {
             if (!response.ok) throw new Error('Failed to load clips');
             this.clips = await response.json();
             
-            // Add default properties if not present
             this.clips = this.clips.map(clip => ({
                 ...clip,
                 likes: clip.likes || 0,
@@ -84,7 +85,7 @@ class ClipsManager {
                 <div class="video-wrapper">
                     <iframe 
                         id="video-${index}"
-                        src="${this.getAutoplayEmbedUrl(clip.embed, index)}" 
+                        src="${clip.embed}" 
                         frameborder="0" 
                         allowfullscreen
                         allow="autoplay; fullscreen; accelerometer; gyroscope; picture-in-picture"
@@ -100,7 +101,7 @@ class ClipsManager {
                 <div class="action-buttons">
                     <div>
                         <button class="action-btn like-btn ${clip.isLiked ? 'liked' : ''}" data-clip-id="${clip.id}" aria-label="Like">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="${clip.isLiked ? '#ff0050' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="${clip.isLiked ? '#ff0050' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                             </svg>
                         </button>
@@ -108,7 +109,7 @@ class ClipsManager {
                     </div>
                     <div>
                         <button class="action-btn comment-btn" data-clip-id="${clip.id}" aria-label="Comment">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                             </svg>
                         </button>
@@ -116,7 +117,7 @@ class ClipsManager {
                     </div>
                     <div>
                         <button class="action-btn share-btn" data-clip-id="${clip.id}" aria-label="Share">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
                                 <polyline points="16 6 12 2 8 6"></polyline>
                                 <line x1="12" y1="2" x2="12" y2="15"></line>
@@ -131,14 +132,16 @@ class ClipsManager {
         this.setupActionButtons();
     }
 
-    getAutoplayEmbedUrl(embedUrl, index) {
-        // Add autoplay parameter for first video only
-        if (index === 0) {
-            return embedUrl.includes('?') 
-                ? `${embedUrl}&autoplay=1` 
-                : `${embedUrl}?autoplay=1`;
-        }
-        return embedUrl;
+    autoPlayFirstVideo() {
+        const firstIframe = document.getElementById('video-0');
+        if (!firstIframe) return;
+
+        // Force autoplay on first video
+        const embedUrl = this.clips[0].embed;
+        const separator = embedUrl.includes('?') ? '&' : '?';
+        firstIframe.src = `${embedUrl}${separator}autoplay=1`;
+        
+        console.log('Auto-playing first video');
     }
 
     setupActionButtons() {
@@ -170,10 +173,9 @@ class ClipsManager {
     setupScrollBehavior() {
         const clipItems = document.querySelectorAll('.clip-item');
         
-        // Intersection Observer to track current clip and control playback
         const observerOptions = {
             root: this.clipsContainer,
-            threshold: 0.75 // Video must be 75% visible to play
+            threshold: 0.7
         };
 
         this.observer = new IntersectionObserver(entries => {
@@ -181,11 +183,9 @@ class ClipsManager {
                 const clipIndex = parseInt(entry.target.dataset.clipIndex);
                 
                 if (entry.isIntersecting) {
-                    // Play video when it comes into view
                     this.currentClipIndex = clipIndex;
                     this.playVideo(clipIndex);
                 } else {
-                    // Pause video when it leaves view
                     this.pauseVideo(clipIndex);
                 }
             });
@@ -193,7 +193,6 @@ class ClipsManager {
 
         clipItems.forEach(clip => this.observer.observe(clip));
 
-        // Smooth snap after scrolling stops
         this.clipsContainer.addEventListener('scroll', () => {
             if (this.scrollTimeout) clearTimeout(this.scrollTimeout);
             this.isScrolling = true;
@@ -210,7 +209,6 @@ class ClipsManager {
             }, 150);
         });
 
-        // Prevent fast scroll skipping on desktop
         this.clipsContainer.addEventListener('wheel', (e) => {
             e.preventDefault();
             const delta = Math.sign(e.deltaY);
@@ -227,7 +225,6 @@ class ClipsManager {
             }
         }, { passive: false });
 
-        // Keyboard navigation
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
                 e.preventDefault();
@@ -248,23 +245,21 @@ class ClipsManager {
         const iframe = document.getElementById(`video-${index}`);
         if (!iframe) return;
 
-        // Update iframe src to trigger autoplay
         const currentSrc = iframe.src;
         if (!currentSrc.includes('autoplay=1')) {
             const separator = currentSrc.includes('?') ? '&' : '?';
             iframe.src = `${currentSrc}${separator}autoplay=1`;
         }
-
-        this.currentPlayingIframe = iframe;
     }
 
     pauseVideo(index) {
         const iframe = document.getElementById(`video-${index}`);
         if (!iframe) return;
 
-        // Reload iframe without autoplay to stop video
-        const currentSrc = iframe.src.replace(/[?&]autoplay=1/, '');
-        iframe.src = currentSrc;
+        const currentSrc = iframe.src.replace(/[?&]autoplay=1/, '').replace(/&&/g, '&');
+        if (iframe.src !== currentSrc) {
+            iframe.src = currentSrc;
+        }
     }
 
     handleLike(clipId, button) {
@@ -274,7 +269,6 @@ class ClipsManager {
         clip.isLiked = !clip.isLiked;
         clip.likes = (clip.likes || 0) + (clip.isLiked ? 1 : -1);
 
-        // Update SVG fill
         const svg = button.querySelector('svg');
         svg.setAttribute('fill', clip.isLiked ? '#ff0050' : 'none');
         button.classList.toggle('liked', clip.isLiked);
@@ -284,13 +278,11 @@ class ClipsManager {
             countElement.textContent = this.formatCount(clip.likes);
         }
 
-        // Animate button
         button.style.transform = 'scale(1.2)';
         setTimeout(() => {
             button.style.transform = 'scale(1)';
         }, 200);
 
-        // Save to localStorage
         this.saveLikeState(clipId, clip.isLiked, clip.likes);
     }
 
@@ -391,9 +383,15 @@ document.addEventListener('DOMContentLoaded', () => {
     new ClipsManager();
 });
 
-// Prevent pull-to-refresh on mobile
-document.body.addEventListener('touchmove', (e) => {
-    if (e.target.closest('.clips-container')) {
-        // Allow scrolling within clips container
+// Also try to initialize on page show (for back/forward navigation)
+window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+        // Page was loaded from cache, reinitialize if needed
+        const firstIframe = document.getElementById('video-0');
+        if (firstIframe && !firstIframe.src.includes('autoplay=1')) {
+            setTimeout(() => {
+                const clipManager = new ClipsManager();
+            }, 300);
+        }
     }
-}, { passive: true });
+});
