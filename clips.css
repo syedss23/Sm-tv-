@@ -1,14 +1,3 @@
-/* Remove all link underlines globally */
-a {
-    text-decoration: none;
-}
-
-a:link,
-a:visited,
-a:hover,
-a:active {
-    text-decoration: none;
-}
 * {
     margin: 0;
     padding: 0;
@@ -697,32 +686,24 @@ body {
 .back-btn:hover {
     opacity: 0.7;
 }
-/* Back Button Styles - Force Remove Underline */
-.back-btn {
-    background: none !important;
-    border: none !important;
-    color: white !important;
-    font-size: 1.3rem;
-    cursor: pointer;
-    padding: 5px 10px;
-    transition: transform 0.2s ease;
-    -webkit-tap-highlight-color: transparent;
+/* Force Remove Back Button Underline */
+.header a.back-btn,
+a.back-btn {
     text-decoration: none !important;
     text-decoration-line: none !important;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    text-decoration-style: none !important;
+    -webkit-text-decoration: none !important;
 }
 
-.back-btn:link,
-.back-btn:visited,
-.back-btn:hover,
-.back-btn:active {
+.header a.back-btn:link,
+.header a.back-btn:visited,
+.header a.back-btn:hover,
+.header a.back-btn:active,
+a.back-btn:link,
+a.back-btn:visited,
+a.back-btn:hover,
+a.back-btn:active {
     text-decoration: none !important;
-}
-
-.back-btn:active {
-    transform: scale(0.85);
 }
 
 .back-btn:hover {
