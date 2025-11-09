@@ -1,4 +1,4 @@
-// Clips Manager - Adapted for your JSON structure
+// Clips Manager with Auto-Play
 class ClipsManager {
     constructor() {
         this.clipsContainer = document.getElementById('clipsContainer');
@@ -9,6 +9,7 @@ class ClipsManager {
         this.observer = null;
         this.isScrolling = false;
         this.scrollTimeout = null;
+        this.currentPlayingIframe = null;
         
         this.init();
     }
@@ -20,6 +21,11 @@ class ClipsManager {
             this.renderClips();
             this.setupScrollBehavior();
             this.hideLoading();
+            
+            // Auto-play first video after short delay
+            setTimeout(() => {
+                this.playVideo(0);
+            }, 500);
         } catch (error) {
             console.error('Error initializing clips:', error);
             this.showError();
@@ -47,7 +53,6 @@ class ClipsManager {
     }
 
     extractSeriesName(title) {
-        // Extract series name from title
         if (title.includes('Alp Arslan')) return 'Alp Arslan';
         if (title.includes('Murad')) return 'Sultan Murad';
         if (title.includes('Orhan')) return 'Kurulus Orhan';
@@ -59,15 +64,9 @@ class ClipsManager {
 
     generateHashtags(title, series) {
         const hashtags = [];
-        const words = title.split(' ');
-        
-        // Add series hashtag
         hashtags.push('#' + series.replace(/s+/g, ''));
-        
-        // Add common hashtags
         hashtags.push('#TurkishDrama');
         
-        // Add specific hashtags based on content
         if (title.toLowerCase().includes('battle')) hashtags.push('#EpicBattle');
         if (title.toLowerCase().includes('sultan')) hashtags.push('#Ottoman');
         
@@ -84,7 +83,8 @@ class ClipsManager {
             <div class="clip-item" data-clip-index="${index}" data-clip-id="${clip.id}">
                 <div class="video-wrapper">
                     <iframe 
-                        src="${clip.embed}" 
+                        id="video-${index}"
+                        src="${this.getAutoplayEmbedUrl(clip.embed, index)}" 
                         frameborder="0" 
                         allowfullscreen
                         allow="autoplay; fullscreen; accelerometer; gyroscope; picture-in-picture"
@@ -99,33 +99,46 @@ class ClipsManager {
                 </div>
                 <div class="action-buttons">
                     <div>
-                        <button class="action-btn like-btn" data-clip-id="${clip.id}" aria-label="Like">
-                            ${clip.isLiked ? '❤️' : '🤍'}
+                        <button class="action-btn like-btn ${clip.isLiked ? 'liked' : ''}" data-clip-id="${clip.id}" aria-label="Like">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="${clip.isLiked ? '#ff0050' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
                         </button>
                         <div class="action-count">${this.formatCount(clip.likes)}</div>
                     </div>
                     <div>
                         <button class="action-btn comment-btn" data-clip-id="${clip.id}" aria-label="Comment">
-                            💬
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
                         </button>
                         <div class="action-count">${this.formatCount(clip.comments)}</div>
                     </div>
                     <div>
                         <button class="action-btn share-btn" data-clip-id="${clip.id}" aria-label="Share">
-                            ↗️
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                                <polyline points="16 6 12 2 8 6"></polyline>
+                                <line x1="12" y1="2" x2="12" y2="15"></line>
+                            </svg>
                         </button>
                         <div class="action-count">${this.formatCount(clip.shares)}</div>
-                    </div>
-                    <div>
-                        <button class="action-btn download-btn" data-clip-id="${clip.id}" aria-label="Download">
-                            ⬇️
-                        </button>
                     </div>
                 </div>
             </div>
         `).join('');
 
         this.setupActionButtons();
+    }
+
+    getAutoplayEmbedUrl(embedUrl, index) {
+        // Add autoplay parameter for first video only
+        if (index === 0) {
+            return embedUrl.includes('?') 
+                ? `${embedUrl}&autoplay=1` 
+                : `${embedUrl}?autoplay=1`;
+        }
+        return embedUrl;
     }
 
     setupActionButtons() {
@@ -152,32 +165,28 @@ class ClipsManager {
                 this.handleShare(clipId);
             });
         });
-
-        // Download buttons
-        document.querySelectorAll('.download-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const clipId = e.currentTarget.dataset.clipId;
-                this.handleDownload(clipId);
-            });
-        });
     }
 
     setupScrollBehavior() {
         const clipItems = document.querySelectorAll('.clip-item');
         
-        // Intersection Observer to track current clip
+        // Intersection Observer to track current clip and control playback
         const observerOptions = {
             root: this.clipsContainer,
-            threshold: 0.6
+            threshold: 0.75 // Video must be 75% visible to play
         };
 
         this.observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
+                const clipIndex = parseInt(entry.target.dataset.clipIndex);
+                
                 if (entry.isIntersecting) {
-                    this.currentClipIndex = parseInt(entry.target.dataset.clipIndex);
-                    
-                    // Pause other videos when scrolling (optional)
-                    this.pauseOtherVideos(entry.target);
+                    // Play video when it comes into view
+                    this.currentClipIndex = clipIndex;
+                    this.playVideo(clipIndex);
+                } else {
+                    // Pause video when it leaves view
+                    this.pauseVideo(clipIndex);
                 }
             });
         }, observerOptions);
@@ -201,7 +210,7 @@ class ClipsManager {
             }, 150);
         });
 
-        // Prevent fast scroll skipping on desktop with mouse wheel
+        // Prevent fast scroll skipping on desktop
         this.clipsContainer.addEventListener('wheel', (e) => {
             e.preventDefault();
             const delta = Math.sign(e.deltaY);
@@ -235,14 +244,27 @@ class ClipsManager {
         });
     }
 
-    pauseOtherVideos(currentClipElement) {
-        // Optional: Pause videos that are not visible
-        const allIframes = document.querySelectorAll('.clip-item iframe');
-        allIframes.forEach(iframe => {
-            if (iframe.closest('.clip-item') !== currentClipElement) {
-                // Note: Rumble embeds auto-pause when out of view
-            }
-        });
+    playVideo(index) {
+        const iframe = document.getElementById(`video-${index}`);
+        if (!iframe) return;
+
+        // Update iframe src to trigger autoplay
+        const currentSrc = iframe.src;
+        if (!currentSrc.includes('autoplay=1')) {
+            const separator = currentSrc.includes('?') ? '&' : '?';
+            iframe.src = `${currentSrc}${separator}autoplay=1`;
+        }
+
+        this.currentPlayingIframe = iframe;
+    }
+
+    pauseVideo(index) {
+        const iframe = document.getElementById(`video-${index}`);
+        if (!iframe) return;
+
+        // Reload iframe without autoplay to stop video
+        const currentSrc = iframe.src.replace(/[?&]autoplay=1/, '');
+        iframe.src = currentSrc;
     }
 
     handleLike(clipId, button) {
@@ -252,7 +274,9 @@ class ClipsManager {
         clip.isLiked = !clip.isLiked;
         clip.likes = (clip.likes || 0) + (clip.isLiked ? 1 : -1);
 
-        button.textContent = clip.isLiked ? '❤️' : '🤍';
+        // Update SVG fill
+        const svg = button.querySelector('svg');
+        svg.setAttribute('fill', clip.isLiked ? '#ff0050' : 'none');
         button.classList.toggle('liked', clip.isLiked);
         
         const countElement = button.parentElement.querySelector('.action-count');
@@ -274,27 +298,22 @@ class ClipsManager {
         const clip = this.clips.find(c => c.id === clipId);
         console.log('Comment on:', clip.title);
         
-        // Increment comment count
         clip.comments = (clip.comments || 0) + 1;
         
-        // Update UI
         const clipElement = document.querySelector(`[data-clip-id="${clipId}"]`);
         const commentCount = clipElement.querySelector('.comment-btn').parentElement.querySelector('.action-count');
         if (commentCount) {
             commentCount.textContent = this.formatCount(clip.comments);
         }
         
-        // You can implement a comment modal here
         alert('Comments feature coming soon! 💬');
     }
 
     handleShare(clipId) {
         const clip = this.clips.find(c => c.id === clipId);
         
-        // Increment share count
         clip.shares = (clip.shares || 0) + 1;
         
-        // Update UI
         const clipElement = document.querySelector(`[data-clip-id="${clipId}"]`);
         const shareCount = clipElement.querySelector('.share-btn').parentElement.querySelector('.action-count');
         if (shareCount) {
@@ -312,7 +331,6 @@ class ClipsManager {
                 .then(() => console.log('Shared successfully'))
                 .catch(err => console.log('Share cancelled', err));
         } else {
-            // Fallback: Copy to clipboard
             const shareUrl = shareData.url;
             navigator.clipboard.writeText(shareUrl)
                 .then(() => {
@@ -322,16 +340,6 @@ class ClipsManager {
                     prompt('Copy this link:', shareUrl);
                 });
         }
-    }
-
-    handleDownload(clipId) {
-        const clip = this.clips.find(c => c.id === clipId);
-        
-        // Extract video URL from embed
-        const videoUrl = clip.embed.replace('/embed/', '/');
-        
-        // Open in new tab (user can download from Rumble)
-        window.open(videoUrl, '_blank');
     }
 
     formatCount(count) {
