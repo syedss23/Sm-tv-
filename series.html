@@ -266,12 +266,6 @@
 
     /* Prevent browser automatic focus scrolling to break UX */
     :focus { outline: none; }
-
-    /* Fade-in helper used when season content changes */
-    .fade-out { opacity: 0; transform: translateY(6px); pointer-events: none; }
-    .fade-in { opacity: 1; transform: translateY(0); transition: opacity .28s ease, transform .28s ease; pointer-events: auto; }
-  </style>
-
   <!-- series.js (renders header + episodes) -->
   <script defer src="series.js"></script>
 </head>
