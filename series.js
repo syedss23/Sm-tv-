@@ -266,23 +266,11 @@
           }, 360);
 
           // do NOT auto-scroll. caller (initial load) already handled top-of-page.
-        } catch (diag) {
-          if (diag && diag.tried) {
-            wrap.innerHTML = `
-              <div style="background:#0e1720;color:#ffd;padding:14px;border-radius:12px;">
-                <div style="font-weight:800;color:#ffd700;margin-bottom:8px;">Episodes not found for this season</div>
-                <div style="font-size:13px;color:#cfe6ff">Tried paths (server responded but JSON invalid / missing):</div>
-                <pre style="white-space:pre-wrap;color:#cfe6ff;font-size:12px;margin-top:8px;">${escapeHtml(JSON.stringify(diag.tried, null, 2))}</pre>
-              </div>
-            `;
-            toast('Episodes JSON missing or invalid for this season');
-          } else {
-            wrap.innerHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes for this season.</div>`;
-            toast('Episodes load error');
-          }
-          console.error('Episode load error / diagnostics', diag);
-          wrap.classList.remove('is-loading');
-          wrap.style.minHeight = prevMin;
+        } catch (err) {
+  wrap.innerHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes available for this season.</div>`;
+  console.error('Episode load error', err);
+  wrap.classList.remove('is-loading');
+  wrap.style.minHeight = prevMin;
         }
       }
 
