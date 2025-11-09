@@ -1,4 +1,4 @@
-// Clips Manager with Auto-Play on Load
+// Clips Manager with Expandable Description
 class ClipsManager {
     constructor() {
         this.clipsContainer = document.getElementById('clipsContainer');
@@ -9,7 +9,8 @@ class ClipsManager {
         this.observer = null;
         this.isScrolling = false;
         this.scrollTimeout = null;
-        this.isInitialized = false;
+        this.channelName = "SmTv Urdu";
+        this.channelLogo = "favicon.png";
         
         this.init();
     }
@@ -22,12 +23,10 @@ class ClipsManager {
             this.setupScrollBehavior();
             this.hideLoading();
             
-            // IMPORTANT: Auto-play first video immediately
+            // Auto-play first video
             setTimeout(() => {
                 this.autoPlayFirstVideo();
             }, 800);
-            
-            this.isInitialized = true;
         } catch (error) {
             console.error('Error initializing clips:', error);
             this.showError();
@@ -46,30 +45,23 @@ class ClipsManager {
                 comments: clip.comments || 0,
                 shares: clip.shares || 0,
                 isLiked: false,
-                series: this.extractSeriesName(clip.title)
+                isDescriptionExpanded: false
             }));
         } catch (error) {
             throw error;
         }
     }
 
-    extractSeriesName(title) {
-        if (title.includes('Alp Arslan')) return 'Alp Arslan';
-        if (title.includes('Murad')) return 'Sultan Murad';
-        if (title.includes('Orhan')) return 'Kurulus Orhan';
-        if (title.includes('Mehmet') || title.includes('Fatih')) return 'Sultan Mehmet Fatih';
-        if (title.includes('Salahuddin') || title.includes('Ayyubi')) return 'Salahuddin Ayyubi';
-        if (title.includes('Rumi')) return 'Rumi';
-        return 'Turkish Drama';
-    }
-
-    generateHashtags(title, series) {
+    generateHashtags(title) {
         const hashtags = [];
-        hashtags.push('#' + series.replace(/s+/g, ''));
-        hashtags.push('#TurkishDrama');
         
-        if (title.toLowerCase().includes('battle')) hashtags.push('#EpicBattle');
-        if (title.toLowerCase().includes('sultan')) hashtags.push('#Ottoman');
+        if (title.includes('Alp Arslan')) hashtags.push('#AlpArslan');
+        if (title.includes('Murad')) hashtags.push('#SultanMurad');
+        if (title.includes('Orhan')) hashtags.push('#KurulusOrhan');
+        if (title.includes('Mehmet') || title.includes('Fatih')) hashtags.push('#SultanMehmetFatih');
+        if (title.includes('Salahuddin') || title.includes('Ayyubi')) hashtags.push('#SalahuddinAyyubi');
+        
+        hashtags.push('#TurkishDrama', '#Ottoman');
         
         return hashtags;
     }
@@ -92,12 +84,35 @@ class ClipsManager {
                         loading="${index === 0 ? 'eager' : 'lazy'}">
                     </iframe>
                 </div>
+                
+                <!-- Channel Info & Description -->
                 <div class="clip-info">
-                    <div class="clip-series">${clip.series}</div>
+                    <!-- Channel Handle with Logo -->
+                    <div class="channel-info">
+                        <img src="${this.channelLogo}" alt="${this.channelName}" class="channel-logo">
+                        <span class="channel-name">${this.channelName}</span>
+                    </div>
+                    
+                    <!-- Video Title -->
                     <div class="clip-title">${clip.title}</div>
-                    <div class="clip-description">${clip.desc}</div>
-                    <div class="clip-hashtags">${this.generateHashtags(clip.title, clip.series).join(' ')}</div>
+                    
+                    <!-- Expandable Description -->
+                    <div class="clip-description-container">
+                        <div class="clip-description ${clip.isDescriptionExpanded ? 'expanded' : ''}" id="desc-${clip.id}">
+                            ${clip.desc}
+                        </div>
+                        <button class="see-more-btn" id="seemore-${clip.id}" onclick="window.clipManager.toggleDescription('${clip.id}')">
+                            ...more
+                        </button>
+                    </div>
+                    
+                    <!-- Hashtags (shown when expanded) -->
+                    <div class="clip-hashtags ${clip.isDescriptionExpanded ? 'visible' : ''}" id="hashtags-${clip.id}">
+                        ${this.generateHashtags(clip.title).join(' ')}
+                    </div>
                 </div>
+                
+                <!-- Action Buttons -->
                 <div class="action-buttons">
                     <div>
                         <button class="action-btn like-btn ${clip.isLiked ? 'liked' : ''}" data-clip-id="${clip.id}" aria-label="Like">
@@ -132,11 +147,31 @@ class ClipsManager {
         this.setupActionButtons();
     }
 
+    toggleDescription(clipId) {
+        const clip = this.clips.find(c => c.id === clipId);
+        if (!clip) return;
+
+        clip.isDescriptionExpanded = !clip.isDescriptionExpanded;
+
+        const descElement = document.getElementById(`desc-${clipId}`);
+        const seeMoreBtn = document.getElementById(`seemore-${clipId}`);
+        const hashtagsElement = document.getElementById(`hashtags-${clipId}`);
+
+        if (clip.isDescriptionExpanded) {
+            descElement.classList.add('expanded');
+            seeMoreBtn.textContent = 'less';
+            hashtagsElement.classList.add('visible');
+        } else {
+            descElement.classList.remove('expanded');
+            seeMoreBtn.textContent = '...more';
+            hashtagsElement.classList.remove('visible');
+        }
+    }
+
     autoPlayFirstVideo() {
         const firstIframe = document.getElementById('video-0');
         if (!firstIframe) return;
 
-        // Force autoplay on first video
         const embedUrl = this.clips[0].embed;
         const separator = embedUrl.includes('?') ? '&' : '?';
         firstIframe.src = `${embedUrl}${separator}autoplay=1`;
@@ -145,7 +180,6 @@ class ClipsManager {
     }
 
     setupActionButtons() {
-        // Like buttons
         document.querySelectorAll('.like-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const clipId = e.currentTarget.dataset.clipId;
@@ -153,7 +187,6 @@ class ClipsManager {
             });
         });
 
-        // Comment buttons
         document.querySelectorAll('.comment-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const clipId = e.currentTarget.dataset.clipId;
@@ -161,7 +194,6 @@ class ClipsManager {
             });
         });
 
-        // Share buttons
         document.querySelectorAll('.share-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const clipId = e.currentTarget.dataset.clipId;
@@ -378,19 +410,20 @@ class ClipsManager {
     }
 }
 
-// Initialize when DOM is ready
+// Initialize and make globally accessible
+let clipManager;
 document.addEventListener('DOMContentLoaded', () => {
-    new ClipsManager();
+    clipManager = new ClipsManager();
+    window.clipManager = clipManager;
 });
 
-// Also try to initialize on page show (for back/forward navigation)
 window.addEventListener('pageshow', (event) => {
     if (event.persisted) {
-        // Page was loaded from cache, reinitialize if needed
         const firstIframe = document.getElementById('video-0');
         if (firstIframe && !firstIframe.src.includes('autoplay=1')) {
             setTimeout(() => {
-                const clipManager = new ClipsManager();
+                clipManager = new ClipsManager();
+                window.clipManager = clipManager;
             }, 300);
         }
     }
