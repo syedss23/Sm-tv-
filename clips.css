@@ -197,14 +197,15 @@ body {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
 }
 
-/* Action Buttons (Reels-style) */
+/* Action Buttons (Reels-style) - FIXED POSITION */
 .action-buttons {
     position: absolute;
-    right: 15px;
-    bottom: 110px;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 24px;
     z-index: 10;
     animation: slideInRight 0.5s ease;
 }
@@ -212,11 +213,11 @@ body {
 @keyframes slideInRight {
     from {
         opacity: 0;
-        transform: translateX(20px);
+        transform: translateY(-50%) translateX(20px);
     }
     to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(-50%) translateX(0);
     }
 }
 
@@ -227,19 +228,18 @@ body {
 }
 
 .action-btn {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
     border: none;
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 1.4rem;
     color: white;
     -webkit-tap-highlight-color: transparent;
 }
@@ -249,12 +249,11 @@ body {
 }
 
 .action-btn:hover {
-    background: rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.3);
 }
 
 .action-btn.liked {
-    color: #ff0050;
-    background: rgba(255, 0, 80, 0.35);
+    background: rgba(255, 0, 80, 0.3);
     animation: heartBeat 0.3s ease;
 }
 
@@ -265,12 +264,32 @@ body {
 }
 
 .action-count {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     text-align: center;
-    margin-top: 4px;
+    margin-top: 6px;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
-    font-weight: 600;
+    font-weight: 700;
     min-width: 30px;
+}
+
+/* SVG Icon Styles */
+.action-btn svg {
+    width: 26px;
+    height: 26px;
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover svg {
+    transform: scale(1.1);
+}
+
+.action-btn.liked svg {
+    animation: heartPulse 0.4s ease;
+}
+
+@keyframes heartPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
 }
 
 /* Footer Navigation Bar */
@@ -358,7 +377,7 @@ body {
     .clip-info {
         bottom: 80px;
         left: 15px;
-        right: 70px;
+        right: 75px;
     }
     
     .clip-title {
@@ -371,14 +390,17 @@ body {
     
     .action-buttons {
         right: 10px;
-        bottom: 100px;
-        gap: 18px;
+        gap: 20px;
     }
     
     .action-btn {
-        width: 45px;
-        height: 45px;
-        font-size: 1.2rem;
+        width: 46px;
+        height: 46px;
+    }
+    
+    .action-btn svg {
+        width: 24px;
+        height: 24px;
     }
 }
 
@@ -404,14 +426,24 @@ body {
         font-size: 0.75rem;
     }
     
+    .action-buttons {
+        right: 8px;
+        gap: 18px;
+    }
+    
     .action-btn {
-        width: 42px;
-        height: 42px;
-        font-size: 1.1rem;
+        width: 44px;
+        height: 44px;
+    }
+    
+    .action-btn svg {
+        width: 22px;
+        height: 22px;
     }
     
     .action-count {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
+        margin-top: 4px;
     }
     
     .nav-item {
@@ -434,7 +466,7 @@ body {
     .clip-info {
         bottom: 70px;
         left: 15px;
-        right: 70px;
+        right: 75px;
     }
     
     .clip-title {
@@ -447,36 +479,21 @@ body {
     }
     
     .action-buttons {
-        bottom: 90px;
-        gap: 15px;
+        gap: 16px;
     }
     
     .action-btn {
-        width: 40px;
-        height: 40px;
+        width: 42px;
+        height: 42px;
+    }
+    
+    .action-btn svg {
+        width: 20px;
+        height: 20px;
     }
     
     .footer-nav {
         padding: 5px 0 7px;
-    }
-}
-
-/* Dark Mode Enhancements */
-@media (prefers-color-scheme: dark) {
-    body {
-        background-color: #000;
-    }
-}
-
-/* High Resolution Displays */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-    .clip-title,
-    .clip-description,
-    .clip-series,
-    .clip-hashtags {
-        text-rendering: optimizeLegibility;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
     }
 }
 
@@ -494,7 +511,6 @@ body {
     
     .action-buttons {
         right: 20px;
-        bottom: 120px;
     }
 }
 
@@ -512,13 +528,17 @@ body {
     
     .action-buttons {
         right: 25px;
-        bottom: 120px;
+        gap: 28px;
     }
     
     .action-btn {
-        width: 55px;
-        height: 55px;
-        font-size: 1.5rem;
+        width: 52px;
+        height: 52px;
+    }
+    
+    .action-btn svg {
+        width: 28px;
+        height: 28px;
     }
     
     .action-btn:hover {
@@ -563,32 +583,5 @@ body {
     .footer-nav,
     .action-buttons {
         display: none;
-    }
-}
-/* SVG Icon Styles */
-.action-btn svg {
-    width: 24px;
-    height: 24px;
-    transition: all 0.3s ease;
-}
-
-.action-btn:hover svg {
-    transform: scale(1.1);
-}
-
-.action-btn.liked svg {
-    animation: heartPulse 0.4s ease;
-}
-
-@keyframes heartPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.3); }
-}
-
-/* Mobile icon adjustments */
-@media (max-width: 480px) {
-    .action-btn svg {
-        width: 20px;
-        height: 20px;
     }
 }
