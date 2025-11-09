@@ -1,96 +1,59 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ur">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Clips & Shorts — SmTv Urdu</title>
-
-  <!-- main site css -->
-  <link rel="stylesheet" href="style.css">
-
-  <style>
-    :root{
-      --bg:#0b0d10; --card-bg:#0f1317; --muted:#bfcfd8; --accent:#00d0f0; --pill:#ffd400;
-    }
-    body{background:var(--bg);color:#fff;margin:0;font-family:Segoe UI,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-    #main-content{max-width:1100px;margin:0 auto;padding:18px}
-    h1.page-title{font-size:1.8rem;color:var(--accent);margin:6px 0 14px 0;font-weight:800}
-    .clips-wrap{display:flex;flex-direction:column;gap:18px}
-    .loading{color:#9fd3ff;font-weight:700;padding:28px 8px}
-    .error{color:#ffd700;background:#111;padding:14px;border-radius:10px}
-
-    /* card */
-    .clip-card{
-      background:linear-gradient(180deg,#0d1114,#091018);
-      border-radius:14px;
-      overflow:hidden;
-      box-shadow:0 8px 32px rgba(0,0,0,0.5);
-      border:1px solid rgba(255,255,255,0.02);
-    }
-    .clip-player-wrap{
-      position:relative;
-      width:100%;
-      aspect-ratio: 9 / 16; /* portrait for reels */
-      background:#000;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
-    }
-    @supports not (aspect-ratio: 9/16) {
-      .clip-player-wrap{height:62vh; min-height:360px; max-height:720px;}
-    }
-    .clip-placeholder{
-      position:absolute;inset:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:18px;background-size:cover;background-position:center;
-      gap:12px;
-    }
-    .clip-play-btn{
-      display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border-radius:999px;background:linear-gradient(90deg,#ffd400,#ffb357);color:#111;font-weight:800;border:none;cursor:pointer;box-shadow:0 8px 30px rgba(255,160,40,0.14);
-    }
-    .clip-meta{padding:14px 16px;border-top:1px solid rgba(255,255,255,0.02)}
-    .clip-title{font-size:1.05rem;font-weight:800;color:#fff;margin:0 0 6px 0}
-    .clip-desc{color:var(--muted);margin:0 0 12px 0}
-
-    .clip-actions{display:flex;gap:8px;flex-wrap:wrap}
-    .btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:10px;color:var(--muted);font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
-    .btn:hover{background:rgba(255,255,255,0.02);color:#fff}
-
-    /* overlay (full-screen pager) */
-    .reel-overlay{
-      position:fixed;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.95),rgba(0,0,0,0.98));z-index:100000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .reel-track{width:100%;height:100vh;overflow:hidden;position:relative;display:flex;flex-direction:column;align-items:stretch;justify-content:center}
-    .reel-slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:transform .36s cubic-bezier(.2,.9,.2,1);will-change:transform,opacity}
-    .reel-iframe{width:100%;height:100vh;border:0;background:#000;display:block}
-    .reel-close{
-      position:fixed;right:12px;top:12px;background:rgba(255,255,255,0.06);border-radius:10px;padding:8px 12px;color:#fff;font-weight:800;z-index:100010;cursor:pointer;border:none;
-      backdrop-filter: blur(6px);
-    }
-    .reel-counter{position:fixed;left:16px;top:16px;color:#cfe6ff;font-weight:700;z-index:100010}
-    .reel-swipe-hint{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);color:#cfe6ff;opacity:.85;z-index:100010}
-
-    /* small top indicator to close with pinch or swipe down */
-    .reel-top-gesture{position:fixed;left:50%;top:8px;transform:translateX(-50%);height:6px;width:60px;background:rgba(255,255,255,0.06);border-radius:99px;z-index:100010}
-
-    /* desktop: side-by-side card layout with landscape player */
-    @media (min-width:700px){
-      .clip-card{display:flex;gap:12px;align-items:flex-start}
-      .clip-player-wrap{flex:1;min-width:420px;aspect-ratio:16/9;border-radius:12px}
-      .clip-meta{flex:1;padding:16px}
-    }
-  </style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clips - Turkish Drama Series</title>
+    <link rel="stylesheet" href="clips.css">
 </head>
 <body>
-  <div id="main-content">
-    <h1 class="page-title">Clips & Shorts</h1>
 
-    <div id="clips-root" class="clips-wrap" aria-live="polite">
-      <div class="loading" id="clips-loading">Loading clips...</div>
+    <!-- Header -->
+    <div class="header">
+        <button class="back-btn" onclick="window.history.back()">←</button>
+        <span>Clips</span>
+        <button class="search-btn">🔍</button>
     </div>
-  </div>
 
-  <script defer src="clips.js"></script>
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Clips Container -->
+    <div class="clips-container" id="clipsContainer">
+        <!-- Clips will be dynamically loaded here from clips.json -->
+    </div>
+
+    <!-- Footer Navigation -->
+    <div class="footer-nav">
+        <a href="/" class="nav-item">
+            <span class="nav-icon">🏠</span>
+            <span>Home</span>
+        </a>
+        <a href="/series" class="nav-item">
+            <span class="nav-icon">📺</span>
+            <span>Series</span>
+        </a>
+        <a href="/clips" class="nav-item active">
+            <span class="nav-icon">🎬</span>
+            <span>Clips</span>
+        </a>
+        <a href="/premium" class="nav-item">
+            <span class="nav-icon">⭐</span>
+            <span>Premium</span>
+        </a>
+        <a href="/more" class="nav-item">
+            <span class="nav-icon">ℹ️</span>
+            <span>More</span>
+        </a>
+    </div>
+
+    <!-- Error Message -->
+    <div id="errorMessage" class="error-message" style="display: none;">
+        Unable to load clips. Please try again.
+    </div>
+
+    <script src="clips.js"></script>
 </body>
 </html>
