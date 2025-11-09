@@ -55,18 +55,17 @@
 
   // Try several candidate episode JSON paths and return episodes + diagnostics
   async function fetchEpisodesWithCandidates(season) {
-    const candidates = [
-      `episode-data/${slug}-s${season}.json`,
-      `episode-data/${slug}-s${season}-${lang}.json`,
-      `episode-data/${slug}-s${season}-en.json`,
-      `episode-data/${slug}-s${season}-hi.json`,
-      `episode-data/${slug}-s${season}-ur.json`,
-      `episode-data/${slug}-s${season}-.json`,
-      `episode-data/${slug}-s${season}-sub.json`,
-      `episode-data/${slug}-s${season}-en-sub.json`,
-      `episode-data/${slug}-s${season}-en-sub-s1.json`,
-      `episode-data/${slug}-s${season}-sub-s1.json`
-    ].filter(Boolean);
+  const candidates = [
+    `episode-data/${slug}-${lang}-sub-s${season}.json`,  // ADD THIS FIRST!
+    `episode-data/${slug}-s${season}.json`,
+    `episode-data/${slug}-s${season}-${lang}.json`,
+    `episode-data/${slug}-s${season}-en.json`,
+    `episode-data/${slug}-s${season}-hi.json`,
+    `episode-data/${slug}-s${season}-ur.json`,
+    `episode-data/${slug}-s${season}-sub.json`,
+    `episode-data/${slug}-s${season}-en-sub.json`
+    // REMOVE the last 2 lines with hardcoded "s1"
+  ].filter(Boolean);
 
     const tried = [];
 
