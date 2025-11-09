@@ -79,12 +79,6 @@ class ClipsManager {
         return hashtags;
     }
 
-    getRumbleDirectUrl(embedUrl) {
-        // Convert embed URL to direct Rumble URL
-        // https://rumble.com/embed/v6z8qve/?pub=4noco6 -> https://rumble.com/v6z8qve
-        return embedUrl.replace('/embed/', '/').split('?')[0];
-    }
-
     renderClips() {
         if (!this.clips || this.clips.length === 0) {
             this.showError();
@@ -95,15 +89,15 @@ class ClipsManager {
             <div class="clip-item" data-clip-index="${index}" data-clip-id="${clip.id}">
                 <div class="video-wrapper">
                     ${this.isIOS ? `
-                        <!-- iOS Fallback: Show "Tap to Watch" overlay -->
-                        <div class="ios-fallback" onclick="window.open('${this.getRumbleDirectUrl(clip.embed)}', '_blank')">
+                        <!-- iOS Fallback: Open embed URL in new tab -->
+                        <div class="ios-fallback" onclick="window.open('${clip.embed}', '_blank')">
                             <div class="ios-play-overlay">
                                 <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
                                     <circle cx="12" cy="12" r="10" fill="rgba(0,0,0,0.7)" stroke="white" stroke-width="2"></circle>
                                     <polygon points="10 8 16 12 10 16" fill="white"></polygon>
                                 </svg>
-                                <p class="ios-message">Tap to Watch on Rumble</p>
-                                <span class="ios-note">iOS requires opening in Rumble</span>
+                                <p class="ios-message">Tap to Watch Video</p>
+                                <span class="ios-note">Opens in new tab</span>
                             </div>
                         </div>
                     ` : ''}
