@@ -585,3 +585,128 @@ body {
         display: none;
     }
 }
+/* Channel Info Styles */
+.channel-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.channel-logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    object-fit: cover;
+}
+
+.channel-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+/* Expandable Description Styles */
+.clip-description-container {
+    position: relative;
+    margin-top: 6px;
+}
+
+.clip-description {
+    font-size: 0.9rem;
+    color: white;
+    line-height: 1.4;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.clip-description.expanded {
+    display: block;
+    -webkit-line-clamp: unset;
+    max-height: none;
+}
+
+.see-more-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 4px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+    display: inline;
+    pointer-events: auto;
+}
+
+.see-more-btn:active {
+    opacity: 0.7;
+}
+
+/* Hashtags - hidden by default, shown when expanded */
+.clip-hashtags {
+    font-size: 0.85rem;
+    color: #00a8ff;
+    margin-top: 8px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.clip-hashtags.visible {
+    display: block;
+    opacity: 1;
+}
+
+/* Remove clip-series class since we're using channel-info now */
+.clip-series {
+    display: none;
+}
+
+/* Update clip-info to allow pointer events for button */
+.clip-info {
+    position: absolute;
+    bottom: 90px;
+    left: 20px;
+    right: 80px;
+    color: white;
+    z-index: 10;
+    pointer-events: none;
+    animation: fadeInUp 0.5s ease;
+}
+
+.clip-info * {
+    pointer-events: auto;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+    .channel-logo {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .channel-name {
+        font-size: 0.85rem;
+    }
+    
+    .clip-description {
+        font-size: 0.85rem;
+    }
+    
+    .see-more-btn {
+        font-size: 0.85rem;
+    }
+    
+    .clip-hashtags {
+        font-size: 0.75rem;
+    }
+}
