@@ -267,8 +267,28 @@
 
           // do NOT auto-scroll. caller (initial load) already handled top-of-page.
         } catch (err) {
-  wrap.innerHTML = `<div style="color:#fff;padding:28px 0 0 0;">No episodes available for this season.</div>`;
-  console.error('Episode load error', err);
+  let errorMsg = 'No episodes found';
+  let details = '';
+  
+  if (err && err.tried && err.tried.length > 0) {
+    const lastTried = err.tried[err.tried.length - 1];
+    if (lastTried.err && lastTried.err.includes('json-parse')) {
+      errorMsg = 'JSON file has syntax error';
+      details = `Check file: ${lastTried.path}`;
+    } else if (!lastTried.ok) {
+      errorMsg = 'Episode file not found';
+      details = `Looking for: ${lastTried.path}`;
+    }
+  }
+  
+  wrap.innerHTML = `
+    <div style="background:#1a1f2e;color:#fff;padding:18px;border-radius:12px;border:1px solid #ff6b6b;">
+      <div style="font-size:16px;font-weight:700;color:#ff6b6b;margin-bottom:8px;">⚠️ ${errorMsg}</div>
+      ${details ? `<div style="font-size:13px;color:#aaa;font-family:monospace;">${details}</div>` : ''}
+    </div>
+  `;
+  
+  console.error('Episode load error:', err);
   wrap.classList.remove('is-loading');
   wrap.style.minHeight = prevMin;
         }
