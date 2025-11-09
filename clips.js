@@ -1,4 +1,4 @@
-// Clips Manager with Watch Button & Newest First Sorting
+// Clips Manager with iOS Support, Watch Button & Newest First Sorting
 class ClipsManager {
     constructor() {
         this.clipsContainer = document.getElementById('clipsContainer');
@@ -12,11 +12,12 @@ class ClipsManager {
         this.channelName = "SmTv Urdu";
         this.channelLogo = "favicon.png";
         
+        // iOS/Safari Detection
+        this.isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        this.isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        
         this.init();
-        // REMOVED: this.setupBackButton(); - Not needed anymore
     }
-
-    // REMOVED: setupBackButton() method - Not needed anymore
 
     async init() {
         try {
@@ -92,8 +93,11 @@ class ClipsManager {
                         src="${clip.embed}" 
                         frameborder="0" 
                         allowfullscreen
-                        allow="autoplay; fullscreen; accelerometer; gyroscope; picture-in-picture"
-                        loading="${index === 0 ? 'eager' : 'lazy'}">
+                        allow="autoplay; fullscreen; accelerometer; gyroscope; picture-in-picture; clipboard-write"
+                        sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
+                        loading="${index === 0 ? 'eager' : 'lazy'}"
+                        playsinline
+                        webkit-playsinline>
                     </iframe>
                 </div>
                 
@@ -190,10 +194,17 @@ class ClipsManager {
         if (!firstIframe) return;
 
         const embedUrl = this.clips[0].embed;
-        const separator = embedUrl.includes('?') ? '&' : '?';
-        firstIframe.src = `${embedUrl}${separator}autoplay=1`;
         
-        console.log('Auto-playing first video');
+        // iOS/Safari: No autoplay due to policy restrictions
+        if (this.isIOS || this.isSafari) {
+            firstIframe.src = embedUrl;
+            console.log('iOS/Safari detected - video ready for user interaction');
+        } else {
+            // Other browsers: Use autoplay
+            const separator = embedUrl.includes('?') ? '&' : '?';
+            firstIframe.src = `${embedUrl}${separator}autoplay=1`;
+            console.log('Auto-playing video');
+        }
     }
 
     setupActionButtons() {
@@ -303,10 +314,23 @@ class ClipsManager {
         const iframe = document.getElementById(`video-${index}`);
         if (!iframe) return;
 
+        const clip = this.clips[index];
+        if (!clip) return;
+
         const currentSrc = iframe.src;
-        if (!currentSrc.includes('autoplay=1')) {
-            const separator = currentSrc.includes('?') ? '&' : '?';
-            iframe.src = `${currentSrc}${separator}autoplay=1`;
+        const embedUrl = clip.embed;
+        
+        // iOS/Safari handling
+        if (this.isIOS || this.isSafari) {
+            if (!currentSrc || currentSrc === 'about:blank') {
+                iframe.src = embedUrl;
+            }
+        } else {
+            // Other browsers: Add autoplay
+            if (!currentSrc.includes('autoplay=1')) {
+                const separator = embedUrl.includes('?') ? '&' : '?';
+                iframe.src = `${embedUrl}${separator}autoplay=1`;
+            }
         }
     }
 
@@ -444,12 +468,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.addEventListener('pageshow', (event) => {
     if (event.persisted) {
-        const firstIframe = document.getElementById('video-0');
-        if (firstIframe && !firstIframe.src.includes('autoplay=1')) {
-            setTimeout(() => {
-                clipManager = new ClipsManager();
-                window.clipManager = clipManager;
-            }, 300);
-        }
+        setTimeout(() => {
+            clipManager = new ClipsManager();
+            window.clipManager = clipManager;
+        }, 300);
     }
 });
