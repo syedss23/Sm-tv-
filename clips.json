@@ -22,5 +22,17 @@
     "likes": 0,
     "comments": 0,
     "shares": 0
+  },
+  {
+    "id": "clip001",
+    "title": "Kurulus Orhan",
+    "embed": "https://rumble.com/embed/v6zb1f8/?pub=4noco6",
+    "thumb": "thumbs/murad.jpg",
+    "desc": "Orhan Bolum 3 Trailer 2",
+    "added": "2025-11-10T18:00:00Z",
+    "watchUrl": "https://www.smtvurdu.site/series?series=kurulus-orhan-ur",
+    "likes": 879,
+    "comments": 0,
+    "shares": 367
   }
 ]
