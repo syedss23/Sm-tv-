@@ -109,13 +109,14 @@ body {
     align-items: center;
     justify-content: center;
     background: #000;
+    padding-bottom: 70px;
 }
 
 /* Video Wrapper for Responsive Embed */
 .video-wrapper {
     position: relative;
     width: 100%;
-    height: calc(100% - 80px); /* Reduce height by footer size */
+    height: calc(100vh - 130px);
     max-width: 500px;
     margin: 0 auto;
     background: #000;
@@ -131,7 +132,7 @@ body {
     border: none;
     background: #000;
     z-index: 100;
-    pointer-events: auto; /* Ensure iframe controls are clickable */
+    pointer-events: auto;
 }
 
 /* Clip Info Overlay */
@@ -379,7 +380,7 @@ body {
     justify-content: space-around;
     padding: 8px 0 10px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    z-index: 50;  /* CHANGE FROM 1000 TO 50 */
+    z-index: 50;
 }
 
 .nav-item {
@@ -444,6 +445,7 @@ body {
 @media (max-width: 768px) {
     .video-wrapper {
         max-width: 100%;
+        height: calc(100vh - 150px);
     }
     
     .clip-info {
@@ -480,6 +482,10 @@ body {
     .header {
         padding: 12px 15px;
         font-size: 1.1rem;
+    }
+    
+    .video-wrapper {
+        height: calc(100vh - 160px);
     }
     
     .channel-logo {
@@ -544,6 +550,10 @@ body {
         font-size: 1rem;
     }
     
+    .video-wrapper {
+        height: calc(100vh - 120px);
+    }
+    
     .clip-info {
         bottom: 70px;
         left: 15px;
@@ -582,6 +592,7 @@ body {
 @media (min-width: 769px) and (max-width: 1024px) {
     .video-wrapper {
         max-width: 450px;
+        height: calc(100vh - 140px);
     }
     
     .clip-info {
@@ -599,6 +610,7 @@ body {
 @media (min-width: 1025px) {
     .video-wrapper {
         max-width: 500px;
+        height: calc(100vh - 130px);
     }
     
     .clip-info {
@@ -689,6 +701,7 @@ body {
 .back-btn:hover {
     opacity: 0.7;
 }
+
 /* Force Remove Back Button Underline */
 .header a.back-btn,
 a.back-btn {
@@ -712,6 +725,7 @@ a.back-btn:active {
 .back-btn:hover {
     opacity: 0.7;
 }
+
 /* iOS Safari Iframe Fixes */
 @supports (-webkit-touch-callout: none) {
     .video-wrapper iframe {
@@ -775,6 +789,7 @@ body {
         bottom: max(90px, calc(90px + env(safe-area-inset-bottom)));
     }
 }
+
 /* iOS Fallback Overlay Styles */
 .ios-fallback {
     position: absolute;
