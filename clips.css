@@ -827,3 +827,14 @@ body {
 .video-container {
     padding-bottom: 80px;
 }
+.video-container {
+    position: relative;
+    z-index: 100;
+    padding-bottom: 80px;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    z-index: 10;
+}
