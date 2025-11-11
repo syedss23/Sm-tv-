@@ -119,6 +119,8 @@ body {
     max-width: 500px;
     margin: 0 auto;
     background: #000;
+    z-index: 100;
+    padding-bottom: 80px;
 }
 
 .video-wrapper iframe {
@@ -129,6 +131,7 @@ body {
     height: 100%;
     border: none;
     background: #000;
+    z-index: 100;
 }
 
 /* Clip Info Overlay */
@@ -376,7 +379,7 @@ body {
     justify-content: space-around;
     padding: 8px 0 10px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    z-index: 1000;
+    z-index: 50;  /* CHANGE FROM 1000 TO 50 */
 }
 
 .nav-item {
@@ -823,18 +826,4 @@ body {
 @keyframes iosPulse {
     0%, 100% { transform: scale(1); opacity: 1; }
     50% { transform: scale(1.15); opacity: 0.9; }
-}
-.video-container {
-    padding-bottom: 80px;
-}
-.video-container {
-    position: relative;
-    z-index: 100;
-    padding-bottom: 80px;
-}
-
-footer {
-    position: fixed;
-    bottom: 0;
-    z-index: 10;
 }
