@@ -5,17 +5,17 @@
     "day": "Mon – Thu",
     "time": "11:30 PM",
     "type": "🎧 Dubbed",
-    "live": false,
-    "countdown": "2025-11-12T23:30:00"
+    "live": true,
+    "countdown": false
   },
   {
-    "title": "Sultan Mehmet Fatih Bolum 58",
+    "title": "Sultan Mehmet Fatih Bolum 59",
     "poster": "assets/posters/mehmet_fatih.jpg",
     "day": "Wednesday",
     "time": false,
     "type": "💬 Subtitled",
-    "live": true,
-    "countdown": false
+    "live": false,
+    "countdown": "2025-11-19T23:30:00"
   },
   {
     "title": "Kurulus Orhan Bolum 3",
