@@ -58,5 +58,17 @@
     "likes": 25,
     "comments": 0,
     "shares": 10
+  },
+  {
+    "id": "clip006",
+    "title": "Salahuddin Ayyubi",
+    "embed": "https://rumble.com/embed/v6zfa34/?pub=4noco6",
+    "thumb": "thumbs/murad.jpg",
+    "desc": "Salahuddin Ayyubi Season 2 Episode 66 Promo",
+    "added": "2025-11-12T18:00:00Z",
+    "watchUrl": "https://www.smtvurdu.site/series?series=salauddin-ayyubi",
+    "likes": 67,
+    "comments": 0,
+    "shares": 35
   }
 ]
