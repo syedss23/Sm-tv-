@@ -46,5 +46,17 @@
     "likes": 57,
     "comments": 0,
     "shares": 35
-  }
+  },
+  {
+    "id": "clip005",
+    "title": "Sultan Murad",
+    "embed": "https://rumble.com/embed/v6zerb8/?pub=4noco6",
+    "thumb": "thumbs/murad.jpg",
+    "desc": "ultan Mehmet fatih",
+    "added": "2025-11-12T18:00:00Z",
+    "watchUrl": "https://www.smtvurdu.site/series?series=sultan-mehmet-fatih",
+    "likes": 0,
+    "comments": 0,
+    "shares": 0
+  },
 ]
