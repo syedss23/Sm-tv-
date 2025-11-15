@@ -195,6 +195,19 @@
     "track": "dubbed"
     },
   {
+    "id": 16,
+    "title": "Young Ibn-e-Sina",
+    "slug": "young-ibn-sina",
+    "poster": "assets/posters/sina.jpg",
+    "desc": {
+      "en": "Ibn Sina, or Avicenna, is a curious young prodigy who is always preoccupied with inventions and doing right by everybody. He has an unquenchable appetite for innovation, ethics and knowledge. The show chronicles this world-famous scientist’s larger-than-life –and at times quirky- personality whose works paved the way of modern medicine and astronomy in the world.",
+      "hi": "सेल्ज़ुक साम्राज्य के विजयी सुलतान अल्प अर्सलान की कहानी।",
+      "ur": "سلجوقی سلطنت کے فاتح سلطان البرسلان کی کہانی۔"
+    },
+    "seasons": 2,
+    "track": "dubbed"
+  },
+  {
     "id": 101,
     "title": "Kuruluş: Orhan (English Subtitles)",
     "slug": "kurulus-orhan-en",
