@@ -106,5 +106,17 @@
     "likes": 183,
     "comments": 0,
     "shares": 78
+  },
+  {
+    "id": "clip010",
+    "title": "Kurulus Orhan",
+    "embed": "https://rumble.com/embed/v6zpah2/?pub=4noco6",
+    "thumb": "thumbs/murad.jpg",
+    "desc": "Orhan Bolum 4 Trailer 2",
+    "added": "2025-11-18T18:00:00Z",
+    "watchUrl": "https://www.smtvurdu.site/series?series=kurulus-orhan-ur",
+    "likes": 89,
+    "comments": 0,
+    "shares": 37
   }
 ]
