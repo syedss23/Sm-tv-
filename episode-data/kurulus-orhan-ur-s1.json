@@ -39,7 +39,7 @@
     "ep": 4,
     "title": "Bolum 4",
     "thumb": "assets/posters/orhan_s1e4_sub_ur.jpg",
-    "embed": false,
+    "embed": "<div style='position:relative;width:100%;height:0;padding-bottom:56.25%;'><iframe class='rumble' src='https://rumble.com/embed/v6zuuk6/?pub=4nl6ag' style='position:absolute;top:0;left:0;width:100%;height:100%;' frameborder='0' allowfullscreen></iframe></div>",
     "embed2": "<div style='position:relative;width:100%;height:0;padding-bottom:56.25%;'><iframe src='https://ok.ru/videoembed/10039233284699' style='position:absolute;top:0;left:0;width:100%;height:100%;' frameborder='0' allowfullscreen></iframe></div>",
     "watch3": "https://streamtape.com/v/vYw1edavVmU4ypy/4_urdu",
     "download": "https://nanolinks.in/CmGPE",
