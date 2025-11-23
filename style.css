@@ -632,5 +632,15 @@ button:hover{background:#272838}
   /* background-color: #e3f2fd; */
   border-radius: 5px;
 }
+.episode-item {
+  transition: none !important;
+  -webkit-tap-highlight-color: transparent;
+  animation: none !important;
+}
+
+.episode-item:active {
+  transform: none;
+  animation: none;
+}
 
 /* End of file */
