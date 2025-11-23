@@ -626,5 +626,11 @@ button:hover{background:#272838}
     font-size: 1.4rem;
     margin-bottom: 3px;
 }
+.episode-item.active {
+  border: 2px solid #4CAF50;
+  /* Or background highlight: */
+  /* background-color: #e3f2fd; */
+  border-radius: 5px;
+}
 
 /* End of file */
