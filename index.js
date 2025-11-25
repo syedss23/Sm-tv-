@@ -102,110 +102,149 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
-  // ===== New Episodes Horizontal Card Grid ===== ✅ FIXED WATCH NOW LINKS
-  const newGrid = document.getElementById('new-episodes-grid');
-  if (newGrid) {
-    fetch('episode-data/index.json')
-      .then(r => r.json())
-      .then(files => Promise.all(
-        files.map(path =>
-          fetch(path)
-            .then(res => res.ok ? res.json() : [])
-            .then(data => (Array.isArray(data) ? data.map(ep => ({ ...ep, _src: path })) : []))
-            .catch(() => [])
-        )
-      ))
-      .then(arrays => {
-        const allEpisodes = arrays.flat().filter(ep => ep.timestamp);
-        allEpisodes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        const latestEps = allEpisodes.slice(0, 5);
+ // ===== New Episodes with series.json lookup ===== ✅ FINAL FIX
+const newGrid = document.getElementById('new-episodes-grid');
+if (newGrid) {
+  // Load series.json and episode data together
+  Promise.all([
+    fetch('series.json').then(r => r.json()),
+    fetch('episode-data/index.json').then(r => r.json())
+  ])
+  .then(([seriesData, files]) => {
+    // Create slug lookup map from series.json
+    const slugMap = new Map();
+    seriesData.forEach(series => {
+      const baseSlug = series.slug
+        .replace(/-en-sub|-hi-sub|-ur-sub|-en|-hi|-ur$/i, '')
+        .toLowerCase();
+      slugMap.set(baseSlug, series.slug);
+    });
+    
+    return Promise.all(
+      files.map(path =>
+        fetch(path)
+          .then(res => res.ok ? res.json() : [])
+          .then(data => (Array.isArray(data) ? data.map(ep => ({ ...ep, _src: path })) : []))
+          .catch(() => [])
+      )
+    ).then(arrays => ({ slugMap, episodes: arrays.flat() }));
+  })
+  .then(({ slugMap, episodes }) => {
+    const allEpisodes = episodes.filter(ep => ep.timestamp);
+    allEpisodes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    const latestEps = allEpisodes.slice(0, 5);
 
-        if (!latestEps.length) {
-          newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">No new episodes found.</div>`;
-          moveFilterBarBelowNewEpisodes();
-          return;
-        }
+    if (!latestEps.length) {
+      newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">No new episodes found.</div>`;
+      moveFilterBarBelowNewEpisodes();
+      return;
+    }
 
-        newGrid.innerHTML = `
-          <div style="display:flex;gap:14px;overflow-x:auto;padding:0 2px 2px 2px;">
-            ${latestEps.map(ep => {
-              // ✅ Extract series info from JSON filename
-              let seriesSlug = '';
-              let lang = '';
-              let season = 1;
-              
-              if (ep._src) {
-                const filename = ep._src.split('/').pop(); // "salahuddin-ayyubi-s2.json"
-                let base = filename.replace('.json', ''); // "salahuddin-ayyubi-s2"
-                
-                // Extract language: -en, -hi, -ur
-                const langMatch = base.match(/-(en|hi|ur)$/i);
-                if (langMatch) {
-                  lang = langMatch[1].toLowerCase();
-                  base = base.replace(/-(en|hi|ur)$/i, ''); // Remove language
-                }
-                
-                // Extract season: -s2, -s5
-                const seasonMatch = base.match(/-s(d+)$/i);
-                if (seasonMatch) {
-                  season = parseInt(seasonMatch[1], 10);
-                  base = base.replace(/-sd+$/i, ''); // Remove season
-                }
-                
-                seriesSlug = base;
-              }
-              
-              // Use episode data or extracted values
-              seriesSlug = ep.slug || ep.series || seriesSlug;
-              season = ep.season || ep.s || season;
-              const episode = ep.ep || ep.episode || ep.e || '';
-              const thumbnail = ep.thumb || ep.poster || '';
-              const title = ep.title || 'Episode ' + (episode || '');
-              
-              // Build correct URL
-              const episodeUrl = `/episode.html?series=${encodeURIComponent(seriesSlug)}&season=${season}&ep=${episode}${lang ? '&lang=' + encodeURIComponent(lang) : ''}`;
-              
-              return `
-                <div class="episode-card-pro"
-                     style="flex:0 0 166px;min-width:150px;max-width:172px;
-                            border-radius:13px;background:#182837;
-                            box-shadow:0 4px 18px #0fd1cec7,0 2px 10px #0003;">
-                  <img src="${thumbnail}"
-                       class="episode-img-pro"
-                       alt="${title}"
-                       loading="lazy" decoding="async"
-                       style="display:block;border-radius:13px 13px 0 0;width:100%;
-                              height:110px;object-fit:cover;">
-                  <div class="episode-title-pro"
-                       style="margin:15px 0 4px 0;font-family:'Montserrat',sans-serif;
-                              font-size:1.07em;font-weight:700;color:#fff;text-align:center;">
-                    ${title}
-                    <span class="new-badge-pro"
-                          style="margin-left:7px;background:#ffd700;color:#182734;
-                                 font-size:.78em;border-radius:5px;padding:2.3px 9px;">NEW</span>
-                  </div>
-                  <a href="${episodeUrl}"
-                     class="watch-btn-pro"
-                     style="margin-bottom:13px;width:86%;display:block;
-                            background:linear-gradient(90deg,#009aff 65%,#ffd700 100%);
-                            color:#fff;font-weight:700;text-decoration:none;text-align:center;
-                            border-radius:5px;padding:8px 0;font-family:'Montserrat',sans-serif;
-                            font-size:1em;box-shadow:0 1px 10px #0087ff14;
-                            margin-left:auto;margin-right:auto;">
-                    Watch Now
-                  </a>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        `;
-        moveFilterBarBelowNewEpisodes();
-      })
-      .catch(() => {
-        newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">Could not load new episodes.</div>`;
-        moveFilterBarBelowNewEpisodes();
-      });
-  }
+    newGrid.innerHTML = `
+      <div style="display:flex;gap:14px;overflow-x:auto;padding:0 2px 2px 2px;">
+        ${latestEps.map(ep => {
+          if (!ep._src) return '';
+          
+          // Extract info from JSON filename
+          const filename = ep._src.split('/').pop();
+          let base = filename.replace('.json', '');
+          
+          // Extract season first
+          let season = 1;
+          const seasonMatch = base.match(/-s(d+)$/i);
+          if (seasonMatch) {
+            season = parseInt(seasonMatch[1], 10);
+            base = base.replace(/-sd+$/i, '');
+          }
+          
+          // Remove -sub suffix
+          base = base.replace(/-sub$/i, '');
+          
+          // Extract language
+          let lang = '';
+          const langMatch = base.match(/-(en|hi|ur)$/i);
+          if (langMatch) {
+            lang = langMatch[1].toLowerCase();
+            base = base.replace(/-(en|hi|ur)$/i, '');
+          }
+          
+          // Normalize base slug and lookup in series.json
+          const normalizedBase = base.toLowerCase()
+            .replace(/salahuddin/i, 'salauddin'); // Handle common spelling variants
+          
+          // Find correct slug from series.json
+          let correctSlug = base;
+          for (const [key, value] of slugMap.entries()) {
+            if (normalizedBase.includes(key) || key.includes(normalizedBase)) {
+              correctSlug = value;
+              break;
+            }
+          }
+          
+          // Use episode data or extracted values
+          const seriesSlug = ep.slug || ep.series || correctSlug;
+          season = ep.season || ep.s || season;
+          const episode = ep.ep || ep.episode || ep.e || '';
+          const thumbnail = ep.thumb || ep.poster || '';
+          const title = ep.title || 'Episode ' + (episode || '');
+          
+          if (!seriesSlug || !episode) {
+            console.warn('⚠️ Skipping episode - missing data:', ep);
+            return '';
+          }
+          
+          // Build URL - don't add &lang= if lang is empty
+          let episodeUrl = `/episode.html?series=${encodeURIComponent(seriesSlug)}&season=${season}&ep=${episode}`;
+          if (lang) {
+            episodeUrl += `&lang=${encodeURIComponent(lang)}`;
+          }
+          
+          console.log('✅', filename, '→', episodeUrl);
+          
+          return `
+            <div class="episode-card-pro"
+                 style="flex:0 0 166px;min-width:150px;max-width:172px;
+                        border-radius:13px;background:#182837;
+                        box-shadow:0 4px 18px #0fd1cec7,0 2px 10px #0003;">
+              <img src="${thumbnail}"
+                   class="episode-img-pro"
+                   alt="${title}"
+                   loading="lazy" decoding="async"
+                   onerror="this.src='assets/placeholder.jpg'"
+                   style="display:block;border-radius:13px 13px 0 0;width:100%;
+                          height:110px;object-fit:cover;">
+              <div class="episode-title-pro"
+                   style="margin:15px 0 4px 0;font-family:'Montserrat',sans-serif;
+                          font-size:1.07em;font-weight:700;color:#fff;text-align:center;
+                          padding:0 8px;">
+                ${title}
+                <span class="new-badge-pro"
+                      style="margin-left:7px;background:#ffd700;color:#182734;
+                             font-size:.78em;border-radius:5px;padding:2.3px 9px;">NEW</span>
+              </div>
+              <a href="${episodeUrl}"
+                 class="watch-btn-pro"
+                 style="margin-bottom:13px;width:86%;display:block;
+                        background:linear-gradient(90deg,#009aff 65%,#ffd700 100%);
+                        color:#fff;font-weight:700;text-decoration:none;text-align:center;
+                        border-radius:5px;padding:8px 0;font-family:'Montserrat',sans-serif;
+                        font-size:1em;box-shadow:0 1px 10px #0087ff14;
+                        margin-left:auto;margin-right:auto;">
+                Watch Now
+              </a>
+            </div>
+          `;
+        }).filter(html => html).join('')}
+      </div>
+    `;
+    moveFilterBarBelowNewEpisodes();
+  })
+  .catch(err => {
+    console.error('Failed to load new episodes:', err);
+    newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">Could not load new episodes.</div>`;
+    moveFilterBarBelowNewEpisodes();
+  });
+}
 
   // ------------- Series homepage grid: unchanged -------------
   const grid = document.getElementById('series-grid');
