@@ -102,22 +102,25 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
- // ===== New Episodes with series.json lookup ===== ✅ FINAL FIX
+ // ===== New Episodes - MATCHES series.js EXACTLY ===== ✅
 const newGrid = document.getElementById('new-episodes-grid');
 if (newGrid) {
-  // Load series.json and episode data together
+  // Load series.json and episodes together
   Promise.all([
-    fetch('series.json').then(r => r.json()),
+    fetch('/series.json').then(r => r.json()),
     fetch('episode-data/index.json').then(r => r.json())
   ])
   .then(([seriesData, files]) => {
-    // Create slug lookup map from series.json
-    const slugMap = new Map();
+    // Create map: filename base → series metadata
+    const seriesMap = new Map();
     seriesData.forEach(series => {
-      const baseSlug = series.slug
-        .replace(/-en-sub|-hi-sub|-ur-sub|-en|-hi|-ur$/i, '')
-        .toLowerCase();
-      slugMap.set(baseSlug, series.slug);
+      // Store multiple possible filename patterns for each series
+      const patterns = [
+        series.slug,
+        series.slug.replace(/-en-sub|-hi-sub|-ur-sub$/i, ''),
+        series.slug.replace(/-en|-hi|-ur$/i, '')
+      ];
+      patterns.forEach(pattern => seriesMap.set(pattern.toLowerCase(), series));
     });
     
     return Promise.all(
@@ -127,9 +130,9 @@ if (newGrid) {
           .then(data => (Array.isArray(data) ? data.map(ep => ({ ...ep, _src: path })) : []))
           .catch(() => [])
       )
-    ).then(arrays => ({ slugMap, episodes: arrays.flat() }));
+    ).then(arrays => ({ seriesMap, episodes: arrays.flat() }));
   })
-  .then(({ slugMap, episodes }) => {
+  .then(({ seriesMap, episodes }) => {
     const allEpisodes = episodes.filter(ep => ep.timestamp);
     allEpisodes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     const latestEps = allEpisodes.slice(0, 5);
@@ -145,16 +148,16 @@ if (newGrid) {
         ${latestEps.map(ep => {
           if (!ep._src) return '';
           
-          // Extract info from JSON filename
-          const filename = ep._src.split('/').pop();
-          let base = filename.replace('.json', '');
+          // Extract filename: "episode-data/salahuddin-ayyubi-s2.json"
+          const filename = ep._src.split('/').pop(); // "salahuddin-ayyubi-s2.json"
+          let base = filename.replace('.json', ''); // "salahuddin-ayyubi-s2"
           
-          // Extract season first
+          // Extract season FIRST
           let season = 1;
           const seasonMatch = base.match(/-s(d+)$/i);
           if (seasonMatch) {
             season = parseInt(seasonMatch[1], 10);
-            base = base.replace(/-sd+$/i, '');
+            base = base.replace(/-sd+$/i, ''); // "salahuddin-ayyubi"
           }
           
           // Remove -sub suffix
@@ -168,36 +171,38 @@ if (newGrid) {
             base = base.replace(/-(en|hi|ur)$/i, '');
           }
           
-          // Normalize base slug and lookup in series.json
-          const normalizedBase = base.toLowerCase()
-            .replace(/salahuddin/i, 'salauddin'); // Handle common spelling variants
+          // Find matching series from series.json
+          const baseKey = base.toLowerCase();
+          let matchedSeries = seriesMap.get(baseKey);
           
-          // Find correct slug from series.json
-          let correctSlug = base;
-          for (const [key, value] of slugMap.entries()) {
-            if (normalizedBase.includes(key) || key.includes(normalizedBase)) {
-              correctSlug = value;
-              break;
+          // Fuzzy match if exact match fails
+          if (!matchedSeries) {
+            for (const [key, series] of seriesMap.entries()) {
+              if (baseKey.includes(key) || key.includes(baseKey)) {
+                matchedSeries = series;
+                break;
+              }
             }
           }
           
-          // Use episode data or extracted values
-          const seriesSlug = ep.slug || ep.series || correctSlug;
-          season = ep.season || ep.s || season;
+          if (!matchedSeries) {
+            console.warn('⚠️ No series found for:', filename);
+            return '';
+          }
+          
+          // Use series.json slug (like series.js does)
+          const slug = matchedSeries.slug;
           const episode = ep.ep || ep.episode || ep.e || '';
           const thumbnail = ep.thumb || ep.poster || '';
           const title = ep.title || 'Episode ' + (episode || '');
           
-          if (!seriesSlug || !episode) {
-            console.warn('⚠️ Skipping episode - missing data:', ep);
+          if (!slug || !episode) {
+            console.warn('⚠️ Missing slug or episode:', ep);
             return '';
           }
           
-          // Build URL - don't add &lang= if lang is empty
-          let episodeUrl = `/episode.html?series=${encodeURIComponent(seriesSlug)}&season=${season}&ep=${episode}`;
-          if (lang) {
-            episodeUrl += `&lang=${encodeURIComponent(lang)}`;
-          }
+          // Build URL EXACTLY like series.js does
+          const episodeUrl = `episode.html?series=${encodeURIComponent(slug)}&season=${encodeURIComponent(season)}&ep=${encodeURIComponent(episode)}${lang ? ('&lang=' + encodeURIComponent(lang)) : ''}`;
           
           console.log('✅', filename, '→', episodeUrl);
           
