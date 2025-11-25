@@ -1,23 +1,519 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-WM3KEDD127"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WM3KEDD127"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-WM3KEDD127');
+  </script>
 
-  gtag('config', 'G-WM3KEDD127');
-</script>
   <meta charset="UTF-8">
   <title>SM-TV – Streaming</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Your main site styles -->
   <link rel="stylesheet" href="style.css">
+
+  <!-- Popup styles -->
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    #episode-view {
+      min-height: 100vh;
+    }
+
+    #unlockPopup {
+      display: none;
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 99999;
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.04);
+      backdrop-filter: blur(4px) saturate(130%);
+      -webkit-backdrop-filter: blur(4px) saturate(130%);
+      overflow-y: auto;
+    }
+
+    .popup-container {
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .popup-card {
+      max-width: 460px;
+      width: 100%;
+      border-radius: 24px;
+      padding: 24px 20px 20px;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg,
+          rgba(11, 18, 35, 0.82),
+          rgba(11, 18, 35, 0.60));
+      border: 1px solid rgba(255, 255, 255, 0.20);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+      animation: popupIn 0.30s ease-out forwards;
+    }
+
+    .popup-card::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 0% 0%,
+          rgba(0, 208, 240, 0.7),
+          transparent 55%),
+        radial-gradient(circle at 100% 100%,
+          rgba(255, 212, 0, 0.7),
+          transparent 55%);
+      opacity: 0.18;
+      mix-blend-mode: screen;
+    }
+
+    @keyframes popupIn {
+      from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .popup-header {
+      text-align: center;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .popup-lock-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 52px;
+      height: 52px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 0%,
+                  rgba(0, 208, 240, 0.95),
+                  rgba(18, 27, 56, 0.6));
+      box-shadow:
+        0 0 20px rgba(0, 208, 240, 0.9),
+        0 10px 24px rgba(0, 0, 0, 0.8);
+    }
+
+    .popup-header h2 {
+      color: #f4f7ff;
+      font-size: 23px;
+      margin: 6px 0 4px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+    }
+
+    .popup-header p {
+      color: rgba(225, 235, 255, 0.86);
+      font-size: 14px;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    .sponsor-section {
+      position: relative;
+      z-index: 1;
+      border-radius: 18px;
+      padding: 16px 15px 16px;
+      margin-bottom: 16px;
+      background:
+        linear-gradient(145deg,
+          rgba(255, 255, 255, 0.03),
+          rgba(0, 0, 0, 0.25));
+      border: 1px solid rgba(139, 233, 255, 0.55);
+    }
+
+    .sponsor-section h3 {
+      color: #8be9ff;
+      font-size: 14px;
+      margin: 0 0 10px;
+      text-align: center;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+    }
+
+    .sponsor-brand-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .sponsor-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      object-fit: cover;
+      border: 2px solid rgba(255, 212, 0, 0.6);
+      box-shadow: 0 6px 16px rgba(255, 212, 0, 0.7);
+    }
+
+    .sponsor-brand {
+      color: #ffd962;
+      font-size: 21px;
+      font-weight: 900;
+      text-shadow:
+        0 0 16px rgba(255, 212, 0, 0.85),
+        0 0 32px rgba(255, 180, 0, 0.7);
+    }
+
+    .unlock-message {
+      color: rgba(235, 244, 255, 0.90);
+      text-align: center;
+      margin: 0 4px 14px;
+      font-size: 13px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .unlock-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 22px;
+      width: 100%;
+      border-radius: 999px;
+      border: none;
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg,
+            #667eea 0%,
+            #764ba2 45%,
+            #f093fb 100%);
+      color: #fff;
+      box-shadow:
+        0 12px 28px rgba(118, 75, 162, 0.7),
+        0 0 26px rgba(240, 147, 251, 0.8);
+      text-shadow: 0 2px 7px rgba(0, 0, 0, 0.45);
+      transition: all 0.3s ease;
+    }
+
+    .unlock-btn:hover {
+      transform: translateY(-1.5px);
+      filter: brightness(1.06);
+      box-shadow:
+        0 16px 36px rgba(118, 75, 162, 0.9),
+        0 0 32px rgba(240, 147, 251, 1);
+    }
+
+    .unlock-btn:active {
+      transform: translateY(0);
+      box-shadow:
+        0 9px 22px rgba(118, 75, 162, 0.6),
+        0 0 20px rgba(240, 147, 251, 0.75);
+    }
+
+    .contact-section {
+      position: relative;
+      z-index: 1;
+      margin-top: 14px;
+      border-radius: 18px;
+      padding: 14px 13px 14px;
+      background:
+        linear-gradient(145deg,
+          rgba(255, 255, 255, 0.02),
+          rgba(0, 0, 0, 0.28));
+      border: 1px solid rgba(255, 212, 0, 0.55);
+      text-align: center;
+    }
+
+    .contact-section h3 {
+      color: #ffd962;
+      font-size: 16px;
+      margin: 0 0 4px;
+      font-weight: 800;
+    }
+
+    .contact-section p {
+      color: rgba(240, 244, 255, 0.90);
+      font-size: 13px;
+      line-height: 1.55;
+      margin: 0 4px 10px;
+    }
+
+    .contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 19px;
+      background: linear-gradient(90deg,
+                  rgba(255, 212, 0, 0.96),
+                  rgba(255, 179, 87, 0.98));
+      color: #151515;
+      font-weight: 800;
+      font-size: 13px;
+      border-radius: 999px;
+      text-decoration: none;
+      box-shadow:
+        0 10px 24px rgba(255, 212, 0, 0.7),
+        0 0 20px rgba(255, 212, 0, 1);
+      transition: transform 0.16s ease,
+                  box-shadow 0.16s ease;
+    }
+
+    .contact-btn:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 14px 30px rgba(255, 212, 0, 0.9),
+        0 0 26px rgba(255, 212, 0, 1);
+    }
+
+    @media (max-width: 520px) {
+      #unlockPopup {
+        padding: 10px;
+      }
+      .popup-card {
+        padding: 22px 16px 18px;
+        border-radius: 20px;
+      }
+      .popup-header h2 {
+        font-size: 20px;
+      }
+      .sponsor-brand {
+        font-size: 18px;
+      }
+    }
+  </style>
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Episode logic -->
   <script defer src="episode.js"></script>
 </head>
 <body>
   <!-- Episode Player -->
   <div id="episode-view"></div>
+
+  <!-- Unlock Popup -->
+  <div id="unlockPopup">
+    <div class="popup-container">
+      <div class="popup-card">
+
+        <div class="popup-header">
+          <div class="popup-lock-icon">⏳</div>
+          <h2 id="popupTitle">Unlocking Episode...</h2>
+          <p id="popupSubtitle">Episode <span id="episodeNumber">1</span></p>
+        </div>
+
+        <div class="sponsor-section">
+          <h3>Episode Sponsored By</h3>
+
+          <div class="sponsor-brand-container">
+            <img src="sponsor.png" alt="Sponsor Logo" class="sponsor-logo">
+            <div class="sponsor-brand">FX Reall Accadmy</div>
+          </div>
+
+          <p class="unlock-message" id="unlockMessage">
+            Join our sponsor channel to unlock and watch this episode
+          </p>
+
+          <a href="https://t.me/+OKnw3z4Uq28wYzRk"
+             target="_blank"
+             class="unlock-btn"
+             id="unlockBtn">
+            <i class="fas fa-paper-plane"></i>
+            <span id="btnText">Join Channel & Unlock</span>
+          </a>
+        </div>
+
+        <div class="contact-section">
+          <h3>Become a Sponsor</h3>
+          <p>Advertise your brand here and reach thousands of active viewers every day.</p>
+          <a href="https://t.me/itz_me_zain1" class="contact-btn">
+            <i class="fas fa-envelope"></i>
+            Contact Us
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Unlock System: Every 5th Episode Requires Unlock -->
+  <script>
+  (function() {
+    const popup = document.getElementById('unlockPopup');
+    const unlockBtn = document.getElementById('unlockBtn');
+    const btnText = document.getElementById('btnText');
+    const popupTitle = document.getElementById('popupTitle');
+    const popupSubtitle = document.getElementById('popupSubtitle');
+    const episodeNumber = document.getElementById('episodeNumber');
+    const unlockMessage = document.getElementById('unlockMessage');
+    const lockIcon = document.querySelector('.popup-lock-icon');
+
+    // Get episode info
+    const urlParams = new URLSearchParams(window.location.search);
+    const slug = urlParams.get('series');
+    const season = urlParams.get('season');
+    const ep = urlParams.get('ep');
+
+    if (!slug || !season || !ep) {
+      console.error('Missing episode parameters');
+      return;
+    }
+
+    // Update episode number in UI
+    episodeNumber.textContent = ep;
+
+    const unlockKey = 'unlocked_' + slug + '_s' + season + '_e' + ep;
+    const unlockTimeKey = unlockKey + '_time';
+
+    // Check if episode requires unlock (episodes 1, 5, 10, 15, 20, etc.)
+    function requiresUnlock(episodeNum) {
+      const num = parseInt(episodeNum);
+      
+      // Episode 1 always requires unlock
+      if (num === 1) return true;
+      
+      // Every 5th episode requires unlock (5, 10, 15, 20...)
+      return num % 5 === 0;
+    }
+
+    // Check if THIS episode is already unlocked (24h expiry)
+    function isEpisodeUnlocked() {
+      const unlockTime = localStorage.getItem(unlockTimeKey);
+      if (!unlockTime) return false;
+
+      const hoursPassed = (Date.now() - parseInt(unlockTime)) / (1000 * 60 * 60);
+
+      if (hoursPassed >= 24) {
+        localStorage.removeItem(unlockKey);
+        localStorage.removeItem(unlockTimeKey);
+        return false;
+      }
+
+      return localStorage.getItem(unlockKey) === 'true';
+    }
+
+    // Update message based on episode number
+    function updatePopupMessage() {
+      const epNum = parseInt(ep);
+      
+      if (epNum === 1) {
+        unlockMessage.textContent = '🎬 Welcome! Join our sponsor to start watching this series';
+      } else if (epNum % 5 === 0) {
+        const nextFree = epNum + 1;
+        const freeUntil = epNum + 4;
+        unlockMessage.textContent = `📺 Unlock episode ${epNum} to watch free until episode ${freeUntil}`;
+      } else {
+        unlockMessage.textContent = 'Join our sponsor channel to unlock this episode';
+      }
+    }
+
+    // Check if we should show popup
+    if (!isEpisodeUnlocked() && requiresUnlock(ep)) {
+      // This episode requires unlock
+      updatePopupMessage();
+      setTimeout(function() {
+        popup.style.display = 'block';
+      }, 500);
+    } else if (!isEpisodeUnlocked()) {
+      // Free episode (2-4, 6-9, 11-14, etc.) - auto unlock
+      localStorage.setItem(unlockKey, 'true');
+      localStorage.setItem(unlockTimeKey, Date.now().toString());
+      
+      // Track free episode view
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'free_episode_watch', {
+          'episode': slug + '_s' + season + 'e' + ep
+        });
+      }
+    }
+
+    // Handle unlock button click
+    let isProcessing = false;
+
+    unlockBtn.addEventListener('click', function(e) {
+      if (isProcessing) {
+        // Second click - close popup
+        if (btnText.innerHTML.includes('Tap to Watch')) {
+          localStorage.setItem(unlockKey, 'true');
+          localStorage.setItem(unlockTimeKey, Date.now().toString());
+          popup.style.display = 'none';
+          
+          // Track unlock success
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'episode_watch_start', {
+              'episode': slug + '_s' + season + 'e' + ep,
+              'episode_type': requiresUnlock(ep) ? 'sponsored' : 'free'
+            });
+          }
+        }
+        return;
+      }
+
+      // First click - start checking
+      isProcessing = true;
+      
+      unlockBtn.style.opacity = '0.6';
+      unlockBtn.style.pointerEvents = 'none';
+      btnText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+      popupTitle.textContent = 'Verifying Membership...';
+      lockIcon.textContent = '⏳';
+      
+      // Track unlock attempt
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'episode_unlock_attempt', {
+          'episode': slug + '_s' + season + 'e' + ep,
+          'method': 'channel_join'
+        });
+      }
+      
+      // After 20 seconds - show success
+      setTimeout(function() {
+        unlockBtn.style.opacity = '1';
+        unlockBtn.style.pointerEvents = 'auto';
+        unlockBtn.style.cursor = 'pointer';
+        unlockBtn.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
+        unlockBtn.style.boxShadow = '0 12px 28px rgba(17, 153, 142, 0.8), 0 0 32px rgba(56, 239, 125, 1)';
+        btnText.innerHTML = '<i class="fas fa-check-circle"></i> Episode Unlocked! Tap to Watch';
+        popupTitle.textContent = 'Successfully Unlocked!';
+        popupSubtitle.textContent = 'Ready to watch Episode ' + ep;
+        lockIcon.textContent = '✅';
+        
+        // Show next unlock info
+        const nextUnlock = Math.ceil(parseInt(ep) / 5) * 5 + 5;
+        unlockMessage.textContent = `🎉 Enjoy! Next unlock required at episode ${nextUnlock}`;
+        
+        // Track successful unlock
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'episode_unlock_success', {
+            'episode': slug + '_s' + season + 'e' + ep
+          });
+        }
+      }, 20000); // 20 seconds
+    });
+  })();
+  </script>
 </body>
 </html>
