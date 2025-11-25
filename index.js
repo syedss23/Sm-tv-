@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
-  // ===== New Episodes Horizontal Card Grid =====
+  // ===== New Episodes Horizontal Card Grid ===== ✅ FIXED
   const newGrid = document.getElementById('new-episodes-grid');
   if (newGrid) {
     fetch('episode-data/index.json')
@@ -147,15 +147,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         style="margin-left:7px;background:#ffd700;color:#182734;
                                font-size:.78em;border-radius:5px;padding:2.3px 9px;">NEW</span>
                 </div>
-                <a href="${ep.shortlink || ep.download || '#'}"
+                <a href="/episode.html?series=${ep.slug || ep.series || ''}&season=${ep.season || 1}&ep=${ep.ep || ep.episode || ''}"
                    class="watch-btn-pro"
-                   target="_blank" rel="noopener"
                    style="margin-bottom:13px;width:86%;display:block;
                           background:linear-gradient(90deg,#009aff 65%,#ffd700 100%);
                           color:#fff;font-weight:700;text-decoration:none;text-align:center;
                           border-radius:5px;padding:8px 0;font-family:'Montserrat',sans-serif;
                           font-size:1em;box-shadow:0 1px 10px #0087ff14;
-                          margin-left:auto;margin-right:auto;">
+                          margin-left:auto;margin-right:auto;"
+                   onclick="if(typeof gtag!=='undefined'){gtag('event','watch_episode',{series:'${ep.slug||''}',episode:${ep.ep||0},source:'new_episodes'});}">
                   Watch Now
                 </a>
               </div>
