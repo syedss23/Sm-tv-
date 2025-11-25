@@ -48,13 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
                      style="width:30px;height:30px;object-fit:cover;border-radius:6px;">` : ''
               }
               <div style="display:flex;flex-direction:column;line-height:1.15;min-width:0;">
-                <!-- Title -->
                 <div style="font-weight:700;font-size:0.92em;color:#23c6ed;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
                   <span class="title" style="overflow-wrap:anywhere;">${title}</span>
                   ${live ? '<span style="background:#ff2d2d;color:#fff;padding:1px 6px;border-radius:6px;font-size:0.7em;">LIVE</span>' : ''}
                 </div>
-
-                <!-- One compact line: day • time • type (small, old-style) -->
                 <div class="schedule-row"
                      style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px;font-size:0.86em;line-height:1.25;">
                   ${day  ? `<span class="day"  style="color:#ffd267;font-weight:600;">${day}</span>` : ''}
@@ -62,8 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
                   ${time ? `<span class="time" style="color:#9fd3ff;font-weight:600;">${time}</span>` : ''}
                   ${type ? `<span class="dot" style="opacity:.6;">•</span><span class="type" style="color:#23c6ed;font-weight:600;">${type}</span>` : ''}
                 </div>
-
-                <!-- Countdown below, slightly smaller -->
                 ${countdown ? `<div class="countdown"
                                   data-time="${countdown}"
                                   style="color:#ffd84d;font-size:0.78em;margin-top:2px;"></div>` : ''}
@@ -102,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
-  // ===== New Episodes Horizontal Card Grid ===== ✅ FIXED
+  // ===== New Episodes Horizontal Card Grid ===== ✅ MATCHES series.js FORMAT
   const newGrid = document.getElementById('new-episodes-grid');
   if (newGrid) {
     fetch('episode-data/index.json')
@@ -128,43 +123,83 @@ document.addEventListener('DOMContentLoaded', () => {
 
         newGrid.innerHTML = `
           <div style="display:flex;gap:14px;overflow-x:auto;padding:0 2px 2px 2px;">
-            ${latestEps.map(ep => `
-              <div class="episode-card-pro"
-                   style="flex:0 0 166px;min-width:150px;max-width:172px;
-                          border-radius:13px;background:#182837;
-                          box-shadow:0 4px 18px #0fd1cec7,0 2px 10px #0003;">
-                <img src="${ep.thumb || ep.poster || ''}"
-                     class="episode-img-pro"
-                     alt="${ep.title || ('Episode ' + (ep.ep || ''))}"
-                     loading="lazy" decoding="async"
-                     style="display:block;border-radius:13px 13px 0 0;width:100%;
-                            height:110px;object-fit:cover;">
-                <div class="episode-title-pro"
-                     style="margin:15px 0 4px 0;font-family:'Montserrat',sans-serif;
-                            font-size:1.07em;font-weight:700;color:#fff;text-align:center;">
-                  ${ep.title || 'Episode ' + (ep.ep || '')}
-                  <span class="new-badge-pro"
-                        style="margin-left:7px;background:#ffd700;color:#182734;
-                               font-size:.78em;border-radius:5px;padding:2.3px 9px;">NEW</span>
+            ${latestEps.map(ep => {
+              // Extract slug and lang from JSON filename - MATCHES series.js pattern
+              let seriesSlug = '';
+              let lang = '';
+              
+              if (ep._src) {
+                const filename = ep._src.split('/').pop();
+                const withoutExt = filename.replace('.json', '');
+                
+                // Check if it has language suffix: -en, -hi, -ur
+                const langMatch = withoutExt.match(/-(en|hi|ur)$/i);
+                if (langMatch) {
+                  lang = langMatch[1].toLowerCase();
+                  const withoutLang = withoutExt.replace(/-(en|hi|ur)$/i, '');
+                  seriesSlug = withoutLang.replace(/-sd+$/i, '');
+                } else {
+                  seriesSlug = withoutExt.replace(/-sd+$/i, '');
+                  lang = 'dub';
+                }
+              }
+              
+              seriesSlug = ep.slug || ep.series || seriesSlug;
+              
+              const season = ep.season || ep.s || 1;
+              const episode = ep.ep || ep.episode || ep.e || '';
+              const thumbnail = ep.thumb || ep.poster || ep.thumbnail || '';
+              const title = ep.title || `Episode ${episode}`;
+              
+              if (!seriesSlug || !episode) {
+                console.warn('Missing slug or episode:', ep);
+                return '';
+              }
+              
+              // Build URL - MATCHES series.js format exactly
+              const episodeUrl = `/episode.html?series=${encodeURIComponent(seriesSlug)}&season=${season}&ep=${episode}${lang && lang !== 'dub' ? '&lang=' + encodeURIComponent(lang) : ''}`;
+              
+              return `
+                <div class="episode-card-pro"
+                     style="flex:0 0 166px;min-width:150px;max-width:172px;
+                            border-radius:13px;background:#182837;
+                            box-shadow:0 4px 18px #0fd1cec7,0 2px 10px #0003;">
+                  <img src="${thumbnail}"
+                       class="episode-img-pro"
+                       alt="${title}"
+                       loading="lazy" decoding="async"
+                       onerror="this.src='assets/placeholder.jpg'"
+                       style="display:block;border-radius:13px 13px 0 0;width:100%;
+                              height:110px;object-fit:cover;">
+                  <div class="episode-title-pro"
+                       style="margin:15px 0 4px 0;font-family:'Montserrat',sans-serif;
+                              font-size:1.07em;font-weight:700;color:#fff;text-align:center;
+                              padding:0 8px;">
+                    ${title}
+                    <span class="new-badge-pro"
+                          style="margin-left:7px;background:#ffd700;color:#182734;
+                                 font-size:.78em;border-radius:5px;padding:2.3px 9px;">NEW</span>
+                  </div>
+                  <a href="${episodeUrl}"
+                     class="watch-btn-pro"
+                     style="margin-bottom:13px;width:86%;display:block;
+                            background:linear-gradient(90deg,#009aff 65%,#ffd700 100%);
+                            color:#fff;font-weight:700;text-decoration:none;text-align:center;
+                            border-radius:5px;padding:8px 0;font-family:'Montserrat',sans-serif;
+                            font-size:1em;box-shadow:0 1px 10px #0087ff14;
+                            margin-left:auto;margin-right:auto;"
+                     onclick="if(typeof gtag!=='undefined'){gtag('event','watch_episode',{series:'${seriesSlug}',episode:${episode},source:'new_episodes',lang:'${lang}'});}">
+                    Watch Now
+                  </a>
                 </div>
-                <a href="/episode.html?series=${ep.slug || ep.series || ''}&season=${ep.season || 1}&ep=${ep.ep || ep.episode || ''}"
-                   class="watch-btn-pro"
-                   style="margin-bottom:13px;width:86%;display:block;
-                          background:linear-gradient(90deg,#009aff 65%,#ffd700 100%);
-                          color:#fff;font-weight:700;text-decoration:none;text-align:center;
-                          border-radius:5px;padding:8px 0;font-family:'Montserrat',sans-serif;
-                          font-size:1em;box-shadow:0 1px 10px #0087ff14;
-                          margin-left:auto;margin-right:auto;"
-                   onclick="if(typeof gtag!=='undefined'){gtag('event','watch_episode',{series:'${ep.slug||''}',episode:${ep.ep||0},source:'new_episodes'});}">
-                  Watch Now
-                </a>
-              </div>
-            `).join('')}
+              `;
+            }).filter(html => html).join('')}
           </div>
         `;
         moveFilterBarBelowNewEpisodes();
       })
-      .catch(() => {
+      .catch(err => {
+        console.error('Failed to load new episodes:', err);
         newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">Could not load new episodes.</div>`;
         moveFilterBarBelowNewEpisodes();
       });
