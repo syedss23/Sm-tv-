@@ -101,8 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>`;
       });
   }
-
- // ===== New Episodes - FINAL CORRECT VERSION ===== ✅
+ 
+   // ===== New Episodes - 100% CORRECT VERSION ===== ✅
 const newGrid = document.getElementById('new-episodes-grid');
 if (newGrid) {
   Promise.all([
@@ -135,88 +135,74 @@ if (newGrid) {
         ${latestEps.map(ep => {
           if (!ep._src) return '';
           
-          // Parse filename: "episode-data/salahuddin-ayyubi-s2.json"
+          // Get filename: "sultan-mehmet-fatih-hi-sub-s3.json"
           const filename = ep._src.split('/').pop();
-          let base = filename.replace('.json', '');
+          const base = filename.replace('.json', ''); // "sultan-mehmet-fatih-hi-sub-s3"
           
-          // ✅ STEP 1: Extract SEASON from filename (trust this!)
-          let seasonFromFile = null;
-          const seasonMatch = base.match(/-s(d+)$/i);
-          if (seasonMatch) {
-            seasonFromFile = parseInt(seasonMatch[1], 10); // 2 from "s2"
-            base = base.replace(/-sd+$/i, ''); // Remove "-s2"
+          // ✅ EXTRACT INFO IN CORRECT ORDER
+          let workingString = base;
+          let extractedSeason = 1;
+          let extractedLang = '';
+          let baseName = base;
+          
+          // 1. Remove season suffix: -s3 → season = 3
+          const sMatch = workingString.match(/-s(d+)$/i);
+          if (sMatch) {
+            extractedSeason = parseInt(sMatch[1], 10);
+            workingString = workingString.replace(/-sd+$/i, ''); // "sultan-mehmet-fatih-hi-sub"
           }
           
-          // ✅ STEP 2: Remove "-sub" suffix
-          base = base.replace(/-sub$/i, '');
-          
-          // ✅ STEP 3: Extract language
-          let langFromFile = '';
-          const langMatch = base.match(/-(en|hi|ur)$/i);
-          if (langMatch) {
-            langFromFile = langMatch[1].toLowerCase();
-            base = base.replace(/-(en|hi|ur)$/i, '');
+          // 2. Remove -sub suffix
+          if (workingString.endsWith('-sub')) {
+            workingString = workingString.replace(/-sub$/i, ''); // "sultan-mehmet-fatih-hi"
           }
           
-          // Now base = "salahuddin-ayyubi" or "sultan-mehmet-fatih"
-          // We need to find the correct series that matches this base + language
+          // 3. Extract language: -hi, -en, -ur
+          const lMatch = workingString.match(/-(en|hi|ur)$/i);
+          if (lMatch) {
+            extractedLang = lMatch[1].toLowerCase();
+            workingString = workingString.replace(/-(en|hi|ur)$/i, ''); // "sultan-mehmet-fatih"
+          }
           
-          // ✅ STEP 4: Find matching series from series.json
-          let matchedSeries = null;
-          const normalizedBase = base.toLowerCase();
+          baseName = workingString; // Final base: "sultan-mehmet-fatih"
           
-          // First, try exact match with language suffix
-          if (langFromFile) {
-            // Try: "sultan-mehmet-fatih-hi-sub"
-            matchedSeries = seriesData.find(s => 
-              s.slug.toLowerCase() === `${normalizedBase}-${langFromFile}-sub`
-            );
-            if (!matchedSeries) {
-              // Try: "sultan-mehmet-fatih-hi"
-              matchedSeries = seriesData.find(s => 
-                s.slug.toLowerCase() === `${normalizedBase}-${langFromFile}`
-              );
+          // ✅ FIND CORRECT SERIES FROM series.json
+          // Rebuild the slug that matches series.json format
+          let targetSlug = baseName;
+          if (extractedLang) {
+            // Check if series.json has this series with -lang-sub format
+            const withSub = seriesData.find(s => s.slug.toLowerCase() === `${baseName}-${extractedLang}-sub`);
+            if (withSub) {
+              targetSlug = withSub.slug; // "sultan-mehmet-fatih-hi-sub"
+            } else {
+              const withoutSub = seriesData.find(s => s.slug.toLowerCase() === `${baseName}-${extractedLang}`);
+              if (withoutSub) {
+                targetSlug = withoutSub.slug;
+              }
+            }
+          } else {
+            // Dubbed version - find exact match
+            const dubbed = seriesData.find(s => s.slug.toLowerCase() === baseName);
+            if (dubbed) {
+              targetSlug = dubbed.slug;
             }
           }
           
-          // If no match with language, try base slug (for dubbed)
-          if (!matchedSeries) {
-            matchedSeries = seriesData.find(s => s.slug.toLowerCase() === normalizedBase);
-          }
-          
-          // Fallback fuzzy match
-          if (!matchedSeries) {
-            matchedSeries = seriesData.find(s => {
-              const sSlug = s.slug.toLowerCase();
-              return sSlug.includes(normalizedBase) || normalizedBase.includes(sSlug);
-            });
-          }
-          
-          if (!matchedSeries) {
-            console.warn('⚠️ No series match for:', filename);
-            return '';
-          }
-          
-          // ✅ Use series.slug from series.json
-          const slug = matchedSeries.slug;
-          
-          // ✅ Use season from FILENAME (not from episode data)
-          const season = seasonFromFile || 1;
-          
-          // ✅ Use language from FILENAME
-          const lang = langFromFile;
-          
-          const episode = ep.ep || ep.episode || ep.e || '';
+          // Get episode data
+          const episodeNum = ep.ep || ep.episode || ep.e || '';
           const thumbnail = ep.thumb || ep.poster || '';
-          const title = ep.title || 'Episode ' + (episode || '');
+          const episodeTitle = ep.title || `Episode ${episodeNum}`;
           
-          if (!slug || !episode) {
-            console.warn('⚠️ Missing data:', { slug, episode, filename });
+          if (!targetSlug || !episodeNum) {
+            console.warn('⚠️ Skipping:', filename);
             return '';
           }
           
-          // ✅ Build URL exactly like series.js
-          const episodeUrl = `episode.html?series=${encodeURIComponent(slug)}&season=${encodeURIComponent(season)}&ep=${encodeURIComponent(episode)}${lang ? ('&lang=' + encodeURIComponent(lang)) : ''}`;
+          // ✅ BUILD URL - EXACT FORMAT
+          let episodeUrl = `episode.html?series=${encodeURIComponent(targetSlug)}&season=${extractedSeason}&ep=${episodeNum}`;
+          if (extractedLang) {
+            episodeUrl += `&lang=${extractedLang}`;
+          }
           
           console.log('✅', filename, '→', episodeUrl);
           
@@ -227,19 +213,18 @@ if (newGrid) {
                         box-shadow:0 4px 18px #0fd1cec7,0 2px 10px #0003;">
               <img src="${thumbnail}"
                    class="episode-img-pro"
-                   alt="${title}"
+                   alt="${episodeTitle}"
                    loading="lazy" decoding="async"
                    onerror="this.src='assets/placeholder.jpg'"
                    style="display:block;border-radius:13px 13px 0 0;width:100%;
                           height:110px;object-fit:cover;">
               <div class="episode-title-pro"
-                   style="margin:15px 0 4px 0;font-family:'Montserrat',sans-serif;
+                   style="margin:15px 8px 4px 8px;font-family:'Montserrat',sans-serif;
                           font-size:1.07em;font-weight:700;color:#fff;text-align:center;
-                          padding:0 8px;">
-                ${title}
-                <span class="new-badge-pro"
-                      style="margin-left:7px;background:#ffd700;color:#182734;
-                             font-size:.78em;border-radius:5px;padding:2.3px 9px;">NEW</span>
+                          display:flex;align-items:center;justify-content:center;gap:6px;">
+                <span>${episodeTitle}</span>
+                <span style="background:#ffd700;color:#182734;font-size:.72em;
+                             border-radius:5px;padding:2px 8px;font-weight:800;">NEW</span>
               </div>
               <a href="${episodeUrl}"
                  class="watch-btn-pro"
@@ -263,7 +248,7 @@ if (newGrid) {
     newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">Could not load new episodes.</div>`;
     moveFilterBarBelowNewEpisodes();
   });
-}
+}         
                  
 
   // ------------- Series homepage grid: unchanged -------------
