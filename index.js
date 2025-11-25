@@ -102,27 +102,14 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
- // ===== New Episodes - MATCHES series.js EXACTLY ===== ✅
+ // ===== New Episodes - FINAL CORRECT VERSION ===== ✅
 const newGrid = document.getElementById('new-episodes-grid');
 if (newGrid) {
-  // Load series.json and episodes together
   Promise.all([
     fetch('/series.json').then(r => r.json()),
     fetch('episode-data/index.json').then(r => r.json())
   ])
   .then(([seriesData, files]) => {
-    // Create map: filename base → series metadata
-    const seriesMap = new Map();
-    seriesData.forEach(series => {
-      // Store multiple possible filename patterns for each series
-      const patterns = [
-        series.slug,
-        series.slug.replace(/-en-sub|-hi-sub|-ur-sub$/i, ''),
-        series.slug.replace(/-en|-hi|-ur$/i, '')
-      ];
-      patterns.forEach(pattern => seriesMap.set(pattern.toLowerCase(), series));
-    });
-    
     return Promise.all(
       files.map(path =>
         fetch(path)
@@ -130,9 +117,9 @@ if (newGrid) {
           .then(data => (Array.isArray(data) ? data.map(ep => ({ ...ep, _src: path })) : []))
           .catch(() => [])
       )
-    ).then(arrays => ({ seriesMap, episodes: arrays.flat() }));
+    ).then(arrays => ({ seriesData, episodes: arrays.flat() }));
   })
-  .then(({ seriesMap, episodes }) => {
+  .then(({ seriesData, episodes }) => {
     const allEpisodes = episodes.filter(ep => ep.timestamp);
     allEpisodes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     const latestEps = allEpisodes.slice(0, 5);
@@ -148,60 +135,87 @@ if (newGrid) {
         ${latestEps.map(ep => {
           if (!ep._src) return '';
           
-          // Extract filename: "episode-data/salahuddin-ayyubi-s2.json"
-          const filename = ep._src.split('/').pop(); // "salahuddin-ayyubi-s2.json"
-          let base = filename.replace('.json', ''); // "salahuddin-ayyubi-s2"
+          // Parse filename: "episode-data/salahuddin-ayyubi-s2.json"
+          const filename = ep._src.split('/').pop();
+          let base = filename.replace('.json', '');
           
-          // Extract season FIRST
-          let season = 1;
+          // ✅ STEP 1: Extract SEASON from filename (trust this!)
+          let seasonFromFile = null;
           const seasonMatch = base.match(/-s(d+)$/i);
           if (seasonMatch) {
-            season = parseInt(seasonMatch[1], 10);
-            base = base.replace(/-sd+$/i, ''); // "salahuddin-ayyubi"
+            seasonFromFile = parseInt(seasonMatch[1], 10); // 2 from "s2"
+            base = base.replace(/-sd+$/i, ''); // Remove "-s2"
           }
           
-          // Remove -sub suffix
+          // ✅ STEP 2: Remove "-sub" suffix
           base = base.replace(/-sub$/i, '');
           
-          // Extract language
-          let lang = '';
+          // ✅ STEP 3: Extract language
+          let langFromFile = '';
           const langMatch = base.match(/-(en|hi|ur)$/i);
           if (langMatch) {
-            lang = langMatch[1].toLowerCase();
+            langFromFile = langMatch[1].toLowerCase();
             base = base.replace(/-(en|hi|ur)$/i, '');
           }
           
-          // Find matching series from series.json
-          const baseKey = base.toLowerCase();
-          let matchedSeries = seriesMap.get(baseKey);
+          // Now base = "salahuddin-ayyubi" or "sultan-mehmet-fatih"
+          // We need to find the correct series that matches this base + language
           
-          // Fuzzy match if exact match fails
-          if (!matchedSeries) {
-            for (const [key, series] of seriesMap.entries()) {
-              if (baseKey.includes(key) || key.includes(baseKey)) {
-                matchedSeries = series;
-                break;
-              }
+          // ✅ STEP 4: Find matching series from series.json
+          let matchedSeries = null;
+          const normalizedBase = base.toLowerCase();
+          
+          // First, try exact match with language suffix
+          if (langFromFile) {
+            // Try: "sultan-mehmet-fatih-hi-sub"
+            matchedSeries = seriesData.find(s => 
+              s.slug.toLowerCase() === `${normalizedBase}-${langFromFile}-sub`
+            );
+            if (!matchedSeries) {
+              // Try: "sultan-mehmet-fatih-hi"
+              matchedSeries = seriesData.find(s => 
+                s.slug.toLowerCase() === `${normalizedBase}-${langFromFile}`
+              );
             }
           }
           
+          // If no match with language, try base slug (for dubbed)
           if (!matchedSeries) {
-            console.warn('⚠️ No series found for:', filename);
+            matchedSeries = seriesData.find(s => s.slug.toLowerCase() === normalizedBase);
+          }
+          
+          // Fallback fuzzy match
+          if (!matchedSeries) {
+            matchedSeries = seriesData.find(s => {
+              const sSlug = s.slug.toLowerCase();
+              return sSlug.includes(normalizedBase) || normalizedBase.includes(sSlug);
+            });
+          }
+          
+          if (!matchedSeries) {
+            console.warn('⚠️ No series match for:', filename);
             return '';
           }
           
-          // Use series.json slug (like series.js does)
+          // ✅ Use series.slug from series.json
           const slug = matchedSeries.slug;
+          
+          // ✅ Use season from FILENAME (not from episode data)
+          const season = seasonFromFile || 1;
+          
+          // ✅ Use language from FILENAME
+          const lang = langFromFile;
+          
           const episode = ep.ep || ep.episode || ep.e || '';
           const thumbnail = ep.thumb || ep.poster || '';
           const title = ep.title || 'Episode ' + (episode || '');
           
           if (!slug || !episode) {
-            console.warn('⚠️ Missing slug or episode:', ep);
+            console.warn('⚠️ Missing data:', { slug, episode, filename });
             return '';
           }
           
-          // Build URL EXACTLY like series.js does
+          // ✅ Build URL exactly like series.js
           const episodeUrl = `episode.html?series=${encodeURIComponent(slug)}&season=${encodeURIComponent(season)}&ep=${encodeURIComponent(episode)}${lang ? ('&lang=' + encodeURIComponent(lang)) : ''}`;
           
           console.log('✅', filename, '→', episodeUrl);
@@ -250,6 +264,7 @@ if (newGrid) {
     moveFilterBarBelowNewEpisodes();
   });
 }
+                 
 
   // ------------- Series homepage grid: unchanged -------------
   const grid = document.getElementById('series-grid');
