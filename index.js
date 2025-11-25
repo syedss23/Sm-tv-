@@ -130,16 +130,15 @@ if (newGrid) {
             const filename = ep._src.split('/').pop();
             const base = filename.replace('.json', ''); // "sultan-mehmet-fatih-hi-sub-s3"
             
-            // ✅ Extract season from filename ONLY
+            // ✅ Extract season from filename - FIXED REGEX
             let seasonFromFilename = null;
-            const seasonMatch = base.match(/-s(d+)$/i);
+            const seasonMatch = base.match(/-s(d+)$/i);  // ✅ Fixed: d not just d
             if (seasonMatch) {
               seasonFromFilename = parseInt(seasonMatch[1], 10);
             }
             
-            // ✅ Build series slug by removing ONLY the season part
-            // "sultan-mehmet-fatih-hi-sub-s3" → "sultan-mehmet-fatih-hi-sub"
-            const slug = base.replace(/-sd+$/i, '');
+            // ✅ Build series slug by removing ONLY the season part - FIXED REGEX
+            const slug = base.replace(/-sd+$/i, '');  // ✅ Fixed: d not just d
             
             // ✅ Extract language from slug for URL parameter
             let lang = '';
