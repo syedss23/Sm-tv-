@@ -208,6 +208,19 @@
     "track": "dubbed"
   },
   {
+    "id": 17,
+    "title": "Mavera: Haji Ahmed Yesevi",
+    "slug": "mavera",
+    "poster": "assets/posters/mavera.jpg",
+    "desc": {
+      "en": "The religious fight of Hace Ahmed Yesevi, a Turkic poet and Sufi, who was sent to Baghdad by Yusuf Hemedani for the truth.",
+      "hi": "स्लेडीन अय्यूबी और क्रूसेड्स की महागाथा।",
+      "ur": "سلاہدین ایوبی اور صلیبیوں کی رزمیہ داستان۔"
+    },
+    "seasons": 1,
+    "track": "dubbed"
+  },
+  {
     "id": 101,
     "title": "Kuruluş: Orhan (English Subtitles)",
     "slug": "kurulus-orhan-en",
