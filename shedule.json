@@ -23,7 +23,7 @@
     "day": "Thursday",
     "time": false,
     "type": "💬 Subtitled",
-    "live": false,
-    "countdown": "2025-12-11T23:30:00"
+    "live": true,
+    "countdown": false
   }
 ]
