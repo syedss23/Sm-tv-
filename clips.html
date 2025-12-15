@@ -9,6 +9,55 @@
     <meta name="description" content="Watch short clips from popular Turkish drama series">
     <title>Clips - Turkish Drama Series</title>
     <link rel="stylesheet" href="clips.css">
+    <style>
+        /* Instagram Feed Customization */
+        .clips-wrapper {
+            padding: 80px 12px 120px 12px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .clips-intro {
+            text-align: center;
+            padding: 0 0 20px 0;
+        }
+        
+        .clips-intro h2 {
+            color: #23c6ed;
+            font-size: 1.5em;
+            margin: 0 0 8px 0;
+            font-weight: 700;
+        }
+        
+        .clips-intro p {
+            color: #aaa;
+            font-size: 0.95em;
+            margin: 0;
+        }
+        
+        /* Hide Fouita branding */
+        #ft-insta-brd {
+            display: none !important;
+        }
+        
+        /* Instagram feed container styling */
+        #ft-insta-app {
+            border-radius: 12px;
+            overflow: hidden;
+            background: transparent;
+        }
+        
+        /* Responsive columns */
+        @media (max-width: 768px) {
+            .clips-wrapper {
+                padding: 70px 8px 110px 8px;
+            }
+            
+            .clips-intro h2 {
+                font-size: 1.3em;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -19,27 +68,48 @@
         <div style="width: 40px;"></div>
     </div>
 
-    <!-- Loading Spinner -->
-    <div id="loadingSpinner" class="loading-spinner">
-        <div class="spinner"></div>
-        <p>Loading clips...</p>
-    </div>
-
-    <!-- Clips Container -->
-    <div class="clips-container" id="clipsContainer">
-        <!-- Clips will be dynamically loaded here from clips.json -->
+    <!-- Clips Wrapper -->
+    <div class="clips-wrapper">
+        <div class="clips-intro">
+            <h2>📸 Latest Clips</h2>
+            <p>Watch highlights from Turkish drama series</p>
+        </div>
+        
+        <!-- Instagram Feed Widget -->
+        <div id="ft-insta-app"></div>
+        <script type="module">
+            import App from "https://cdn.fouita.com/public/instagram-feed.js?11";
+            new App({
+                target: document.getElementById("ft-insta-app"),
+                props: {
+                    "settings": {
+                        "layout": "masonry",
+                        "source": "insta",
+                        "selected": "uname",
+                        "header": true,
+                        "autoplay": true,
+                        "zigzag": false,
+                        "cols": 3,
+                        "cardHeight": 300,
+                        "gap": 8,
+                        "direction": "down",
+                        "height": 700,
+                        "bgColor": "",
+                        "txtColor": "",
+                        "ukey": "05cd4aa8-6909-4ae2-bf9a-3d162db3d44e"
+                    }
+                }
+            });
+        </script>
+        <div id="ft-insta-brd">
+            <a href="https://fouita.com/website-widgets/instagram-feed" target="_blank">Embed Instagram Feed</a>
+            <a href="https://fouita.com" target="_blank">with Fouita</a>
+        </div>
     </div>
 
     <!-- Footer Include -->
     <div id="footer-placeholder"></div>
 
-    <!-- Error Message -->
-    <div id="errorMessage" class="error-message">
-        ❌ Unable to load clips. Please check your connection and try again.
-    </div>
-
-    <script src="clips.js"></script>
-    
     <!-- Footer Loader Script -->
     <script>
     (async function loadFooterAndInit(){
