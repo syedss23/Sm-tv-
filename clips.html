@@ -7,63 +7,170 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="format-detection" content="telephone=no">
     <meta name="description" content="Watch short clips from popular Turkish drama series">
-    <title>Clips - Turkish Drama Series</title>
-    <link rel="stylesheet" href="clips.css">
+    <title>Clips - SmTv Urdu</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             background: #0a1018;
             color: #fff;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Montserrat', sans-serif;
-            margin: 0;
-            padding: 0;
+            overflow-x: hidden;
         }
 
-        /* Clips Wrapper */
-        .clips-wrapper {
-            padding: 80px 12px 120px 12px;
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #0a1018;
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(180deg, rgba(10,16,24,0.98) 0%, rgba(10,16,24,0.85) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(35, 198, 237, 0.1);
         }
-        
+
+        .back-btn {
+            color: #23c6ed;
+            text-decoration: none;
+            font-size: 28px;
+            font-weight: 600;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+
+        .back-btn:active {
+            transform: scale(0.9);
+        }
+
+        .header span {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .clips-container {
+            padding: 80px 12px 120px 12px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
         .clips-intro {
             text-align: center;
-            padding: 0 0 24px 0;
+            padding: 10px 0 28px 0;
         }
-        
+
         .clips-intro h2 {
             color: #23c6ed;
-            font-size: 1.6em;
-            margin: 0 0 10px 0;
+            font-size: 1.8em;
+            margin: 0 0 8px 0;
             font-weight: 700;
         }
-        
+
         .clips-intro p {
-            color: #aaa;
+            color: #999;
             font-size: 1em;
-            margin: 0;
+            line-height: 1.5;
         }
 
-        /* EmbedSocial Container Styling */
-        .instagram-feed-container {
-            background: #0a1018;
-            border-radius: 12px;
-            padding: 0;
+        .clips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 14px;
+            margin-top: 20px;
         }
 
-        /* Override EmbedSocial default styles for dark theme */
-        .embedsocial-hashtag {
-            background: transparent !important;
-            color: #fff !important;
+        .clip-card {
+            position: relative;
+            aspect-ratio: 9/16;
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+            background: linear-gradient(135deg, #1a2332 0%, #0f1621 100%);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(35, 198, 237, 0.15);
         }
 
-        /* Customize EmbedSocial cards for dark theme */
-        .embedsocial-hashtag * {
-            font-family: inherit !important;
+        .clip-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(35, 198, 237, 0.2);
+            border-color: rgba(35, 198, 237, 0.4);
         }
 
-        /* Loading state */
-        .loading-clips {
+        .clip-card:active {
+            transform: translateY(-2px);
+        }
+
+        .clip-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .clip-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .clip-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 50%);
+            display: flex;
+            align-items: flex-end;
+            padding: 14px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .clip-card:hover .clip-overlay {
+            opacity: 1;
+        }
+
+        .clip-title {
+            color: #fff;
+            font-size: 0.9em;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            line-height: 1.3;
+        }
+
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 56px;
+            height: 56px;
+            background: rgba(35, 198, 237, 0.95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(35, 198, 237, 0.4);
+        }
+
+        .clip-card:hover .play-icon {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 6px 20px rgba(35, 198, 237, 0.6);
+        }
+
+        .loading {
             text-align: center;
             padding: 60px 20px;
             color: #23c6ed;
@@ -71,69 +178,218 @@
             font-weight: 600;
         }
 
-        .loading-clips::before {
-            content: "⏳";
-            display: block;
-            font-size: 2em;
-            margin-bottom: 12px;
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(35, 198, 237, 0.2);
+            border-top-color: #23c6ed;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px auto;
         }
 
-        /* Responsive */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.96);
+            z-index: 2000;
+            padding: 0;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            width: 100%;
+            height: 100%;
+            max-width: 500px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            background: rgba(35, 198, 237, 0.95);
+            border: none;
+            border-radius: 50%;
+            color: #000;
+            font-size: 24px;
+            font-weight: 700;
+            cursor: pointer;
+            z-index: 2001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+            box-shadow: 0 4px 12px rgba(35, 198, 237, 0.4);
+        }
+
+        .modal-close:active {
+            transform: scale(0.9);
+        }
+
+        .modal iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #000;
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 60px 20px;
+            color: #ff6b6b;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
         @media (max-width: 768px) {
-            .clips-wrapper {
+            .clips-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+
+            .clips-container {
                 padding: 70px 8px 110px 8px;
             }
-            
+
             .clips-intro h2 {
-                font-size: 1.4em;
+                font-size: 1.5em;
             }
 
             .clips-intro p {
                 font-size: 0.95em;
+            }
+
+            .play-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .clips-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
     <div class="header">
         <a href="/" class="back-btn" aria-label="Go back">←</a>
         <span>Clips</span>
         <div style="width: 40px;"></div>
     </div>
 
-    <!-- Clips Wrapper -->
-    <div class="clips-wrapper">
+    <div class="clips-container">
         <div class="clips-intro">
             <h2>📸 Latest Clips</h2>
             <p>Watch highlights from Turkish drama series</p>
         </div>
-        
-        <!-- Instagram Feed Container -->
-        <div class="instagram-feed-container">
-            <!-- Loading Message (will be replaced by feed) -->
-            <div class="loading-clips">Loading clips from Instagram...</div>
-            
-            <!-- EmbedSocial Instagram Feed -->
-            <div class="embedsocial-hashtag" data-ref="bc744a8ea1e7966b197c4d97f9687ffbc44414ff" data-dynamicload="yes" data-lazyload="yes"></div>
-            <script>
-                (function(d, s, id) {
-                    var js;
-                    if (d.getElementById(id)) {return;}
-                    js = d.createElement(s);
-                    js.id = id;
-                    js.src = "https://embedsocial.com/cdn/ht.js";
-                    d.getElementsByTagName("head")[0].appendChild(js);
-                }(document, "script", "EmbedSocialHashtagScript"));
-            </script>
+
+        <div class="loading">
+            <div class="spinner"></div>
+            Loading clips...
         </div>
+
+        <div class="clips-grid" id="clipsGrid"></div>
     </div>
 
-    <!-- Footer Include -->
+    <div class="modal" id="clipModal">
+        <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+
     <div id="footer-placeholder"></div>
 
-    <!-- Footer Loader Script -->
+    <script>
+        // Load clips from JSON (newest first - as they appear in JSON)
+        async function loadClips() {
+            try {
+                const response = await fetch('clips.json?v=' + Date.now());
+                const clips = await response.json();
+                
+                const grid = document.getElementById('clipsGrid');
+                const loading = document.querySelector('.loading');
+                
+                if (!clips || clips.length === 0) {
+                    loading.innerHTML = '<div class="error-message">📭 No clips available yet<br><span style="font-size:0.9em;color:#999;margin-top:8px;display:block;">Check back soon!</span></div>';
+                    return;
+                }
+
+                loading.style.display = 'none';
+                
+                // Display clips in order (newest first as they appear in JSON)
+                clips.forEach((clip, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'clip-card';
+                    card.onclick = () => openClip(clip.id);
+                    
+                    card.innerHTML = `
+                        <img src="https://www.instagram.com/p/${clip.id}/media/?size=m" 
+                             alt="${clip.title}"
+                             loading="${index < 6 ? 'eager' : 'lazy'}"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 600%22%3E%3Crect fill=%22%231a2332%22 width=%22400%22 height=%22600%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 fill=%22%2323c6ed%22 font-size=%2224%22%3E📹%3C/text%3E%3C/svg%3E'">
+                        <div class="clip-overlay">
+                            <div class="clip-title">${clip.title}</div>
+                        </div>
+                        <div class="play-icon">▶</div>
+                    `;
+                    
+                    grid.appendChild(card);
+                });
+                
+            } catch (error) {
+                console.error('Error loading clips:', error);
+                document.querySelector('.loading').innerHTML = '<div class="error-message">⚠️ Failed to load clips<br><span style="font-size:0.9em;color:#999;margin-top:8px;display:block;">Please try again later</span></div>';
+            }
+        }
+
+        function openClip(id) {
+            const modal = document.getElementById('clipModal');
+            const content = document.getElementById('modalContent');
+            
+            content.innerHTML = `<iframe src="https://www.instagram.com/reel/${id}/embed" allowfullscreen allow="autoplay; encrypted-media"></iframe>`;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('clipModal');
+            const content = document.getElementById('modalContent');
+            
+            modal.classList.remove('active');
+            content.innerHTML = '';
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('clipModal').addEventListener('click', (e) => {
+            if (e.target.id === 'clipModal') closeModal();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        loadClips();
+    </script>
+
     <script>
     (async function loadFooterAndInit(){
       if (document.readyState !== 'complete') {
