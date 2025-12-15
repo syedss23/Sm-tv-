@@ -8,123 +8,89 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="description" content="Watch short clips from popular Turkish drama series">
     <title>Clips - Turkish Drama Series</title>
+    <link rel="stylesheet" href="clips.css">
     <style>
-        * {
+        body {
+            background: #0a1018;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Montserrat', sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
-        body {
-            background: #000;
-            color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            overflow: hidden;
-            position: fixed;
-            width: 100%;
-            height: 100%;
+        /* Clips Wrapper */
+        .clips-wrapper {
+            padding: 80px 12px 120px 12px;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #0a1018;
         }
-
-        /* Header */
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
-            z-index: 1000;
+        
+        .clips-intro {
+            text-align: center;
+            padding: 0 0 24px 0;
         }
-
-        .back-btn {
-            color: #fff;
-            text-decoration: none;
-            font-size: 24px;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-        }
-
-        .header span {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        /* Reels Container */
-        .reels-container {
-            width: 100%;
-            height: 100vh;
-            overflow-y: scroll;
-            scroll-snap-type: y mandatory;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-
-        .reels-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* Individual Reel */
-        .reel-item {
-            width: 100%;
-            height: 100vh;
-            scroll-snap-align: start;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #000;
-        }
-
-        .reel-item iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* Loading */
-        .loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        
+        .clips-intro h2 {
             color: #23c6ed;
-            font-size: 18px;
+            font-size: 1.6em;
+            margin: 0 0 10px 0;
+            font-weight: 700;
+        }
+        
+        .clips-intro p {
+            color: #aaa;
+            font-size: 1em;
+            margin: 0;
+        }
+
+        /* EmbedSocial Container Styling */
+        .instagram-feed-container {
+            background: #0a1018;
+            border-radius: 12px;
+            padding: 0;
+        }
+
+        /* Override EmbedSocial default styles for dark theme */
+        .embedsocial-hashtag {
+            background: transparent !important;
+            color: #fff !important;
+        }
+
+        /* Customize EmbedSocial cards for dark theme */
+        .embedsocial-hashtag * {
+            font-family: inherit !important;
+        }
+
+        /* Loading state */
+        .loading-clips {
+            text-align: center;
+            padding: 60px 20px;
+            color: #23c6ed;
+            font-size: 1.1em;
             font-weight: 600;
         }
 
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(35, 198, 237, 0.2);
-            border-top-color: #23c6ed;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 12px auto;
+        .loading-clips::before {
+            content: "⏳";
+            display: block;
+            font-size: 2em;
+            margin-bottom: 12px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .clips-wrapper {
+                padding: 70px 8px 110px 8px;
+            }
+            
+            .clips-intro h2 {
+                font-size: 1.4em;
+            }
 
-        /* Bottom Navigation Safe Area */
-        .nav-spacer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: calc(80px + env(safe-area-inset-bottom));
-            background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
-            pointer-events: none;
-            z-index: 999;
+            .clips-intro p {
+                font-size: 0.95em;
+            }
         }
     </style>
 </head>
@@ -137,59 +103,35 @@
         <div style="width: 40px;"></div>
     </div>
 
-    <!-- Reels Container -->
-    <div class="reels-container" id="reelsContainer">
-        <div class="loading">
-            <div class="spinner"></div>
-            Loading clips...
+    <!-- Clips Wrapper -->
+    <div class="clips-wrapper">
+        <div class="clips-intro">
+            <h2>📸 Latest Clips</h2>
+            <p>Watch highlights from Turkish drama series</p>
+        </div>
+        
+        <!-- Instagram Feed Container -->
+        <div class="instagram-feed-container">
+            <!-- Loading Message (will be replaced by feed) -->
+            <div class="loading-clips">Loading clips from Instagram...</div>
+            
+            <!-- EmbedSocial Instagram Feed -->
+            <div class="embedsocial-hashtag" data-ref="bc744a8ea1e7966b197c4d97f9687ffbc44414ff" data-dynamicload="yes" data-lazyload="yes"></div>
+            <script>
+                (function(d, s, id) {
+                    var js;
+                    if (d.getElementById(id)) {return;}
+                    js = d.createElement(s);
+                    js.id = id;
+                    js.src = "https://embedsocial.com/cdn/ht.js";
+                    d.getElementsByTagName("head")[0].appendChild(js);
+                }(document, "script", "EmbedSocialHashtagScript"));
+            </script>
         </div>
     </div>
 
-    <!-- Bottom Navigation Spacer -->
-    <div class="nav-spacer"></div>
-
     <!-- Footer Include -->
     <div id="footer-placeholder"></div>
-
-    <script>
-        // Your Instagram Reels URLs (Replace with your actual Instagram reel embed URLs)
-        const reels = [
-            'https://www.instagram.com/reel/DSPaWyPEnkI/embed',
-            'https://www.instagram.com/reel/DSM1gs6knDs/embed',
-            'https://www.instagram.com/reel/DSKQLl2kuYm/embed',
-            // Add more reel embed URLs here
-        ];
-
-        // Load reels
-        function loadReels() {
-            const container = document.getElementById('reelsContainer');
-            container.innerHTML = '';
-
-            if (reels.length === 0) {
-                container.innerHTML = '<div class="loading">No clips available</div>';
-                return;
-            }
-
-            reels.forEach((url, index) => {
-                const reelDiv = document.createElement('div');
-                reelDiv.className = 'reel-item';
-                reelDiv.innerHTML = `<iframe src="${url}" allowfullscreen loading="${index === 0 ? 'eager' : 'lazy'}"></iframe>`;
-                container.appendChild(reelDiv);
-            });
-        }
-
-        // Initialize
-        loadReels();
-
-        // Pause/Play videos on scroll (optional enhancement)
-        const container = document.getElementById('reelsContainer');
-        let lastScrollTop = 0;
-
-        container.addEventListener('scroll', function() {
-            const scrollTop = this.scrollTop;
-            lastScrollTop = scrollTop;
-        }, { passive: true });
-    </script>
 
     <!-- Footer Loader Script -->
     <script>
@@ -235,6 +177,11 @@
             }, 200);
           }, { passive: true });
         });
+
+        try {
+          const curPad = parseInt(getComputedStyle(document.body).paddingBottom)||0;
+          if(curPad < 96) document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))';
+        } catch(e){}
 
       } catch(err) {
         console.warn('Footer load/init error:', err);
