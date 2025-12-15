@@ -15,6 +15,7 @@
             padding: 80px 12px 120px 12px;
             max-width: 1400px;
             margin: 0 auto;
+            background: #0a1018;
         }
         
         .clips-intro {
@@ -44,7 +45,25 @@
         #ft-insta-app {
             border-radius: 12px;
             overflow: hidden;
-            background: transparent;
+            background: #0a1018 !important;
+        }
+        
+        /* Fix white modal background */
+        #ft-insta-app * {
+            background-color: transparent !important;
+        }
+        
+        /* Style the Instagram feed cards */
+        #ft-insta-app img {
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        
+        /* Fix modal/popup styling */
+        #ft-insta-app [class*="modal"],
+        #ft-insta-app [class*="popup"],
+        #ft-insta-app [class*="overlay"] {
+            background: rgba(10, 16, 24, 0.95) !important;
         }
         
         /* Responsive columns */
@@ -75,7 +94,7 @@
             <p>Watch highlights from Turkish drama series</p>
         </div>
         
-        <!-- Instagram Feed Widget -->
+        <!-- Instagram Feed Widget (NO AUTOPLAY, MANUAL SCROLL) -->
         <div id="ft-insta-app"></div>
         <script type="module">
             import App from "https://cdn.fouita.com/public/instagram-feed.js?11";
@@ -83,19 +102,19 @@
                 target: document.getElementById("ft-insta-app"),
                 props: {
                     "settings": {
-                        "layout": "masonry",
+                        "layout": "grid",
                         "source": "insta",
                         "selected": "uname",
                         "header": true,
-                        "autoplay": true,
+                        "autoplay": false,
                         "zigzag": false,
                         "cols": 3,
-                        "cardHeight": 300,
-                        "gap": 8,
+                        "cardHeight": 320,
+                        "gap": 10,
                         "direction": "down",
-                        "height": 700,
-                        "bgColor": "",
-                        "txtColor": "",
+                        "height": 2000,
+                        "bgColor": "#0a1018",
+                        "txtColor": "#ffffff",
                         "ukey": "05cd4aa8-6909-4ae2-bf9a-3d162db3d44e"
                     }
                 }
