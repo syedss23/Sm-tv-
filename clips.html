@@ -8,73 +8,123 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="description" content="Watch short clips from popular Turkish drama series">
     <title>Clips - Turkish Drama Series</title>
-    <link rel="stylesheet" href="clips.css">
     <style>
-        /* Instagram Feed Customization */
-        .clips-wrapper {
-            padding: 80px 12px 120px 12px;
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #0a1018;
-        }
-        
-        .clips-intro {
-            text-align: center;
-            padding: 0 0 20px 0;
-        }
-        
-        .clips-intro h2 {
-            color: #23c6ed;
-            font-size: 1.5em;
-            margin: 0 0 8px 0;
-            font-weight: 700;
-        }
-        
-        .clips-intro p {
-            color: #aaa;
-            font-size: 0.95em;
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        /* Hide Fouita branding */
-        #ft-insta-brd {
-            display: none !important;
-        }
-        
-        /* Instagram feed container styling */
-        #ft-insta-app {
-            border-radius: 12px;
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             overflow: hidden;
-            background: #0a1018 !important;
+            position: fixed;
+            width: 100%;
+            height: 100%;
         }
-        
-        /* Fix white modal background */
-        #ft-insta-app * {
-            background-color: transparent !important;
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 1000;
         }
-        
-        /* Style the Instagram feed cards */
-        #ft-insta-app img {
-            border-radius: 8px;
-            object-fit: cover;
+
+        .back-btn {
+            color: #fff;
+            text-decoration: none;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
         }
-        
-        /* Fix modal/popup styling */
-        #ft-insta-app [class*="modal"],
-        #ft-insta-app [class*="popup"],
-        #ft-insta-app [class*="overlay"] {
-            background: rgba(10, 16, 24, 0.95) !important;
+
+        .header span {
+            font-size: 18px;
+            font-weight: 600;
         }
-        
-        /* Responsive columns */
-        @media (max-width: 768px) {
-            .clips-wrapper {
-                padding: 70px 8px 110px 8px;
-            }
-            
-            .clips-intro h2 {
-                font-size: 1.3em;
-            }
+
+        /* Reels Container */
+        .reels-container {
+            width: 100%;
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .reels-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Individual Reel */
+        .reel-item {
+            width: 100%;
+            height: 100vh;
+            scroll-snap-align: start;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+        }
+
+        .reel-item iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Loading */
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #23c6ed;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(35, 198, 237, 0.2);
+            border-top-color: #23c6ed;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Bottom Navigation Safe Area */
+        .nav-spacer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: calc(80px + env(safe-area-inset-bottom));
+            background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+            pointer-events: none;
+            z-index: 999;
         }
     </style>
 </head>
@@ -87,47 +137,59 @@
         <div style="width: 40px;"></div>
     </div>
 
-    <!-- Clips Wrapper -->
-    <div class="clips-wrapper">
-        <div class="clips-intro">
-            <h2>📸 Latest Clips</h2>
-            <p>Watch highlights from Turkish drama series</p>
-        </div>
-        
-        <!-- Instagram Feed Widget (NO AUTOPLAY, MANUAL SCROLL) -->
-        <div id="ft-insta-app"></div>
-        <script type="module">
-            import App from "https://cdn.fouita.com/public/instagram-feed.js?11";
-            new App({
-                target: document.getElementById("ft-insta-app"),
-                props: {
-                    "settings": {
-                        "layout": "grid",
-                        "source": "insta",
-                        "selected": "uname",
-                        "header": true,
-                        "autoplay": false,
-                        "zigzag": false,
-                        "cols": 3,
-                        "cardHeight": 320,
-                        "gap": 10,
-                        "direction": "down",
-                        "height": 2000,
-                        "bgColor": "#0a1018",
-                        "txtColor": "#ffffff",
-                        "ukey": "05cd4aa8-6909-4ae2-bf9a-3d162db3d44e"
-                    }
-                }
-            });
-        </script>
-        <div id="ft-insta-brd">
-            <a href="https://fouita.com/website-widgets/instagram-feed" target="_blank">Embed Instagram Feed</a>
-            <a href="https://fouita.com" target="_blank">with Fouita</a>
+    <!-- Reels Container -->
+    <div class="reels-container" id="reelsContainer">
+        <div class="loading">
+            <div class="spinner"></div>
+            Loading clips...
         </div>
     </div>
 
+    <!-- Bottom Navigation Spacer -->
+    <div class="nav-spacer"></div>
+
     <!-- Footer Include -->
     <div id="footer-placeholder"></div>
+
+    <script>
+        // Your Instagram Reels URLs (Replace with your actual Instagram reel embed URLs)
+        const reels = [
+            'https://www.instagram.com/reel/DSPaWyPEnkI/?utm_source=ig_embed&amp;utm_campaign=loading',
+            'https://www.instagram.com/reel/DCxHuQ-SjyL/embed',
+            'https://www.instagram.com/reel/DCxHuQ-SjyL/embed',
+            // Add more reel embed URLs here
+        ];
+
+        // Load reels
+        function loadReels() {
+            const container = document.getElementById('reelsContainer');
+            container.innerHTML = '';
+
+            if (reels.length === 0) {
+                container.innerHTML = '<div class="loading">No clips available</div>';
+                return;
+            }
+
+            reels.forEach((url, index) => {
+                const reelDiv = document.createElement('div');
+                reelDiv.className = 'reel-item';
+                reelDiv.innerHTML = `<iframe src="${url}" allowfullscreen loading="${index === 0 ? 'eager' : 'lazy'}"></iframe>`;
+                container.appendChild(reelDiv);
+            });
+        }
+
+        // Initialize
+        loadReels();
+
+        // Pause/Play videos on scroll (optional enhancement)
+        const container = document.getElementById('reelsContainer');
+        let lastScrollTop = 0;
+
+        container.addEventListener('scroll', function() {
+            const scrollTop = this.scrollTop;
+            lastScrollTop = scrollTop;
+        }, { passive: true });
+    </script>
 
     <!-- Footer Loader Script -->
     <script>
@@ -173,11 +235,6 @@
             }, 200);
           }, { passive: true });
         });
-
-        try {
-          const curPad = parseInt(getComputedStyle(document.body).paddingBottom)||0;
-          if(curPad < 96) document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))';
-        } catch(e){}
 
       } catch(err) {
         console.warn('Footer load/init error:', err);
