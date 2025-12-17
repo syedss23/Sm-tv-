@@ -9,13 +9,13 @@
     "countdown": "2025-12-17T23:30:00"
   },
   {
-    "title": "Sultan Mehmet Fatih Bolum 62",
+    "title": "Sultan Mehmet Fatih Bolum 63",
     "poster": "assets/posters/mehmet_fatih.jpg",
     "day": "Wednesday",
     "time": false,
     "type": "💬 Subtitled",
-    "live": true,
-    "countdown": false
+    "live": false,
+    "countdown": "2025-12-24T23:30:00"
   },
   {
     "title": "Kurulus Orhan Bolum 8",
