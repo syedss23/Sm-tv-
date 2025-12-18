@@ -18,12 +18,12 @@
     "countdown": "2025-12-24T23:30:00"
   },
   {
-    "title": "Kurulus Orhan Bolum 8",
+    "title": "Kurulus Orhan Bolum 9",
     "poster": "assets/posters/orhan.jpg",
     "day": "Thursday",
     "time": false,
     "type": "💬 Subtitled",
-    "live": true,
-    "countdown": false
+    "live": false,
+    "countdown": "2025-12-25T23:30:00"
   }
 ]
