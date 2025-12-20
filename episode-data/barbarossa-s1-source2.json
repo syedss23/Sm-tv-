@@ -2,15 +2,13 @@
   {
     "ep": 1,
     "title": "Episode 1",
-    "thumb": "assets/posters/barbarossa_s2e1.jpg"
-    "embed": "<iframe src='https://yourstreamingsite.com/embed/barbarossa_s2e1' frameborder='0' allowfullscreen></iframe>",
-    "download": "https://terabox.com/barbarossa-s2e1"
-  },
-  {
-    "ep": 2,
-    "title": "Episode 2",
-    "thumb": "assets/posters/barbarossa_s2e2.jpg",
-    "embed": "<iframe src='https://yourstreamingsite.com/embed/barbarossa_s2e2' frameborder='0' allowfullscreen></iframe>",
-    "download": "https://terabox.com/barbarossa-s2e2"
+    "thumb": "assets/posters/barbarossaptv_e1.jpg",
+    "embed": "<div style='position:relative;width:100%;height:0;padding-bottom:56.25%;'><iframe class='rumble' src='https://rumble.com/embed/v711pl6/?pub=4nv52o' style='position:absolute;top:0;left:0;width:100%;height:100%;' frameborder='0' allowfullscreen></iframe></div>",
+    "embed2": "<div style='position:relative;width:100%;height:0;padding-bottom:56.25%;'><iframe src='https://vk.com/video_ext.php?oid=-233476064&id=456239432&hd=2' style='position:absolute;top:0;left:0;width:100%;height:100%;' frameborder='0' allowfullscreen></iframe></div>",
+    "watch3": "https://streamtape.com/v/1aqyLyq9dAsejrm/ptvep1.mp4",
+    "download": "https://arolinks.com/ovoZwY",
+    "download2": "https://nanolinks.in/8lxH8aL",
+    "shortlink": "https://arolinks.com/pJSgj",
+    "timestamp": "2025-11-15T13:30:00+05:30"
   }
 ]
