@@ -52,7 +52,7 @@
   <style>
     html { scroll-behavior: smooth; }
 
-    /* 🔥 NEW: Sponsor Banner Styles */
+    /* 🔥 Sponsor Banner Styles */
     .home-sponsor-banner {
       margin: 16px 16px 20px;
       padding: 14px 16px;
@@ -307,8 +307,8 @@
       <input type="text" id="search" placeholder="Search SmTv Urdu..." autocomplete="off" aria-label="Search series">
     </div>
 
-    <!-- 🔥 NEW: Sponsor Banner -->
-    <div class="home-sponsor-banner">
+    <!-- 🔥 DYNAMIC Sponsor Banner -->
+    <div class="home-sponsor-banner" id="homeSponsorBanner">
       <div class="sponsor-banner-content">
         <div class="sponsor-icon">📢</div>
         <div class="sponsor-info">
@@ -352,6 +352,47 @@
     <!-- Series grid -->
     <div id="series-grid" class="series-grid" aria-live="polite"></div>
   </div>
+
+  <!-- 🔥 Dynamic Sponsor Banner Script -->
+  <script>
+  (async function updateSponsorBanner() {
+    try {
+      const response = await fetch('/config.json', { cache: 'no-cache' });
+      if (!response.ok) return;
+      
+      const config = await response.json();
+      const featureConfig = config.redirectionFeatures;
+      
+      const banner = document.getElementById('homeSponsorBanner');
+      if (!banner) return;
+
+      // When shortlink is ON - Show ad space available
+      if (featureConfig.shortlink && !featureConfig.sponsorPopup) {
+        banner.innerHTML = `
+          <div class="sponsor-banner-content">
+            <div class="sponsor-icon">📢</div>
+            <div class="sponsor-info">
+              <span class="sponsor-label">AD SPACE AVAILABLE</span>
+              <div class="sponsor-name">
+                Reach Thousands Daily!
+              </div>
+            </div>
+            <a href="https://t.me/Itz_me_zain1" 
+               target="_blank" 
+               class="sponsor-join-btn"
+               onclick="gtag('event', 'ad_inquiry_click', {'location': 'homepage_banner'});">
+              Contact Us 💬
+            </a>
+          </div>
+        `;
+      }
+      // When sponsor popup is ON - Keep FX Reall Academy (already in HTML)
+      
+    } catch (error) {
+      console.warn('Banner update error:', error);
+    }
+  })();
+  </script>
 
   <script>
     // Sidebar filter activation logic
