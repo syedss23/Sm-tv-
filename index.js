@@ -91,9 +91,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="schedule-row"
                      style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px;font-size:0.86em;line-height:1.25;">
                   ${day  ? `<span class="day"  style="color:#ffd267;font-weight:600;">${day}</span>` : ''}
-                  ${(day && time) ? '<span class="dot" style="opacity:.6;">â€¢</span>' : ''}
+                  ${(day && time) ? '<span class="dot" style="opacity:.6;">•</span>' : ''}
                   ${time ? `<span class="time" style="color:#9fd3ff;font-weight:600;">${time}</span>` : ''}
-                  ${type ? `<span class="dot" style="opacity:.6;">â€¢</span><span class="type" style="color:#23c6ed;font-weight:600;">${type}</span>` : ''}
+                  ${type ? `<span class="dot" style="opacity:.6;">•</span><span class="type" style="color:#23c6ed;font-weight:600;">${type}</span>` : ''}
                 </div>
 
                 <!-- Countdown below, slightly smaller -->
