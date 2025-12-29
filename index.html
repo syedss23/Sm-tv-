@@ -394,6 +394,97 @@
   })();
   </script>
 
+  <!-- 🔥 Watch Now Button Shortlink Handler -->
+  <script>
+  (function setupWatchNowHandlers() {
+    let featureConfig = null;
+    
+    // Load config
+    fetch('/config.json', { cache: 'no-cache' })
+      .then(r => r.ok ? r.json() : null)
+      .then(config => {
+        if (config) featureConfig = config.redirectionFeatures;
+      })
+      .catch(() => {});
+
+    // Wait for episodes to load, then attach handlers
+    const checkInterval = setInterval(() => {
+      const watchButtons = document.querySelectorAll('.watch-btn-pro');
+      
+      if (watchButtons.length > 0) {
+        clearInterval(checkInterval);
+        
+        watchButtons.forEach(btn => {
+          // Store original href
+          const originalHref = btn.getAttribute('href');
+          
+          btn.addEventListener('click', async function(e) {
+            // Only intercept if shortlink mode is enabled
+            if (!featureConfig || !featureConfig.shortlink || featureConfig.sponsorPopup) {
+              return; // Let normal link work
+            }
+
+            e.preventDefault();
+            
+            // Extract episode data from URL params
+            try {
+              const url = new URL(originalHref, window.location.origin);
+              const params = new URLSearchParams(url.search);
+              const series = params.get('series');
+              const season = params.get('season');
+              const ep = params.get('ep');
+              const lang = params.get('lang');
+              
+              // Build episode JSON filename
+              let jsonFile = `episode-data/${series}-s${season}`;
+              if (lang && lang !== 'dub') {
+                jsonFile += `-${lang}`;
+              }
+              jsonFile += '.json';
+              
+              console.log('Fetching episode JSON:', jsonFile);
+              
+              // Fetch episode JSON to check for shortlink
+              const response = await fetch(jsonFile);
+              if (!response.ok) {
+                console.log('Episode JSON not found, using default URL');
+                window.location.href = originalHref;
+                return;
+              }
+              
+              const episodes = await response.json();
+              const episode = episodes.find(e => String(e.ep) === String(ep));
+              
+              if (episode && episode.shortlink) {
+                console.log('✅ Shortlink found:', episode.shortlink);
+                
+                if (typeof gtag !== 'undefined') {
+                  gtag('event', 'shortlink_redirect_home', {
+                    'episode': episode.title || 'Episode ' + episode.ep,
+                    'shortlink_url': episode.shortlink
+                  });
+                }
+                
+                window.location.href = episode.shortlink;
+              } else {
+                console.log('No shortlink found, going to episode page');
+                window.location.href = originalHref;
+              }
+              
+            } catch (error) {
+              console.warn('Shortlink check error:', error);
+              window.location.href = originalHref;
+            }
+          });
+        });
+      }
+    }, 100); // Check every 100ms
+    
+    // Stop checking after 5 seconds
+    setTimeout(() => clearInterval(checkInterval), 5000);
+  })();
+  </script>
+
   <script>
     // Sidebar filter activation logic
     document.getElementById('sidebarDubbed').addEventListener('click', function(e) {
@@ -407,6 +498,7 @@
       document.getElementById('pill-sub').click();
     });
   </script>
+  
   <!-- Footer Include -->
 <div id="footer-placeholder"></div>
 <script>
