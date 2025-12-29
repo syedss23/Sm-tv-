@@ -14,14 +14,32 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   moveFilterBarBelowNewEpisodes();
 
-  // ✅ NEW: Build streaming URL for New Episodes "Watch Now" button
+  // 🔥 NEW: Load config.json for feature flags
+  let featureConfig = null;
+  async function loadConfig() {
+    try {
+      const response = await fetch('/config.json', { cache: 'no-cache' });
+      if (response.ok) {
+        const config = await response.json();
+        featureConfig = config.redirectionFeatures;
+        console.log('Feature config loaded:', featureConfig);
+      } else {
+        featureConfig = { shortlink: false, sponsorPopup: true };
+      }
+    } catch (error) {
+      console.warn('Config load error:', error);
+      featureConfig = { shortlink: false, sponsorPopup: true };
+    }
+  }
+
+  // ✅ Build streaming URL for New Episodes "Watch Now" button
   function buildEpisodeWatchUrl(ep) {
-    const fallback = ep.shortlink || ep.download || '#';
+    const fallback = ep.download || '#';
 
     try {
-      const raw = (ep._src || '').replace(/^\/+/, ''); // remove leading slash if any
+      const raw = (ep._src || '').replace(/^/+/, ''); // remove leading slash if any
       // Matches: episode-data/slug-s1.json  OR  episode-data/slug-s1-en.json  etc.
-      const m = raw.match(/^episode-data\/(.+?)-s(\d+)(?:-([a-z]{2,3}|dub))?\.json$/i);
+      const m = raw.match(/^episode-data/(.+?)-s(d+)(?:-([a-z]{2,3}|dub))?.json$/i);
       if (!m) return fallback;
 
       const slug   = m[1];
@@ -33,11 +51,11 @@ document.addEventListener('DOMContentLoaded', () => {
       params.set('season', season);
       if (ep.ep != null) params.set('ep', ep.ep);
 
-      // Only pass lang when it’s actually a subtitle/dub marker
+      // Only pass lang when it's actually a subtitle/dub marker
       if (lang && lang !== 'dub') {
         params.set('lang', lang);   // en / hi / ur
       } else if (lang === 'dub') {
-        params.set('lang', 'dub');  // if you’re using this
+        params.set('lang', 'dub');  // if you're using this
       }
 
       return `episode.html?${params.toString()}`;
@@ -45,6 +63,51 @@ document.addEventListener('DOMContentLoaded', () => {
       console.warn('buildEpisodeWatchUrl error', e);
       return fallback;
     }
+  }
+
+  // 🔥 NEW: Handle Watch Now button click with shortlink logic
+  function handleWatchClick(event, episode) {
+    event.preventDefault();
+    
+    if (!featureConfig) {
+      // Config not loaded yet - fallback to episode.html
+      window.location.href = buildEpisodeWatchUrl(episode);
+      return;
+    }
+
+    // Check if shortlink mode is enabled
+    if (featureConfig.shortlink && !featureConfig.sponsorPopup) {
+      // Shortlink mode - check if episode has shortlink
+      if (episode.shortlink) {
+        console.log('Redirecting to shortlink:', episode.shortlink);
+        
+        // Track with Google Analytics
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'shortlink_redirect_home', {
+            'episode': episode.title || 'Episode ' + episode.ep,
+            'shortlink_url': episode.shortlink
+          });
+        }
+        
+        window.location.href = episode.shortlink;
+        return;
+      } else {
+        // No shortlink - go directly to episode.html
+        console.log('No shortlink found, opening episode page');
+      }
+    }
+
+    // Default: Go to episode.html (sponsor popup mode or no shortlink)
+    const episodeUrl = buildEpisodeWatchUrl(episode);
+    
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'episode_watch_home', {
+        'episode': episode.title || 'Episode ' + episode.ep,
+        'access_type': featureConfig.sponsorPopup ? 'sponsor_popup' : 'direct'
+      });
+    }
+    
+    window.location.href = episodeUrl;
   }
 
   // ====== MODERN SCHEDULE BAR (Compact + Countdown + LIVE) ======
@@ -138,69 +201,83 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===== New Episodes Horizontal Card Grid =====
   const newGrid = document.getElementById('new-episodes-grid');
   if (newGrid) {
-    fetch('episode-data/index.json')
-      .then(r => r.json())
-      .then(files => Promise.all(
-        files.map(path =>
-          fetch(path)
-            .then(res => res.ok ? res.json() : [])
-            .then(data => (Array.isArray(data) ? data.map(ep => ({ ...ep, _src: path })) : []))
-            .catch(() => [])
-        )
-      ))
-      .then(arrays => {
-        const allEpisodes = arrays.flat().filter(ep => ep.timestamp);
-        allEpisodes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        const latestEps = allEpisodes.slice(0, 5);
+    // Load config first, then load episodes
+    loadConfig().then(() => {
+      fetch('episode-data/index.json')
+        .then(r => r.json())
+        .then(files => Promise.all(
+          files.map(path =>
+            fetch(path)
+              .then(res => res.ok ? res.json() : [])
+              .then(data => (Array.isArray(data) ? data.map(ep => ({ ...ep, _src: path })) : []))
+              .catch(() => [])
+          )
+        ))
+        .then(arrays => {
+          const allEpisodes = arrays.flat().filter(ep => ep.timestamp);
+          allEpisodes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+          const latestEps = allEpisodes.slice(0, 5);
 
-        if (!latestEps.length) {
-          newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">No new episodes found.</div>`;
-          moveFilterBarBelowNewEpisodes();
-          return;
-        }
+          if (!latestEps.length) {
+            newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">No new episodes found.</div>`;
+            moveFilterBarBelowNewEpisodes();
+            return;
+          }
 
-        newGrid.innerHTML = `
-          <div style="display:flex;gap:14px;overflow-x:auto;padding:0 2px 2px 2px;">
-            ${latestEps.map(ep => `
-              <div class="episode-card-pro"
-                   style="flex:0 0 166px;min-width:150px;max-width:172px;
-                          border-radius:13px;background:#182837;
-                          box-shadow:0 4px 18px #0fd1cec7,0 2px 10px #0003;">
-                <img src="${ep.thumb || ep.poster || ''}"
-                     class="episode-img-pro"
-                     alt="${ep.title || ('Episode ' + (ep.ep || ''))}"
-                     loading="lazy" decoding="async"
-                     style="display:block;border-radius:13px 13px 0 0;width:100%;
-                            height:110px;object-fit:cover;">
-                <div class="episode-title-pro"
-                     style="margin:15px 0 4px 0;font-family:'Montserrat',sans-serif;
-                            font-size:1.07em;font-weight:700;color:#fff;text-align:center;">
-                  ${ep.title || 'Episode ' + (ep.ep || '')}
-                  <span class="new-badge-pro"
-                        style="margin-left:7px;background:#ffd700;color:#182734;
-                               font-size:.78em;border-radius:5px;padding:2.3px 9px;">NEW</span>
+          newGrid.innerHTML = `
+            <div style="display:flex;gap:14px;overflow-x:auto;padding:0 2px 2px 2px;">
+              ${latestEps.map((ep, index) => `
+                <div class="episode-card-pro"
+                     style="flex:0 0 166px;min-width:150px;max-width:172px;
+                            border-radius:13px;background:#182837;
+                            box-shadow:0 4px 18px #0fd1cec7,0 2px 10px #0003;">
+                  <img src="${ep.thumb || ep.poster || ''}"
+                       class="episode-img-pro"
+                       alt="${ep.title || ('Episode ' + (ep.ep || ''))}"
+                       loading="lazy" decoding="async"
+                       style="display:block;border-radius:13px 13px 0 0;width:100%;
+                              height:110px;object-fit:cover;">
+                  <div class="episode-title-pro"
+                       style="margin:15px 0 4px 0;font-family:'Montserrat',sans-serif;
+                              font-size:1.07em;font-weight:700;color:#fff;text-align:center;">
+                    ${ep.title || 'Episode ' + (ep.ep || '')}
+                    <span class="new-badge-pro"
+                          style="margin-left:7px;background:#ffd700;color:#182734;
+                                 font-size:.78em;border-radius:5px;padding:2.3px 9px;">NEW</span>
+                  </div>
+                  <button class="watch-btn-pro"
+                          data-episode-index="${index}"
+                          style="margin-bottom:13px;width:86%;display:block;
+                                background:linear-gradient(90deg,#009aff 65%,#ffd700 100%);
+                                color:#fff;font-weight:700;text-decoration:none;text-align:center;
+                                border-radius:5px;padding:8px 0;font-family:'Montserrat',sans-serif;
+                                font-size:1em;box-shadow:0 1px 10px #0087ff14;
+                                margin-left:auto;margin-right:auto;border:none;cursor:pointer;">
+                    Watch Now
+                  </button>
                 </div>
-                <a href="${buildEpisodeWatchUrl(ep)}"
-                   class="watch-btn-pro"
-                   target="_blank" rel="noopener"
-                   style="margin-bottom:13px;width:86%;display:block;
-                          background:linear-gradient(90deg,#009aff 65%,#ffd700 100%);
-                          color:#fff;font-weight:700;text-decoration:none;text-align:center;
-                          border-radius:5px;padding:8px 0;font-family:'Montserrat',sans-serif;
-                          font-size:1em;box-shadow:0 1px 10px #0087ff14;
-                          margin-left:auto;margin-right:auto;">
-                  Watch Now
-                </a>
-              </div>
-            `).join('')}
-          </div>
-        `;
-        moveFilterBarBelowNewEpisodes();
-      })
-      .catch(() => {
-        newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">Could not load new episodes.</div>`;
-        moveFilterBarBelowNewEpisodes();
-      });
+              `).join('')}
+            </div>
+          `;
+
+          // 🔥 Add click handlers to Watch Now buttons
+          newGrid.querySelectorAll('.watch-btn-pro').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+              const index = parseInt(this.dataset.episodeIndex);
+              const episode = latestEps[index];
+              if (episode) {
+                handleWatchClick(e, episode);
+              }
+            });
+          });
+
+          moveFilterBarBelowNewEpisodes();
+        })
+        .catch(() => {
+          newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">Could not load new episodes.</div>`;
+          moveFilterBarBelowNewEpisodes();
+        });
+    });
   }
 
   // ------------- Series homepage grid: unchanged -------------
