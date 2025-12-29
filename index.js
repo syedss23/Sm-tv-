@@ -4,13 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('sidebarToggle')?.addEventListener('click', () => sbar.classList.toggle('open'));
   document.getElementById('sidebarClose')?.addEventListener('click', () => sbar.classList.remove('open'));
 
-  // 🔥 Load config for shortlink feature
-  let featureConfig = null;
-  fetch('/config.json', { cache: 'no-cache' })
-    .then(r => r.ok ? r.json() : null)
-    .then(config => { if (config) featureConfig = config.redirectionFeatures; })
-    .catch(() => { featureConfig = { shortlink: false, sponsorPopup: true }; });
-
   // Utility: move filter bar under New Episodes
   function moveFilterBarBelowNewEpisodes() {
     const filterBar = document.querySelector('.filter-bar');
@@ -21,14 +14,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   moveFilterBarBelowNewEpisodes();
 
-  // ✅ Build streaming URL for New Episodes "Watch Now" button
+  // âœ… NEW: Build streaming URL for New Episodes "Watch Now" button
   function buildEpisodeWatchUrl(ep) {
-    const fallback = ep.download || '#';
+    const fallback = ep.shortlink || ep.download || '#';
 
     try {
-      const raw = (ep._src || '').replace(/^/+/, ''); // remove leading slash if any
+      const raw = (ep._src || '').replace(/^\/+/, ''); // remove leading slash if any
       // Matches: episode-data/slug-s1.json  OR  episode-data/slug-s1-en.json  etc.
-      const m = raw.match(/^episode-data/(.+?)-s(d+)(?:-([a-z]{2,3}|dub))?.json$/i);
+      const m = raw.match(/^episode-data\/(.+?)-s(\d+)(?:-([a-z]{2,3}|dub))?\.json$/i);
       if (!m) return fallback;
 
       const slug   = m[1];
@@ -40,11 +33,11 @@ document.addEventListener('DOMContentLoaded', () => {
       params.set('season', season);
       if (ep.ep != null) params.set('ep', ep.ep);
 
-      // Only pass lang when it's actually a subtitle/dub marker
+      // Only pass lang when itâ€™s actually a subtitle/dub marker
       if (lang && lang !== 'dub') {
         params.set('lang', lang);   // en / hi / ur
       } else if (lang === 'dub') {
-        params.set('lang', 'dub');  // if you're using this
+        params.set('lang', 'dub');  // if youâ€™re using this
       }
 
       return `episode.html?${params.toString()}`;
@@ -94,13 +87,13 @@ document.addEventListener('DOMContentLoaded', () => {
                   ${live ? '<span style="background:#ff2d2d;color:#fff;padding:1px 6px;border-radius:6px;font-size:0.7em;">LIVE</span>' : ''}
                 </div>
 
-                <!-- One compact line: day • time • type (small, old-style) -->
+                <!-- One compact line: day â€¢ time â€¢ type (small, old-style) -->
                 <div class="schedule-row"
                      style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px;font-size:0.86em;line-height:1.25;">
                   ${day  ? `<span class="day"  style="color:#ffd267;font-weight:600;">${day}</span>` : ''}
-                  ${(day && time) ? '<span class="dot" style="opacity:.6;">•</span>' : ''}
+                  ${(day && time) ? '<span class="dot" style="opacity:.6;">â€¢</span>' : ''}
                   ${time ? `<span class="time" style="color:#9fd3ff;font-weight:600;">${time}</span>` : ''}
-                  ${type ? `<span class="dot" style="opacity:.6;">•</span><span class="type" style="color:#23c6ed;font-weight:600;">${type}</span>` : ''}
+                  ${type ? `<span class="dot" style="opacity:.6;">â€¢</span><span class="type" style="color:#23c6ed;font-weight:600;">${type}</span>` : ''}
                 </div>
 
                 <!-- Countdown below, slightly smaller -->
@@ -168,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         newGrid.innerHTML = `
           <div style="display:flex;gap:14px;overflow-x:auto;padding:0 2px 2px 2px;">
-            ${latestEps.map((ep, idx) => `
+            ${latestEps.map(ep => `
               <div class="episode-card-pro"
                    style="flex:0 0 166px;min-width:150px;max-width:172px;
                           border-radius:13px;background:#182837;
@@ -189,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <a href="${buildEpisodeWatchUrl(ep)}"
                    class="watch-btn-pro"
-                   data-episode-index="${idx}"
+                   target="_blank" rel="noopener"
                    style="margin-bottom:13px;width:86%;display:block;
                           background:linear-gradient(90deg,#009aff 65%,#ffd700 100%);
                           color:#fff;font-weight:700;text-decoration:none;text-align:center;
@@ -202,35 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `).join('')}
           </div>
         `;
-
-        // 🔥 Add click handler for shortlink logic
-        newGrid.querySelectorAll('.watch-btn-pro').forEach(btn => {
-          btn.addEventListener('click', function(e) {
-            // Only intercept if shortlink mode is enabled
-            if (!featureConfig || !featureConfig.shortlink || featureConfig.sponsorPopup) {
-              return; // Let default link work (go to episode.html)
-            }
-
-            const idx = parseInt(this.dataset.episodeIndex);
-            const ep = latestEps[idx];
-            
-            if (ep && ep.shortlink) {
-              e.preventDefault();
-              console.log('Redirecting to shortlink:', ep.shortlink);
-              
-              if (typeof gtag !== 'undefined') {
-                gtag('event', 'shortlink_redirect_home', {
-                  'episode': ep.title || 'Episode ' + ep.ep,
-                  'shortlink_url': ep.shortlink
-                });
-              }
-              
-              window.location.href = ep.shortlink;
-            }
-            // If no shortlink, let default href work (episode.html)
-          });
-        });
-
         moveFilterBarBelowNewEpisodes();
       })
       .catch(() => {
