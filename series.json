@@ -221,6 +221,19 @@
     "track": "dubbed"
   },
   {
+    "id": 18,
+    "title": "Mehmet The Conqueror",
+    "slug": "conqueror",
+    "poster": "assets/posters2/conqueror.jpg",
+    "desc": {
+      "en": "Fatih series will be about the life of Ottoman sultan Fatih Sultan Mehmet.",
+      "hi": "सुल्तान मेहमत فاتह के जीवन और विजय।",
+      "ur": "زندگی اور فتوحات سلطان مہمت فاتح۔"
+    },
+    "seasons": 1,
+    "track": "dubbed"
+  },
+  {
     "id": 101,
     "title": "Kuruluş: Orhan (English Subtitles)",
     "slug": "kurulus-orhan-en",
