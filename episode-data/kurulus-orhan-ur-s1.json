@@ -111,7 +111,7 @@
     "ep": 10,
     "title": "Bolum 10",
     "thumb": "assets/posters2/orhan_s1e10_sub_ur.jpg",
-    "embed": "<div style='position:relative;width:100%;height:0;padding-bottom:56.25%;'><iframe src='https://ok.ru/videoembed/10846988208827' style='position:absolute;top:0;left:0;width:100%;height:100%;' frameborder='0' allowfullscreen></iframe></div>",
+    "embed": "<div style='position:relative;width:100%;height:0;padding-bottom:56.25%;'><iframe class='rumble' src='https://rumble.com/embed/v7267s0/?pub=4nl6ag' style='position:absolute;top:0;left:0;width:100%;height:100%;' frameborder='0' allowfullscreen></iframe></div>",
     "embed2": "<div style='position:relative;width:100%;height:0;padding-bottom:56.25%;'><iframe src='https://ok.ru/videoembed/10928141240923' style='position:absolute;top:0;left:0;width:100%;height:100%;' frameborder='0' allowfullscreen></iframe></div>",
     "watch3": false,
     "download": "https://t.me/+rwcW3dtbzPE0MjBl",
