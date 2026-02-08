@@ -25,7 +25,14 @@ async function checkNewEpisodes() {
 
     if (!newestEpisode) return;
 
-    console.log("Latest episode:", newestEpisode.title);
+    const lastNotified = localStorage.getItem("lastNotifiedEpisode");
+
+    if (lastNotified === newestEpisode.timestamp) {
+      console.log("Notification already sent");
+      return;
+    }
+
+    console.log("Sending notification:", newestEpisode.title);
 
     await fetch("/api/notify", {
       method: "POST",
@@ -39,6 +46,11 @@ async function checkNewEpisodes() {
         image: newestEpisode.thumb
       })
     });
+
+    localStorage.setItem(
+      "lastNotifiedEpisode",
+      newestEpisode.timestamp
+    );
 
   } catch (err) {
     console.log("Notifier error:", err);
