@@ -1,19 +1,29 @@
 async function checkNewEpisodes() {
   try {
-    const res = await fetch("/episode-data/index.json");
-    if (!res.ok) return;
+    const listRes = await fetch("episode-data/index.json");
+    const files = await listRes.json();
 
-    const files = await res.json();
+    let newestEpisode = null;
 
     for (const file of files) {
-      const epRes = await fetch("/episode-data/" + file);
-      const episodes = await epRes.json();
+      const res = await fetch("episode-data/" + file);
+      const episodes = await res.json();
 
       for (const ep of episodes) {
-        if (ep.notification === false) {
-          console.log("New episode:", ep.title);
+        if (!ep.timestamp) continue;
+
+        if (
+          !newestEpisode ||
+          new Date(ep.timestamp) > new Date(newestEpisode.timestamp)
+        ) {
+          newestEpisode = ep;
         }
       }
+    }
+
+    if (newestEpisode) {
+      console.log("Latest episode:", newestEpisode.title);
+      // future: send notification here
     }
   } catch (err) {
     console.log("Notifier error:", err);
