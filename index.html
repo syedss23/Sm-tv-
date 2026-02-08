@@ -276,7 +276,18 @@
       .new-episodes-section h2{ margin:7px 0 9px 8px; font-size:1em; }
     }
   </style>
-  <script defer src="index.js"></script>
+  <!-- OneSignal Push Notifications -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "ad485861-8839-49e2-bd21-f21c688668f6",
+    });
+  });
+</script>
+
+<script defer src="index.js"></script>
 </head>
 <body>
   <!-- Sidebar -->
