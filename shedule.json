@@ -1,14 +1,5 @@
 [
   {
-    "title": "Salahuddin Ayyubi Season 2 Last Episode 121",
-    "poster": "assets/posters/salauddin_ayyubi.jpg",
-    "day": "Mon – Thu",
-    "time": "11:30 PM",
-    "type": "🎧 Dubbed",
-    "live": true,
-    "countdown": false
-  },
-  {
     "title": "Sultan Mehmet Fatih Bolum 70",
     "poster": "assets/posters/mehmet_fatih.jpg",
     "day": "Wednesday",
@@ -18,12 +9,12 @@
     "countdown": "2026-02-25T23:30:00"
   },
   {
-    "title": "Kurulus Orhan Bolum 15",
+    "title": "Kurulus Orhan Bolum 16",
     "poster": "assets/posters/orhan.jpg",
     "day": "Thursday",
     "time": false,
     "type": "💬 Subtitled",
-    "live": true,
-    "countdown": false
+    "live": false,
+    "countdown": "2026-02-26T23:30:00"
   }
 ]
