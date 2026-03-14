@@ -1,20 +1,20 @@
 [
   {
-    "title": "Sultan Mehmet Fatih Bolum 71",
+    "title": "Sultan Mehmet Fatih Bolum 72",
     "poster": "assets/posters/mehmet_fatih.jpg",
     "day": "Wednesday",
     "time": false,
     "type": "💬 Subtitled",
     "live": false,
-    "countdown": "2026-03-04T23:30:00"
+    "countdown": "2026-03-18T23:30:00"
   },
   {
-    "title": "Kurulus Orhan Bolum 17",
+    "title": "Kurulus Orhan Bolum 18",
     "poster": "assets/posters/orhan.jpg",
     "day": "Thursday",
     "time": false,
     "type": "💬 Subtitled",
     "live": false,
-    "countdown": "2026-03-05T23:30:00"
+    "countdown": "2026-03-19T23:30:00"
   }
 ]
