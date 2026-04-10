@@ -292,5 +292,15 @@
     "seasons": 3,
     "track": "sub",
     "subLang": "ur"
+  },
+  {
+    "id": 204,
+    "title": "Imam Gazali (Urdu Subtitles)",
+    "slug": "imam-gazali-ur",
+    "poster": "assets/posters/orhan.jpg",
+    "desc": { "en": "Imam Gazali with Urdu subtitles." },
+    "seasons": 1,
+    "track": "sub",
+    "subLang": "ur"
   }
 ]
