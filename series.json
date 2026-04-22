@@ -308,7 +308,7 @@
     "title": "Alp Arslan (Arabic Subtitles)",
     "slug": "alp-arslan-ar",
     "poster": "assets/posters/alp_arslan.jpg",
-    "desc": { "en": "Alp Arslan with Arabic subtitles." },
+    "desc": { "en": "Alp Arslan with Arabic subtitles, only streaming Available just switch to Turkish language and arabic sub." },
     "seasons": 1,
     "track": "sub",
     "subLang": "ar"
@@ -318,7 +318,7 @@
     "title": "Alp Arslan (Spanish Subtitles)",
     "slug": "alp-arslan-sp",
     "poster": "assets/posters/alp_arslan.jpg",
-    "desc": { "en": "Alp Arslan with Spanish subtitles." },
+    "desc": { "en": "Alp Arslan with Spanish subtitles, only streaming Available just switch to Turkish language and Spanish sub." },
     "seasons": 1,
     "track": "sub",
     "subLang": "sp"
@@ -328,9 +328,19 @@
     "title": "Alp Arslan (English Subtitles)",
     "slug": "alp-arslan-en",
     "poster": "assets/posters/alp_arslan.jpg",
-    "desc": { "en": "Alp Arslan with English subtitles." },
+    "desc": { "en": "Alp Arslan with English subtitles, only streaming Available just switch to Turkish language and English sub." },
     "seasons": 1,
     "track": "sub",
     "subLang": "en"
+  },
+  {
+  "id": 301,
+    "title": "Alp Arslan (Urdu Subtitles)",
+    "slug": "alp-arslan-ur",
+    "poster": "assets/posters/alp_arslan.jpg",
+    "desc": { "en": "Alp Arslan with Urdu subtitles, only streaming Available just switch to Turkish language and urdu sub." },
+    "seasons": 1,
+    "track": "sub",
+    "subLang": "ur"
   }
 ]
