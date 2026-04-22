@@ -322,5 +322,15 @@
     "seasons": 1,
     "track": "sub",
     "subLang": "sp"
+  },
+  {
+  "id": 301,
+    "title": "Alp Arslan (English Subtitles)",
+    "slug": "alp-arslan-en",
+    "poster": "assets/posters/alp_arslan.jpg",
+    "desc": { "en": "Alp Arslan with English subtitles." },
+    "seasons": 1,
+    "track": "sub",
+    "subLang": "en"
   }
 ]
