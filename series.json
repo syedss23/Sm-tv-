@@ -204,7 +204,7 @@
       "hi": "सेल्ज़ुक साम्राज्य के विजयी सुलतान अल्प अर्सलान की कहानी।",
       "ur": "سلجوقی سلطنت کے فاتح سلطان البرسلان کی کہانی۔"
     },
-    "seasons": 2,
+    "seasons": 3,
     "track": "dubbed"
   },
   {
@@ -314,7 +314,7 @@
     "subLang": "ar"
   },
   {
-  "id": 301,
+  "id": 302,
     "title": "Alp Arslan (Spanish Subtitles)",
     "slug": "alp-arslan-sp",
     "poster": "assets/posters/alp_arslan.jpg",
@@ -324,7 +324,7 @@
     "subLang": "sp"
   },
   {
-  "id": 301,
+  "id": 303,
     "title": "Alp Arslan (English Subtitles)",
     "slug": "alp-arslan-en",
     "poster": "assets/posters/alp_arslan.jpg",
@@ -334,7 +334,7 @@
     "subLang": "en"
   },
   {
-  "id": 301,
+  "id": 304,
     "title": "Alp Arslan (Urdu Subtitles)",
     "slug": "alp-arslan-ur",
     "poster": "assets/posters/alp_arslan.jpg",
@@ -342,5 +342,35 @@
     "seasons": 1,
     "track": "sub",
     "subLang": "ur"
+  },
+  {
+  "id": 305,
+    "title": "Young Ibn-e-Sina (English Subtitles)",
+    "slug": "sina-en",
+    "poster": "assets/posters/sina.jpg",
+    "desc": { "en": "Young Ibn-e-Sina with English subtitles" },
+    "seasons": 3,
+    "track": "sub",
+    "subLang": "en"
+  },
+  {
+  "id": 306,
+    "title": "Young Ibn-e-Sina (Arabic Subtitles)",
+    "slug": "sina-ar",
+    "poster": "assets/posters/sina.jpg",
+    "desc": { "en": "Young Ibn-e-Sina with Arabic subtitles" },
+    "seasons": 3,
+    "track": "sub",
+    "subLang": "ar"
+  },
+  {
+  "id": 307,
+    "title": "Young Ibn-e-Sina (Spanish Subtitles)",
+    "slug": "sina-sp",
+    "poster": "assets/posters/sina.jpg",
+    "desc": { "en": "Young Ibn-e-Sina with Spanish subtitles" },
+    "seasons": 3,
+    "track": "sub",
+    "subLang": "sp"
   }
 ]
