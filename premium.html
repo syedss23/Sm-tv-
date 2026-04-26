@@ -4,580 +4,635 @@
   <meta charset="utf-8" />
   <title>Go Premium — SmTv Urdu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#060d14" />
+  <meta name="theme-color" content="#04080f" />
   <meta name="description" content="Ad‑free streaming, early episodes, and priority links. Join SmTv Urdu Premium." />
   <link rel="icon" href="/favicon.png" type="image/png" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #060d14;
-      --bg2:       #0b1622;
-      --bg3:       #0f1d2c;
-      --border:    rgba(255,255,255,.07);
-      --gold:      #fbbf24;
-      --gold-dim:  #c9920a;
-      --cyan:      #22d3ee;
-      --cyan-dim:  #0e7490;
-      --txt:       #e2eaf4;
-      --txt-muted: #6b8099;
-      --radius:    14px;
-      --rad-sm:    8px;
+      --bg:        #04080f;
+      --bg2:       #07101c;
+      --bg3:       #0b1828;
+      --bg4:       #0f2035;
+      --border:    rgba(255,255,255,.06);
+      --border-hi: rgba(255,255,255,.11);
+      --gold:      #e8a800;
+      --gold-lt:   #ffc93c;
+      --gold-glow: rgba(232,168,0,.3);
+      --cyan:      #00c8f0;
+      --green:     #00d98b;
+      --txt:       #d8e8f8;
+      --txt-muted: #4e6880;
+      --radius:    16px;
+      --rad-sm:    10px;
     }
 
     html { scroll-behavior: smooth; }
-
     body {
-      background: var(--bg);
-      color: var(--txt);
-      font-family: 'Inter', sans-serif;
-      line-height: 1.6;
-      min-height: 100vh;
-      overflow-x: hidden;
+      background: var(--bg); color: var(--txt);
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.65; min-height: 100vh; overflow-x: hidden;
     }
-
     a { text-decoration: none; color: inherit; }
 
-    /* ─── NOISE OVERLAY ─── */
-    body::before {
+    /* ── BACKGROUND ── */
+    .bg-wrap { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .bg-wrap::before {
       content: '';
-      position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-      opacity: .025;
-      pointer-events: none;
-      z-index: 0;
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,200,240,.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,200,240,.018) 1px, transparent 1px);
+      background-size: 52px 52px;
+      mask-image: radial-gradient(ellipse 100% 60% at 50% 0%, black, transparent);
+    }
+    .bg-wrap::after {
+      content: ''; position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: .03;
+    }
+    .orb { position: absolute; border-radius: 50%; animation: orb-drift 14s ease-in-out infinite; }
+    .orb-a { width: 700px; height: 700px; background: radial-gradient(circle, rgba(232,168,0,.1) 0%, transparent 65%); top: -240px; right: -180px; }
+    .orb-b { width: 550px; height: 550px; background: radial-gradient(circle, rgba(0,200,240,.07) 0%, transparent 65%); bottom: -120px; left: -160px; animation-delay: -7s; }
+    .orb-c { width: 380px; height: 380px; background: radial-gradient(circle, rgba(0,217,139,.05) 0%, transparent 65%); top: 38%; left: 40%; animation-delay: -4s; }
+    @keyframes orb-drift {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%       { transform: translateY(-28px) scale(1.04); }
     }
 
-    /* ─── GLOW BLOBS ─── */
-    .blob {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(120px);
-      pointer-events: none;
-      z-index: 0;
+    /* ── ANIMATIONS ── */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
-    .blob-1 { width: 500px; height: 500px; background: #0e4d6e44; top: -150px; right: -100px; }
-    .blob-2 { width: 400px; height: 400px; background: #92400e22; bottom: 200px; left: -120px; }
+    @keyframes slide-down {
+      from { opacity: 0; transform: translateY(-14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    @keyframes pulse-gold {
+      0%, 100% { box-shadow: 0 0 0 0 var(--gold-glow); }
+      60%       { box-shadow: 0 0 0 10px transparent; }
+    }
+    @keyframes glow-breathe {
+      0%, 100% { box-shadow: 0 0 18px var(--gold-glow); }
+      50%       { box-shadow: 0 0 36px rgba(232,168,0,.5), 0 0 64px rgba(232,168,0,.15); }
+    }
+    @keyframes btn-shine {
+      0%        { left: -100%; }
+      50%, 100% { left: 150%; }
+    }
+    @keyframes float-tag {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-3px); }
+    }
+    @keyframes count-in {
+      from { opacity: 0; transform: scale(.8); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes dot-pulse {
+      0%, 100% { opacity: 1; } 50% { opacity: .4; }
+    }
 
-    /* ─── HEADER ─── */
+    .a0 { animation: slide-down .5s cubic-bezier(.22,.68,0,1.2) both; }
+    .a1 { animation: fade-up .65s cubic-bezier(.22,.68,0,1.2) .08s both; }
+    .a2 { animation: fade-up .65s cubic-bezier(.22,.68,0,1.2) .18s both; }
+    .a3 { animation: fade-up .65s cubic-bezier(.22,.68,0,1.2) .28s both; }
+
+    .reveal {
+      opacity: 0; transform: translateY(22px);
+      transition: opacity .7s cubic-bezier(.22,.68,0,1.2), transform .7s cubic-bezier(.22,.68,0,1.2);
+    }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* ── HEADER ── */
     header {
-      position: sticky; top: 0; z-index: 50;
-      background: rgba(6,13,20,.85);
-      backdrop-filter: blur(16px);
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(4,8,15,.82);
+      backdrop-filter: blur(20px) saturate(180%);
       border-bottom: 1px solid var(--border);
-      padding: 0 16px;
     }
     .header-inner {
-      max-width: 780px; margin: 0 auto;
-      display: flex; align-items: center; gap: 12px;
-      height: 56px;
+      max-width: 800px; margin: 0 auto; padding: 0 18px;
+      display: flex; align-items: center; gap: 14px; height: 60px;
     }
     .btn-back {
       display: inline-flex; align-items: center; gap: 6px;
-      background: var(--bg3); border: 1px solid var(--border);
+      background: var(--bg3); border: 1px solid var(--border-hi);
       color: var(--txt-muted); border-radius: var(--rad-sm);
-      padding: 7px 12px; font-size: .85em; font-weight: 600;
-      transition: color .2s;
+      padding: 8px 14px; font-size: .83em; font-weight: 600;
+      transition: color .2s, border-color .2s; flex-shrink: 0;
     }
-    .btn-back:hover { color: var(--txt); }
-    .site-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800; font-size: 1.05em;
-      color: #fff; letter-spacing: -.01em;
-      display: flex; align-items: center; gap: 8px;
+    .btn-back:hover { color: var(--txt); border-color: rgba(255,255,255,.2); }
+
+    .site-wordmark { display: flex; align-items: center; gap: 10px; }
+    .wordmark-text { font-family: 'Playfair Display', serif; font-size: 1.1em; font-weight: 700; color: #fff; }
+    .wordmark-sep { color: var(--txt-muted); }
+    .wordmark-sub {
+      font-size: .75em; font-weight: 700; letter-spacing: .07em;
+      color: var(--gold); text-transform: uppercase;
+      background: rgba(232,168,0,.1); border: 1px solid rgba(232,168,0,.25);
+      padding: 3px 9px; border-radius: 5px;
     }
-    .site-title .badge {
-      font-size: .72em; font-weight: 700;
-      background: linear-gradient(135deg, var(--gold), #f59e0b);
-      color: #1a0a00; padding: 2px 8px; border-radius: 999px;
-    }
+
+    /* ★ Join Now — square-ish bordered, NOT pill ★ */
     .btn-join-header {
-      margin-left: auto;
-      background: linear-gradient(135deg, var(--gold), #f59e0b);
-      color: #1a0a00; font-weight: 800; font-size: .85em;
-      padding: 8px 16px; border-radius: 999px;
-      box-shadow: 0 0 20px #fbbf2430;
-      transition: box-shadow .2s, transform .15s;
+      margin-left: auto; flex-shrink: 0;
+      display: inline-flex; align-items: center; gap: 7px;
+      background: transparent; border: 1.5px solid var(--gold);
+      color: var(--gold); font-weight: 700; font-size: .82em;
+      padding: 8px 16px; border-radius: 8px; letter-spacing: .03em;
+      transition: background .2s, box-shadow .2s;
+      position: relative; overflow: hidden;
     }
-    .btn-join-header:active { transform: scale(.97); }
+    .btn-join-header::before {
+      content: '';
+      position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(232,168,0,.18), transparent);
+      animation: btn-shine 3.5s ease-in-out infinite;
+    }
+    .btn-join-header:hover { background: rgba(232,168,0,.1); box-shadow: 0 0 18px rgba(232,168,0,.22); }
+    .live-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green); flex-shrink: 0;
+      animation: dot-pulse 2s ease-in-out infinite;
+    }
 
-    /* ─── WRAP ─── */
-    .wrap { max-width: 780px; margin: 0 auto; padding: 0 16px; position: relative; z-index: 1; }
+    /* ── WRAP ── */
+    .wrap { max-width: 800px; margin: 0 auto; padding: 0 18px; position: relative; z-index: 1; }
 
-    /* ─── HERO ─── */
-    .hero {
-      padding: 40px 0 28px;
-      text-align: center;
+    /* ── HERO ── */
+    .hero { padding: 52px 0 36px; text-align: center; }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(232,168,0,.08); border: 1px solid rgba(232,168,0,.22);
+      color: var(--gold); padding: 6px 16px; border-radius: 6px;
+      font-size: .78em; font-weight: 700; letter-spacing: .09em;
+      margin-bottom: 22px; text-transform: uppercase;
+      animation: float-tag 4s ease-in-out infinite;
     }
-    .hero-label {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(251,191,36,.1); border: 1px solid rgba(251,191,36,.25);
-      color: var(--gold); padding: 5px 14px; border-radius: 999px;
-      font-size: .8em; font-weight: 700; letter-spacing: .06em;
-      margin-bottom: 18px; text-transform: uppercase;
-    }
+    .eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: dot-pulse 2s ease-in-out infinite; }
     .hero h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(2em, 7vw, 3em);
-      font-weight: 800;
-      line-height: 1.1;
-      letter-spacing: -.03em;
-      color: #fff;
-      margin-bottom: 14px;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2em, 7vw, 3.4em); font-weight: 800;
+      line-height: 1.1; letter-spacing: -.01em; color: #fff; margin-bottom: 16px;
     }
-    .hero h1 span {
-      background: linear-gradient(90deg, var(--cyan), #67e8f9);
+    .hero h1 em {
+      font-style: italic;
+      background: linear-gradient(90deg, var(--gold), var(--gold-lt));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-    .hero p {
-      font-size: 1.05em; color: var(--txt-muted);
-      max-width: 480px; margin: 0 auto 24px;
-    }
-    .hero-cta { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-    .btn-gold {
+    .hero-sub { font-size: 1.05em; color: var(--txt-muted); max-width: 500px; margin: 0 auto 30px; line-height: 1.7; }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    .btn-primary {
       display: inline-flex; align-items: center; gap: 8px;
-      background: linear-gradient(135deg, var(--gold), #f59e0b);
-      color: #1a0a00; font-weight: 800; font-size: 1em;
-      padding: 13px 26px; border-radius: 999px;
-      box-shadow: 0 4px 24px #fbbf2440;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+      color: #1a0800; font-weight: 700; font-size: .98em;
+      padding: 14px 28px; border-radius: 10px;
+      box-shadow: 0 6px 28px var(--gold-glow);
+      position: relative; overflow: hidden;
       transition: box-shadow .25s, transform .15s;
     }
-    .btn-gold:hover { box-shadow: 0 6px 36px #fbbf2460; }
-    .btn-gold:active { transform: scale(.97); }
-    .btn-ghost {
+    .btn-primary::before {
+      content: '';
+      position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent);
+      animation: btn-shine 2.8s ease-in-out infinite;
+    }
+    .btn-primary:hover { box-shadow: 0 8px 40px rgba(232,168,0,.5); transform: translateY(-1px); }
+    .btn-primary:active { transform: scale(.97); }
+
+    .btn-secondary {
       display: inline-flex; align-items: center; gap: 8px;
-      background: var(--bg3); border: 1px solid var(--border);
+      background: var(--bg3); border: 1px solid var(--border-hi);
       color: var(--txt); font-weight: 600; font-size: .95em;
-      padding: 12px 22px; border-radius: 999px;
-      transition: border-color .2s;
+      padding: 13px 24px; border-radius: 10px;
+      transition: border-color .2s, background .2s;
     }
-    .btn-ghost:hover { border-color: rgba(255,255,255,.2); }
+    .btn-secondary:hover { border-color: rgba(255,255,255,.22); background: var(--bg4); }
 
-    /* ─── STATS BAR ─── */
-    .stats-bar {
-      display: flex; gap: 0;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      margin: 28px 0;
+    /* ── STATS ── */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--border-hi); border-radius: var(--radius);
+      overflow: hidden; margin: 36px 0; background: var(--bg2);
     }
-    .stat {
-      flex: 1; text-align: center; padding: 16px 10px;
-      border-right: 1px solid var(--border);
-    }
+    .stat { text-align: center; padding: 18px 10px; border-right: 1px solid var(--border); }
     .stat:last-child { border-right: none; }
-    .stat-num {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.5em; font-weight: 800; color: var(--gold);
-      display: block;
+    .stat-val {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55em; font-weight: 700; color: var(--gold);
+      display: block; line-height: 1;
+      animation: count-in .8s cubic-bezier(.22,.68,0,1.2) both;
     }
-    .stat-label { font-size: .78em; color: var(--txt-muted); font-weight: 500; }
+    .stat-desc { font-size: .76em; color: var(--txt-muted); font-weight: 500; margin-top: 5px; }
 
-    /* ─── FEATURES ─── */
-    .section-label {
-      font-size: .75em; font-weight: 700; letter-spacing: .1em;
-      color: var(--cyan); text-transform: uppercase; margin-bottom: 12px;
+    /* ── SECTION LABELS ── */
+    .sec-tag {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: .72em; font-weight: 700; letter-spacing: .1em;
+      color: var(--cyan); text-transform: uppercase; margin-bottom: 10px;
     }
-    .section-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.55em; font-weight: 800; color: #fff;
-      letter-spacing: -.02em; margin-bottom: 20px;
+    .sec-tag::before { content: ''; width: 16px; height: 2px; background: var(--cyan); border-radius: 2px; display: block; }
+    .sec-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7em; font-weight: 700; color: #fff;
+      letter-spacing: -.01em; margin-bottom: 22px; line-height: 1.2;
     }
 
-    .features-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px; margin-bottom: 32px;
+    /* ── FEATURES ── */
+    .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 40px; }
+    .feat-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px 18px;
+      position: relative; overflow: hidden;
+      transition: border-color .25s, transform .25s;
     }
-    .feature-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px 16px;
-      transition: border-color .2s, transform .2s;
+    .feat-card::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,200,240,.3), transparent);
+      opacity: 0; transition: opacity .3s;
     }
-    .feature-card:hover { border-color: rgba(34,211,238,.25); transform: translateY(-2px); }
-    .feature-icon {
-      font-size: 1.6em; margin-bottom: 10px; display: block;
-    }
-    .feature-card h4 {
-      font-family: 'Syne', sans-serif;
-      font-size: .95em; font-weight: 700; color: #fff; margin-bottom: 4px;
-    }
-    .feature-card p { font-size: .83em; color: var(--txt-muted); line-height: 1.5; }
+    .feat-card:hover { border-color: rgba(0,200,240,.22); transform: translateY(-3px); }
+    .feat-card:hover::after { opacity: 1; }
+    .feat-icon { font-size: 1.7em; margin-bottom: 12px; display: block; }
+    .feat-card h4 { font-family: 'Playfair Display', serif; font-size: 1em; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .feat-card p { font-size: .84em; color: var(--txt-muted); line-height: 1.6; }
 
-    /* ─── PRICING ─── */
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 14px; margin-bottom: 32px;
-    }
+    /* ── PRICING ── */
+    .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
     .price-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 22px 20px;
-      position: relative;
-      overflow: hidden;
-      transition: transform .2s;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 26px 22px;
+      position: relative; overflow: hidden;
+      transition: transform .25s, box-shadow .25s;
     }
-    .price-card:hover { transform: translateY(-3px); }
+    .price-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px #0009; }
     .price-card.featured {
-      border-color: rgba(251,191,36,.4);
-      background: linear-gradient(135deg, rgba(251,191,36,.06) 0%, var(--bg2) 60%);
+      border-color: rgba(232,168,0,.38);
+      background: linear-gradient(160deg, rgba(232,168,0,.07) 0%, var(--bg2) 55%);
     }
     .price-card.featured::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, var(--gold), #f59e0b);
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      background-size: 200% auto;
+      animation: shimmer 3s linear infinite;
     }
-    .price-best {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--gold), #f59e0b);
-      color: #1a0a00; font-weight: 800; font-size: .72em;
-      padding: 3px 10px; border-radius: 999px;
-      margin-bottom: 12px; text-transform: uppercase; letter-spacing: .05em;
+    .best-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+      color: #1a0800; font-weight: 700; font-size: .72em;
+      padding: 4px 10px; border-radius: 5px;
+      margin-bottom: 14px; text-transform: uppercase; letter-spacing: .05em;
     }
-    .price-name {
-      font-family: 'Syne', sans-serif;
-      font-size: 1em; font-weight: 700; color: var(--txt-muted);
-      margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em;
+    .price-plan { font-size: .76em; font-weight: 700; color: var(--txt-muted); text-transform: uppercase; letter-spacing: .09em; margin-bottom: 8px; }
+    .price-amount { font-family: 'Playfair Display', serif; font-size: 2.8em; font-weight: 800; color: #fff; letter-spacing: -.02em; line-height: 1; }
+    .price-tenure { font-size: .82em; color: var(--txt-muted); margin-top: 5px; margin-bottom: 20px; }
+    .all-benefits-tag {
+      font-size: .78em; font-weight: 600; color: var(--txt-muted);
+      letter-spacing: .04em; margin-bottom: 18px; margin-top: 4px;
     }
-    .price-amount {
-      font-family: 'Syne', sans-serif;
-      font-size: 2.4em; font-weight: 800; color: #fff;
-      letter-spacing: -.03em; line-height: 1;
-    }
-    .price-period {
-      font-size: .85em; color: var(--txt-muted); font-weight: 500;
-      margin-bottom: 18px; margin-top: 4px;
-    }
-    .price-perks { list-style: none; margin-bottom: 20px; }
-    .price-perks li {
-      display: flex; align-items: center; gap: 8px;
-      font-size: .88em; color: var(--txt); padding: 5px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .price-perks li:last-child { border-bottom: none; }
-    .price-perks li::before { content: '✓'; color: var(--gold); font-weight: 800; font-size: .9em; }
-    .btn-plan {
+    .price-card.featured .all-benefits-tag { color: rgba(232,168,0,.7); }
+    .btn-plan-gold {
       display: block; text-align: center;
-      background: linear-gradient(135deg, var(--gold), #f59e0b);
-      color: #1a0a00; font-weight: 800; font-size: .95em;
-      padding: 13px; border-radius: var(--rad-sm);
-      box-shadow: 0 4px 18px #fbbf2430;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+      color: #1a0800; font-weight: 700; font-size: .93em;
+      padding: 14px; border-radius: var(--rad-sm);
+      box-shadow: 0 4px 20px var(--gold-glow);
+      position: relative; overflow: hidden;
       transition: box-shadow .25s, transform .15s;
     }
-    .btn-plan:active { transform: scale(.98); }
-    .price-card:not(.featured) .btn-plan {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      color: var(--txt); box-shadow: none;
+    .btn-plan-gold::before {
+      content: ''; position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent);
+      animation: btn-shine 3s ease-in-out infinite;
     }
-    .price-card:not(.featured) .btn-plan:hover { border-color: rgba(255,255,255,.2); }
-    .price-note {
-      font-size: .78em; color: var(--txt-muted); text-align: center;
-      margin-top: 10px;
+    .btn-plan-gold:hover { box-shadow: 0 6px 30px rgba(232,168,0,.5); }
+    .btn-plan-gold:active { transform: scale(.98); }
+    .btn-plan-outline {
+      display: block; text-align: center;
+      background: transparent; border: 1.5px solid var(--border-hi);
+      color: var(--txt); font-weight: 600; font-size: .93em;
+      padding: 13px; border-radius: var(--rad-sm);
+      transition: border-color .2s, background .2s;
     }
-    .price-note a { color: var(--cyan); }
+    .btn-plan-outline:hover { border-color: rgba(255,255,255,.22); background: var(--bg3); }
+    .plan-activation-note {
+      font-size: .76em; color: var(--txt-muted); text-align: center; margin-top: 10px; line-height: 1.5;
+    }
+    .plan-activation-note a { color: var(--cyan); }
 
-    /* ─── HOW IT WORKS ─── */
-    .steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 32px; }
-    .step {
-      display: flex; gap: 16px; align-items: flex-start;
-      padding: 16px 0;
-      border-bottom: 1px solid var(--border);
+    /* ★ NON-REFUNDABLE NOTICE ★ */
+    .policy-box {
+      background: var(--bg2); border: 1px solid var(--border-hi);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 var(--rad-sm) var(--rad-sm) 0;
+      padding: 14px 16px; margin-bottom: 16px;
+      display: flex; align-items: flex-start; gap: 10px;
     }
-    .step:last-child { border-bottom: none; }
-    .step-num {
-      width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
-      background: linear-gradient(135deg, var(--gold), #f59e0b);
+    .policy-icon { font-size: 1.05em; flex-shrink: 0; margin-top: 2px; }
+    .policy-text { font-size: .83em; color: var(--txt-muted); line-height: 1.6; }
+    .policy-text strong { color: var(--txt); }
+
+    /* ★ INTERNATIONAL USERS BANNER ★ */
+    .intl-banner {
+      background: linear-gradient(135deg, rgba(0,200,240,.06), rgba(0,200,240,.02));
+      border: 1px solid rgba(0,200,240,.2);
+      border-radius: var(--radius); padding: 22px 20px;
+      margin-bottom: 40px;
+      display: flex; gap: 18px; align-items: flex-start;
+    }
+    .intl-globe { font-size: 2.2em; flex-shrink: 0; }
+    .intl-body h4 { font-family: 'Playfair Display', serif; font-size: 1.1em; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .intl-body p { font-size: .86em; color: var(--txt-muted); line-height: 1.7; margin-bottom: 14px; }
+    .btn-intl {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(0,200,240,.1); border: 1px solid rgba(0,200,240,.28);
+      color: var(--cyan); font-weight: 700; font-size: .85em;
+      padding: 10px 16px; border-radius: var(--rad-sm);
+      transition: background .2s, box-shadow .2s;
+    }
+    .btn-intl:hover { background: rgba(0,200,240,.18); box-shadow: 0 0 18px rgba(0,200,240,.15); }
+
+    /* ── HOW IT WORKS ── */
+    .steps-list { margin-bottom: 40px; }
+    .step-row {
+      display: flex; gap: 18px; align-items: flex-start;
+      padding: 18px 0; border-bottom: 1px solid var(--border);
+      transition: padding-left .25s;
+    }
+    .step-row:last-child { border-bottom: none; }
+    .step-row:hover { padding-left: 6px; }
+    .step-num-badge {
+      width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
       display: flex; align-items: center; justify-content: center;
-      font-family: 'Syne', sans-serif; font-weight: 800; font-size: .9em;
-      color: #1a0a00;
+      font-family: 'Playfair Display', serif; font-weight: 800; font-size: .95em; color: #1a0800;
     }
-    .step-body h4 { font-weight: 700; color: #fff; margin-bottom: 3px; }
-    .step-body p { font-size: .88em; color: var(--txt-muted); }
+    .step-text h4 { font-weight: 700; color: #fff; margin-bottom: 3px; font-size: .97em; }
+    .step-text p { font-size: .86em; color: var(--txt-muted); }
+    .step-text a { color: var(--cyan); }
 
-    /* ─── SERIES ─── */
-    #series-section { margin-bottom: 32px; }
-    .plist {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    .pitem {
+    /* ── SERIES ── */
+    .series-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 40px; }
+    .series-item {
       background: var(--bg2); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 14px;
-      transition: border-color .2s;
+      border-radius: var(--radius); padding: 14px 16px;
+      transition: border-color .2s, transform .2s;
     }
-    .pitem:hover { border-color: rgba(34,211,238,.25); }
-    .pitem h4 {
-      font-family: 'Syne', sans-serif;
-      font-size: .9em; font-weight: 700; color: #fff; margin-bottom: 6px;
-    }
-    .psub { font-size: .8em; color: var(--txt-muted); margin-top: 3px; }
+    .series-item:hover { border-color: rgba(0,200,240,.22); transform: translateY(-2px); }
+    .series-item h4 { font-family: 'Playfair Display', serif; font-size: .9em; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .psub { font-size: .78em; color: var(--txt-muted); margin-top: 3px; }
     .ptags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
     .ptag {
-      background: rgba(34,211,238,.08); border: 1px solid rgba(34,211,238,.18);
-      color: var(--cyan); padding: 2px 8px; border-radius: 999px; font-size: .75em; font-weight: 600;
+      background: rgba(0,200,240,.07); border: 1px solid rgba(0,200,240,.18);
+      color: var(--cyan); padding: 2px 8px; border-radius: 4px; font-size: .73em; font-weight: 600;
     }
 
-    /* ─── CONTACT ─── */
-    .contact-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 12px; margin-bottom: 32px;
-    }
+    /* ── CONTACT ── */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 40px; }
     .contact-card {
       background: var(--bg2); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 20px 16px;
+      border-radius: var(--radius); padding: 22px 18px;
       display: flex; flex-direction: column; gap: 10px;
-      transition: border-color .2s;
+      transition: border-color .2s, transform .2s;
     }
-    .contact-card:hover { border-color: rgba(34,211,238,.25); }
-    .contact-icon { font-size: 1.8em; }
-    .contact-card h4 { font-family: 'Syne', sans-serif; font-weight: 700; color: #fff; }
-    .contact-card p { font-size: .83em; color: var(--txt-muted); }
+    .contact-card:hover { border-color: rgba(0,200,240,.22); transform: translateY(-2px); }
+    .contact-icon { font-size: 1.9em; }
+    .contact-card h4 { font-family: 'Playfair Display', serif; font-weight: 700; color: #fff; font-size: 1em; }
+    .contact-card p { font-size: .83em; color: var(--txt-muted); flex: 1; }
     .btn-contact {
       display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(34,211,238,.1); border: 1px solid rgba(34,211,238,.25);
-      color: var(--cyan); font-weight: 700; font-size: .85em;
-      padding: 9px 14px; border-radius: var(--rad-sm);
-      transition: background .2s;
+      background: rgba(0,200,240,.09); border: 1px solid rgba(0,200,240,.22);
+      color: var(--cyan); font-weight: 700; font-size: .84em;
+      padding: 10px 14px; border-radius: var(--rad-sm);
+      transition: background .2s, box-shadow .2s;
     }
-    .btn-contact:hover { background: rgba(34,211,238,.18); }
+    .btn-contact:hover { background: rgba(0,200,240,.17); box-shadow: 0 0 14px rgba(0,200,240,.12); }
 
-    /* ─── FAQ ─── */
-    .faq-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; }
-    details {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: var(--radius); overflow: hidden;
-    }
-    details[open] { border-color: rgba(34,211,238,.25); }
+    /* ── FAQ ── */
+    .faq-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 40px; }
+    details { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color .2s; }
+    details[open] { border-color: rgba(0,200,240,.2); }
     summary {
       cursor: pointer; font-weight: 600; color: var(--txt);
-      padding: 14px 16px; list-style: none;
+      padding: 15px 18px; list-style: none;
       display: flex; justify-content: space-between; align-items: center;
-      font-size: .93em;
+      font-size: .9em; transition: color .2s;
     }
-    summary::after {
-      content: '+'; color: var(--gold); font-size: 1.2em; font-weight: 700;
-      transition: transform .2s;
-    }
-    details[open] summary::after { transform: rotate(45deg); }
-    details p {
-      padding: 0 16px 14px; font-size: .88em; color: var(--txt-muted); line-height: 1.65;
-    }
+    summary:hover { color: #fff; }
+    summary::after { content: '+'; color: var(--gold); font-size: 1.3em; font-weight: 700; transition: transform .25s; flex-shrink: 0; margin-left: 10px; }
+    details[open] summary::after { transform: rotate(45deg); color: var(--cyan); }
+    details p { padding: 0 18px 15px; font-size: .86em; color: var(--txt-muted); line-height: 1.7; }
+    details p a { color: var(--cyan); }
 
-    /* ─── BOTTOM CTA ─── */
+    /* ── BOTTOM CTA ── */
     .bottom-cta {
-      margin: 10px 0 32px;
-      background: linear-gradient(135deg, #0e2a3f, #132038);
-      border: 1px solid rgba(251,191,36,.2);
-      border-radius: 18px; padding: 30px 20px;
-      text-align: center;
+      margin: 6px 0 36px;
+      background: linear-gradient(150deg, #0d2240 0%, #091830 100%);
+      border: 1px solid rgba(232,168,0,.18);
+      border-radius: 20px; padding: 36px 24px;
+      text-align: center; position: relative; overflow: hidden;
     }
-    .bottom-cta h2 {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.5em; font-weight: 800; color: #fff; margin-bottom: 8px;
+    .bottom-cta::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
     }
-    .bottom-cta p { font-size: .92em; color: var(--txt-muted); margin-bottom: 20px; }
+    .bottom-cta h2 { font-family: 'Playfair Display', serif; font-size: 1.7em; font-weight: 800; color: #fff; margin-bottom: 10px; }
+    .bottom-cta p { font-size: .92em; color: var(--txt-muted); margin-bottom: 24px; max-width: 420px; margin-left: auto; margin-right: auto; }
 
-    .intl-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(34,211,238,.07); border: 1px solid rgba(34,211,238,.2);
-      color: var(--cyan); padding: 7px 14px; border-radius: 999px;
-      font-size: .82em; font-weight: 600; margin-top: 14px;
-    }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 2px 0 32px; }
+    section { margin-bottom: 6px; }
 
-    /* divider */
-    .divider { border: none; border-top: 1px solid var(--border); margin: 4px 0 28px; }
-
-    /* Section spacing */
-    section { margin-bottom: 8px; }
-
-    @media (max-width: 520px) {
-      .features-grid { grid-template-columns: 1fr; }
-      .plist { grid-template-columns: 1fr; }
-      .contact-grid { grid-template-columns: 1fr; }
-      .pricing-grid { grid-template-columns: 1fr; }
-      .stats-bar { flex-direction: column; }
+    @media (max-width: 540px) {
+      .features-grid, .pricing-grid, .series-grid, .contact-grid { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
       .stat { border-right: none; border-bottom: 1px solid var(--border); }
+      .stat:nth-child(odd) { border-right: 1px solid var(--border); }
       .stat:last-child { border-bottom: none; }
+      .intl-banner { flex-direction: column; }
+      .hero h1 { font-size: 2em; }
     }
-    @media (min-width: 521px) {
-      .pricing-grid { grid-template-columns: 1fr 1fr; }
+    @media (min-width: 541px) and (max-width: 680px) {
+      .pricing-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
+  <div class="bg-wrap">
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+    <div class="orb orb-c"></div>
+  </div>
 
-  <!-- ─── HEADER ─── -->
-  <header>
+  <!-- ── HEADER ── -->
+  <header class="a0">
     <div class="header-inner">
       <a class="btn-back" href="/">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
         Home
       </a>
-      <div class="site-title">
-        SmTv Urdu
-        <span class="badge">Premium</span>
+      <div class="site-wordmark">
+        <span class="wordmark-text">SmTv Urdu</span>
+        <span class="wordmark-sep">·</span>
+        <span class="wordmark-sub">Premium</span>
       </div>
-      <a class="btn-join-header" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Join Now</a>
+      <a class="btn-join-header" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">
+        <span class="live-dot"></span>
+        Join Now
+      </a>
     </div>
   </header>
 
   <main class="wrap">
 
-    <!-- ─── HERO ─── -->
-    <section class="hero">
-      <div class="hero-label">
-        ⭐ SmTv Urdu Premium
+    <!-- ── HERO ── -->
+    <section class="hero a1">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-dot"></span>
+        SmTv Urdu Premium Membership
       </div>
-      <h1>Watch More.<br><span>Enjoy Better.</span></h1>
-      <p>Ad-free streaming, early episode access, and fast download links — all in one membership.</p>
-      <div class="hero-cta">
-        <a class="btn-gold" href="/pay.html?label=Monthly">
-          🚀 Get Premium
-        </a>
-        <a class="btn-ghost" href="#plans">
-          View Plans
-        </a>
+      <h1>Watch More.<br><em>Enjoy Better.</em></h1>
+      <p class="hero-sub">Ad-free streaming, early episode access, and priority download links — all in one simple membership starting at ₹99.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="/pay.html?label=Monthly">🚀 Get Premium Now</a>
+        <a class="btn-secondary" href="#plans">View Plans ↓</a>
       </div>
     </section>
 
-    <!-- ─── STATS ─── -->
-    <div class="stats-bar">
-      <div class="stat">
-        <span class="stat-num">0 Ads</span>
-        <span class="stat-label">Ad-free experience</span>
-      </div>
-      <div class="stat">
-        <span class="stat-num">Early</span>
-        <span class="stat-label">Episode access</span>
-      </div>
-      <div class="stat">
-        <span class="stat-num">Fast</span>
-        <span class="stat-label">Download links</span>
-      </div>
-      <div class="stat">
-        <span class="stat-num">₹99</span>
-        <span class="stat-label">Starting price</span>
-      </div>
+    <!-- ── STATS ── -->
+    <div class="stats-row a2">
+      <div class="stat"><span class="stat-val">0</span><div class="stat-desc">Ads — ever</div></div>
+      <div class="stat"><span class="stat-val">Early</span><div class="stat-desc">Episode access</div></div>
+      <div class="stat"><span class="stat-val">Fast</span><div class="stat-desc">Download links</div></div>
+      <div class="stat"><span class="stat-val">₹99</span><div class="stat-desc">Starting price</div></div>
     </div>
 
-    <!-- ─── FEATURES ─── -->
-    <section>
-      <div class="section-label">What you get</div>
-      <div class="section-title">Premium Benefits</div>
+    <!-- ── FEATURES ── -->
+    <section class="reveal">
+      <div class="sec-tag">What you get</div>
+      <div class="sec-heading">Premium Benefits</div>
       <div class="features-grid">
-        <div class="feature-card">
-          <span class="feature-icon">🚫</span>
+        <div class="feat-card">
+          <span class="feat-icon">🚫</span>
           <h4>Zero Ads</h4>
-          <p>Watch every episode without a single interruption. Pure, clean viewing.</p>
+          <p>Watch every episode completely uninterrupted. Pure, clean viewing — no pop-ups, no banners.</p>
         </div>
-        <div class="feature-card">
-          <span class="feature-icon">⚡</span>
+        <div class="feat-card">
+          <span class="feat-icon">⚡</span>
           <h4>Early Episodes</h4>
-          <p>Access new episodes before they go public. Never wait again.</p>
+          <p>Access new episodes before they go public. Be the first to watch — never wait again.</p>
         </div>
-        <div class="feature-card">
-          <span class="feature-icon">📥</span>
+        <div class="feat-card">
+          <span class="feat-icon">📥</span>
           <h4>Priority Links</h4>
-          <p>Fast, reliable download links reserved for premium members only.</p>
+          <p>Fast, reliable download links reserved exclusively for premium members. No slow mirrors.</p>
         </div>
-        <div class="feature-card">
-          <span class="feature-icon">💬</span>
+        <div class="feat-card">
+          <span class="feat-icon">💬</span>
           <h4>Telegram Support</h4>
-          <p>Instant help for payments, activation, and any issues via Telegram.</p>
+          <p>Direct, instant help for payments, activation, and anything else — via Telegram.</p>
         </div>
       </div>
     </section>
 
     <hr class="divider" />
 
-    <!-- ─── PLANS ─── -->
-    <section id="plans">
-      <div class="section-label">Pricing</div>
-      <div class="section-title">Choose Your Plan</div>
+    <!-- ── PRICING ── -->
+    <section id="plans" class="reveal">
+      <div class="sec-tag">Pricing</div>
+      <div class="sec-heading">Choose Your Plan</div>
       <div class="pricing-grid">
 
-        <!-- Quarterly (featured) -->
+        <!-- Quarterly -->
         <div class="price-card featured">
-          <div class="price-best">⭐ Best Value</div>
-          <div class="price-name">Quarterly</div>
+          <div class="best-badge">⭐ Best Value</div>
+          <div class="price-plan">Quarterly</div>
           <div class="price-amount">₹249</div>
-          <div class="price-period">for 3 months — saves ₹48</div>
-          <ul class="price-perks">
-            <li>3 months full access</li>
-            <li>Ad-free streaming</li>
-            <li>Early episode access</li>
-            <li>Priority download links</li>
-            <li>Telegram support</li>
-          </ul>
-          <a class="btn-plan" href="/pay.html?label=Quarterly">Get Quarterly Plan</a>
-          <div class="price-note">Pay → Send screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Telegram</a> → Instant activation</div>
+          <div class="price-tenure">for 3 months — saves ₹48</div>
+
+          <div class="all-benefits-tag">✦ All premium benefits included</div>
+          <a class="btn-plan-gold" href="/pay.html?label=Quarterly">Get Quarterly Plan</a>
+          <div class="plan-activation-note">Pay → Screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Telegram</a> → Instant access</div>
         </div>
 
         <!-- Monthly -->
         <div class="price-card">
-          <div class="price-name">Monthly</div>
+          <div class="price-plan">Monthly</div>
           <div class="price-amount">₹99</div>
-          <div class="price-period">per month</div>
-          <ul class="price-perks">
-            <li>1 month full access</li>
-            <li>Ad-free streaming</li>
-            <li>Early episode access</li>
-            <li>Priority download links</li>
-            <li>Telegram support</li>
-          </ul>
-          <a class="btn-plan" href="/pay.html?label=Monthly">Get Monthly Plan</a>
-          <div class="price-note">Pay → Send screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Telegram</a> → Instant activation</div>
-        </div>
+          <div class="price-tenure">per month</div>
 
+          <div class="all-benefits-tag">✦ All premium benefits included</div>
+          <a class="btn-plan-outline" href="/pay.html?label=Monthly">Get Monthly Plan</a>
+          <div class="plan-activation-note">Pay → Screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Telegram</a> → Instant access</div>
+        </div>
       </div>
-      <p style="font-size:.82em;color:var(--txt-muted);text-align:center;margin-top:-10px;margin-bottom:24px;">
-        🌍 International users welcome — contact on Telegram &nbsp;•&nbsp; Subscription is non‑refundable
-      </p>
+
+      <!-- ★ NON-REFUNDABLE NOTE ★ -->
+      <div class="policy-box">
+        <div class="policy-icon">⚠️</div>
+        <div class="policy-text">
+          <strong>Subscription is non-refundable.</strong> Once activated, your membership stays active for the full plan period. You can simply choose not to renew when it expires.
+        </div>
+      </div>
     </section>
+
+    <!-- ★ INTERNATIONAL USERS ★ -->
+    <div class="intl-banner reveal">
+      <div class="intl-globe">🌍</div>
+      <div class="intl-body">
+        <h4>Are You Outside India?</h4>
+        <p>
+          Our UPI payment system is only available inside India. But don't worry — <strong style="color:var(--txt)">international members are 100% welcome.</strong>
+          <br><br>
+          If you're in the UAE, UK, USA, Pakistan, Canada, or anywhere else in the world, simply message us on Telegram. We will personally share the right payment method for your country and help you get set up quickly. Many international users are already enjoying SmTv Urdu Premium — it's easy once you reach out.
+        </p>
+        <a class="btn-intl" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">
+          ✈️ Message on Telegram — Get International Payment Options
+        </a>
+      </div>
+    </div>
 
     <hr class="divider" />
 
-    <!-- ─── HOW IT WORKS ─── -->
-    <section>
-      <div class="section-label">Simple process</div>
-      <div class="section-title">How to Join</div>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-body">
+    <!-- ── HOW IT WORKS ── -->
+    <section class="reveal">
+      <div class="sec-tag">Simple process</div>
+      <div class="sec-heading">How to Join</div>
+      <div class="steps-list">
+        <div class="step-row">
+          <div class="step-num-badge">1</div>
+          <div class="step-text">
             <h4>Choose a Plan</h4>
-            <p>Pick Monthly or Quarterly and tap the button to open the payment page.</p>
+            <p>Pick Monthly or Quarterly above and tap the button to go to the payment page.</p>
           </div>
         </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-body">
+        <div class="step-row">
+          <div class="step-num-badge">2</div>
+          <div class="step-text">
             <h4>Pay via UPI</h4>
-            <p>Use any UPI app or scan the QR code. Quick and secure payment.</p>
+            <p>Use any UPI app (GPay, PhonePe, Paytm) or scan the QR code. Fast and secure.</p>
           </div>
         </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-body">
-            <h4>Send Screenshot</h4>
-            <p>Share your payment screenshot on Telegram with <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener" style="color:var(--cyan)">@Shaikhyder7861</a>.</p>
+        <div class="step-row">
+          <div class="step-num-badge">3</div>
+          <div class="step-text">
+            <h4>Send Your Screenshot</h4>
+            <p>Share the payment screenshot on Telegram with <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">@Shaikhyder7861</a>.</p>
           </div>
         </div>
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-body">
+        <div class="step-row">
+          <div class="step-num-badge">4</div>
+          <div class="step-text">
             <h4>Get Instant Access</h4>
-            <p>Your account gets activated immediately — start watching right away!</p>
+            <p>Your account is activated right away — start watching ad-free immediately.</p>
           </div>
         </div>
       </div>
@@ -585,85 +640,80 @@
 
     <hr class="divider" />
 
-    <!-- ─── SERIES ─── -->
-    <section id="series-section">
-      <div class="section-label">Exclusive content</div>
-      <div class="section-title">Premium Series</div>
-      <div id="plist" class="plist">
-        <div class="pitem" style="color:var(--txt-muted);font-size:.88em;">Loading series…</div>
+    <!-- ── SERIES ── -->
+    <section class="reveal">
+      <div class="sec-tag">Exclusive content</div>
+      <div class="sec-heading">Premium Series</div>
+      <div id="plist" class="series-grid">
+        <div class="series-item" style="color:var(--txt-muted);font-size:.88em;">Loading series…</div>
       </div>
     </section>
 
     <hr class="divider" />
 
-    <!-- ─── CONTACT ─── -->
-    <section>
-      <div class="section-label">We're here</div>
-      <div class="section-title">Contact & Support</div>
+    <!-- ── CONTACT ── -->
+    <section class="reveal">
+      <div class="sec-tag">We're here</div>
+      <div class="sec-heading">Contact & Support</div>
       <div class="contact-grid">
         <div class="contact-card">
           <div class="contact-icon">✈️</div>
           <h4>Telegram Contact</h4>
-          <p>Fast support for payments, activation, and any issues you face.</p>
-          <a class="btn-contact" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">
-            Open Telegram →
-          </a>
+          <p>Direct support for payments, activation, and any questions. Available 10am–10pm IST daily.</p>
+          <a class="btn-contact" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Open Telegram →</a>
         </div>
         <div class="contact-card">
           <div class="contact-icon">🤖</div>
           <h4>Details Bot</h4>
-          <p>Get plan info and step-by-step instructions via our Telegram bot.</p>
-          <a class="btn-contact" href="https://t.me/itzmezain1/2905" target="_blank" rel="noopener">
-            Open Bot →
-          </a>
+          <p>Get plan info, pricing, and step-by-step instructions automatically via our Telegram bot.</p>
+          <a class="btn-contact" href="https://t.me/itzmezain1/2905" target="_blank" rel="noopener">Open Bot →</a>
         </div>
       </div>
     </section>
 
     <hr class="divider" />
 
-    <!-- ─── FAQ ─── -->
-    <section>
-      <div class="section-label">Common questions</div>
-      <div class="section-title">FAQ</div>
+    <!-- ── FAQ ── -->
+    <section class="reveal">
+      <div class="sec-tag">Common questions</div>
+      <div class="sec-heading">FAQ</div>
       <div class="faq-list">
         <details>
           <summary>How do I activate after payment?</summary>
-          <p>Simply send a screenshot of your payment to <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener" style="color:var(--cyan)">@Shaikhyder7861</a> on Telegram. Your account will be activated instantly.</p>
+          <p>Send a screenshot of your payment to <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">@Shaikhyder7861</a> on Telegram. Your account is activated instantly — usually within minutes.</p>
         </details>
         <details>
-          <summary>What do I get with Premium?</summary>
-          <p>Ad-free streaming on all episodes, early access before public release, priority high-speed download links, and dedicated Telegram support.</p>
+          <summary>What exactly do I get with Premium?</summary>
+          <p>Completely ad-free streaming, early access to new episodes before public release, priority high-speed download links, and dedicated Telegram support for the full duration of your plan.</p>
         </details>
         <details>
           <summary>How do I pay?</summary>
-          <p>Use the payment page to open your UPI app (Google Pay, PhonePe, Paytm, etc.) or scan the QR code. Then share the payment screenshot on Telegram for activation.</p>
+          <p>Go to the payment page and choose to scan the UPI QR code or paste the UPI ID into your preferred UPI app. Enter the plan amount manually and complete payment, then send the screenshot on Telegram.</p>
         </details>
         <details>
-          <summary>Can international users join?</summary>
-          <p>Yes! International users are welcome. Please contact us on Telegram to arrange payment and get instructions specific to your region.</p>
+          <summary>I'm outside India — can I still join?</summary>
+          <p>Yes! International members are very welcome. UPI doesn't work outside India, so just <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">message us on Telegram</a> and we will share a payment method that works in your country. Many international users are already members.</p>
         </details>
         <details>
-          <summary>Can I cancel my subscription?</summary>
-          <p>You can stop renewing at any time. Your current period remains fully active until it expires. Please note that subscriptions are non-refundable.</p>
+          <summary>Is the subscription refundable?</summary>
+          <p>Subscriptions are <strong>non-refundable</strong>. Once activated, your membership stays active for the full plan period. You can choose not to renew — your access simply ends when the plan expires naturally.</p>
         </details>
         <details>
           <summary>Which devices and languages are supported?</summary>
-          <p>Works on all mobile devices and modern browsers. Subtitles and dubs are listed per series as available.</p>
+          <p>SmTv Urdu Premium works on all mobile devices and modern browsers. Subtitle tracks and dubs are listed individually per series as available.</p>
         </details>
       </div>
     </section>
 
-    <!-- ─── BOTTOM CTA ─── -->
-    <div class="bottom-cta">
+    <!-- ── BOTTOM CTA ── -->
+    <div class="bottom-cta reveal">
       <h2>Ready to Go Premium? 🎬</h2>
-      <p>Join hundreds of viewers enjoying ad-free, early-access streaming today.</p>
-      <a class="btn-gold" href="/pay.html?label=Quarterly">
-        ⭐ Get Best Value Plan
-      </a>
-      <br>
-      <div class="intl-badge">
-        🌍 International users — contact on Telegram
+      <p>Join viewers across the world enjoying ad-free, early-access streaming. It takes less than 2 minutes to start.</p>
+      <a class="btn-primary" href="/pay.html?label=Quarterly">⭐ Get Best Value — ₹249 for 3 months</a>
+      <div style="margin-top:16px">
+        <a class="btn-intl" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener" style="display:inline-flex;">
+          🌍 Outside India? Message us for payment options
+        </a>
       </div>
     </div>
 
@@ -675,7 +725,7 @@
       .then(items => {
         const wrap = document.getElementById('plist');
         wrap.innerHTML = items.map(s => `
-          <div class="pitem">
+          <div class="series-item">
             <h4>${s.title}</h4>
             ${s.seasons?.length ? `<div class="psub"><strong>Seasons:</strong> ${s.seasons.join(', ')}</div>` : ''}
             ${s.tracks?.length ? `<div class="psub"><strong>Tracks:</strong> ${s.tracks.join(' • ')}</div>` : ''}
@@ -684,11 +734,16 @@
         `).join('');
       })
       .catch(() => {
-        document.getElementById('plist').innerHTML = '<div class="pitem" style="color:var(--txt-muted);font-size:.88em;">Could not load series list.</div>';
+        document.getElementById('plist').innerHTML = '<div class="series-item" style="color:var(--txt-muted);font-size:.88em;">Could not load series list.</div>';
       });
+
+    // Scroll reveal
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   </script>
 
-  <!-- Footer Include -->
   <div id="footer-placeholder"></div>
   <script>
   (async function loadFooterAndInit(){
