@@ -5,126 +5,604 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>More – SmTv Urdu</title>
   <meta name="description" content="Connect with SmTv Urdu on Telegram, WhatsApp, and Instagram.">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #07090d;
+      --card-bg: #0d1018;
+      --border: rgba(255,255,255,0.07);
+      --text: #edf2f7;
+      --muted: #64748b;
+      --accent: #38bdf8;
+      --yellow: #facc15;
+    }
+
     body {
-      background: #0b0d10;
-      color: #fff;
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
       padding-bottom: calc(120px + env(safe-area-inset-bottom));
+      overflow-x: hidden;
     }
 
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 24px 18px;
+    /* ════════════════════════════
+       ANIMATED BACKGROUND
+    ════════════════════════════ */
+
+    /* Floating blobs */
+    .bg-blobs {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(90px); opacity: 0.13;
+    }
+    .blob-1 {
+      width: 440px; height: 440px; background: #2AABEE;
+      top: -140px; left: -120px;
+      animation: floatBlob1 8s ease-in-out infinite;
+    }
+    .blob-2 {
+      width: 340px; height: 340px; background: #7c3aed;
+      bottom: 60px; right: -100px;
+      animation: floatBlob2 10s ease-in-out infinite;
+    }
+    .blob-3 {
+      width: 260px; height: 260px; background: #facc15;
+      top: 40%; left: 30%; opacity: 0.05;
+      animation: floatBlob3 12s ease-in-out infinite;
+    }
+
+    @keyframes floatBlob1 {
+      0%,100% { transform: translate(0,0) scale(1); }
+      33%      { transform: translate(30px,40px) scale(1.08); }
+      66%      { transform: translate(-20px,20px) scale(0.95); }
+    }
+    @keyframes floatBlob2 {
+      0%,100% { transform: translate(0,0) scale(1); }
+      40%      { transform: translate(-40px,-30px) scale(1.1); }
+      70%      { transform: translate(20px,20px) scale(0.92); }
+    }
+    @keyframes floatBlob3 {
+      0%,100% { transform: translate(0,0); }
+      50%      { transform: translate(-30px,30px); }
+    }
+
+    /* Star particles */
+    #stars-canvas {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* Animated grid lines */
+    .grid-lines {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 48px 48px;
+      animation: gridDrift 20s linear infinite;
+    }
+    @keyframes gridDrift {
+      from { background-position: 0 0; }
+      to   { background-position: 48px 48px; }
+    }
+
+    /* ════════════════════════════
+       PAGE LAYOUT
+    ════════════════════════════ */
+    .page {
+      position: relative; z-index: 1;
+      max-width: 500px; margin: 0 auto;
+      padding: 40px 16px 20px;
+    }
+
+    /* ════════════════════════════
+       HERO
+    ════════════════════════════ */
+    .hero {
       text-align: center;
+      margin-bottom: 44px;
     }
 
-    h1 {
-      font-size: 28px;
-      font-weight: 800;
-      color: #00d4ff;
-      margin-bottom: 12px;
+    /* Pill badge */
+    .hero-pill {
+      display: inline-flex;
+      align-items: center; gap: 7px;
+      background: rgba(56,189,248,0.08);
+      border: 1px solid rgba(56,189,248,0.2);
+      border-radius: 100px;
+      padding: 5px 14px 5px 10px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 20px;
+      opacity: 0;
+      animation: slideDown 0.6s 0.1s cubic-bezier(0.22,1,0.36,1) forwards;
     }
 
-    p.subtitle {
-      color: #cfd8df;
-      margin-bottom: 24px;
-      font-size: 15px;
+    .live-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #4ade80;
+      animation: livePulse 2s ease infinite;
     }
 
-    .social-card {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      align-items: center;
+    /* Title with letter-by-letter reveal */
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(32px, 9vw, 48px);
+      letter-spacing: 5px; line-height: 1;
+      margin-bottom: 6px;
+      display: inline-block;
+      position: relative;
+      /* Animated gold shimmer */
+      background: linear-gradient(90deg,
+        #b8860b 0%,
+        #facc15 30%,
+        #fff8c0 50%,
+        #facc15 70%,
+        #b8860b 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation:
+        titleRise 0.8s 0.25s cubic-bezier(0.22,1,0.36,1) both,
+        goldShimmer 3s 1.2s linear infinite;
     }
 
-    .social-link {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
+    /* Glow behind title */
+    .hero-title::after {
+      content: 'SmTv Urdu';
+      position: absolute;
+      inset: 0;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: inherit;
+      letter-spacing: inherit;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      text-shadow: 0 0 40px rgba(250,204,21,0.35), 0 0 80px rgba(250,204,21,0.15);
+      pointer-events: none;
+      animation: glowPulse 2.5s ease-in-out infinite;
+    }
+
+    .hero-sub-line {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(250,204,21,0.45);
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: slideDown 0.6s 0.45s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    .hero-desc {
+      font-size: 14px; color: var(--muted);
+      line-height: 1.75; max-width: 300px; margin: 0 auto;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.55s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    /* ════════════════════════════
+       SECTION LABEL
+    ════════════════════════════ */
+    .section-head {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 14px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.6s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+    .section-head span {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--muted); white-space: nowrap;
+    }
+    .section-head::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    /* ════════════════════════════
+       SOCIAL CARDS
+    ════════════════════════════ */
+    .cards { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+
+    .s-card {
+      display: flex; align-items: center; gap: 14px;
       text-decoration: none;
-      color: #fff;
-      width: 90%;
-      max-width: 420px;
-      padding: 14px 20px;
-      border-radius: 16px;
-      font-weight: 700;
-      font-size: 16px;
-      background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      padding: 16px 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.1);
+      position: relative; overflow: hidden;
+      opacity: 0;
+      transition:
+        transform 0.25s cubic-bezier(0.34,1.56,0.64,1),
+        box-shadow 0.25s ease;
     }
 
-    .social-link:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.6);
+    /* Staggered entrance */
+    .s-card:nth-child(1) { animation: cardSlide 0.6s 0.7s cubic-bezier(0.22,1,0.36,1) forwards; }
+    .s-card:nth-child(2) { animation: cardSlide 0.6s 0.82s cubic-bezier(0.22,1,0.36,1) forwards; }
+    .s-card:nth-child(3) { animation: cardSlide 0.6s 0.94s cubic-bezier(0.22,1,0.36,1) forwards; }
+
+    /* Shimmer sweep on hover */
+    .s-card::before {
+      content: '';
+      position: absolute; top: 0; left: -100%;
+      width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.09), transparent);
+      transition: left 0.55s ease;
+      z-index: 1;
+    }
+    .s-card:hover::before { left: 170%; }
+
+    /* Ripple ring on hover */
+    .s-card::after {
+      content: '';
+      position: absolute;
+      inset: 0; border-radius: 18px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.18);
+    }
+    .s-card:hover::after { opacity: 1; }
+
+    .s-card:hover { transform: translateY(-4px) scale(1.012); }
+    .s-card:active { transform: scale(0.97); transition-duration: 0.1s; }
+
+    /* Telegram */
+    .s-tg {
+      background: linear-gradient(135deg, #1c93d0, #0d75a8);
+      box-shadow: 0 6px 28px rgba(28,147,208,0.3);
+    }
+    .s-tg:hover { box-shadow: 0 14px 40px rgba(28,147,208,0.5); }
+
+    /* WhatsApp */
+    .s-wa {
+      background: linear-gradient(135deg, #1db954, #0e8a3e);
+      box-shadow: 0 6px 28px rgba(29,185,84,0.25);
+    }
+    .s-wa:hover { box-shadow: 0 14px 40px rgba(29,185,84,0.45); }
+
+    /* Instagram */
+    .s-ig {
+      background: linear-gradient(135deg, #6c2eb9, #c62a6b 55%, #e8692a);
+      box-shadow: 0 6px 28px rgba(198,42,107,0.25);
+    }
+    .s-ig:hover { box-shadow: 0 14px 40px rgba(198,42,107,0.45); }
+
+    /* Icon */
+    .s-icon {
+      width: 46px; height: 46px;
+      border-radius: 13px;
+      background: rgba(255,255,255,0.16);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; position: relative; z-index: 2;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .s-card:hover .s-icon { transform: rotate(-8deg) scale(1.12); }
+    .s-icon svg { width: 24px; height: 24px; fill: #fff; display: block; }
+
+    .s-body { flex: 1; min-width: 0; position: relative; z-index: 2; }
+    .s-name { font-size: 15px; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 2px; }
+    .s-sub  { font-size: 12px; color: rgba(255,255,255,0.72); font-weight: 500; }
+
+    .s-arrow {
+      opacity: 0.55; flex-shrink: 0; position: relative; z-index: 2;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+    .s-arrow svg {
+      width: 16px; height: 16px;
+      fill: none; stroke: #fff;
+      stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .s-card:hover .s-arrow { transform: translateX(5px); opacity: 1; }
+
+    /* ════════════════════════════
+       ABOUT CARD
+    ════════════════════════════ */
+    .about-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 22px 20px;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 0.7s 1.05s cubic-bezier(0.22,1,0.36,1) forwards;
+      position: relative; overflow: hidden;
     }
 
-    .social-link i {
-      font-size: 24px;
+    /* Subtle top border glow */
+    .about-card::before {
+      content: '';
+      position: absolute; top: 0; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(56,189,248,0.4), transparent);
     }
 
-    .telegram { background: linear-gradient(90deg, #2AABEE, #229ED9); }
-    .whatsapp { background: linear-gradient(90deg, #25D366, #128C7E); }
-    .instagram { background: linear-gradient(90deg, #833AB4, #E1306C, #F77737); }
-
-    footer {
-      margin-top: 36px;
-      font-size: 13px;
-      color: #aaa;
+    .about-header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 18px;
     }
 
-    @media (max-width: 420px) {
-      h1 { font-size: 24px; }
-      .social-link { font-size: 15px; padding: 12px 18px; }
-      .social-link i { font-size: 22px; }
+    .about-icon {
+      width: 38px; height: 38px; border-radius: 11px;
+      background: rgba(56,189,248,0.1);
+      border: 1px solid rgba(56,189,248,0.15);
+      display: flex; align-items: center; justify-content: center;
+      animation: iconSpin 6s linear infinite;
+    }
+    .about-icon svg {
+      width: 18px; height: 18px; fill: none;
+      stroke: var(--accent); stroke-width: 2;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .about-title { font-size: 15px; font-weight: 700; }
+
+    .perks { display: flex; flex-direction: column; gap: 13px; }
+
+    .perk {
+      display: flex; align-items: flex-start; gap: 12px;
+      opacity: 0;
+      animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+    .perk:nth-child(1) { animation-delay: 1.15s; }
+    .perk:nth-child(2) { animation-delay: 1.25s; }
+    .perk:nth-child(3) { animation-delay: 1.35s; }
+    .perk:nth-child(4) { animation-delay: 1.45s; }
+
+    .perk-dot {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: rgba(56,189,248,0.1);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .perk-dot svg {
+      width: 10px; height: 10px; fill: none;
+      stroke: var(--accent); stroke-width: 2.5;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .perk-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .perk-text strong { color: var(--text); font-weight: 700; }
+
+    /* ════════════════════════════
+       DIVIDER & FOOTER
+    ════════════════════════════ */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 28px 0;
+      opacity: 0;
+      animation: fadeUp 0.5s 1.5s ease forwards;
+    }
+
+    .foot {
+      text-align: center;
+      opacity: 0;
+      animation: fadeUp 0.5s 1.55s ease forwards;
+    }
+    .foot-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px; letter-spacing: 3px;
+      color: rgba(255,255,255,0.13);
+      margin-bottom: 6px;
+    }
+    .foot-copy { font-size: 12px; color: var(--muted); }
+
+    /* ════════════════════════════
+       KEYFRAMES
+    ════════════════════════════ */
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes titleRise {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes cardSlide {
+      from { opacity: 0; transform: translateX(-28px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes goldShimmer {
+      0%   { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+    @keyframes glowPulse {
+      0%,100% { opacity: 0.6; }
+      50%      { opacity: 1; }
+    }
+    @keyframes livePulse {
+      0%  { box-shadow: 0 0 0 0   rgba(74,222,128,0.7); }
+      70% { box-shadow: 0 0 0 8px rgba(74,222,128,0);   }
+      100%{ box-shadow: 0 0 0 0   rgba(74,222,128,0);   }
+    }
+    @keyframes iconSpin {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 360px) {
+      .s-name { font-size: 14px; }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>Connect With SmTv Urdu</h1>
-    <p class="subtitle">Follow us on our official social channels to get instant updates about new Turkish series, episodes, and news.</p>
 
-    <div class="social-card">
-      <a href="https://t.me/smtv_official1" class="social-link telegram" target="_blank" rel="noopener">
-        <i class="fab fa-telegram-plane"></i> Join our Telegram Channel
-      </a>
+  <!-- Animated backgrounds -->
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+  <div class="grid-lines"></div>
+  <canvas id="stars-canvas"></canvas>
 
-      <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k" class="social-link whatsapp" target="_blank" rel="noopener">
-        <i class="fab fa-whatsapp"></i> Join on WhatsApp
-      </a>
+  <div class="page">
 
-      <a href="https://www.instagram.com/smtv.urdu?igsh=NWowMWlhZGoyM3I=" class="social-link instagram" target="_blank" rel="noopener">
-        <i class="fab fa-instagram"></i> Follow us on Instagram
-      </a>
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-pill">
+        <span class="live-dot"></span>
+        Official Social Channels
+      </div>
+      <h1 class="hero-title">SmTv Urdu</h1>
+      <p class="hero-sub-line">Turkish Dramas in Urdu</p>
+      <p class="hero-desc">Fully dubbed, completely free. Follow our channels and never miss a single episode.</p>
     </div>
 
-    <footer>
-      © 2025 SmTv Urdu – All Rights Reserved
-    </footer>
+    <!-- Follow Us -->
+    <div class="section-head"><span>Follow Us</span></div>
+
+    <div class="cards">
+
+      <!-- Telegram -->
+      <a href="https://t.me/smtv_official1" class="s-card s-tg" target="_blank" rel="noopener">
+        <div class="s-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.48 14.717l-2.95-.924c-.642-.2-.655-.642.136-.953l11.527-4.448c.535-.194 1.003.131.369.856z"/></svg>
+        </div>
+        <div class="s-body">
+          <div class="s-name">Telegram Channel</div>
+          <div class="s-sub">Instant episode alerts &amp; updates</div>
+        </div>
+        <div class="s-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </a>
+
+      <!-- WhatsApp -->
+      <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k" class="s-card s-wa" target="_blank" rel="noopener">
+        <div class="s-icon">
+          <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.38 1.26 4.8L2.05 22l5.43-1.42c1.37.73 2.92 1.14 4.56 1.14 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm0 18.16c-1.48 0-2.86-.4-4.06-1.1l-.29-.17-3.01.79.8-2.93-.19-.3a8.25 8.25 0 0 1-1.26-4.44c0-4.54 3.7-8.24 8.24-8.24 4.54 0 8.23 3.7 8.23 8.24 0 4.53-3.69 8.15-8.46 8.15zm4.52-6.17c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.78.97-.15.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43s.17-.25.25-.41c.08-.17.04-.31-.02-.43s-.56-1.34-.76-1.84c-.2-.48-.41-.41-.56-.42h-.48c-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.17-.47-.29z"/></svg>
+        </div>
+        <div class="s-body">
+          <div class="s-name">WhatsApp Channel</div>
+          <div class="s-sub">News, clips &amp; announcements</div>
+        </div>
+        <div class="s-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </a>
+
+      <!-- Instagram -->
+      <a href="https://www.instagram.com/smtv.urdu?igsh=NWowMWlhZGoyM3I=" class="s-card s-ig" target="_blank" rel="noopener">
+        <div class="s-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </div>
+        <div class="s-body">
+          <div class="s-name">Instagram</div>
+          <div class="s-sub">Clips, promos &amp; highlights</div>
+        </div>
+        <div class="s-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </a>
+
+    </div>
+
+    <!-- What you get -->
+    <div class="about-card">
+      <div class="about-header">
+        <div class="about-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        </div>
+        <div class="about-title">What You Get</div>
+      </div>
+      <div class="perks">
+        <div class="perk">
+          <div class="perk-dot"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="perk-text"><strong>First to Know</strong> — Notified the moment a new episode goes live.</div>
+        </div>
+        <div class="perk">
+          <div class="perk-dot"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="perk-text"><strong>Urdu Dubbing</strong> — Every Turkish drama, fully dubbed so you enjoy it completely.</div>
+        </div>
+        <div class="perk">
+          <div class="perk-dot"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="perk-text"><strong>Always Free</strong> — No subscription, no hidden charges. Ever.</div>
+        </div>
+        <div class="perk">
+          <div class="perk-dot"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="perk-text"><strong>Any Device</strong> — Watch on mobile, tablet, or desktop anytime.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="foot">
+      <div class="foot-brand">SmTv Urdu</div>
+      <p class="foot-copy">© 2025 SmTv Urdu — All Rights Reserved</p>
+    </div>
+
   </div>
 
   <!-- Footer nav loader -->
   <div id="footer-placeholder"></div>
+
   <script>
+  /* ── Twinkling star particles ── */
+  (function(){
+    const canvas = document.getElementById('stars-canvas');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+
+    function resize(){
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function initStars(){
+      stars = [];
+      const count = Math.floor((canvas.width * canvas.height) / 6000);
+      for(let i = 0; i < count; i++){
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 1.2 + 0.2,
+          alpha: Math.random(),
+          speed: Math.random() * 0.008 + 0.003,
+          dir: Math.random() > 0.5 ? 1 : -1
+        });
+      }
+    }
+
+    function draw(){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for(const s of stars){
+        s.alpha += s.speed * s.dir;
+        if(s.alpha >= 1){ s.alpha = 1; s.dir = -1; }
+        if(s.alpha <= 0){ s.alpha = 0; s.dir =  1; }
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${s.alpha})`;
+        ctx.fill();
+      }
+      requestAnimationFrame(draw);
+    }
+
+    resize();
+    initStars();
+    draw();
+    window.addEventListener('resize', () => { resize(); initStars(); });
+  })();
+
+  /* ── Footer nav loader ── */
   (async function(){
     try{
       const res = await fetch('/includes/footer.html',{cache:'no-cache'});
       if(!res.ok) return;
       const html = await res.text();
       document.getElementById('footer-placeholder').innerHTML = html;
-
-      // Highlight the "More" tab
       const nav = document.getElementById('smtv-bottom-nav');
       if(nav){
         const items = Array.from(nav.querySelectorAll('.nav-item'));
