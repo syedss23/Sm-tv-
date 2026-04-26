@@ -4,173 +4,669 @@
   <meta charset="utf-8" />
   <title>Go Premium — SmTv Urdu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#0d171f" />
+  <meta name="theme-color" content="#060d14" />
   <meta name="description" content="Ad‑free streaming, early episodes, and priority links. Join SmTv Urdu Premium." />
   <link rel="icon" href="/favicon.png" type="image/png" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
-    body{background:#0d171f;color:#eaf6ff;font-family:'Montserrat',Arial,sans-serif;margin:0}
-    a{text-decoration:none}
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    .wrap{max-width:760px;margin:0 auto;padding:12px}
-    header#site-header{position:sticky; top:0; z-index:20; background:#111c28; display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:1px solid #1e2b3a;}
-    header #back{background:#17263a;border:1px solid #203447;color:#8fd8ff;border-radius:8px;padding:7px 12px;font-weight:700}
-    header h1{font-size:1.12em;margin:0;color:#fff;font-weight:800;letter-spacing:.02em}
-    .premium-cta{
-      margin-left:auto; display:inline-flex; align-items:center; justify-content:center;
-      height:34px; padding:0 12px; border-radius:999px; background:#ffd400; color:#13263a; font-weight:800; box-shadow:0 3px 10px #ffd40055; line-height:1;}
-
-    .btn-primary{
-      display:inline-block;
-      background:#ffd400;
-      color:#13263a;
-      font-weight:800;
-      padding:10px 16px;
-      border-radius:999px;
-      box-shadow:0 4px 14px #ffd40055;
-      text-align:center;
-    }
-    .btn-primary:active{ transform:translateY(1px); }
-
-    .hero{margin:16px 0; background:linear-gradient(136deg,#132a44 65%,#102030 100%); border:1px solid #1b3d59; border-radius:16px; padding:18px 14px; box-shadow:0 8px 28px #06233b5a;}
-    .hero h2{margin:0 0 8px 0;font-size:1.35em;color:#1dedf0;text-shadow:0 3px 18px #09d3ff33}
-    .hero p{margin:0 0 10px 0;opacity:.95}
-    .trust{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:.92em;opacity:.9}
-
-    .intl-note{
-      width:100%;
-      background:#0d2030;
-      border:1px solid #284e70;
-      color:#aee6ff;
-      padding:8px 10px;
-      border-radius:10px;
-      font-weight:700;
-      text-align:center;
-      font-size:.95em;
+    :root {
+      --bg:        #060d14;
+      --bg2:       #0b1622;
+      --bg3:       #0f1d2c;
+      --border:    rgba(255,255,255,.07);
+      --gold:      #fbbf24;
+      --gold-dim:  #c9920a;
+      --cyan:      #22d3ee;
+      --cyan-dim:  #0e7490;
+      --txt:       #e2eaf4;
+      --txt-muted: #6b8099;
+      --radius:    14px;
+      --rad-sm:    8px;
     }
 
-    .panel{background:#101b28;border:1px solid #20364c;border-radius:14px;padding:14px;margin-top:14px;box-shadow:0 4px 18px #0004}
-    .panel h3{margin:0 0 10px 0;color:#86e8ff;font-size:1.08em}
+    html { scroll-behavior: smooth; }
 
-    .plist{ display:grid; grid-template-columns:1fr; gap:10px; }
-    .pitem{ background:#0f1e2d; border:1px solid #1b3752; border-radius:10px; padding:10px 12px; }
-    .pitem h4{ margin:0 0 6px; color:#86e8ff; font-size:1.02em; }
-    .ptags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
-    .ptag{ background:#0d2030; border:1px solid #284e70; color:#aee6ff; padding:3px 8px; border-radius:999px; font-size:.86em; }
-    .psub{ font-size:.92em; opacity:.9; margin-top:4px; }
+    body {
+      background: var(--bg);
+      color: var(--txt);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-    .pricing{display:grid;grid-template-columns:1fr;gap:12px}
-    .price-card{background:#0f1e2d;border:1px solid #1b3752;border-radius:12px;padding:14px;text-align:center;position:relative}
-    .tag{position:absolute;top:-10px;right:10px;background:#ffd400;color:#13263a;font-weight:800;padding:3px 8px;border-radius:999px;font-size:.82em}
-    .amount{font-size:1.35em;font-weight:900;margin:6px 0 10px}
-    .note{font-size:.9em;opacity:.8;margin-top:6px}
+    a { text-decoration: none; color: inherit; }
 
-    .grid2{display:grid;grid-template-columns:1fr;gap:10px}
-    .grid2 .box{background:#0f1e2d;border:1px solid #1b3752;border-radius:10px;padding:12px}
-    .grid2 a.btn{display:inline-block;background:#19b3ff;color:#081624;font-weight:800;padding:10px 14px;border-radius:10px}
+    /* ─── NOISE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: .025;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-    .faq details{background:#0f1e2d;border:1px solid #1b3752;border-radius:10px;padding:10px 12px;margin-top:10px}
-    .faq summary{cursor:pointer;font-weight:700;color:#aee6ff}
+    /* ─── GLOW BLOBS ─── */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .blob-1 { width: 500px; height: 500px; background: #0e4d6e44; top: -150px; right: -100px; }
+    .blob-2 { width: 400px; height: 400px; background: #92400e22; bottom: 200px; left: -120px; }
 
-    .bottom-cta{margin:18px 0 24px;text-align:center}
-    .muted{opacity:.7;font-size:.92em;}
+    /* ─── HEADER ─── */
+    header {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(6,13,20,.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 16px;
+    }
+    .header-inner {
+      max-width: 780px; margin: 0 auto;
+      display: flex; align-items: center; gap: 12px;
+      height: 56px;
+    }
+    .btn-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--txt-muted); border-radius: var(--rad-sm);
+      padding: 7px 12px; font-size: .85em; font-weight: 600;
+      transition: color .2s;
+    }
+    .btn-back:hover { color: var(--txt); }
+    .site-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 1.05em;
+      color: #fff; letter-spacing: -.01em;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .site-title .badge {
+      font-size: .72em; font-weight: 700;
+      background: linear-gradient(135deg, var(--gold), #f59e0b);
+      color: #1a0a00; padding: 2px 8px; border-radius: 999px;
+    }
+    .btn-join-header {
+      margin-left: auto;
+      background: linear-gradient(135deg, var(--gold), #f59e0b);
+      color: #1a0a00; font-weight: 800; font-size: .85em;
+      padding: 8px 16px; border-radius: 999px;
+      box-shadow: 0 0 20px #fbbf2430;
+      transition: box-shadow .2s, transform .15s;
+    }
+    .btn-join-header:active { transform: scale(.97); }
 
-    @media (min-width:680px){
-      .pricing{grid-template-columns:repeat(2,1fr)}
-      .grid2{grid-template-columns:repeat(2,1fr)}
-      .plist{ grid-template-columns:1fr 1fr; }
+    /* ─── WRAP ─── */
+    .wrap { max-width: 780px; margin: 0 auto; padding: 0 16px; position: relative; z-index: 1; }
+
+    /* ─── HERO ─── */
+    .hero {
+      padding: 40px 0 28px;
+      text-align: center;
+    }
+    .hero-label {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(251,191,36,.1); border: 1px solid rgba(251,191,36,.25);
+      color: var(--gold); padding: 5px 14px; border-radius: 999px;
+      font-size: .8em; font-weight: 700; letter-spacing: .06em;
+      margin-bottom: 18px; text-transform: uppercase;
+    }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2em, 7vw, 3em);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -.03em;
+      color: #fff;
+      margin-bottom: 14px;
+    }
+    .hero h1 span {
+      background: linear-gradient(90deg, var(--cyan), #67e8f9);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 1.05em; color: var(--txt-muted);
+      max-width: 480px; margin: 0 auto 24px;
+    }
+    .hero-cta { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .btn-gold {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--gold), #f59e0b);
+      color: #1a0a00; font-weight: 800; font-size: 1em;
+      padding: 13px 26px; border-radius: 999px;
+      box-shadow: 0 4px 24px #fbbf2440;
+      transition: box-shadow .25s, transform .15s;
+    }
+    .btn-gold:hover { box-shadow: 0 6px 36px #fbbf2460; }
+    .btn-gold:active { transform: scale(.97); }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--txt); font-weight: 600; font-size: .95em;
+      padding: 12px 22px; border-radius: 999px;
+      transition: border-color .2s;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,.2); }
+
+    /* ─── STATS BAR ─── */
+    .stats-bar {
+      display: flex; gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 28px 0;
+    }
+    .stat {
+      flex: 1; text-align: center; padding: 16px 10px;
+      border-right: 1px solid var(--border);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5em; font-weight: 800; color: var(--gold);
+      display: block;
+    }
+    .stat-label { font-size: .78em; color: var(--txt-muted); font-weight: 500; }
+
+    /* ─── FEATURES ─── */
+    .section-label {
+      font-size: .75em; font-weight: 700; letter-spacing: .1em;
+      color: var(--cyan); text-transform: uppercase; margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.55em; font-weight: 800; color: #fff;
+      letter-spacing: -.02em; margin-bottom: 20px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px; margin-bottom: 32px;
+    }
+    .feature-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 16px;
+      transition: border-color .2s, transform .2s;
+    }
+    .feature-card:hover { border-color: rgba(34,211,238,.25); transform: translateY(-2px); }
+    .feature-icon {
+      font-size: 1.6em; margin-bottom: 10px; display: block;
+    }
+    .feature-card h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: .95em; font-weight: 700; color: #fff; margin-bottom: 4px;
+    }
+    .feature-card p { font-size: .83em; color: var(--txt-muted); line-height: 1.5; }
+
+    /* ─── PRICING ─── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px; margin-bottom: 32px;
+    }
+    .price-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 20px;
+      position: relative;
+      overflow: hidden;
+      transition: transform .2s;
+    }
+    .price-card:hover { transform: translateY(-3px); }
+    .price-card.featured {
+      border-color: rgba(251,191,36,.4);
+      background: linear-gradient(135deg, rgba(251,191,36,.06) 0%, var(--bg2) 60%);
+    }
+    .price-card.featured::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--gold), #f59e0b);
+    }
+    .price-best {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--gold), #f59e0b);
+      color: #1a0a00; font-weight: 800; font-size: .72em;
+      padding: 3px 10px; border-radius: 999px;
+      margin-bottom: 12px; text-transform: uppercase; letter-spacing: .05em;
+    }
+    .price-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1em; font-weight: 700; color: var(--txt-muted);
+      margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em;
+    }
+    .price-amount {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.4em; font-weight: 800; color: #fff;
+      letter-spacing: -.03em; line-height: 1;
+    }
+    .price-period {
+      font-size: .85em; color: var(--txt-muted); font-weight: 500;
+      margin-bottom: 18px; margin-top: 4px;
+    }
+    .price-perks { list-style: none; margin-bottom: 20px; }
+    .price-perks li {
+      display: flex; align-items: center; gap: 8px;
+      font-size: .88em; color: var(--txt); padding: 5px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .price-perks li:last-child { border-bottom: none; }
+    .price-perks li::before { content: '✓'; color: var(--gold); font-weight: 800; font-size: .9em; }
+    .btn-plan {
+      display: block; text-align: center;
+      background: linear-gradient(135deg, var(--gold), #f59e0b);
+      color: #1a0a00; font-weight: 800; font-size: .95em;
+      padding: 13px; border-radius: var(--rad-sm);
+      box-shadow: 0 4px 18px #fbbf2430;
+      transition: box-shadow .25s, transform .15s;
+    }
+    .btn-plan:active { transform: scale(.98); }
+    .price-card:not(.featured) .btn-plan {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--txt); box-shadow: none;
+    }
+    .price-card:not(.featured) .btn-plan:hover { border-color: rgba(255,255,255,.2); }
+    .price-note {
+      font-size: .78em; color: var(--txt-muted); text-align: center;
+      margin-top: 10px;
+    }
+    .price-note a { color: var(--cyan); }
+
+    /* ─── HOW IT WORKS ─── */
+    .steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 32px; }
+    .step {
+      display: flex; gap: 16px; align-items: flex-start;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .step:last-child { border-bottom: none; }
+    .step-num {
+      width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--gold), #f59e0b);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: .9em;
+      color: #1a0a00;
+    }
+    .step-body h4 { font-weight: 700; color: #fff; margin-bottom: 3px; }
+    .step-body p { font-size: .88em; color: var(--txt-muted); }
+
+    /* ─── SERIES ─── */
+    #series-section { margin-bottom: 32px; }
+    .plist {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .pitem {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px;
+      transition: border-color .2s;
+    }
+    .pitem:hover { border-color: rgba(34,211,238,.25); }
+    .pitem h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: .9em; font-weight: 700; color: #fff; margin-bottom: 6px;
+    }
+    .psub { font-size: .8em; color: var(--txt-muted); margin-top: 3px; }
+    .ptags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+    .ptag {
+      background: rgba(34,211,238,.08); border: 1px solid rgba(34,211,238,.18);
+      color: var(--cyan); padding: 2px 8px; border-radius: 999px; font-size: .75em; font-weight: 600;
+    }
+
+    /* ─── CONTACT ─── */
+    .contact-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; margin-bottom: 32px;
+    }
+    .contact-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px 16px;
+      display: flex; flex-direction: column; gap: 10px;
+      transition: border-color .2s;
+    }
+    .contact-card:hover { border-color: rgba(34,211,238,.25); }
+    .contact-icon { font-size: 1.8em; }
+    .contact-card h4 { font-family: 'Syne', sans-serif; font-weight: 700; color: #fff; }
+    .contact-card p { font-size: .83em; color: var(--txt-muted); }
+    .btn-contact {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(34,211,238,.1); border: 1px solid rgba(34,211,238,.25);
+      color: var(--cyan); font-weight: 700; font-size: .85em;
+      padding: 9px 14px; border-radius: var(--rad-sm);
+      transition: background .2s;
+    }
+    .btn-contact:hover { background: rgba(34,211,238,.18); }
+
+    /* ─── FAQ ─── */
+    .faq-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; }
+    details {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    details[open] { border-color: rgba(34,211,238,.25); }
+    summary {
+      cursor: pointer; font-weight: 600; color: var(--txt);
+      padding: 14px 16px; list-style: none;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: .93em;
+    }
+    summary::after {
+      content: '+'; color: var(--gold); font-size: 1.2em; font-weight: 700;
+      transition: transform .2s;
+    }
+    details[open] summary::after { transform: rotate(45deg); }
+    details p {
+      padding: 0 16px 14px; font-size: .88em; color: var(--txt-muted); line-height: 1.65;
+    }
+
+    /* ─── BOTTOM CTA ─── */
+    .bottom-cta {
+      margin: 10px 0 32px;
+      background: linear-gradient(135deg, #0e2a3f, #132038);
+      border: 1px solid rgba(251,191,36,.2);
+      border-radius: 18px; padding: 30px 20px;
+      text-align: center;
+    }
+    .bottom-cta h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5em; font-weight: 800; color: #fff; margin-bottom: 8px;
+    }
+    .bottom-cta p { font-size: .92em; color: var(--txt-muted); margin-bottom: 20px; }
+
+    .intl-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(34,211,238,.07); border: 1px solid rgba(34,211,238,.2);
+      color: var(--cyan); padding: 7px 14px; border-radius: 999px;
+      font-size: .82em; font-weight: 600; margin-top: 14px;
+    }
+
+    /* divider */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 4px 0 28px; }
+
+    /* Section spacing */
+    section { margin-bottom: 8px; }
+
+    @media (max-width: 520px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .plist { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .stats-bar { flex-direction: column; }
+      .stat { border-right: none; border-bottom: 1px solid var(--border); }
+      .stat:last-child { border-bottom: none; }
+    }
+    @media (min-width: 521px) {
+      .pricing-grid { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
 <body>
-  <header id="site-header" class="wrap" style="padding-left:12px;padding-right:12px">
-    <a id="back" href="/" aria-label="Back">← Home</a>
-    <h1>SmTv Urdu Premium</h1>
-    <a class="premium-cta" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Join</a>
+
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <!-- ─── HEADER ─── -->
+  <header>
+    <div class="header-inner">
+      <a class="btn-back" href="/">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Home
+      </a>
+      <div class="site-title">
+        SmTv Urdu
+        <span class="badge">Premium</span>
+      </div>
+      <a class="btn-join-header" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Join Now</a>
+    </div>
   </header>
 
   <main class="wrap">
+
+    <!-- ─── HERO ─── -->
     <section class="hero">
-      <h2>Ad‑free + Early Access</h2>
-      <p>Watch episodes directly with no ads, instant access, and fast download links for members.</p>
-      <div class="trust">
-        <div class="intl-note">International users can join — contact on Telegram</div>
+      <div class="hero-label">
+        ⭐ SmTv Urdu Premium
+      </div>
+      <h1>Watch More.<br><span>Enjoy Better.</span></h1>
+      <p>Ad-free streaming, early episode access, and fast download links — all in one membership.</p>
+      <div class="hero-cta">
+        <a class="btn-gold" href="/pay.html?label=Monthly">
+          🚀 Get Premium
+        </a>
+        <a class="btn-ghost" href="#plans">
+          View Plans
+        </a>
       </div>
     </section>
 
-    <section class="panel" id="premium-list">
-      <h3>Paid channel series list</h3>
-      <div id="plist" class="plist"></div>
-    </section>
-
-    <section class="panel">
-      <h3>Plans and pricing</h3>
-      <div class="pricing">
-        <div class="price-card">
-          <div class="tag">Best value</div>
-          <div class="amount">₹249 / 3 Months</div>
-          <!-- Link to app-launch payment page -->
-          <a class="btn-primary" href="/pay.html?label=Quarterly">Join Quarterly</a>
-          <div class="note">3 months access • Full benefits</div>
-          <div class="note">After payment, send the screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener" style="color:#8fd8ff;text-decoration:underline">Telegram</a> for instant activation.</div>
-        </div>
-        <div class="price-card">
-          <div class="amount">₹99 / Monthly</div>
-          <!-- Link to app-launch payment page -->
-          <a class="btn-primary" href="/pay.html?label=Monthly">Join Monthly</a>
-          <div class="note">1 month access • Full benefits</div>
-          <div class="note">After payment, send the screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener" style="color:#8fd8ff;text-decoration:underline">Telegram</a> for instant activation.</div>
-        </div>
+    <!-- ─── STATS ─── -->
+    <div class="stats-bar">
+      <div class="stat">
+        <span class="stat-num">0 Ads</span>
+        <span class="stat-label">Ad-free experience</span>
       </div>
-      <p class="muted">Subscription is non‑refundable.</p>
-    </section>
-
-    <section class="panel">
-      <h3>Contact and details</h3>
-      <div class="grid2">
-        <div class="box">
-          <p><strong>Contact on Telegram</strong></p>
-          <a class="btn" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Open Telegram</a>
-          <p class="muted" style="margin-top:6px">Fast support for payments and activation.</p>
-        </div>
-        <div class="box">
-          <p><strong>Details Bot</strong></p>
-          <a class="btn" href="https://t.me/itzmezain1/2905" target="_blank" rel="noopener">Open Bot</a>
-          <p class="muted" style="margin-top:6px">Plan info and instructions via Telegram.</p>
-        </div>
+      <div class="stat">
+        <span class="stat-num">Early</span>
+        <span class="stat-label">Episode access</span>
       </div>
-    </section>
-
-    <section class="panel faq">
-      <h3>FAQ</h3>
-      <details>
-        <summary>How to Join After Payment ?</summary>
-        <p>After payment send screenshot of payment on telegram contact.</p>
-      </details>
-      <details>
-        <summary>What do I get with Premium?</summary>
-        <p>Ad‑free streaming, early access to episodes, priority download links, and Telegram support.</p>
-      </details>
-      <details>
-        <summary>How do I pay?</summary>
-        <p>Use the payment page to open your UPI app or scan QR, then share the screenshot on Telegram.</p>
-      </details>
-      <details>
-        <summary>Can I cancel?</summary>
-        <p>You can stop renewal anytime. Current period remains active. Subscription is non‑refundable.</p>
-      </details>
-      <details>
-        <summary>Devices and languages?</summary>
-        <p>Works on mobile and modern browsers. Subtitles and dubs are listed per series as available.</p>
-      </details>
-    </section>
-
-    <div class="bottom-cta">
-      <!-- Bottom CTA to payment page -->
-      <a class="btn-primary" href="/pay.html?label=Monthly">Get Premium Now</a>
-      <div class="muted" style="margin-top:6px">Instant access • Friendly support</div>
+      <div class="stat">
+        <span class="stat-num">Fast</span>
+        <span class="stat-label">Download links</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">₹99</span>
+        <span class="stat-label">Starting price</span>
+      </div>
     </div>
+
+    <!-- ─── FEATURES ─── -->
+    <section>
+      <div class="section-label">What you get</div>
+      <div class="section-title">Premium Benefits</div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <span class="feature-icon">🚫</span>
+          <h4>Zero Ads</h4>
+          <p>Watch every episode without a single interruption. Pure, clean viewing.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">⚡</span>
+          <h4>Early Episodes</h4>
+          <p>Access new episodes before they go public. Never wait again.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">📥</span>
+          <h4>Priority Links</h4>
+          <p>Fast, reliable download links reserved for premium members only.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">💬</span>
+          <h4>Telegram Support</h4>
+          <p>Instant help for payments, activation, and any issues via Telegram.</p>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ─── PLANS ─── -->
+    <section id="plans">
+      <div class="section-label">Pricing</div>
+      <div class="section-title">Choose Your Plan</div>
+      <div class="pricing-grid">
+
+        <!-- Quarterly (featured) -->
+        <div class="price-card featured">
+          <div class="price-best">⭐ Best Value</div>
+          <div class="price-name">Quarterly</div>
+          <div class="price-amount">₹249</div>
+          <div class="price-period">for 3 months — saves ₹48</div>
+          <ul class="price-perks">
+            <li>3 months full access</li>
+            <li>Ad-free streaming</li>
+            <li>Early episode access</li>
+            <li>Priority download links</li>
+            <li>Telegram support</li>
+          </ul>
+          <a class="btn-plan" href="/pay.html?label=Quarterly">Get Quarterly Plan</a>
+          <div class="price-note">Pay → Send screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Telegram</a> → Instant activation</div>
+        </div>
+
+        <!-- Monthly -->
+        <div class="price-card">
+          <div class="price-name">Monthly</div>
+          <div class="price-amount">₹99</div>
+          <div class="price-period">per month</div>
+          <ul class="price-perks">
+            <li>1 month full access</li>
+            <li>Ad-free streaming</li>
+            <li>Early episode access</li>
+            <li>Priority download links</li>
+            <li>Telegram support</li>
+          </ul>
+          <a class="btn-plan" href="/pay.html?label=Monthly">Get Monthly Plan</a>
+          <div class="price-note">Pay → Send screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Telegram</a> → Instant activation</div>
+        </div>
+
+      </div>
+      <p style="font-size:.82em;color:var(--txt-muted);text-align:center;margin-top:-10px;margin-bottom:24px;">
+        🌍 International users welcome — contact on Telegram &nbsp;•&nbsp; Subscription is non‑refundable
+      </p>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ─── HOW IT WORKS ─── -->
+    <section>
+      <div class="section-label">Simple process</div>
+      <div class="section-title">How to Join</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Choose a Plan</h4>
+            <p>Pick Monthly or Quarterly and tap the button to open the payment page.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Pay via UPI</h4>
+            <p>Use any UPI app or scan the QR code. Quick and secure payment.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Send Screenshot</h4>
+            <p>Share your payment screenshot on Telegram with <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener" style="color:var(--cyan)">@Shaikhyder7861</a>.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Get Instant Access</h4>
+            <p>Your account gets activated immediately — start watching right away!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ─── SERIES ─── -->
+    <section id="series-section">
+      <div class="section-label">Exclusive content</div>
+      <div class="section-title">Premium Series</div>
+      <div id="plist" class="plist">
+        <div class="pitem" style="color:var(--txt-muted);font-size:.88em;">Loading series…</div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ─── CONTACT ─── -->
+    <section>
+      <div class="section-label">We're here</div>
+      <div class="section-title">Contact & Support</div>
+      <div class="contact-grid">
+        <div class="contact-card">
+          <div class="contact-icon">✈️</div>
+          <h4>Telegram Contact</h4>
+          <p>Fast support for payments, activation, and any issues you face.</p>
+          <a class="btn-contact" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">
+            Open Telegram →
+          </a>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">🤖</div>
+          <h4>Details Bot</h4>
+          <p>Get plan info and step-by-step instructions via our Telegram bot.</p>
+          <a class="btn-contact" href="https://t.me/itzmezain1/2905" target="_blank" rel="noopener">
+            Open Bot →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ─── FAQ ─── -->
+    <section>
+      <div class="section-label">Common questions</div>
+      <div class="section-title">FAQ</div>
+      <div class="faq-list">
+        <details>
+          <summary>How do I activate after payment?</summary>
+          <p>Simply send a screenshot of your payment to <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener" style="color:var(--cyan)">@Shaikhyder7861</a> on Telegram. Your account will be activated instantly.</p>
+        </details>
+        <details>
+          <summary>What do I get with Premium?</summary>
+          <p>Ad-free streaming on all episodes, early access before public release, priority high-speed download links, and dedicated Telegram support.</p>
+        </details>
+        <details>
+          <summary>How do I pay?</summary>
+          <p>Use the payment page to open your UPI app (Google Pay, PhonePe, Paytm, etc.) or scan the QR code. Then share the payment screenshot on Telegram for activation.</p>
+        </details>
+        <details>
+          <summary>Can international users join?</summary>
+          <p>Yes! International users are welcome. Please contact us on Telegram to arrange payment and get instructions specific to your region.</p>
+        </details>
+        <details>
+          <summary>Can I cancel my subscription?</summary>
+          <p>You can stop renewing at any time. Your current period remains fully active until it expires. Please note that subscriptions are non-refundable.</p>
+        </details>
+        <details>
+          <summary>Which devices and languages are supported?</summary>
+          <p>Works on all mobile devices and modern browsers. Subtitles and dubs are listed per series as available.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- ─── BOTTOM CTA ─── -->
+    <div class="bottom-cta">
+      <h2>Ready to Go Premium? 🎬</h2>
+      <p>Join hundreds of viewers enjoying ad-free, early-access streaming today.</p>
+      <a class="btn-gold" href="/pay.html?label=Quarterly">
+        ⭐ Get Best Value Plan
+      </a>
+      <br>
+      <div class="intl-badge">
+        🌍 International users — contact on Telegram
+      </div>
+    </div>
+
   </main>
 
   <script>
@@ -188,70 +684,59 @@
         `).join('');
       })
       .catch(() => {
-        document.getElementById('plist').innerHTML = '<div class="pitem">Could not load Premium series list.</div>';
+        document.getElementById('plist').innerHTML = '<div class="pitem" style="color:var(--txt-muted);font-size:.88em;">Could not load series list.</div>';
       });
   </script>
+
   <!-- Footer Include -->
-<div id="footer-placeholder"></div>
-<script>
-(async function loadFooterAndInit(){
-  // wait until page load completes (helps avoid conflicts)
-  if (document.readyState !== 'complete') {
-    await new Promise(resolve => window.addEventListener('load', resolve, { once: true }));
-  }
-  try {
-    const res = await fetch('/includes/footer.html');
-    if (!res.ok) throw new Error('Footer not found: ' + res.status);
-    const html = await res.text();
-    const ph = document.getElementById('footer-placeholder');
-    ph.innerHTML = html;
-
-    // initialize active logic and click handlers
-    const nav = document.getElementById('smtv-bottom-nav');
-    if(!nav) return;
-    const items = Array.from(nav.querySelectorAll('.nav-item'));
-    function clearActive(){ items.forEach(i=>i.classList.remove('active')); }
-
-    // match by pathname
-    const path = window.location.pathname.toLowerCase();
-    let matched = items.find(a => {
-      const name = (a.dataset.name||'').toLowerCase();
-      if (name === 'home' && (path === '/' || path.includes('index'))) return true;
-      return name && path.includes(name);
-    });
-
-    // fallback to last clicked
-    if(!matched){
-      const last = localStorage.getItem('smtv_last_nav');
-      if(last) matched = items.find(a => a.dataset.name === last);
+  <div id="footer-placeholder"></div>
+  <script>
+  (async function loadFooterAndInit(){
+    if (document.readyState !== 'complete') {
+      await new Promise(resolve => window.addEventListener('load', resolve, { once: true }));
     }
-    if(matched) matched.classList.add('active');
-
-    // click handlers: immediate feedback + fallback navigation
-    items.forEach(a => {
-      a.addEventListener('click', function(e){
-        clearActive();
-        this.classList.add('active');
-        try { localStorage.setItem('smtv_last_nav', this.dataset.name); } catch(e){}
-        const href = this.getAttribute('href');
-        setTimeout(()=> {
-          if (location.pathname.toLowerCase() !== new URL(href, location.origin).pathname.toLowerCase()) {
-            location.href = href;
-          }
-        }, 200);
-      }, { passive: true });
-    });
-
-    // ensure body has enough bottom padding so content not hidden
     try {
-      const curPad = parseInt(getComputedStyle(document.body).paddingBottom)||0;
-      if(curPad < 96) document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))';
-    } catch(e){}
-
-  } catch(err) {
-    console.warn('Footer load/init error:', err);
-  }
-})();
-</script>
+      const res = await fetch('/includes/footer.html');
+      if (!res.ok) throw new Error('Footer not found: ' + res.status);
+      const html = await res.text();
+      const ph = document.getElementById('footer-placeholder');
+      ph.innerHTML = html;
+      const nav = document.getElementById('smtv-bottom-nav');
+      if(!nav) return;
+      const items = Array.from(nav.querySelectorAll('.nav-item'));
+      function clearActive(){ items.forEach(i=>i.classList.remove('active')); }
+      const path = window.location.pathname.toLowerCase();
+      let matched = items.find(a => {
+        const name = (a.dataset.name||'').toLowerCase();
+        if (name === 'home' && (path === '/' || path.includes('index'))) return true;
+        return name && path.includes(name);
+      });
+      if(!matched){
+        const last = localStorage.getItem('smtv_last_nav');
+        if(last) matched = items.find(a => a.dataset.name === last);
+      }
+      if(matched) matched.classList.add('active');
+      items.forEach(a => {
+        a.addEventListener('click', function(e){
+          clearActive();
+          this.classList.add('active');
+          try { localStorage.setItem('smtv_last_nav', this.dataset.name); } catch(e){}
+          const href = this.getAttribute('href');
+          setTimeout(()=> {
+            if (location.pathname.toLowerCase() !== new URL(href, location.origin).pathname.toLowerCase()) {
+              location.href = href;
+            }
+          }, 200);
+        }, { passive: true });
+      });
+      try {
+        const curPad = parseInt(getComputedStyle(document.body).paddingBottom)||0;
+        if(curPad < 96) document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))';
+      } catch(e){}
+    } catch(err) {
+      console.warn('Footer load/init error:', err);
+    }
+  })();
+  </script>
 </body>
 </html>
