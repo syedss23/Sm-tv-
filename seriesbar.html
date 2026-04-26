@@ -2,296 +2,711 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Series List – SmTv Urdu</title>
+  <title>Series – SmTv Urdu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="All Turkish drama series in Urdu, English, and Hindi subtitles. Watch historical shows online on SmTv Urdu.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 
   <style>
-    body { background:#0b0d10; color:#fff; margin:0; font-family:'Segoe UI',Arial,sans-serif; }
-    .container { max-width:1100px; margin:0 auto; padding:14px; }
+    /* ══════════════════════════════
+       RESET & BASE
+    ══════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    .page-title { color:#fff; font-size:20px; font-weight:700; margin:12px 0 18px; text-align:center; }
+    :root {
+      --bg:        #080a0f;
+      --surface:   #0e1118;
+      --surface2:  #141820;
+      --border:    rgba(255,255,255,0.07);
+      --border2:   rgba(255,255,255,0.12);
+      --text:      #f0f4f8;
+      --muted:     #5a6a7a;
+      --accent:    #00c2ff;
+      --gold:      #facc15;
+      --gold2:     #fbbf24;
+      --radius:    14px;
+    }
 
-    /* Filter bar */
-    .filter-bar { display:flex; justify-content:center; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: calc(110px + env(safe-area-inset-bottom));
+    }
+
+    /* ══════════════════════════════
+       BACKGROUND FX
+    ══════════════════════════════ */
+    .bg-layer {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
+      overflow: hidden;
+    }
+
+    /* Drifting orbs */
+    .orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(100px); opacity: 0.09;
+    }
+    .orb-1 { width:500px; height:500px; background:#0077ff; top:-150px; left:-150px;
+              animation: driftA 12s ease-in-out infinite; }
+    .orb-2 { width:380px; height:380px; background:#7c3aed; bottom:0; right:-100px;
+              animation: driftB 14s ease-in-out infinite; }
+    .orb-3 { width:280px; height:280px; background:#facc15; top:40%; left:45%; opacity:0.05;
+              animation: driftC 16s ease-in-out infinite; }
+
+    @keyframes driftA {
+      0%,100%{ transform:translate(0,0) scale(1); }
+      40%    { transform:translate(40px,60px) scale(1.1); }
+      70%    { transform:translate(-20px,30px) scale(0.93); }
+    }
+    @keyframes driftB {
+      0%,100%{ transform:translate(0,0) scale(1); }
+      35%    { transform:translate(-50px,-40px) scale(1.12); }
+      65%    { transform:translate(25px,-20px) scale(0.9); }
+    }
+    @keyframes driftC {
+      0%,100%{ transform:translate(0,0); }
+      50%    { transform:translate(-40px,40px); }
+    }
+
+    /* Moving grid */
+    .grid-bg {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.013) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.013) 1px, transparent 1px);
+      background-size: 52px 52px;
+      animation: gridMove 25s linear infinite;
+    }
+    @keyframes gridMove {
+      from { background-position: 0 0; }
+      to   { background-position: 52px 52px; }
+    }
+
+    /* ══════════════════════════════
+       PAGE WRAPPER
+    ══════════════════════════════ */
+    .page {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 0 auto;
+      padding: 28px 14px 16px;
+    }
+
+    /* ══════════════════════════════
+       HEADER
+    ══════════════════════════════ */
+    .page-header {
+      text-align: center;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: slideDown 0.7s 0.05s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    .header-eyebrow {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(0,194,255,0.07);
+      border: 1px solid rgba(0,194,255,0.18);
+      border-radius: 100px;
+      padding: 4px 14px 4px 10px;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 14px;
+    }
+    .live-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #4ade80;
+      animation: livePulse 2s ease infinite;
+    }
+
+    .page-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(36px, 9vw, 58px);
+      letter-spacing: 4px; line-height: 1;
+      margin-bottom: 8px;
+      background: linear-gradient(90deg, #b8860b, var(--gold), #fff8c0, var(--gold2), #b8860b);
+      background-size: 250% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: goldShimmer 4s 1s linear infinite;
+    }
+
+    .page-subtitle {
+      font-size: 14px; color: var(--muted);
+      font-weight: 400; letter-spacing: 0.3px;
+    }
+
+    @keyframes goldShimmer {
+      from { background-position: 0% center; }
+      to   { background-position: 250% center; }
+    }
+
+    /* ══════════════════════════════
+       FILTER BAR
+    ══════════════════════════════ */
+    .filter-wrap {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 12px; margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.25s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    .filter-bar {
+      display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+    }
+
     .filter-btn {
-      border:none;
-      border-radius:30px;
-      padding:10px 18px;
-      font-size:15px;
-      font-weight:600;
-      cursor:pointer;
-      background:#1e2630;
-      color:#fff;
-      transition:all .2s;
+      border: 1px solid var(--border2);
+      border-radius: 100px;
+      padding: 9px 22px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer;
+      background: var(--surface);
+      color: var(--muted);
+      transition: all 0.22s ease;
+      letter-spacing: 0.3px;
+    }
+    .filter-btn:hover {
+      color: var(--text);
+      border-color: rgba(255,255,255,0.2);
+      background: var(--surface2);
+      transform: translateY(-1px);
     }
     .filter-btn.active {
-      background:linear-gradient(135deg,#00bcd4,#007bff);
-      color:#fff;
-      box-shadow:0 0 10px rgba(0,188,212,0.4);
+      background: linear-gradient(135deg, #0077c8, #00c2ff);
+      border-color: transparent;
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 4px 20px rgba(0,194,255,0.35);
+      transform: translateY(-1px);
     }
 
-    /* Sub-language buttons */
-    .sub-lang-bar { display:none; justify-content:center; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
-    .sub-lang-bar.active { display:flex; }
+    /* Sub-language bar */
+    .sub-lang-bar {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      justify-content: center;
+      max-height: 0; overflow: hidden; opacity: 0;
+      transition: max-height 0.4s ease, opacity 0.35s ease;
+    }
+    .sub-lang-bar.active {
+      max-height: 120px; opacity: 1;
+    }
+
     .sub-btn {
-      border:none;
-      border-radius:20px;
-      padding:8px 16px;
-      font-size:14px;
-      cursor:pointer;
-      background:#1b2430;
-      color:#ddd;
-      transition:.2s;
+      border: 1px solid var(--border2);
+      border-radius: 100px;
+      padding: 7px 18px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px; font-weight: 500;
+      cursor: pointer;
+      background: var(--surface);
+      color: var(--muted);
+      transition: all 0.2s ease;
+    }
+    .sub-btn:hover {
+      color: var(--text);
+      border-color: rgba(255,255,255,0.2);
     }
     .sub-btn.active {
-      background:#ff9800;
-      color:#000;
-      font-weight:700;
+      background: linear-gradient(135deg, #c07800, var(--gold));
+      border-color: transparent;
+      color: #000;
+      font-weight: 700;
+      box-shadow: 0 3px 14px rgba(250,204,21,0.35);
     }
 
-    /* Series grid */
+    /* ══════════════════════════════
+       RESULTS META
+    ══════════════════════════════ */
+    .results-meta {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: fadeUp 0.5s 0.4s ease forwards;
+    }
+    .results-count {
+      font-size: 13px; color: var(--muted); font-weight: 500;
+    }
+    .results-count strong { color: var(--accent); font-weight: 700; }
+
+    /* ══════════════════════════════
+       SERIES GRID
+    ══════════════════════════════ */
     .series-grid {
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:12px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
     }
-    @media(min-width:700px){ .series-grid{grid-template-columns:repeat(3,1fr);} }
-    @media(min-width:1000px){ .series-grid{grid-template-columns:repeat(4,1fr);} }
+    @media(min-width: 600px)  { .series-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media(min-width: 900px)  { .series-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media(min-width: 1100px) { .series-grid { grid-template-columns: repeat(5, 1fr); } }
 
+    /* Card */
     .series-card {
-      display:block;
-      background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.12));
-      border-radius:12px;
-      overflow:hidden;
-      color:#fff;
-      box-shadow:0 8px 20px rgba(0,0,0,0.45);
-      transition:transform .18s ease,box-shadow .18s ease;
-      text-decoration:none;
+      display: block;
+      text-decoration: none;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      color: #fff;
+      position: relative;
+      transition:
+        transform 0.25s cubic-bezier(0.34,1.56,0.64,1),
+        box-shadow 0.25s ease,
+        border-color 0.2s ease;
+      opacity: 0;
+      transform: translateY(24px);
     }
-    .series-card:hover { transform:translateY(-6px); box-shadow:0 12px 30px rgba(0,0,0,0.55); }
-    .series-thumb { width:100%; height:0; padding-bottom:56%; position:relative; background:#111; }
-    .series-thumb img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-    .series-title { padding:10px 12px; font-size:15px; font-weight:600; text-align:center; background:rgba(0,0,0,0.1); }
-    #series-empty { display:none; color:#ccc; text-align:center; margin-top:30px; }
+
+    .series-card.visible {
+      animation: cardPop 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    .series-card:hover {
+      transform: translateY(-7px) scale(1.025);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,194,255,0.2);
+      border-color: rgba(0,194,255,0.25);
+    }
+    .series-card:active { transform: scale(0.97); transition-duration: 0.1s; }
+
+    /* Shimmer on hover */
+    .series-card::before {
+      content: '';
+      position: absolute; inset: 0; z-index: 3;
+      background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.05) 50%, transparent 60%);
+      background-size: 200% 200%;
+      background-position: 0% 0%;
+      transition: background-position 0.6s ease;
+      pointer-events: none;
+    }
+    .series-card:hover::before { background-position: 100% 100%; }
+
+    /* Thumbnail */
+    .series-thumb {
+      width: 100%; height: 0;
+      padding-bottom: 56%;
+      position: relative;
+      background: var(--surface2);
+      overflow: hidden;
+    }
+    .series-thumb img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.45s ease;
+    }
+    .series-card:hover .series-thumb img { transform: scale(1.07); }
+
+    /* Gradient overlay on thumb */
+    .series-thumb::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.8) 100%);
+      z-index: 1;
+    }
+
+    /* Play icon on hover */
+    .play-icon {
+      position: absolute; inset: 0; z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.25s ease;
+    }
+    .play-icon svg {
+      width: 42px; height: 42px;
+      fill: rgba(255,255,255,0.9);
+      filter: drop-shadow(0 2px 12px rgba(0,0,0,0.8));
+    }
+    .series-card:hover .play-icon { opacity: 1; }
+
+    /* Badge (dubbed / sub) */
+    .card-badge {
+      position: absolute; top: 8px; left: 8px; z-index: 3;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 6px;
+    }
+    .badge-dubbed {
+      background: rgba(0,194,255,0.85);
+      color: #000;
+    }
+    .badge-sub {
+      background: rgba(250,204,21,0.85);
+      color: #000;
+    }
+
+    /* Title */
+    .series-title {
+      padding: 10px 12px 11px;
+      font-size: 13px; font-weight: 600;
+      line-height: 1.35;
+      text-align: center;
+      color: var(--text);
+      letter-spacing: 0.1px;
+    }
+
+    /* ══════════════════════════════
+       SKELETON LOADERS
+    ══════════════════════════════ */
+    .skeleton-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    @media(min-width:600px)  { .skeleton-grid{ grid-template-columns:repeat(3,1fr); } }
+    @media(min-width:900px)  { .skeleton-grid{ grid-template-columns:repeat(4,1fr); } }
+    @media(min-width:1100px) { .skeleton-grid{ grid-template-columns:repeat(5,1fr); } }
+
+    .skeleton-card {
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .skeleton-thumb {
+      width: 100%; padding-bottom: 56%;
+      background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+      background-size: 200% 100%;
+      animation: shimmerLoad 1.4s ease infinite;
+    }
+    .skeleton-title {
+      height: 14px; margin: 12px 14px 14px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+      background-size: 200% 100%;
+      animation: shimmerLoad 1.4s ease infinite;
+    }
+    @keyframes shimmerLoad {
+      from { background-position: 200% 0; }
+      to   { background-position: -200% 0; }
+    }
+
+    /* ══════════════════════════════
+       EMPTY & ERROR STATE
+    ══════════════════════════════ */
+    .state-box {
+      text-align: center;
+      padding: 60px 20px;
+      display: none;
+    }
+    .state-box.visible { display: block; }
+    .state-icon {
+      font-size: 48px; margin-bottom: 14px; opacity: 0.35;
+    }
+    .state-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px; letter-spacing: 2px;
+      color: var(--muted); margin-bottom: 6px;
+    }
+    .state-desc { font-size: 14px; color: var(--muted); }
+
+    /* ══════════════════════════════
+       KEYFRAMES
+    ══════════════════════════════ */
+    @keyframes slideDown {
+      from { opacity:0; transform:translateY(-20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(18px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    @keyframes cardPop {
+      from { opacity:0; transform:translateY(24px) scale(0.97); }
+      to   { opacity:1; transform:translateY(0) scale(1); }
+    }
+    @keyframes livePulse {
+      0%  { box-shadow:0 0 0 0   rgba(74,222,128,0.7); }
+      70% { box-shadow:0 0 0 8px rgba(74,222,128,0);   }
+      100%{ box-shadow:0 0 0 0   rgba(74,222,128,0);   }
+    }
+
+    /* Responsive tweaks */
+    @media(max-width:380px){
+      .series-title { font-size:12px; padding:8px 10px; }
+      .filter-btn { font-size:13px; padding:8px 18px; }
+    }
   </style>
 </head>
-<body>
-  <div class="container">
-    <header class="page-title">All Series</header>
 
-    <!-- Filters -->
-    <div class="filter-bar">
-      <button class="filter-btn active" id="dubbedBtn">Dubbed</button>
-      <button class="filter-btn" id="subBtn">Subtitles</button>
+<body>
+
+  <!-- Ambient background -->
+  <div class="bg-layer">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="grid-bg"></div>
+
+  <div class="page">
+
+    <!-- Header -->
+    <div class="page-header">
+      <div class="header-eyebrow">
+        <span class="live-dot"></span>
+        SmTv Urdu
+      </div>
+      <h1 class="page-title">All Series</h1>
+      <p class="page-subtitle">Turkish dramas, fully dubbed &amp; subtitled — watch free</p>
     </div>
 
-    <!-- Sub-language buttons -->
-    <div class="sub-lang-bar" id="subLangBar">
-      <button class="sub-btn" data-lang="en">English</button>
-      <button class="sub-btn" data-lang="hi">Hindi</button>
-      <button class="sub-btn" data-lang="ur">Urdu</button>
-      <button class="sub-btn" data-lang="ar">Arabic</button>
-      <button class="sub-btn" data-lang="sp">Spanish</button>
+    <!-- Filters -->
+    <div class="filter-wrap">
+      <div class="filter-bar">
+        <button class="filter-btn active" id="dubbedBtn">🎙 Dubbed</button>
+        <button class="filter-btn" id="subBtn">📝 Subtitles</button>
+      </div>
+      <div class="sub-lang-bar" id="subLangBar">
+        <button class="sub-btn" data-lang="en">🇬🇧 English</button>
+        <button class="sub-btn" data-lang="hi">🇮🇳 Hindi</button>
+        <button class="sub-btn" data-lang="ur">🇵🇰 Urdu</button>
+        <button class="sub-btn" data-lang="ar">🇸🇦 Arabic</button>
+        <button class="sub-btn" data-lang="sp">🇪🇸 Spanish</button>
+      </div>
+    </div>
+
+    <!-- Results count -->
+    <div class="results-meta">
+      <span class="results-count" id="resultsCount">Loading...</span>
+    </div>
+
+    <!-- Skeleton loader -->
+    <div class="skeleton-grid" id="skeleton">
+      <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-title"></div></div>
+      <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-title"></div></div>
+      <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-title"></div></div>
+      <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-title"></div></div>
+      <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-title"></div></div>
+      <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-title"></div></div>
     </div>
 
     <!-- Series grid -->
-    <div id="series-list" class="series-grid"></div>
-    <div id="series-empty">No series found.</div>
-  </div>
+    <div id="series-list" class="series-grid" style="display:none;"></div>
+
+    <!-- Empty state -->
+    <div class="state-box" id="series-empty">
+      <div class="state-icon">📭</div>
+      <div class="state-title">No Series Found</div>
+      <div class="state-desc">Try a different filter or check back later.</div>
+    </div>
+
+  </div><!-- .page -->
+
+  <div id="footer-placeholder"></div>
 
   <script>
-    (async function(){
-      const grid = document.getElementById('series-list');
-      const empty = document.getElementById('series-empty');
-      const dubbedBtn = document.getElementById('dubbedBtn');
-      const subBtn = document.getElementById('subBtn');
-      const subLangBar = document.getElementById('subLangBar');
-      const subBtns = subLangBar.querySelectorAll('.sub-btn');
+  (async function(){
+    const grid      = document.getElementById('series-list');
+    const skeleton  = document.getElementById('skeleton');
+    const empty     = document.getElementById('series-empty');
+    const countEl   = document.getElementById('resultsCount');
+    const dubbedBtn = document.getElementById('dubbedBtn');
+    const subBtn    = document.getElementById('subBtn');
+    const subLangBar = document.getElementById('subLangBar');
+    const subBtns   = subLangBar.querySelectorAll('.sub-btn');
 
-      let allSeries = [];
-      try {
-        const res = await fetch('series.json');
-        if(!res.ok) throw new Error('Failed to load series.json');
-        allSeries = await res.json();
-      } catch(e) {
-        console.error(e);
-        empty.style.display='block';
+    let allSeries = [];
+
+    /* ── Load data ── */
+    try {
+      const res = await fetch('series.json');
+      if (!res.ok) throw new Error('Failed');
+      allSeries = await res.json();
+    } catch(e) {
+      skeleton.style.display = 'none';
+      grid.style.display = 'none';
+      empty.classList.add('visible');
+      countEl.textContent = 'Could not load series.';
+      console.error(e);
+      return;
+    }
+
+    skeleton.style.display = 'none';
+    grid.style.display = 'grid';
+
+    /* ── Render ── */
+    function render(filter) {
+      const filtered = allSeries.filter(s => {
+        if (filter.type === 'dubbed') return s.track === 'dubbed';
+        if (filter.type === 'sub') {
+          if (!filter.lang) return s.track === 'sub';
+          return s.track === 'sub' && s.subLang === filter.lang;
+        }
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        grid.style.display = 'none';
+        empty.classList.add('visible');
+        countEl.innerHTML = '<strong>0</strong> series';
         return;
       }
 
-      function render(filter){
-        const filtered = allSeries.filter(s=>{
-          if(filter.type==='dubbed') return s.track==='dubbed';
-          if(filter.type==='sub'){
-            if(!filter.lang) return s.track==='sub';
-            return s.track==='sub' && s.subLang===filter.lang;
-          }
-        });
-        if(filtered.length===0){ grid.innerHTML=''; empty.style.display='block'; return;}
-        empty.style.display='none';
-        grid.innerHTML = filtered.map(s=>`
-          <a class="series-card" href="series.html?series=${encodeURIComponent(s.slug)}${filter.type==='sub' && filter.lang ? '&lang='+filter.lang : ''}">
-            <div class="series-thumb"><img src="${s.poster}" alt="${s.title}"></div>
-            <div class="series-title">${s.title}</div>
-          </a>
-        `).join('');
-      }
+      empty.classList.remove('visible');
+      grid.style.display = 'grid';
+      countEl.innerHTML = `<strong>${filtered.length}</strong> series`;
 
-      let currentFilter = { type:'dubbed' };
+      const badge = filter.type === 'dubbed'
+        ? `<span class="card-badge badge-dubbed">Dubbed</span>`
+        : `<span class="card-badge badge-sub">${(filter.lang || 'Sub').toUpperCase()}</span>`;
+
+      grid.innerHTML = filtered.map((s, i) => `
+        <a class="series-card" href="series.html?series=${encodeURIComponent(s.slug)}${filter.type==='sub' && filter.lang ? '&lang='+filter.lang : ''}"
+           style="animation-delay:${Math.min(i * 0.04, 0.6)}s">
+          <div class="series-thumb">
+            <img src="${s.poster}" alt="${s.title}" loading="lazy">
+            ${badge}
+            <div class="play-icon">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+          <div class="series-title">${s.title}</div>
+        </a>
+      `).join('');
+
+      /* Intersection Observer for stagger-on-scroll */
+      const cards = grid.querySelectorAll('.series-card');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+        cards.forEach(c => io.observe(c));
+      } else {
+        cards.forEach(c => c.classList.add('visible'));
+      }
+    }
+
+    let currentFilter = { type: 'dubbed' };
+    render(currentFilter);
+
+    /* ── Filter buttons ── */
+    dubbedBtn.onclick = () => {
+      currentFilter = { type: 'dubbed' };
+      dubbedBtn.classList.add('active');
+      subBtn.classList.remove('active');
+      subLangBar.classList.remove('active');
       render(currentFilter);
+    };
 
-      dubbedBtn.onclick = ()=>{
-        currentFilter = { type:'dubbed' };
-        dubbedBtn.classList.add('active');
-        subBtn.classList.remove('active');
-        subLangBar.classList.remove('active');
+    subBtn.onclick = () => {
+      currentFilter = { type: 'sub' };
+      subBtn.classList.add('active');
+      dubbedBtn.classList.remove('active');
+      subLangBar.classList.add('active');
+      subBtns.forEach(b => b.classList.remove('active'));
+      const saved = localStorage.getItem('smtv_sub_lang') || 'en';
+      const btn = [...subBtns].find(b => b.dataset.lang === saved) || subBtns[0];
+      btn.classList.add('active');
+      currentFilter.lang = btn.dataset.lang;
+      render(currentFilter);
+    };
+
+    subBtns.forEach(b => {
+      b.onclick = () => {
+        subBtns.forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        currentFilter = { type: 'sub', lang: b.dataset.lang };
+        localStorage.setItem('smtv_sub_lang', b.dataset.lang);
         render(currentFilter);
       };
+    });
 
-      subBtn.onclick = ()=>{
-        currentFilter = { type:'sub' };
-        subBtn.classList.add('active');
-        dubbedBtn.classList.remove('active');
-        subLangBar.classList.add('active');
-        subBtns.forEach(b=>b.classList.remove('active'));
-        const saved = localStorage.getItem('smtv_sub_lang') || 'en';
-        const btn = [...subBtns].find(b=>b.dataset.lang===saved) || subBtns[0];
-        btn.classList.add('active');
-        currentFilter.lang = btn.dataset.lang;
-        render(currentFilter);
-      };
-
-      subBtns.forEach(b=>{
-        b.onclick = ()=>{
-          subBtns.forEach(x=>x.classList.remove('active'));
-          b.classList.add('active');
-          currentFilter = { type:'sub', lang:b.dataset.lang };
-          localStorage.setItem('smtv_sub_lang', b.dataset.lang);
-          render(currentFilter);
-        };
-      });
-    })();
+  })();
   </script>
-  <!-- FOOTER: load includes/footer.html (robust loader + fallback) -->
-<div id="footer-placeholder"></div>
 
-<script>
-(async function loadFooterRobust(){
-  // candidate footer paths (tries multiple common locations)
-  const candidates = [
-    '/includes/footer.html',
-    'includes/footer.html',
-    './includes/footer.html',
-    '/footer.html',
-    'footer.html'
-  ];
+  <!-- Footer loader (robust, original logic preserved) -->
+  <script>
+  (async function loadFooterRobust(){
+    const candidates = [
+      '/includes/footer.html',
+      'includes/footer.html',
+      './includes/footer.html',
+      '/footer.html',
+      'footer.html'
+    ];
+    const placeholder = document.getElementById('footer-placeholder');
 
-  const placeholder = document.getElementById('footer-placeholder');
-
-  // helper to insert and initialize nav
-  function initNav(html) {
-    try {
-      placeholder.innerHTML = html;
-      // Ensure body has space so content isn't hidden under nav
+    function initNav(html) {
       try {
-        const curPad = parseInt(getComputedStyle(document.body).paddingBottom) || 0;
-        const minPad = 96;
-        if (curPad < minPad) document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))';
-      } catch(e){}
-
-      // Activate the "Series" nav item (look for dataset.name or href)
-      const nav = placeholder.querySelector('#smtv-bottom-nav') || placeholder.querySelector('.smtv-bottom-nav');
-      if (!nav) return;
-
-      const items = Array.from(nav.querySelectorAll('.nav-item'));
-      items.forEach(i => i.classList.remove('active'));
-
-      // Prefer explicit dataset.name === 'series', otherwise href contains 'series'
-      let seriesItem = items.find(i => ((i.dataset && (i.dataset.name || '').toLowerCase()) === 'series'));
-      if (!seriesItem) {
-        seriesItem = items.find(i => {
-          const href = (i.getAttribute && i.getAttribute('href') || '').toLowerCase();
-          return href && href.includes('series');
+        placeholder.innerHTML = html;
+        try {
+          const curPad = parseInt(getComputedStyle(document.body).paddingBottom) || 0;
+          if (curPad < 96) document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))';
+        } catch(e){}
+        const nav = placeholder.querySelector('#smtv-bottom-nav') || placeholder.querySelector('.smtv-bottom-nav');
+        if (!nav) return;
+        const items = Array.from(nav.querySelectorAll('.nav-item'));
+        items.forEach(i => i.classList.remove('active'));
+        let seriesItem = items.find(i => ((i.dataset && (i.dataset.name||'').toLowerCase()) === 'series'));
+        if (!seriesItem) seriesItem = items.find(i => (i.getAttribute('href')||'').toLowerCase().includes('series'));
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('series') && seriesItem) seriesItem.classList.add('active');
+        else {
+          const path = location.pathname.toLowerCase();
+          const byPath = items.find(i => (i.getAttribute('href')||'').toLowerCase().includes(path.split('/').pop()));
+          if (byPath) byPath.classList.add('active');
+          else if (seriesItem) seriesItem.classList.add('active');
+        }
+        items.forEach(a => {
+          if (a._smtvInit) return;
+          a._smtvInit = true;
+          a.addEventListener('click', function(e){
+            try { e.preventDefault && e.preventDefault(); } catch(err){}
+            items.forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+            try { localStorage.setItem('smtv_last_nav', this.dataset.name || this.getAttribute('href')); } catch(e){}
+            const href = this.getAttribute('href');
+            if (href) location.assign(href);
+          }, { passive: false });
         });
-      }
-
-      // If opened from a series page (query param ?series=), prefer the series nav
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.has('series') && seriesItem) {
-        seriesItem.classList.add('active');
-      } else {
-        // fallback: match by pathname
-        const path = location.pathname.toLowerCase();
-        const byPath = items.find(i => (i.getAttribute('href')||'').toLowerCase().includes(path.split('/').pop()));
-        if (byPath) byPath.classList.add('active');
-        else if (seriesItem) seriesItem.classList.add('active');
-      }
-
-      // Attach click handlers to nav items to highlight immediately and persist last-click
-      items.forEach(a => {
-        if (a._smtvInit) return;
-        a._smtvInit = true;
-        a.addEventListener('click', function(e){
-          try { e.preventDefault && e.preventDefault(); } catch(err){}
-          items.forEach(i => i.classList.remove('active'));
-          this.classList.add('active');
-          try { localStorage.setItem('smtv_last_nav', this.dataset.name || this.getAttribute('href')); } catch(e){}
-          const href = this.getAttribute('href');
-          if (href) location.assign(href);
-        }, { passive: false });
-      });
-
-    } catch (e) {
-      console.warn('initNav error', e);
+      } catch(e) { console.warn('initNav error', e); }
     }
-  }
 
-  // try fetch candidates sequentially
-  for (const cand of candidates) {
-    try {
-      const url = cand;
-      const res = await fetch(url, { cache: 'no-cache' });
-      if (!res.ok) continue;
-      const text = await res.text();
-
-      // quick sanity: must contain nav element marker
-      if (text.includes('smtv-bottom-nav') || text.includes('smtv-bottom')) {
-        initNav(text);
-        return;
-      } else {
-        // still accept it (some builds may not use same class names)
-        initNav(text);
-        return;
-      }
-    } catch (e) {
-      // try next candidate
-      continue;
+    for (const cand of candidates) {
+      try {
+        const res = await fetch(cand, { cache: 'no-cache' });
+        if (!res.ok) continue;
+        const text = await res.text();
+        initNav(text); return;
+      } catch(e) { continue; }
     }
-  }
 
-  // If all fetch attempts failed, insert a small inline fallback nav so page isn't missing the bar
-  placeholder.innerHTML = `
-    <nav class="smtv-bottom-nav" id="smtv-bottom-nav" role="navigation" aria-label="Main">
-      <a href="/index.html" class="nav-item" data-name="home"><span class="icon-wrap"><i class="fa-solid fa-house"></i></span><span class="label">Home</span></a>
-      <a href="/series.html" class="nav-item active" data-name="series"><span class="icon-wrap"><i class="fa-solid fa-film"></i></span><span class="label">Series</span></a>
-      <a href="/clips.html" class="nav-item" data-name="clips"><span class="icon-wrap"><i class="fa-solid fa-play-circle"></i></span><span class="label">Clips</span></a>
-      <a href="/premium.html" class="nav-item" data-name="premium"><span class="icon-wrap"><i class="fa-solid fa-star"></i></span><span class="label">Premium</span></a>
-      <a href="/more.html" class="nav-item" data-name="more"><span class="icon-wrap"><i class="fa-solid fa-circle-info"></i></span><span class="label">More</span></a>
-    </nav>
-    <style>
-      /* minimal inline style for fallback (keeps appearance acceptable) */
-      .smtv-bottom-nav{position:fixed;left:12px;right:12px;bottom:12px;height:64px;display:flex;gap:6px;padding:8px;border-radius:14px;background:rgba(10,10,12,0.9);align-items:center;z-index:1200;padding-bottom:calc(env(safe-area-inset-bottom) + 8px);}
-      .smtv-bottom-nav .nav-item{flex:1;text-align:center;color:#bdbdbd;text-decoration:none;padding:6px;border-radius:10px;}
-      .smtv-bottom-nav .nav-item.active{color:#fff;transform:translateY(-6px);}
-      .smtv-bottom-nav .icon-wrap{display:inline-flex;width:40px;height:40px;align-items:center;justify-content:center;border-radius:10px;}
-      .smtv-bottom-nav .label{display:block;font-size:12px;margin-top:3px;}
-    </style>
-  `;
-  // ensure padding
-  try { document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))'; } catch(e){}
-})();
-</script>
+    placeholder.innerHTML = `
+      <nav class="smtv-bottom-nav" id="smtv-bottom-nav" role="navigation" aria-label="Main">
+        <a href="/index.html" class="nav-item" data-name="home"><span class="icon-wrap">🏠</span><span class="label">Home</span></a>
+        <a href="/series.html" class="nav-item active" data-name="series"><span class="icon-wrap">🎬</span><span class="label">Series</span></a>
+        <a href="/clips.html" class="nav-item" data-name="clips"><span class="icon-wrap">▶️</span><span class="label">Clips</span></a>
+        <a href="/premium.html" class="nav-item" data-name="premium"><span class="icon-wrap">⭐</span><span class="label">Premium</span></a>
+        <a href="/more.html" class="nav-item" data-name="more"><span class="icon-wrap">ℹ️</span><span class="label">More</span></a>
+      </nav>
+      <style>
+        .smtv-bottom-nav{position:fixed;left:12px;right:12px;bottom:12px;height:64px;display:flex;gap:6px;padding:8px;border-radius:14px;background:rgba(10,10,12,0.9);align-items:center;z-index:1200;padding-bottom:calc(env(safe-area-inset-bottom)+8px);}
+        .smtv-bottom-nav .nav-item{flex:1;text-align:center;color:#bdbdbd;text-decoration:none;padding:6px;border-radius:10px;}
+        .smtv-bottom-nav .nav-item.active{color:#fff;transform:translateY(-6px);}
+        .smtv-bottom-nav .icon-wrap{display:inline-flex;width:40px;height:40px;align-items:center;justify-content:center;border-radius:10px;}
+        .smtv-bottom-nav .label{display:block;font-size:12px;margin-top:3px;}
+      </style>`;
+    try { document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))'; } catch(e){}
+  })();
+  </script>
+
 </body>
 </html>
