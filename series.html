@@ -17,7 +17,7 @@
 
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
 
   <style>
     /* ═══════════════════════════════════════════════
@@ -27,78 +27,108 @@
       --bg:         #04080f;
       --bg2:        #07101c;
       --bg3:        #0b1828;
+      --bg4:        #0e1f30;
       --border:     rgba(255,255,255,.07);
       --border-hi:  rgba(255,255,255,.12);
       --gold:       #e8a800;
       --gold-lt:    #ffc93c;
+      --gold-dim:   #b07f00;
       --gold-glow:  rgba(232,168,0,.28);
+      --gold-glow2: rgba(232,168,0,.12);
       --cyan:       #00c8f0;
       --cyan-dim:   rgba(0,200,240,.12);
+      --cyan-glow:  rgba(0,200,240,.28);
       --green:      #00d98b;
+      --red:        #ff4d6d;
       --txt:        #d8e8f8;
       --txt-muted:  #4e6880;
+      --txt-soft:   #7a99b0;
       --radius:     16px;
       --rad-sm:     10px;
       --rad-xs:     7px;
+      --transition: cubic-bezier(.22,.68,0,1.2);
     }
 
     /* ═══════════════════════════════════════════════
        BASE RESET
     ═══════════════════════════════════════════════ */
-    *, *::before, *::after { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
 
     body {
       background: var(--bg);
       color: var(--txt);
-      margin: 0;
       font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
+      min-height: 100dvh;
     }
 
     /* ═══════════════════════════════════════════════
-       ANIMATED BACKGROUND
+       ANIMATED BACKGROUND GRID + GLOW
     ═══════════════════════════════════════════════ */
     body::before {
       content: '';
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
       background-image:
-        linear-gradient(rgba(0,200,240,.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,200,240,.015) 1px, transparent 1px);
+        linear-gradient(rgba(0,200,240,.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,200,240,.018) 1px, transparent 1px);
       background-size: 52px 52px;
-      mask-image: radial-gradient(ellipse 100% 50% at 50% 0%, black, transparent);
+      mask-image: radial-gradient(ellipse 100% 60% at 50% 0%, black 30%, transparent);
     }
     body::after {
       content: '';
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
       background:
-        radial-gradient(ellipse 60% 40% at 90% 10%, rgba(232,168,0,.08) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 10% 80%, rgba(0,200,240,.07) 0%, transparent 60%);
-      animation: bg-breathe 12s ease-in-out infinite;
+        radial-gradient(ellipse 70% 50% at 85% 8%, rgba(232,168,0,.1) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 45% at 8% 75%, rgba(0,200,240,.08) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(0,0,0,.3) 0%, transparent 100%);
+      animation: bg-breathe 14s ease-in-out infinite;
     }
     @keyframes bg-breathe {
       0%,100% { opacity: 1; }
-      50%      { opacity: .7; }
+      50%      { opacity: .65; }
     }
 
     /* ═══════════════════════════════════════════════
-       PAGE ANIMATIONS
+       KEYFRAMES
     ═══════════════════════════════════════════════ */
-    @keyframes fade-up   { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes shimmer   { 0%{background-position:-200% center} 100%{background-position:200% center} }
-    @keyframes btn-shine { 0%{left:-100%} 50%,100%{left:150%} }
-    @keyframes pulse-ring {
-      0%  { box-shadow: 0 0 0 0 var(--gold-glow); }
-      70% { box-shadow: 0 0 0 10px transparent; }
-      100%{ box-shadow: 0 0 0 0 transparent; }
+    @keyframes fade-up     { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fade-in     { from{opacity:0} to{opacity:1} }
+    @keyframes shimmer     { 0%{background-position:-200% center} 100%{background-position:200% center} }
+    @keyframes btn-shine   { 0%{left:-100%} 55%,100%{left:150%} }
+    @keyframes dot-blink   { 0%,100%{opacity:1} 50%{opacity:.25} }
+    @keyframes float       { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+    @keyframes spin-slow   { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+    @keyframes pulse-glow  {
+      0%,100% { box-shadow: 0 0 0 0 var(--gold-glow); }
+      50%     { box-shadow: 0 0 22px 4px var(--gold-glow2); }
     }
-    @keyframes dot-blink { 0%,100%{opacity:1} 50%{opacity:.3} }
-    @keyframes float     { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+    @keyframes card-in     {
+      from { opacity:0; transform:translateY(16px) scale(.97); }
+      to   { opacity:1; transform:translateY(0) scale(1); }
+    }
+    @keyframes premium-in  {
+      from { opacity:0; transform:translateY(12px) scale(.98); }
+      to   { opacity:1; transform:translateY(0) scale(1); }
+    }
+    @keyframes badge-pop   {
+      0%   { transform: scale(0) rotate(-10deg); opacity:0; }
+      60%  { transform: scale(1.15) rotate(2deg); opacity:1; }
+      100% { transform: scale(1) rotate(0); opacity:1; }
+    }
+    @keyframes scan-line {
+      0%   { top: -10%; }
+      100% { top: 110%; }
+    }
 
     /* reveal-on-scroll */
-    .reveal-item { opacity: 0; transform: translateY(14px); transition: opacity .45s cubic-bezier(.22,.68,0,1.2), transform .45s cubic-bezier(.22,.68,0,1.2); }
+    .reveal-item {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity .5s var(--transition), transform .5s var(--transition);
+    }
     .reveal-item.show { opacity: 1; transform: translateY(0); }
 
     /* ═══════════════════════════════════════════════
@@ -113,151 +143,323 @@
     }
 
     /* ═══════════════════════════════════════════════
-       SERIES HEADER BLOCK
-       (class: pro-series-header-pro — used by JS)
+       SERIES HEADER BLOCK — FIXED
     ═══════════════════════════════════════════════ */
     .pro-series-header-pro {
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: stretch;           /* ← key fix: was center */
       text-align: center;
       gap: 0;
       padding: 0;
-      border-radius: 20px;
+      border-radius: 22px;
       background: transparent;
       box-shadow: none;
       position: relative;
-      margin-bottom: 18px;
-      animation: fade-up .6s cubic-bezier(.22,.68,0,1.2) both;
+      margin-bottom: 22px;
+      animation: fade-up .65s var(--transition) both;
+      overflow: hidden;               /* ← clips poster to border-radius */
     }
 
-    /* ── Poster ── */
+    /* ── POSTER — FIXED ── */
     .pro-series-poster-pro {
       width: 100%;
-      max-height: 240px;
-      border-radius: 18px 18px 0 0;
+      height: 260px;                  /* fixed height instead of max-height */
+      border-radius: 22px 22px 0 0;
       object-fit: cover;
+      object-position: center top;   /* ← show faces/top of image */
       display: block;
-      box-shadow: 0 0 0 1px var(--border);
-      position: relative;
+      flex-shrink: 0;
+      /* NO box-shadow here — parent clips it */
     }
 
-    /* gradient overlay on bottom of poster */
-    .pro-series-header-pro::after {
-      content: '';
+    /* ── Poster gradient overlay — FIXED positioning ── */
+    .poster-gradient-overlay {
       position: absolute;
       left: 0; right: 0;
-      top: 180px;
-      height: 80px;
-      background: linear-gradient(to bottom, transparent, var(--bg));
-      border-radius: 0;
+      top: 160px;                     /* starts fading from this point */
+      height: 120px;                  /* taller fade for smooth blend */
+      background: linear-gradient(to bottom, transparent, var(--bg2));
       pointer-events: none;
       z-index: 2;
+    }
+
+    /* ── Scan-line cinematic effect on poster ── */
+    .poster-scan {
+      position: absolute;
+      left: 0; right: 0;
+      top: 0;
+      height: 40px;
+      background: linear-gradient(to bottom, rgba(0,200,240,.04), transparent);
+      animation: scan-line 6s linear infinite;
+      pointer-events: none;
+      z-index: 3;
     }
 
     /* ── Back button ── */
     .pro-series-back-btn-pro {
       position: absolute;
       left: 12px; top: 12px; z-index: 10;
-      width: 38px; height: 38px;
+      width: 40px; height: 40px;
       display: inline-flex; align-items: center; justify-content: center;
       border-radius: var(--rad-sm);
-      background: rgba(4,8,15,.75);
+      background: rgba(4,8,15,.82);
       border: 1px solid var(--border-hi);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px) saturate(1.4);
+      -webkit-backdrop-filter: blur(12px) saturate(1.4);
       text-decoration: none;
-      transition: background .2s, border-color .2s;
+      transition: background .22s, border-color .22s, transform .18s;
+      box-shadow: 0 4px 16px rgba(0,0,0,.4);
     }
-    .pro-series-back-btn-pro:hover { background: rgba(0,200,240,.15); border-color: rgba(0,200,240,.35); }
+    .pro-series-back-btn-pro:hover {
+      background: rgba(0,200,240,.18);
+      border-color: rgba(0,200,240,.4);
+      transform: translateX(-2px);
+    }
+    .pro-series-back-btn-pro i { color: var(--txt); font-size: .9em; }
 
-    /* ── Meta area (title + desc + premium msg) ── */
+    /* ── Meta area ── */
     .pro-series-meta-pro {
       width: 100%;
       background: var(--bg2);
       border: 1px solid var(--border);
       border-top: none;
-      border-radius: 0 0 18px 18px;
-      padding: 18px 18px 20px;
+      border-radius: 0 0 22px 22px;
+      padding: 20px 20px 24px;
       text-align: center;
       position: relative; z-index: 3;
     }
 
+    /* top shimmer line on meta */
+    .pro-series-meta-pro::before {
+      content: '';
+      position: absolute; top:0; left:10%; right:10%; height:1px;
+      background: linear-gradient(90deg, transparent, var(--border-hi), transparent);
+    }
+
     .pro-series-title-pro {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(1.4em, 5vw, 2em);
+      font-size: clamp(1.5em, 5.5vw, 2.1em);
       font-weight: 800;
       color: #fff;
-      margin: 0 0 8px;
-      letter-spacing: -.01em;
+      margin: 0 0 10px;
+      letter-spacing: -.015em;
       line-height: 1.15;
+      text-shadow: 0 2px 20px rgba(0,0,0,.5);
     }
 
     .pro-series-desc-pro {
-      font-size: .88em;
-      color: var(--txt-muted);
-      line-height: 1.65;
-      max-width: 680px;
-      margin: 0 auto 16px;
+      font-size: .875em;
+      color: var(--txt-soft);
+      line-height: 1.7;
+      max-width: 640px;
+      margin: 0 auto 18px;
+    }
+
+    /* ── Stats/badge row ── */
+    .series-stats-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .series-stat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: 100px;
+      font-size: .75em;
+      font-weight: 700;
+      letter-spacing: .04em;
+      border: 1px solid;
+    }
+    .stat-badge-cyan {
+      background: rgba(0,200,240,.08);
+      border-color: rgba(0,200,240,.2);
+      color: var(--cyan);
+    }
+    .stat-badge-gold {
+      background: rgba(232,168,0,.08);
+      border-color: rgba(232,168,0,.2);
+      color: var(--gold);
+    }
+    .stat-badge-green {
+      background: rgba(0,217,139,.08);
+      border-color: rgba(0,217,139,.2);
+      color: var(--green);
     }
 
     /* ═══════════════════════════════════════════════
-       PREMIUM CHANNEL MESSAGE
-       (class: premium-channel-message — rendered by JS)
+       PREMIUM CHANNEL MESSAGE — COMPLETELY REDESIGNED
     ═══════════════════════════════════════════════ */
     .premium-channel-message {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      background: linear-gradient(135deg, rgba(232,168,0,.08), rgba(232,168,0,.03));
-      border: 1px solid rgba(232,168,0,.25);
-      border-radius: var(--rad-sm);
-      padding: 14px 16px;
-      font-size: .85em;
-      color: var(--txt-muted);
-      line-height: 1.6;
-      margin-top: 4px;
-      position: relative; overflow: hidden;
+      position: relative;
+      overflow: hidden;
+      border-radius: 14px;
+      background: linear-gradient(145deg, rgba(18,28,44,1) 0%, rgba(10,18,30,1) 100%);
+      border: 1px solid rgba(232,168,0,.3);
+      padding: 0;
+      margin-top: 6px;
+      animation: premium-in .6s var(--transition) .3s both;
+      box-shadow:
+        0 8px 32px rgba(0,0,0,.5),
+        inset 0 1px 0 rgba(255,255,255,.05);
     }
+
+    /* animated shimmer top border */
     .premium-channel-message::before {
       content: '';
       position: absolute; top:0; left:0; right:0; height:2px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      background: linear-gradient(90deg,
+        transparent 0%,
+        var(--gold-dim) 25%,
+        var(--gold) 50%,
+        var(--gold-lt) 60%,
+        var(--gold-dim) 75%,
+        transparent 100%);
       background-size: 200% auto;
-      animation: shimmer 3s linear infinite;
+      animation: shimmer 2.5s linear infinite;
     }
-    .premium-channel-message strong { color: var(--gold); }
-    .premium-btn-row { margin-top: 4px; }
 
-    /* .btn-primary used in premium msg by JS */
+    /* gold corner glow */
+    .premium-channel-message::after {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 130px; height: 130px;
+      background: radial-gradient(circle, rgba(232,168,0,.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .pcm-inner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 20px;
+      position: relative; z-index: 1;
+    }
+
+    .pcm-icon-wrap {
+      flex-shrink: 0;
+      width: 52px; height: 52px;
+      border-radius: 13px;
+      background: linear-gradient(145deg, rgba(232,168,0,.18), rgba(232,168,0,.06));
+      border: 1px solid rgba(232,168,0,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4em;
+      animation: float 3s ease-in-out infinite, pulse-glow 3s ease-in-out infinite;
+      box-shadow: 0 4px 18px rgba(232,168,0,.15);
+    }
+
+    .pcm-text { flex: 1; text-align: left; }
+
+    .pcm-headline {
+      font-size: .95em;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.3;
+      margin-bottom: 4px;
+      letter-spacing: -.01em;
+    }
+    .pcm-headline span { color: var(--gold); }
+
+    .pcm-sub {
+      font-size: .78em;
+      color: var(--txt-soft);
+      line-height: 1.5;
+    }
+    .pcm-sub b { color: var(--txt); font-weight: 600; }
+
+    .pcm-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .pcm-badge {
+      font-size: .68em;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 100px;
+      background: rgba(232,168,0,.1);
+      border: 1px solid rgba(232,168,0,.2);
+      color: var(--gold-lt);
+      letter-spacing: .03em;
+      white-space: nowrap;
+    }
+
+    .pcm-cta-col {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ── CTA BUTTON — high CTR design ── */
     .btn-primary {
-      display: inline-flex; align-items: center; gap: 7px;
-      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
-      color: #1a0800; font-weight: 700; font-size: .88em;
-      padding: 10px 20px; border-radius: var(--rad-sm);
-      box-shadow: 0 4px 18px var(--gold-glow);
+      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-lt) 60%, #ffdc70 100%);
+      color: #1a0800;
+      font-weight: 800;
+      font-size: .82em;
+      font-family: 'DM Sans', sans-serif;
+      letter-spacing: .02em;
+      padding: 11px 20px;
+      border-radius: var(--rad-sm);
+      box-shadow: 0 4px 22px var(--gold-glow), inset 0 1px 0 rgba(255,255,255,.3);
       text-decoration: none;
       position: relative; overflow: hidden;
       transition: box-shadow .25s, transform .15s;
+      white-space: nowrap;
+      border: none;
+      cursor: pointer;
     }
     .btn-primary::before {
-      content: ''; position: absolute; top:0; left:-100%; width:60%; height:100%;
-      background: linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);
-      animation: btn-shine 2.8s ease-in-out infinite;
+      content: '';
+      position: absolute; top:0; left:-100%; width:60%; height:100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
+      animation: btn-shine 2.4s ease-in-out infinite;
     }
-    .btn-primary:hover { box-shadow: 0 6px 28px rgba(232,168,0,.45); transform: translateY(-1px); }
-    .btn-primary:active { transform: scale(.97); }
+    .btn-primary:hover {
+      box-shadow: 0 6px 30px rgba(232,168,0,.55);
+      transform: translateY(-2px) scale(1.02);
+    }
+    .btn-primary:active { transform: scale(.96); }
+
+    .pcm-members {
+      font-size: .7em;
+      color: var(--txt-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .pcm-members::before {
+      content: '●';
+      color: var(--green);
+      font-size: .8em;
+      animation: dot-blink 2s ease-in-out infinite;
+    }
+
+    /* ── Mobile layout for premium message ── */
+    @media (max-width: 520px) {
+      .pcm-inner { flex-direction: column; align-items: flex-start; gap: 14px; }
+      .pcm-cta-col { width: 100%; flex-direction: row; align-items: center; justify-content: space-between; }
+      .btn-primary { width: auto; }
+    }
 
     /* ═══════════════════════════════════════════════
        SEASON TABS
-       (class: pro-seasons-tabs-pro — rendered by JS)
     ═══════════════════════════════════════════════ */
     .pro-seasons-tabs-pro {
       display: flex;
       gap: 8px;
       justify-content: center;
       flex-wrap: wrap;
-      margin: 16px 0 12px;
+      margin: 20px 0 14px;
       padding: 0;
     }
 
@@ -265,45 +467,41 @@
       background: var(--bg2);
       border: 1px solid var(--border-hi);
       color: var(--txt-muted);
-      padding: 9px 20px;
-      border-radius: var(--rad-sm);
+      padding: 9px 22px;
+      border-radius: 100px;           /* pill shape */
       cursor: pointer;
       font-weight: 700;
-      font-size: .88em;
+      font-size: .85em;
       font-family: 'DM Sans', sans-serif;
-      letter-spacing: .02em;
-      transition: all .22s cubic-bezier(.22,.68,0,1.2);
+      letter-spacing: .03em;
+      transition: all .22s var(--transition);
       outline: none;
       position: relative; overflow: hidden;
     }
-    .pro-season-tab-pro::before {
-      content: ''; position: absolute; top:0; left:-100%; width:60%; height:100%;
-      background: linear-gradient(90deg, transparent, rgba(0,200,240,.12), transparent);
-      transition: none;
-    }
     .pro-season-tab-pro:hover:not(.active) {
-      border-color: rgba(0,200,240,.3);
+      border-color: rgba(0,200,240,.35);
       color: var(--txt);
-      background: rgba(0,200,240,.06);
+      background: rgba(0,200,240,.07);
+      transform: translateY(-1px);
     }
     .pro-season-tab-pro.active {
-      background: linear-gradient(135deg, var(--cyan), #0090b8);
+      background: linear-gradient(135deg, var(--cyan) 0%, #0090b8 100%);
       border-color: transparent;
-      color: #031820;
+      color: #021018;
       font-weight: 800;
       transform: translateY(-2px);
-      box-shadow: 0 6px 22px rgba(0,200,240,.28);
+      box-shadow: 0 6px 24px var(--cyan-glow);
     }
+    .pro-season-tab-pro:active { transform: scale(.96); }
 
     /* ═══════════════════════════════════════════════
        SOURCE SELECTOR
-       (class: source-selector / source-btn — rendered by JS)
     ═══════════════════════════════════════════════ */
     .source-selector {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       justify-content: center;
-      margin: 8px 0 16px;
+      margin: 0 0 18px;
       flex-wrap: wrap;
     }
 
@@ -311,177 +509,223 @@
       background: var(--bg3);
       border: 1px solid var(--border-hi);
       color: var(--txt-muted);
-      padding: 8px 22px;
+      padding: 7px 20px;
       border-radius: var(--rad-xs);
-      font-size: .85em;
+      font-size: .83em;
       font-weight: 700;
       font-family: 'DM Sans', sans-serif;
       cursor: pointer;
-      transition: all .22s cubic-bezier(.22,.68,0,1.2);
+      transition: all .22s var(--transition);
       outline: none;
     }
     .source-btn:hover:not(.active) {
-      border-color: rgba(0,200,240,.3);
+      border-color: rgba(0,200,240,.35);
       color: var(--txt);
-      background: rgba(0,200,240,.06);
+      background: rgba(0,200,240,.07);
     }
     .source-btn.active {
-      background: linear-gradient(135deg, var(--cyan), #0090b8);
+      background: linear-gradient(135deg, var(--cyan) 0%, #0090b8 100%);
       border-color: transparent;
-      color: #031820;
+      color: #021018;
       font-weight: 800;
-      box-shadow: 0 4px 16px rgba(0,200,240,.25);
+      box-shadow: 0 4px 16px var(--cyan-glow);
       transform: translateY(-1px);
     }
-    .source-btn:active { transform: scale(.97); }
+    .source-btn:active { transform: scale(.96); }
 
     /* ═══════════════════════════════════════════════
-       EPISODES ROW + LOADING
-       (class: pro-episodes-row-wrap-pro — rendered by JS)
+       EPISODES ROW WRAP
     ═══════════════════════════════════════════════ */
     .pro-episodes-row-wrap-pro {
       margin-top: 6px;
-      padding-bottom: 8px;
-      margin-bottom: 6px;
-      transition: min-height .18s ease;
+      padding-bottom: 10px;
+      margin-bottom: 8px;
+      transition: opacity .2s ease;
     }
-    .pro-episodes-row-wrap-pro.is-loading { opacity: .65; pointer-events: none; }
+    .pro-episodes-row-wrap-pro.is-loading {
+      opacity: .55;
+      pointer-events: none;
+    }
 
-    /* Section label above cards */
-    .pro-episodes-row-wrap-pro::before {
-      content: 'Episodes';
-      display: block;
+    /* Section label */
+    .episodes-section-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       font-size: .7em;
-      font-weight: 700;
-      letter-spacing: .1em;
+      font-weight: 800;
+      letter-spacing: .12em;
       color: var(--cyan);
       text-transform: uppercase;
-      margin-bottom: 12px;
-      padding-left: 4px;
+      margin-bottom: 14px;
+      padding-left: 2px;
     }
+    .episodes-section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(0,200,240,.25), transparent);
+    }
+
+    /* ── OVERRIDE the ::before that was setting "Episodes" label ── */
+    .pro-episodes-row-wrap-pro::before { display: none !important; }
 
     /* Horizontal scroller */
     .pro-episodes-row-pro {
       display: flex;
       gap: 12px;
       overflow-x: auto;
-      padding: 6px 4px 14px;
+      padding: 4px 2px 16px;
       -webkit-overflow-scrolling: touch;
       scroll-snap-type: x proximity;
       align-items: flex-start;
       scrollbar-width: thin;
-      scrollbar-color: rgba(0,200,240,.2) transparent;
+      scrollbar-color: rgba(0,200,240,.22) transparent;
     }
     .pro-episodes-row-pro::-webkit-scrollbar { height: 4px; }
     .pro-episodes-row-pro::-webkit-scrollbar-track { background: transparent; }
-    .pro-episodes-row-pro::-webkit-scrollbar-thumb { background: rgba(0,200,240,.2); border-radius: 4px; }
+    .pro-episodes-row-pro::-webkit-scrollbar-thumb {
+      background: rgba(0,200,240,.22);
+      border-radius: 4px;
+    }
 
     /* ═══════════════════════════════════════════════
-       EPISODE CARD
-       (class: pro-episode-card-pro — rendered by JS)
+       EPISODE CARD — FIXED THUMBNAIL BG + ENHANCED
     ═══════════════════════════════════════════════ */
     .pro-episode-card-pro {
       scroll-snap-align: start;
-      flex: 0 0 148px;
+      flex: 0 0 150px;
       display: flex;
       flex-direction: column;
       gap: 0;
       align-items: stretch;
       text-decoration: none;
       color: var(--txt);
-      border-radius: var(--radius);
+      border-radius: 14px;
       background: var(--bg2);
       border: 1px solid var(--border);
       overflow: hidden;
       min-height: 0;
-      transition: transform .22s cubic-bezier(.22,.68,0,1.2), box-shadow .22s ease, border-color .22s ease;
+      transition:
+        transform .26s var(--transition),
+        box-shadow .26s ease,
+        border-color .26s ease;
       position: relative;
+      /* staggered entrance animation handled by JS */
     }
     .pro-episode-card-pro:hover {
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 12px 32px rgba(0,0,0,.55), 0 0 0 1px rgba(0,200,240,.25);
-      border-color: rgba(0,200,240,.3);
+      transform: translateY(-6px) scale(1.025);
+      box-shadow: 0 16px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(0,200,240,.3);
+      border-color: rgba(0,200,240,.35);
     }
     .pro-episode-card-pro:active { transform: scale(.97); }
 
-    /* shimmer top line on hover */
+    /* shimmer top line */
     .pro-episode-card-pro::before {
       content: '';
       position: absolute; top:0; left:0; right:0; height:2px;
       background: linear-gradient(90deg, transparent, var(--cyan), transparent);
       opacity: 0;
       transition: opacity .22s;
+      z-index: 4;
     }
     .pro-episode-card-pro:hover::before { opacity: 1; }
 
     @media (max-width: 420px) {
-      .pro-episode-card-pro { flex: 0 0 130px; }
+      .pro-episode-card-pro { flex: 0 0 132px; }
     }
     @media (min-width: 900px) {
-      .pro-episode-card-pro { flex: 0 0 180px; }
+      .pro-episode-card-pro { flex: 0 0 178px; }
     }
 
-    /* ── Thumbnail ── */
+    /* ── THUMBNAIL WRAP — CRITICAL FIX ── */
     .pro-ep-thumb-wrap-pro {
       width: 100%;
       aspect-ratio: 16/10;
       overflow: hidden;
       position: relative;
-      background: var(--bg3);
+      /*
+        FIX: Remove any background color here.
+        The "black box in middle" was caused by a background showing
+        through when the image hasn't loaded or has letterboxing.
+        We use a subtle gradient placeholder instead.
+      */
+      background: linear-gradient(160deg, var(--bg3) 0%, var(--bg4) 100%);
       display: block;
       flex-shrink: 0;
     }
 
-    .pro-ep-thumb-pro {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform .3s ease;
+    /* skeleton shimmer while image loads */
+    .pro-ep-thumb-wrap-pro::before {
+      content: '';
+      position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255,255,255,.04) 50%,
+        transparent 100%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 1.6s ease-in-out infinite;
+      pointer-events: none;
     }
-    .pro-episode-card-pro:hover .pro-ep-thumb-pro { transform: scale(1.06); }
+
+    .pro-ep-thumb-pro {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;          /* fills area, no letterbox */
+      object-position: center;
+      display: block;
+      transition: transform .32s ease;
+      position: relative; z-index: 2; /* above skeleton */
+    }
+    .pro-episode-card-pro:hover .pro-ep-thumb-pro { transform: scale(1.08); }
 
     /* Episode number badge */
     .pro-ep-num-pro {
       position: absolute;
-      bottom: 6px; left: 6px;
-      background: rgba(4,8,15,.85);
+      bottom: 6px; left: 6px; z-index: 3;
+      background: rgba(4,8,15,.88);
       border: 1px solid var(--border-hi);
       color: var(--cyan);
-      font-size: .68em;
+      font-size: .67em;
       font-weight: 800;
-      padding: 2px 7px;
+      padding: 2px 8px;
       border-radius: 5px;
-      backdrop-filter: blur(6px);
-      letter-spacing: .04em;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      letter-spacing: .05em;
     }
 
-    /* Play button overlay */
-    .pro-ep-thumb-wrap-pro::after {
-      content: '▶';
+    /* Play button overlay — FIXED: removed content:'▶' from ::after (was ::after clash) */
+    .ep-play-overlay {
       position: absolute;
       top: 50%; left: 50%;
-      transform: translate(-50%, -50%) scale(.8);
-      width: 32px; height: 32px;
-      background: rgba(0,200,240,.85);
+      transform: translate(-50%, -50%) scale(.75);
+      width: 34px; height: 34px;
+      background: rgba(0,200,240,.88);
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: .65em; color: #031820;
-      line-height: 32px; text-align: center;
+      color: #021018;
+      font-size: .65em;
       opacity: 0;
       transition: opacity .22s, transform .22s;
+      z-index: 4;
+      pointer-events: none;
+      box-shadow: 0 0 18px var(--cyan-glow);
     }
-    .pro-episode-card-pro:hover .pro-ep-thumb-wrap-pro::after {
+    .pro-episode-card-pro:hover .ep-play-overlay {
       opacity: 1;
       transform: translate(-50%,-50%) scale(1);
     }
 
     /* ── Episode title ── */
     .pro-ep-title-pro {
-      font-size: .78em;
+      font-size: .77em;
       font-weight: 600;
       color: var(--txt);
-      padding: 8px 10px 10px;
-      line-height: 1.4;
+      padding: 9px 10px 11px;
+      line-height: 1.45;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -489,21 +733,22 @@
     }
 
     /* ═══════════════════════════════════════════════
-       TUTORIAL SECTION
-       (rendered by JS inside episodes wrap)
+       TUTORIAL / VIDEO SECTION
     ═══════════════════════════════════════════════ */
     .pro-tutorial-title {
       font-family: 'Playfair Display', serif;
-      font-size: 1em;
+      font-size: 1.05em;
       font-weight: 700;
       color: #fff;
-      margin: 24px 0 10px 2px;
-      display: flex; align-items: center; gap: 8px;
+      margin: 28px 0 12px 2px;
+      display: flex; align-items: center; gap: 10px;
     }
     .pro-tutorial-title::before {
       content: '';
-      width: 14px; height: 2px;
-      background: var(--cyan); border-radius: 2px; display: inline-block;
+      width: 16px; height: 2px;
+      background: var(--cyan);
+      border-radius: 2px;
+      display: inline-block;
     }
 
     .pro-video-frame-wrap {
@@ -514,32 +759,31 @@
       overflow: hidden;
       border: 1px solid var(--border-hi);
       background: var(--bg2);
-      box-shadow: 0 8px 28px rgba(0,0,0,.55);
+      box-shadow: 0 10px 32px rgba(0,0,0,.6);
     }
     .pro-video-frame-wrap iframe {
       position: absolute; top:0; left:0; width:100%; height:100%;
       border: 0; display: block; background: #000;
     }
 
-    /* legacy classes used by JS */
     .pro-tutorial-wrap { padding: 0; }
     .pro-tutorial-hero {
       display: flex; flex-direction: column; gap: 6px;
       background: var(--bg2); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 14px; margin-bottom: 14px;
+      border-radius: var(--radius); padding: 16px; margin-bottom: 14px;
     }
     .pro-tutorial-hero h3 {
       font-family: 'Playfair Display', serif;
-      font-size: 1.1em; font-weight: 700; color: #fff; margin: 0;
+      font-size: 1.1em; font-weight: 700; color: #fff;
     }
-    .pro-tutorial-hero p { font-size: .85em; color: var(--txt-muted); margin: 0; }
+    .pro-tutorial-hero p { font-size: .85em; color: var(--txt-soft); }
     .pro-tutorial-card {
       background: var(--bg2); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 14px; margin-bottom: 20px;
+      border-radius: var(--radius); padding: 16px; margin-bottom: 24px;
     }
     .pro-tutorial-card .small-title {
       font-family: 'Playfair Display', serif;
-      font-size: .95em; font-weight: 700; color: #fff; margin: 0 0 10px;
+      font-size: .95em; font-weight: 700; color: #fff; margin: 0 0 12px;
     }
     .pro-tutorial-card .pro-video-frame-wrap { margin-top: 0; }
 
@@ -547,12 +791,12 @@
        LOADING STATE
     ═══════════════════════════════════════════════ */
     .episodes-loading {
-      display: flex; align-items: center; gap: 10px;
-      padding: 20px 4px;
+      display: flex; align-items: center; gap: 12px;
+      padding: 22px 4px;
       color: var(--txt-muted); font-size: .88em;
     }
     .loading-dots span {
-      display: inline-block; width: 6px; height: 6px;
+      display: inline-block; width: 7px; height: 7px;
       border-radius: 50%; background: var(--cyan);
       animation: dot-blink 1.2s ease-in-out infinite;
     }
@@ -560,19 +804,37 @@
     .loading-dots span:nth-child(3) { animation-delay: .4s; }
 
     /* ═══════════════════════════════════════════════
-       WHATSAPP POPUP
+       WHATSAPP POPUP — UPGRADED
     ═══════════════════════════════════════════════ */
     #whatsappPopup {
       font-family: 'DM Sans', sans-serif !important;
       background: var(--bg2) !important;
       border: 1px solid var(--border-hi) !important;
-      border-radius: 18px !important;
-      box-shadow: 0 20px 60px rgba(0,0,0,.7) !important;
+      border-radius: 20px !important;
+      box-shadow: 0 24px 60px rgba(0,0,0,.8) !important;
       padding: 24px !important;
       color: var(--txt) !important;
+      overflow: hidden;
     }
-    #whatsappPopup strong { color: #fff; }
-    #whatsappPopup div[style*="margin-bottom:16px"] { color: var(--txt-muted) !important; font-size: .9em; }
+    #whatsappPopup::before {
+      content: '';
+      position: absolute; top:0; left:0; right:0; height:2px;
+      background: linear-gradient(90deg, #25d366, #00c8f0, #25d366);
+      background-size: 200% auto;
+      animation: shimmer 3s linear infinite;
+    }
+    #whatsappPopup strong { color: #fff !important; }
+
+    /* ── Backdrop overlay for popup ── */
+    #wa-backdrop {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 99998;
+    }
+    #wa-backdrop.show { display: block; animation: fade-in .3s ease both; }
 
     /* ═══════════════════════════════════════════════
        SAFE AREA + FOOTER
@@ -582,19 +844,47 @@
     }
 
     /* ═══════════════════════════════════════════════
-       MISC UTILITIES
+       UTILITIES
     ═══════════════════════════════════════════════ */
     :focus { outline: none; }
     a { text-decoration: none; color: inherit; }
 
-    /* Fade-in for #series-details on first paint */
-    #series-details { animation: fade-up .5s cubic-bezier(.22,.68,0,1.2) .1s both; }
+    #series-details { animation: fade-up .5s var(--transition) .1s both; }
+
+    /* ── Scroll fade hint on episode row ── */
+    .ep-row-fade-wrap {
+      position: relative;
+    }
+    .ep-row-fade-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 16px; width: 48px;
+      background: linear-gradient(to right, transparent, var(--bg));
+      pointer-events: none; z-index: 3;
+      border-radius: 0 14px 14px 0;
+    }
+
+    /* ── Card entrance stagger ── */
+    .pro-episode-card-pro.card-animate {
+      animation: card-in .4s var(--transition) both;
+    }
+
+    /* ── Divider line ── */
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border-hi), transparent);
+      margin: 20px 0;
+    }
   </style>
 
-  <!-- series.js (ALL LOGIC UNTOUCHED - renders header + episodes) -->
+  <!-- series.js (ALL LOGIC UNTOUCHED) -->
   <script defer src="series.js"></script>
 </head>
 <body>
+
+  <!-- WA backdrop overlay -->
+  <div id="wa-backdrop"></div>
+
   <div id="main-content">
     <header><!-- back button added by JS --></header>
 
@@ -605,62 +895,218 @@
     <div id="series-details" aria-live="polite"></div>
   </div>
 
-  <!-- dynamic meta/title updater (unchanged) -->
+  <!-- ═══════════════════════════════════════════
+       POSTER FIX PATCH
+       Watches for the poster image rendered by series.js
+       and ensures it fills correctly with no black bars.
+  ═══════════════════════════════════════════ -->
+  <script>
+  (function patchPosterAndCards() {
+    const observer = new MutationObserver(() => {
+      // ── Fix poster image ──
+      const poster = document.querySelector('.pro-series-poster-pro');
+      if (poster && !poster._patched) {
+        poster._patched = true;
+        poster.style.cssText += ';width:100%;height:260px;object-fit:cover;object-position:center top;display:block;';
+        // Inject gradient overlay if missing
+        const header = poster.closest('.pro-series-header-pro');
+        if (header && !header.querySelector('.poster-gradient-overlay')) {
+          const grad = document.createElement('div');
+          grad.className = 'poster-gradient-overlay';
+          header.appendChild(grad);
+          const scan = document.createElement('div');
+          scan.className = 'poster-scan';
+          header.appendChild(scan);
+        }
+      }
+
+      // ── Fix episode thumbnail black background ──
+      document.querySelectorAll('.pro-ep-thumb-wrap-pro').forEach(wrap => {
+        if (wrap._patched) return;
+        wrap._patched = true;
+        // remove any inline background:#000 or background:black
+        wrap.style.background = '';
+
+        // Inject play overlay as real element (removes ::after conflict)
+        if (!wrap.querySelector('.ep-play-overlay')) {
+          const pl = document.createElement('div');
+          pl.className = 'ep-play-overlay';
+          pl.innerHTML = '▶';
+          wrap.appendChild(pl);
+        }
+      });
+
+      // ── Stagger card entrance animations ──
+      document.querySelectorAll('.pro-episode-card-pro').forEach((card, i) => {
+        if (card._animated) return;
+        card._animated = true;
+        card.style.animationDelay = `${i * 0.045}s`;
+        card.classList.add('card-animate');
+      });
+
+      // ── Inject section label if missing ──
+      document.querySelectorAll('.pro-episodes-row-wrap-pro').forEach(wrap => {
+        if (wrap._labelDone) return;
+        wrap._labelDone = true;
+        const lbl = document.createElement('div');
+        lbl.className = 'episodes-section-label';
+        lbl.textContent = 'Episodes';
+        wrap.insertBefore(lbl, wrap.firstChild);
+      });
+
+      // ── Upgrade premium channel message ──
+      document.querySelectorAll('.premium-channel-message').forEach(pcm => {
+        if (pcm._upgraded) return;
+        pcm._upgraded = true;
+        // Check if already upgraded (has pcm-inner)
+        if (pcm.querySelector('.pcm-inner')) return;
+
+        // Extract the WhatsApp link href from existing content
+        const existingLink = pcm.querySelector('a[href]');
+        const waHref = existingLink ? existingLink.href : 'https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k';
+
+        pcm.innerHTML = `
+          <div class="pcm-inner">
+            <div class="pcm-icon-wrap">🔔</div>
+            <div class="pcm-text">
+              <div class="pcm-headline">Never miss an episode — <span>join for free</span></div>
+              <div class="pcm-sub">Get <b>instant alerts</b> for new episodes, behind-the-scenes &amp; exclusives on WhatsApp.</div>
+              <div class="pcm-badges">
+                <span class="pcm-badge">⚡ Instant Alerts</span>
+                <span class="pcm-badge">🎬 New Episodes</span>
+                <span class="pcm-badge">🆓 100% Free</span>
+              </div>
+            </div>
+            <div class="pcm-cta-col">
+              <a href="${waHref}" target="_blank" rel="noopener" class="btn-primary">
+                <i class="fa-brands fa-whatsapp" style="font-size:1.1em"></i>
+                Join Now
+              </a>
+              <div class="pcm-members">12K+ joined</div>
+            </div>
+          </div>
+        `;
+      });
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Stop observing after 8 seconds (prevent memory leaks)
+    setTimeout(() => observer.disconnect(), 8000);
+  })();
+  </script>
+
+  <!-- ═══════════════════════════════════════════
+       DYNAMIC META/TITLE UPDATER (unchanged)
+  ═══════════════════════════════════════════ -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const params = new URLSearchParams(window.location.search);
       const slug = params.get('series');
-      if(!slug) return;
-      fetch('/series.json').then(res => res.json()).then(seriesArr => {
-        const meta = Array.isArray(seriesArr) ? seriesArr.find(s => s.slug === slug) : null;
-        if (meta && meta.title) {
-          document.title = `${meta.title} – SmTv Urdu`;
-          const metaDesc = document.querySelector('meta[name="description"]');
-          if (metaDesc) metaDesc.setAttribute('content', `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`);
-        }
-      }).catch(()=>{/* ignore */});
+      if (!slug) return;
+      fetch('/series.json')
+        .then(res => res.json())
+        .then(seriesArr => {
+          const meta = Array.isArray(seriesArr) ? seriesArr.find(s => s.slug === slug) : null;
+          if (meta && meta.title) {
+            document.title = `${meta.title} – SmTv Urdu`;
+            const metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc) metaDesc.setAttribute('content',
+              `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`);
+          }
+        }).catch(() => {});
     });
   </script>
 
-  <!-- WhatsApp Popup (markup unchanged, CSS upgraded above) -->
-  <div id="whatsappPopup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); max-width:340px; width:90vw; z-index:99999;">
-    <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
-      <img src="favicon.png" alt="Logo" style="width:40px;height:40px;border-radius:10px;">
-      <strong style="font-size:1.1em">Stay Updated!</strong>
+  <!-- ═══════════════════════════════════════════
+       WHATSAPP POPUP (upgraded with backdrop)
+  ═══════════════════════════════════════════ -->
+  <div id="whatsappPopup" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:340px;width:90vw;z-index:99999;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+      <img src="favicon.png" alt="Logo" style="width:42px;height:42px;border-radius:11px;">
+      <strong style="font-size:1.08em">Stay Updated on SmTv!</strong>
     </div>
-    <div style="margin-bottom:16px;">Get instant notifications for new episodes. Join our WhatsApp Channel.</div>
+    <div style="margin-bottom:16px;font-size:.88em;color:#7a99b0;line-height:1.6;">
+      Get <strong style="color:#d8e8f8">instant episode alerts</strong> before anyone else — totally free.
+    </div>
     <div style="text-align:center;">
-      <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k" target="_blank" style="background:#25d366;color:#fff;padding:11px 20px;border-radius:10px;text-decoration:none;font-weight:700;display:inline-block;">🟢 Join on WhatsApp</a>
-      <div style="margin-top:12px;"><button id="closeWhatsAppPopup" style="background:none;border:none;color:#ff6868;font-weight:700;cursor:pointer;font-family:inherit;">✖ Close</button></div>
+      <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k" target="_blank"
+         style="background:linear-gradient(135deg,#25d366,#1da857);color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:800;display:inline-flex;align-items:center;gap:8px;font-size:.9em;box-shadow:0 4px 16px rgba(37,211,102,.3);">
+        <i class="fa-brands fa-whatsapp"></i> Join WhatsApp Channel
+      </a>
+      <div style="margin-top:14px;">
+        <button id="closeWhatsAppPopup"
+                style="background:none;border:1px solid rgba(255,255,255,.1);color:#7a99b0;font-weight:700;cursor:pointer;font-family:inherit;padding:6px 16px;border-radius:7px;font-size:.82em;transition:color .2s,border-color .2s;"
+                onmouseover="this.style.color='#ff4d6d';this.style.borderColor='rgba(255,77,109,.3)'"
+                onmouseout="this.style.color='#7a99b0';this.style.borderColor='rgba(255,255,255,.1)'">
+          ✕ No thanks
+        </button>
+      </div>
     </div>
   </div>
 
   <script>
     window.addEventListener('DOMContentLoaded', function() {
-      setTimeout(()=> { const p=document.getElementById('whatsappPopup'); if(p) p.style.display='block'; },2000);
-      const closeBtn=document.getElementById('closeWhatsAppPopup'); if(closeBtn) closeBtn.onclick=()=>document.getElementById('whatsappPopup').style.display='none';
+      const popup    = document.getElementById('whatsappPopup');
+      const backdrop = document.getElementById('wa-backdrop');
+      const closeBtn = document.getElementById('closeWhatsAppPopup');
+
+      function showPopup() {
+        if (popup)    popup.style.display = 'block';
+        if (backdrop) backdrop.classList.add('show');
+      }
+      function hidePopup() {
+        if (popup)    popup.style.display = 'none';
+        if (backdrop) backdrop.classList.remove('show');
+      }
+
+      setTimeout(showPopup, 2200);
+
+      if (closeBtn) closeBtn.addEventListener('click', hidePopup);
+      if (backdrop) backdrop.addEventListener('click', hidePopup);
     });
   </script>
 
-  <!-- Prevent auto-scroll caused by focus (unchanged) -->
+  <!-- ═══════════════════════════════════════════
+       PREVENT AUTO-SCROLL (unchanged logic)
+  ═══════════════════════════════════════════ -->
   <script>
     (function(){
       try { window.scrollTo(0,0); } catch(e){}
-      document.addEventListener('focusin', function(ev){
+      document.addEventListener('focusin', function(){
         const x = window.scrollX || 0;
         const y = window.scrollY || 0;
         setTimeout(function(){ try { window.scrollTo(x,y); } catch(e){} }, 0);
       }, true);
       const details = document.getElementById('series-details');
       if (details) {
-        const obs = new MutationObserver((mutations) => {
+        const obs = new MutationObserver(() => {
           if (details.childNodes.length > 0) {
-            try { window.scrollTo({ top: 0, left: 0, behavior: 'auto' }); } catch(e){}
+            try { window.scrollTo({ top:0, left:0, behavior:'auto' }); } catch(e){}
             obs.disconnect();
           }
         });
         obs.observe(details, { childList: true, subtree: false });
       }
+    })();
+  </script>
+
+  <!-- ═══════════════════════════════════════════
+       REVEAL ON SCROLL
+  ═══════════════════════════════════════════ -->
+  <script>
+    (function(){
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } });
+      }, { threshold: 0.12 });
+      function observeReveal() {
+        document.querySelectorAll('.reveal-item:not(.show)').forEach(el => io.observe(el));
+      }
+      observeReveal();
+      // Re-run when series.js injects content
+      const mo = new MutationObserver(observeReveal);
+      const sd = document.getElementById('series-details');
+      if (sd) mo.observe(sd, { childList: true, subtree: true });
     })();
   </script>
 
@@ -720,13 +1166,11 @@
         if (!res.ok) continue;
         const text = await res.text();
         if (text.includes('smtv-bottom-nav') || text.includes('smtv-bottom')) {
-          initNav(text);
-          return;
+          initNav(text); return;
         } else { initNav(text); return; }
       } catch (e) { continue; }
     }
 
-    // fallback inline nav (unchanged)
     placeholder.innerHTML = `
       <nav class="smtv-bottom-nav" id="smtv-bottom-nav" role="navigation" aria-label="Main">
         <a href="/index.html" class="nav-item" data-name="home"><span class="icon-wrap"><i class="fa-solid fa-house"></i></span><span class="label">Home</span></a>
@@ -736,8 +1180,8 @@
         <a href="/more.html" class="nav-item" data-name="more"><span class="icon-wrap"><i class="fa-solid fa-circle-info"></i></span><span class="label">More</span></a>
       </nav>
       <style>
-        .smtv-bottom-nav{position:fixed;left:12px;right:12px;bottom:12px;height:64px;display:flex;gap:6px;padding:8px;border-radius:14px;background:rgba(10,10,12,0.9);align-items:center;z-index:1200;padding-bottom:calc(env(safe-area-inset-bottom) + 8px);}
-        .smtv-bottom-nav .nav-item{flex:1;text-align:center;color:#bdbdbd;text-decoration:none;padding:6px;border-radius:10px;}
+        .smtv-bottom-nav{position:fixed;left:12px;right:12px;bottom:12px;height:64px;display:flex;gap:6px;padding:8px;border-radius:14px;background:rgba(10,10,12,0.9);backdrop-filter:blur(12px);align-items:center;z-index:1200;padding-bottom:calc(env(safe-area-inset-bottom) + 8px);}
+        .smtv-bottom-nav .nav-item{flex:1;text-align:center;color:#bdbdbd;text-decoration:none;padding:6px;border-radius:10px;transition:color .2s,transform .2s;}
         .smtv-bottom-nav .nav-item.active{color:#fff;transform:translateY(-6px);}
         .smtv-bottom-nav .icon-wrap{display:inline-flex;width:40px;height:40px;align-items:center;justify-content:center;border-radius:10px;}
         .smtv-bottom-nav .label{display:block;font-size:12px;margin-top:3px;}
