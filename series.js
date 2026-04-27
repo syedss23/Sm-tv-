@@ -235,9 +235,8 @@
               <div class="pcm-particle"></div><div class="pcm-particle"></div>
               <div class="pcm-particle"></div><div class="pcm-particle"></div>
             </div>
-            <div class="pcm-icon-wrap">⭐</div>
             <div class="pcm-content">
-              <div class="pcm-headline"><i class="fa-solid fa-star" style="color:#e8a800;font-size:.85em;margin-right:5px;"></i>Become a <span class="gold-word">SmTv VIP</span> Member</div>
+              <div class="pcm-headline"><i class="fa-solid fa-star" style="color:#e8a800;font-size:1em;margin-right:6px;vertical-align:middle;"></i>Become a <span class="gold-word">SmTv VIP</span> Member</div>
               <div class="pcm-sub">Ad-free episodes, early access &amp; direct streaming.</div>
               <div class="pcm-features">
                 <span class="pcm-feature pcm-feature-gold">⚡ No Ads</span>
@@ -383,7 +382,7 @@
                  data-source="${sourceParam || ''}"
                  tabindex="-1" 
                  aria-label="${epTitle}">
-                <div class="pro-ep-thumb-wrap-pro" style="position:relative!important;width:100%!important;height:90px!important;aspect-ratio:unset!important;overflow:hidden!important;display:block!important;flex-shrink:0!important;background-image:url('${thumb}')!important;background-size:cover!important;background-position:center!important;background-color:#0e1e30!important;">
+                <div class="pro-ep-thumb-wrap-pro" style="position:relative!important;width:100%!important;height:90px!important;min-height:90px!important;max-height:90px!important;aspect-ratio:unset!important;overflow:hidden!important;display:block!important;flex-shrink:0!important;flex-grow:0!important;background-image:url('${thumb}')!important;background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;background-color:#0e1e30!important;">
                   <span class="pro-ep-num-pro" style="position:absolute!important;bottom:6px!important;left:6px!important;z-index:3!important;">Ep ${epNum}</span>
                 </div>
                 <div class="pro-ep-title-pro">${epTitle}</div>
