@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-WM3KEDD127"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -13,11 +12,12 @@
   <meta charset="UTF-8">
   <title>SmTv Urdu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="Watch Turkish drama series and historical shows in Urdu on SmTv Urdu. All series details and streaming links.">
+  <meta name="description" content="Watch Turkish drama series and historical shows in Urdu on SmTv Urdu.">
 
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+  <!-- Premium fonts: Cinzel for series titles, Cormorant Garamond for section headings -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet" />
 
   <style>
     :root {
@@ -26,39 +26,36 @@
       --bg3:        #0b1828;
       --bg4:        #0e1f30;
       --border:     rgba(255,255,255,.07);
-      --border-hi:  rgba(255,255,255,.12);
+      --border-hi:  rgba(255,255,255,.13);
       --gold:       #e8a800;
       --gold-lt:    #ffc93c;
       --gold-dim:   #b07f00;
-      --gold-glow:  rgba(232,168,0,.28);
+      --gold-glow:  rgba(232,168,0,.3);
       --gold-glow2: rgba(232,168,0,.12);
       --cyan:       #00c8f0;
-      --cyan-dim:   rgba(0,200,240,.12);
-      --cyan-glow:  rgba(0,200,240,.28);
+      --cyan-glow:  rgba(0,200,240,.3);
       --green:      #00d98b;
-      --red:        #ff4d6d;
       --txt:        #d8e8f8;
       --txt-muted:  #4e6880;
       --txt-soft:   #7a99b0;
       --radius:     16px;
       --rad-sm:     10px;
       --rad-xs:     7px;
-      --transition: cubic-bezier(.22,.68,0,1.2);
+      --ease:       cubic-bezier(.22,.68,0,1.2);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-
     body {
       background: var(--bg);
       color: var(--txt);
-      font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif;
+      font-family: 'DM Sans', 'Segoe UI', sans-serif;
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
       min-height: 100dvh;
     }
 
+    /* Background grid */
     body::before {
       content: '';
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
@@ -72,149 +69,142 @@
       content: '';
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
       background:
-        radial-gradient(ellipse 70% 50% at 85% 8%, rgba(232,168,0,.1) 0%, transparent 65%),
-        radial-gradient(ellipse 55% 45% at 8% 75%, rgba(0,200,240,.08) 0%, transparent 65%),
-        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(0,0,0,.3) 0%, transparent 100%);
+        radial-gradient(ellipse 70% 50% at 85% 8%,  rgba(232,168,0,.09) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 45% at 8%  75%, rgba(0,200,240,.07) 0%, transparent 65%);
       animation: bg-breathe 14s ease-in-out infinite;
     }
-    @keyframes bg-breathe { 0%,100%{opacity:1} 50%{opacity:.65} }
 
-    @keyframes fade-up     { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes fade-in     { from{opacity:0} to{opacity:1} }
-    @keyframes shimmer     { 0%{background-position:-200% center} 100%{background-position:200% center} }
-    @keyframes btn-shine   { 0%{left:-100%} 55%,100%{left:150%} }
-    @keyframes dot-blink   { 0%,100%{opacity:1} 50%{opacity:.25} }
-    @keyframes float       { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
-    @keyframes spin-slow   { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-    @keyframes pulse-glow  { 0%,100%{box-shadow:0 0 0 0 var(--gold-glow)} 50%{box-shadow:0 0 22px 4px var(--gold-glow2)} }
-    @keyframes card-in     { from{opacity:0;transform:translateY(16px) scale(.97)} to{opacity:1;transform:translateY(0) scale(1)} }
-    @keyframes premium-in  { from{opacity:0;transform:translateY(12px) scale(.98)} to{opacity:1;transform:translateY(0) scale(1)} }
-    @keyframes scan-line   { 0%{top:-10%} 100%{top:110%} }
-    @keyframes gradient-shift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-    @keyframes particle-float {
-      0%   { transform:translateY(0) translateX(0) scale(1); opacity:.6; }
-      33%  { transform:translateY(-8px) translateX(4px) scale(1.1); opacity:1; }
-      66%  { transform:translateY(-4px) translateX(-3px) scale(.9); opacity:.7; }
-      100% { transform:translateY(0) translateX(0) scale(1); opacity:.6; }
+    /* ── ALL KEYFRAMES ── */
+    @keyframes bg-breathe    { 0%,100%{opacity:1} 50%{opacity:.6} }
+    @keyframes fade-up       { from{opacity:0;transform:translateY(26px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fade-up-sm    { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fade-in       { from{opacity:0} to{opacity:1} }
+    @keyframes shimmer       { 0%{background-position:-200% center} 100%{background-position:200% center} }
+    @keyframes btn-shine     { 0%{left:-100%} 55%,100%{left:150%} }
+    @keyframes dot-blink     { 0%,100%{opacity:1} 50%{opacity:.2} }
+    @keyframes float         { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+    @keyframes pulse-ring    { 0%{box-shadow:0 0 0 0 rgba(232,168,0,.45)} 70%{box-shadow:0 0 0 9px rgba(232,168,0,0)} 100%{box-shadow:0 0 0 0 rgba(232,168,0,0)} }
+    @keyframes card-in       { from{opacity:0;transform:translateY(18px) scale(.96)} to{opacity:1;transform:translateY(0) scale(1)} }
+    @keyframes premium-in    { from{opacity:0;transform:translateY(14px) scale(.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+    @keyframes scan-line     { 0%{top:-10%} 100%{top:110%} }
+    @keyframes gradient-shift{ 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+    @keyframes title-glow    { 0%,100%{text-shadow:0 2px 24px rgba(0,0,0,.6)} 50%{text-shadow:0 2px 24px rgba(0,0,0,.6),0 0 40px rgba(232,168,0,.18)} }
+    @keyframes underline-grow{ from{transform:scaleX(0)} to{transform:scaleX(1)} }
+    @keyframes particle-float{
+      0%  {transform:translateY(0) translateX(0);opacity:.5}
+      33% {transform:translateY(-9px) translateX(4px);opacity:.9}
+      66% {transform:translateY(-4px) translateX(-3px);opacity:.6}
+      100%{transform:translateY(0) translateX(0);opacity:.5}
     }
-    @keyframes pulse-ring {
-      0%  { box-shadow:0 0 0 0 rgba(232,168,0,.4); }
-      70% { box-shadow:0 0 0 8px rgba(232,168,0,0); }
-      100%{ box-shadow:0 0 0 0 rgba(232,168,0,0); }
-    }
+    @keyframes howto-slide   { from{opacity:0;transform:translateX(-14px)} to{opacity:1;transform:translateX(0)} }
 
-    .reveal-item { opacity:0; transform:translateY(16px); transition:opacity .5s var(--transition),transform .5s var(--transition); }
+    /* Reveal on scroll */
+    .reveal-item { opacity:0; transform:translateY(14px); transition:opacity .5s var(--ease), transform .5s var(--ease); }
     .reveal-item.show { opacity:1; transform:translateY(0); }
 
     #main-content { max-width:900px; margin:0 auto; padding:14px 14px 0; position:relative; z-index:1; }
 
-    /* ── SERIES HEADER ── */
+    /* ══════════ SERIES HEADER ══════════ */
     .pro-series-header-pro {
       display:flex; flex-direction:column; align-items:stretch;
-      text-align:center; gap:0; padding:0; border-radius:22px;
-      background:transparent; box-shadow:none; position:relative;
-      margin-bottom:22px; animation:fade-up .65s var(--transition) both; overflow:hidden;
+      text-align:center; border-radius:22px; background:transparent;
+      position:relative; margin-bottom:22px;
+      animation:fade-up .7s var(--ease) both; overflow:hidden;
     }
 
-    /* ── POSTER: reduced height + contain so full image shows ── */
+    /* POSTER — contain so full image shows, no crop */
     .pro-series-poster-pro {
-      width:100%;
-      height:200px;                  /* reduced from 260px */
+      width:100%; height:200px;
       border-radius:22px 22px 0 0;
-      object-fit:contain;            /* full poster visible, no crop */
+      object-fit:contain;
       object-position:center;
-      display:block;
-      flex-shrink:0;
-      background:#0a0a0f;            /* dark bg behind poster */
+      display:block; flex-shrink:0;
+      background:#060c16;
     }
-
     .poster-gradient-overlay {
       position:absolute; left:0; right:0; top:120px; height:100px;
       background:linear-gradient(to bottom, transparent, var(--bg2));
       pointer-events:none; z-index:2;
     }
     .poster-scan {
-      position:absolute; left:0; right:0; top:0; height:40px;
-      background:linear-gradient(to bottom, rgba(0,200,240,.04), transparent);
-      animation:scan-line 6s linear infinite; pointer-events:none; z-index:3;
+      position:absolute; left:0; right:0; top:0; height:38px;
+      background:linear-gradient(to bottom, rgba(0,200,240,.05), transparent);
+      animation:scan-line 7s linear infinite; pointer-events:none; z-index:3;
     }
 
     .pro-series-back-btn-pro {
       position:absolute; left:12px; top:12px; z-index:10;
       width:40px; height:40px;
       display:inline-flex; align-items:center; justify-content:center;
-      border-radius:var(--rad-sm); background:rgba(4,8,15,.82);
+      border-radius:var(--rad-sm); background:rgba(4,8,15,.85);
       border:1px solid var(--border-hi);
-      backdrop-filter:blur(12px) saturate(1.4); -webkit-backdrop-filter:blur(12px) saturate(1.4);
+      backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
       text-decoration:none; transition:background .22s,border-color .22s,transform .18s;
-      box-shadow:0 4px 16px rgba(0,0,0,.4);
+      box-shadow:0 4px 16px rgba(0,0,0,.5);
     }
-    .pro-series-back-btn-pro:hover { background:rgba(0,200,240,.18); border-color:rgba(0,200,240,.4); transform:translateX(-2px); }
+    .pro-series-back-btn-pro:hover { background:rgba(0,200,240,.18); border-color:rgba(0,200,240,.45); transform:translateX(-2px); }
     .pro-series-back-btn-pro i { color:var(--txt); font-size:.9em; }
 
     .pro-series-meta-pro {
-      width:100%; background:var(--bg2); border:1px solid var(--border); border-top:none;
-      border-radius:0 0 22px 22px; padding:20px 20px 24px;
-      text-align:center; position:relative; z-index:3;
+      width:100%; background:var(--bg2); border:1px solid var(--border);
+      border-top:none; border-radius:0 0 22px 22px;
+      padding:20px 20px 24px; text-align:center; position:relative; z-index:3;
     }
     .pro-series-meta-pro::before {
       content:''; position:absolute; top:0; left:10%; right:10%; height:1px;
-      background:linear-gradient(90deg, transparent, var(--border-hi), transparent);
+      background:linear-gradient(90deg,transparent,var(--border-hi),transparent);
     }
+
+    /* SERIES TITLE — Cinzel font + animated glow */
     .pro-series-title-pro {
-      font-family:'Playfair Display',serif; font-size:clamp(1.5em,5.5vw,2.1em);
-      font-weight:800; color:#fff; margin:0 0 10px; letter-spacing:-.015em;
-      line-height:1.15; text-shadow:0 2px 20px rgba(0,0,0,.5);
+      font-family:'Cinzel', serif;
+      font-size:clamp(1.25em, 4.8vw, 1.95em);
+      font-weight:800;
+      color:#fff;
+      margin:0 0 10px;
+      letter-spacing:.05em;
+      line-height:1.2;
+      animation:title-glow 5s ease-in-out infinite, fade-up-sm .6s var(--ease) both;
     }
-    .pro-series-desc-pro { font-size:.875em; color:var(--txt-soft); line-height:1.7; max-width:640px; margin:0 auto 18px; }
 
-    .series-stats-row { display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; margin-bottom:18px; }
+    .pro-series-desc-pro {
+      font-size:.875em; color:var(--txt-soft); line-height:1.7;
+      max-width:640px; margin:0 auto 18px;
+      animation:fade-up-sm .6s var(--ease) .15s both;
+    }
+
+    .series-stats-row { display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
     .series-stat-badge { display:inline-flex; align-items:center; gap:5px; padding:5px 12px; border-radius:100px; font-size:.75em; font-weight:700; letter-spacing:.04em; border:1px solid; }
-    .stat-badge-cyan  { background:rgba(0,200,240,.08); border-color:rgba(0,200,240,.2); color:var(--cyan); }
-    .stat-badge-gold  { background:rgba(232,168,0,.08); border-color:rgba(232,168,0,.2); color:var(--gold); }
-    .stat-badge-green { background:rgba(0,217,139,.08); border-color:rgba(0,217,139,.2); color:var(--green); }
+    .stat-badge-cyan  { background:rgba(0,200,240,.08); border-color:rgba(0,200,240,.2);  color:var(--cyan); }
+    .stat-badge-gold  { background:rgba(232,168,0,.08); border-color:rgba(232,168,0,.2);  color:var(--gold); }
+    .stat-badge-green { background:rgba(0,217,139,.08); border-color:rgba(0,217,139,.2);  color:var(--green); }
 
-    /* ═══════════════════════════════════════════════
-       PREMIUM SECTION — COMPACT HIGH-CTR PREMIUM UPSELL
-       • Crown icon
-       • "Get Premium" CTA — NO WhatsApp logo
-       • NO "12K+ joined"
-       • Features: No Ads, Fast Download, Early Access, HD
-       • "See details" link to /premium.html
-    ═══════════════════════════════════════════════ */
+    /* ══════════ PREMIUM SECTION ══════════ */
     .premium-channel-message {
       position:relative; overflow:hidden; border-radius:14px;
-      background:linear-gradient(145deg,#0f1d2e 0%,#091523 100%);
-      padding:1.5px; margin-top:6px;
-      animation:premium-in .6s var(--transition) .3s both;
+      background:linear-gradient(145deg,#0f1d2e,#08121e);
+      border:1px solid rgba(232,168,0,.3);
+      margin-top:6px;
+      animation:premium-in .65s var(--ease) .3s both;
+      box-shadow:0 8px 32px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.04);
     }
-    /* Animated gradient border */
     .premium-channel-message::before {
-      content:''; position:absolute; inset:0; border-radius:14px; padding:1.5px;
-      background:linear-gradient(135deg,var(--gold-dim),var(--gold),var(--gold-lt),var(--gold-dim));
-      background-size:300% 300%; animation:gradient-shift 4s ease infinite;
-      -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
-      mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
-      -webkit-mask-composite:xor; mask-composite:exclude;
-      pointer-events:none; z-index:0;
+      content:''; position:absolute; top:0; left:0; right:0; height:2px;
+      background:linear-gradient(90deg,transparent,var(--gold-dim),var(--gold),var(--gold-lt),var(--gold-dim),transparent);
+      background-size:200% auto; animation:shimmer 2.5s linear infinite;
     }
     .premium-channel-message::after {
-      content:''; position:absolute; top:-40px; right:-40px;
-      width:120px; height:120px;
-      background:radial-gradient(circle,rgba(232,168,0,.2) 0%,transparent 65%);
-      pointer-events:none; z-index:0;
+      content:''; position:absolute; top:-35px; right:-35px;
+      width:130px; height:130px;
+      background:radial-gradient(circle,rgba(232,168,0,.18) 0%,transparent 65%);
+      pointer-events:none;
     }
-    .pcm-inner {
-      position:relative; z-index:1; border-radius:13px;
-      background:linear-gradient(145deg,#0f1d2e 0%,#08121e 100%);
-      padding:14px 16px; display:flex; gap:14px; align-items:center;
-    }
-    /* Floating particles */
+    .pcm-inner { display:flex; align-items:center; gap:14px; padding:14px 16px; position:relative; z-index:1; }
     .pcm-particles { position:absolute; inset:0; pointer-events:none; overflow:hidden; border-radius:13px; }
     .pcm-particle  { position:absolute; width:3px; height:3px; border-radius:50%; background:var(--gold); opacity:.4; }
     .pcm-particle:nth-child(1){ top:20%;left:8%;  animation:particle-float 3.2s ease-in-out infinite; }
     .pcm-particle:nth-child(2){ top:65%;left:15%; animation:particle-float 4.1s ease-in-out infinite .6s; }
-    .pcm-particle:nth-child(3){ top:35%;right:12%;animation:particle-float 3.7s ease-in-out infinite 1.2s; background:var(--cyan); }
+    .pcm-particle:nth-child(3){ top:35%;right:12%;animation:particle-float 3.7s ease-in-out infinite 1.2s;background:var(--cyan); }
     .pcm-particle:nth-child(4){ top:75%;right:20%;animation:particle-float 2.9s ease-in-out infinite .3s; }
 
     .pcm-icon-wrap {
@@ -222,11 +212,11 @@
       background:linear-gradient(145deg,rgba(232,168,0,.22),rgba(232,168,0,.07));
       border:1px solid rgba(232,168,0,.35);
       display:flex; align-items:center; justify-content:center; font-size:1.3em;
-      box-shadow:0 4px 16px rgba(232,168,0,.2),inset 0 1px 0 rgba(255,255,255,.06);
-      animation:float 3s ease-in-out infinite,pulse-ring 3s ease-in-out infinite;
+      box-shadow:0 4px 16px rgba(232,168,0,.2);
+      animation:float 3s ease-in-out infinite, pulse-ring 3s ease-in-out infinite;
     }
     .pcm-content { flex:1; min-width:0; }
-    .pcm-headline { font-size:.88em; font-weight:800; color:#fff; line-height:1.3; margin-bottom:3px; letter-spacing:-.01em; }
+    .pcm-headline { font-size:.88em; font-weight:800; color:#fff; line-height:1.3; margin-bottom:3px; }
     .pcm-headline .gold-word {
       background:linear-gradient(90deg,var(--gold),var(--gold-lt));
       -webkit-background-clip:text; -webkit-text-fill-color:transparent;
@@ -234,42 +224,31 @@
     }
     .pcm-sub { font-size:.74em; color:var(--txt-muted); line-height:1.4; margin-bottom:8px; }
     .pcm-features { display:flex; gap:5px; flex-wrap:wrap; }
-    .pcm-feature {
-      font-size:.65em; font-weight:700; padding:2px 8px; border-radius:100px;
-      letter-spacing:.03em; white-space:nowrap; display:flex; align-items:center; gap:3px;
-    }
-    .pcm-feature-gold  { background:linear-gradient(135deg,rgba(232,168,0,.14),rgba(232,168,0,.06)); border:1px solid rgba(232,168,0,.25); color:var(--gold-lt); }
-    .pcm-feature-cyan  { background:linear-gradient(135deg,rgba(0,200,240,.1),rgba(0,200,240,.03));  border:1px solid rgba(0,200,240,.2);   color:var(--cyan); }
-    .pcm-feature-green { background:linear-gradient(135deg,rgba(0,217,139,.1),rgba(0,217,139,.03)); border:1px solid rgba(0,217,139,.2);   color:var(--green); }
+    .pcm-feature { font-size:.65em; font-weight:700; padding:2px 8px; border-radius:100px; letter-spacing:.03em; white-space:nowrap; }
+    .pcm-feature-gold  { background:rgba(232,168,0,.1);  border:1px solid rgba(232,168,0,.22); color:var(--gold-lt); }
+    .pcm-feature-cyan  { background:rgba(0,200,240,.08); border:1px solid rgba(0,200,240,.18); color:var(--cyan); }
+    .pcm-feature-green { background:rgba(0,217,139,.08); border:1px solid rgba(0,217,139,.18); color:var(--green); }
 
     .pcm-cta-wrap { flex-shrink:0; display:flex; flex-direction:column; align-items:center; gap:6px; }
-    /* CTA button — NO WhatsApp logo, premium gold style */
     .pcm-cta-btn {
       display:inline-flex; align-items:center; justify-content:center; gap:6px;
-      background:linear-gradient(135deg,var(--gold) 0%,var(--gold-lt) 60%,#ffdc70 100%);
-      background-size:200% auto; color:#1a0800;
-      font-weight:900; font-size:.78em; font-family:'DM Sans',sans-serif;
-      letter-spacing:.05em; text-transform:uppercase;
+      background:linear-gradient(135deg,var(--gold),var(--gold-lt),#ffdc70);
+      color:#1a0800; font-weight:900; font-size:.78em;
+      font-family:'DM Sans',sans-serif; letter-spacing:.05em; text-transform:uppercase;
       padding:10px 16px; border-radius:var(--rad-sm);
       box-shadow:0 4px 20px var(--gold-glow),inset 0 1px 0 rgba(255,255,255,.3);
       text-decoration:none; position:relative; overflow:hidden;
-      transition:box-shadow .25s,transform .15s; white-space:nowrap;
-      border:none; cursor:pointer;
+      transition:box-shadow .25s,transform .15s; white-space:nowrap; border:none; cursor:pointer;
     }
     .pcm-cta-btn::before {
       content:''; position:absolute; top:0; left:-100%; width:60%; height:100%;
       background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);
       animation:btn-shine 2s ease-in-out infinite;
     }
-    .pcm-cta-btn:hover { box-shadow:0 6px 28px rgba(232,168,0,.6); transform:translateY(-2px) scale(1.03); }
+    .pcm-cta-btn:hover { box-shadow:0 6px 28px rgba(232,168,0,.65); transform:translateY(-2px) scale(1.04); }
     .pcm-cta-btn:active { transform:scale(.95); }
-    .pcm-more-link {
-      font-size:.66em; color:var(--txt-muted); text-decoration:none;
-      letter-spacing:.02em; transition:color .2s; white-space:nowrap;
-      display:flex; align-items:center; gap:3px;
-    }
+    .pcm-more-link { font-size:.66em; color:var(--txt-muted); text-decoration:none; letter-spacing:.02em; transition:color .2s; white-space:nowrap; display:flex; align-items:center; gap:3px; }
     .pcm-more-link:hover { color:var(--gold); }
-    .pcm-more-link i { font-size:.85em; }
 
     @media (max-width:520px) {
       .pcm-inner { flex-direction:column; align-items:flex-start; gap:12px; padding:12px 14px; }
@@ -277,149 +256,225 @@
       .pcm-cta-btn { flex:1; justify-content:center; }
     }
 
-    /* ── SEASON TABS ── */
-    .pro-seasons-tabs-pro { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:20px 0 14px; padding:0; }
+    /* ══════════ SEASON TABS ══════════ */
+    .pro-seasons-tabs-pro { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:20px 0 14px; }
     .pro-season-tab-pro {
       background:var(--bg2); border:1px solid var(--border-hi); color:var(--txt-muted);
       padding:9px 22px; border-radius:100px; cursor:pointer; font-weight:700; font-size:.85em;
       font-family:'DM Sans',sans-serif; letter-spacing:.03em;
-      transition:all .22s var(--transition); outline:none; position:relative; overflow:hidden;
+      transition:all .22s var(--ease); outline:none; position:relative; overflow:hidden;
     }
     .pro-season-tab-pro:hover:not(.active) { border-color:rgba(0,200,240,.35); color:var(--txt); background:rgba(0,200,240,.07); transform:translateY(-1px); }
-    .pro-season-tab-pro.active { background:linear-gradient(135deg,var(--cyan) 0%,#0090b8 100%); border-color:transparent; color:#021018; font-weight:800; transform:translateY(-2px); box-shadow:0 6px 24px var(--cyan-glow); }
+    .pro-season-tab-pro.active { background:linear-gradient(135deg,var(--cyan),#0090b8); border-color:transparent; color:#021018; font-weight:800; transform:translateY(-2px); box-shadow:0 6px 24px var(--cyan-glow); }
     .pro-season-tab-pro:active { transform:scale(.96); }
 
-    /* ── SOURCE SELECTOR ── */
+    /* ══════════ SOURCE SELECTOR ══════════ */
     .source-selector { display:flex; gap:8px; justify-content:center; margin:0 0 18px; flex-wrap:wrap; }
-    .source-btn { background:var(--bg3); border:1px solid var(--border-hi); color:var(--txt-muted); padding:7px 20px; border-radius:var(--rad-xs); font-size:.83em; font-weight:700; font-family:'DM Sans',sans-serif; cursor:pointer; transition:all .22s var(--transition); outline:none; }
+    .source-btn { background:var(--bg3); border:1px solid var(--border-hi); color:var(--txt-muted); padding:7px 20px; border-radius:var(--rad-xs); font-size:.83em; font-weight:700; font-family:'DM Sans',sans-serif; cursor:pointer; transition:all .22s var(--ease); outline:none; }
     .source-btn:hover:not(.active) { border-color:rgba(0,200,240,.35); color:var(--txt); background:rgba(0,200,240,.07); }
-    .source-btn.active { background:linear-gradient(135deg,var(--cyan) 0%,#0090b8 100%); border-color:transparent; color:#021018; font-weight:800; box-shadow:0 4px 16px var(--cyan-glow); transform:translateY(-1px); }
+    .source-btn.active { background:linear-gradient(135deg,var(--cyan),#0090b8); border-color:transparent; color:#021018; font-weight:800; box-shadow:0 4px 16px var(--cyan-glow); transform:translateY(-1px); }
     .source-btn:active { transform:scale(.96); }
 
-    /* ── EPISODES ROW ── */
+    /* ══════════ EPISODES ROW ══════════ */
     .pro-episodes-row-wrap-pro { margin-top:6px; padding-bottom:10px; margin-bottom:8px; transition:opacity .2s ease; }
     .pro-episodes-row-wrap-pro.is-loading { opacity:.55; pointer-events:none; }
     .pro-episodes-row-wrap-pro::before { display:none !important; }
 
-    .episodes-section-label { display:flex; align-items:center; gap:10px; font-size:.7em; font-weight:800; letter-spacing:.12em; color:var(--cyan); text-transform:uppercase; margin-bottom:14px; padding-left:2px; }
-    .episodes-section-label::after { content:''; flex:1; height:1px; background:linear-gradient(to right,rgba(0,200,240,.25),transparent); }
+    /* Section label — Cormorant Garamond, animated */
+    .episodes-section-label {
+      display:flex; align-items:center; gap:10px;
+      font-family:'Cormorant Garamond', serif;
+      font-size:1.05em; font-weight:700; font-style:italic;
+      letter-spacing:.06em; color:var(--cyan);
+      text-transform:uppercase; margin-bottom:14px; padding-left:2px;
+      animation:howto-slide .5s var(--ease) both;
+    }
+    .episodes-section-label::after { content:''; flex:1; height:1px; background:linear-gradient(to right,rgba(0,200,240,.3),transparent); }
 
     .pro-episodes-row-pro { display:flex; gap:12px; overflow-x:auto; padding:4px 2px 16px; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity; align-items:flex-start; scrollbar-width:thin; scrollbar-color:rgba(0,200,240,.22) transparent; }
     .pro-episodes-row-pro::-webkit-scrollbar { height:4px; }
     .pro-episodes-row-pro::-webkit-scrollbar-track { background:transparent; }
     .pro-episodes-row-pro::-webkit-scrollbar-thumb { background:rgba(0,200,240,.22); border-radius:4px; }
 
-    /* ── EPISODE CARD ── */
+    /* ══════════════════════════════════════════════
+       EPISODE CARD
+    ══════════════════════════════════════════════ */
     .pro-episode-card-pro {
       scroll-snap-align:start; flex:0 0 150px;
-      display:flex; flex-direction:column; gap:0; align-items:stretch;
-      text-decoration:none; color:var(--txt); border-radius:14px;
-      background:var(--bg2); border:1px solid var(--border);
+      display:flex; flex-direction:column; align-items:stretch;
+      text-decoration:none; color:var(--txt);
+      border-radius:14px; background:var(--bg2); border:1px solid var(--border);
       overflow:hidden; min-height:0;
-      transition:transform .26s var(--transition),box-shadow .26s ease,border-color .26s ease;
+      transition:transform .28s var(--ease),box-shadow .28s ease,border-color .28s ease;
       position:relative;
     }
-    .pro-episode-card-pro:hover { transform:translateY(-6px) scale(1.025); box-shadow:0 16px 40px rgba(0,0,0,.6),0 0 0 1px rgba(0,200,240,.3); border-color:rgba(0,200,240,.35); }
-    .pro-episode-card-pro:active { transform:scale(.97); }
-    .pro-episode-card-pro::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--cyan),transparent); opacity:0; transition:opacity .22s; z-index:4; }
+    .pro-episode-card-pro:hover { transform:translateY(-7px) scale(1.03); box-shadow:0 18px 44px rgba(0,0,0,.65),0 0 0 1px rgba(0,200,240,.35); border-color:rgba(0,200,240,.4); }
+    .pro-episode-card-pro:active { transform:scale(.96); }
+    .pro-episode-card-pro::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--cyan),transparent); opacity:0; transition:opacity .22s; z-index:5; pointer-events:none; }
     .pro-episode-card-pro:hover::before { opacity:1; }
 
     @media (max-width:420px) { .pro-episode-card-pro { flex:0 0 132px; } }
     @media (min-width:900px) { .pro-episode-card-pro { flex:0 0 178px; } }
 
-    /* ── THUMBNAIL WRAP — black box fix ── */
+    /* ══════════════════════════════════════════════
+       THUMBNAIL — THE ACTUAL ROOT-CAUSE FIX
+       
+       series.js HTML:
+         <div class="pro-ep-thumb-wrap-pro">
+           <img class="pro-ep-thumb-pro" src="..." alt="...">
+           <span class="pro-ep-num-pro">Ep 1</span>
+         </div>
+       
+       The black box appears because the wrapper uses
+       aspect-ratio in CSS, but the img is NOT absolutely
+       positioned — it flows normally and doesn't expand
+       the wrapper's height properly across all browsers.
+       
+       THE FIX: Use a fixed pixel height on the wrapper
+       (not aspect-ratio, not padding-bottom trick).
+       Set img to width:100%, height:100%, object-fit:cover.
+       This is the simplest and most reliable method.
+       
+       IMPORTANT: We set these with !important so they beat
+       any conflicting rules from style.css or series.js output.
+    ══════════════════════════════════════════════ */
     .pro-ep-thumb-wrap-pro {
-      width:100%; aspect-ratio:16/10; overflow:hidden; position:relative;
-      /* dark navy gradient — NOT black — so placeholder looks good */
-      background:linear-gradient(160deg,#0d1e30 0%,#0a1624 50%,#080e18 100%);
-      display:block; flex-shrink:0;
+      /* Fixed height — no aspect-ratio, no padding trick */
+      width:   100%      !important;
+      height:  94px      !important;   /* 150px card × 62.5% ≈ 94px */
+      display: block     !important;
+      position:relative  !important;
+      overflow:hidden    !important;
+      flex-shrink:0      !important;
+      /* Warm dark placeholder — NOT black */
+      background:linear-gradient(145deg,#0e1e30 0%,#091520 60%,#060f1a 100%) !important;
     }
-    /* subtle shimmer skeleton */
+    /* Subtle shimmer on placeholder */
     .pro-ep-thumb-wrap-pro::before {
       content:''; position:absolute; inset:0; z-index:1;
-      background:linear-gradient(90deg,transparent 0%,rgba(0,200,240,.04) 40%,rgba(255,255,255,.03) 50%,transparent 100%);
-      background-size:200% 100%; animation:shimmer 2s ease-in-out infinite; pointer-events:none;
+      background:linear-gradient(105deg,transparent 35%,rgba(0,200,240,.05) 50%,transparent 65%);
+      background-size:200% 100%; animation:shimmer 2.2s ease-in-out infinite; pointer-events:none;
     }
-    /* THE img fix — absolute fill, object-fit:cover, above skeleton */
-    .pro-ep-thumb-pro {
-      width:100% !important; height:100% !important;
-      object-fit:cover !important; object-position:center !important;
-      display:block !important; position:absolute !important;
-      top:0 !important; left:0 !important; z-index:2;
-      transition:transform .32s ease;
-    }
-    .pro-episode-card-pro:hover .pro-ep-thumb-pro { transform:scale(1.08); }
+    /* Remove the ::after pseudo that other CSS might add */
+    .pro-ep-thumb-wrap-pro::after { display:none !important; }
 
+    /* THE IMG — fills wrapper completely */
+    .pro-ep-thumb-pro {
+      position: absolute  !important;
+      inset:    0         !important;   /* top:0;right:0;bottom:0;left:0 */
+      width:    100%      !important;
+      height:   100%      !important;
+      object-fit:   cover !important;
+      object-position: center !important;
+      display:  block     !important;
+      z-index:  2;
+      transition:transform .34s ease;
+    }
+    .pro-episode-card-pro:hover .pro-ep-thumb-pro { transform:scale(1.09); }
+
+    /* Responsive heights matching card widths */
+    @media (max-width:420px) {
+      .pro-ep-thumb-wrap-pro { height:83px !important; } /* 132px × 62.5% */
+    }
+    @media (min-width:900px) {
+      .pro-ep-thumb-wrap-pro { height:111px !important; } /* 178px × 62.5% */
+    }
+
+    /* Episode number badge */
     .pro-ep-num-pro {
       position:absolute; bottom:6px; left:6px; z-index:3;
-      background:rgba(4,8,15,.88); border:1px solid var(--border-hi);
+      background:rgba(4,8,15,.9); border:1px solid var(--border-hi);
       color:var(--cyan); font-size:.67em; font-weight:800;
       padding:2px 8px; border-radius:5px;
       backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); letter-spacing:.05em;
     }
 
+    /* Play overlay */
     .ep-play-overlay {
       position:absolute; top:50%; left:50%;
-      transform:translate(-50%,-50%) scale(.75);
-      width:34px; height:34px; background:rgba(0,200,240,.88); border-radius:50%;
+      transform:translate(-50%,-50%) scale(.7);
+      width:32px; height:32px; background:rgba(0,200,240,.9); border-radius:50%;
       display:flex; align-items:center; justify-content:center;
-      color:#021018; font-size:.65em; opacity:0;
-      transition:opacity .22s,transform .22s; z-index:4; pointer-events:none;
-      box-shadow:0 0 18px var(--cyan-glow);
+      color:#021018; font-size:.62em; font-style:normal;
+      opacity:0; transition:opacity .22s,transform .22s; z-index:4; pointer-events:none;
+      box-shadow:0 0 20px var(--cyan-glow);
     }
     .pro-episode-card-pro:hover .ep-play-overlay { opacity:1; transform:translate(-50%,-50%) scale(1); }
 
-    /* ── EPISODE TITLE ──
-       Shows "Episode 1" by default.
-       If json has "title" field, shows e.g. "Episode 1 — The Beginning"
-       Two lines max, ellipsis on overflow.
-    ── */
+    /* Episode title */
     .pro-ep-title-pro {
       font-size:.77em; font-weight:600; color:var(--txt);
       padding:9px 10px 11px; line-height:1.45;
       display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
     }
-    /* The episode number part: slightly muted */
-    .ep-title-num { color:var(--txt-muted); font-weight:700; }
-    /* The custom title part: brighter */
+    .ep-title-num  { color:var(--txt-muted); font-weight:700; }
     .ep-title-name { color:var(--txt); }
 
-    /* ── TUTORIAL SECTION ── */
-    .pro-tutorial-title { font-family:'Playfair Display',serif; font-size:1.05em; font-weight:700; color:#fff; margin:28px 0 12px 2px; display:flex; align-items:center; gap:10px; }
-    .pro-tutorial-title::before { content:''; width:16px; height:2px; background:var(--cyan); border-radius:2px; display:inline-block; }
-    .pro-video-frame-wrap { position:relative; width:100%; height:0; padding-bottom:56.25%; border-radius:var(--radius); overflow:hidden; border:1px solid var(--border-hi); background:var(--bg2); box-shadow:0 10px 32px rgba(0,0,0,.6); }
+    /* ══════════════════════════════════════════════
+       HOW TO WATCH — CORMORANT GARAMOND, ANIMATED
+    ══════════════════════════════════════════════ */
+    .pro-tutorial-title {
+      font-family:'Cormorant Garamond', serif !important;
+      font-size:1.4em !important;
+      font-weight:700 !important;
+      font-style:italic !important;
+      color:#fff !important;
+      margin:32px 0 14px 2px !important;
+      display:flex !important; align-items:center !important; gap:12px !important;
+      letter-spacing:.03em !important;
+      position:relative;
+      animation:howto-slide .6s var(--ease) both;
+    }
+    .pro-tutorial-title::before {
+      content:'' !important;
+      width:18px; height:2px;
+      background:var(--cyan); border-radius:2px;
+      display:inline-block; flex-shrink:0;
+    }
+    /* Animated underline */
+    .pro-tutorial-title::after {
+      content:'' !important;
+      position:absolute; bottom:-5px; left:0;
+      height:1.5px; width:100%;
+      background:linear-gradient(90deg,var(--cyan),rgba(0,200,240,.1));
+      transform-origin:left center;
+      animation:underline-grow .8s var(--ease) .2s both;
+    }
+
+    .pro-video-frame-wrap {
+      position:relative; width:100%; height:0; padding-bottom:56.25%;
+      border-radius:var(--radius); overflow:hidden;
+      border:1px solid var(--border-hi); background:var(--bg2);
+      box-shadow:0 12px 36px rgba(0,0,0,.65);
+    }
     .pro-video-frame-wrap iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:0; display:block; background:#000; }
     .pro-tutorial-wrap { padding:0; }
     .pro-tutorial-hero { display:flex; flex-direction:column; gap:6px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:14px; }
-    .pro-tutorial-hero h3 { font-family:'Playfair Display',serif; font-size:1.1em; font-weight:700; color:#fff; }
+    .pro-tutorial-hero h3 { font-family:'Cormorant Garamond',serif; font-size:1.15em; font-weight:700; color:#fff; letter-spacing:.02em; }
     .pro-tutorial-hero p { font-size:.85em; color:var(--txt-soft); }
     .pro-tutorial-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:24px; }
-    .pro-tutorial-card .small-title { font-family:'Playfair Display',serif; font-size:.95em; font-weight:700; color:#fff; margin:0 0 12px; }
-    .pro-tutorial-card .pro-video-frame-wrap { margin-top:0; }
+    .pro-tutorial-card .small-title { font-family:'Cormorant Garamond',serif; font-size:1em; font-weight:700; font-style:italic; color:#fff; margin:0 0 12px; letter-spacing:.02em; }
 
-    /* ── LOADING STATE ── */
+    /* Loading */
     .episodes-loading { display:flex; align-items:center; gap:12px; padding:22px 4px; color:var(--txt-muted); font-size:.88em; }
     .loading-dots span { display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--cyan); animation:dot-blink 1.2s ease-in-out infinite; }
     .loading-dots span:nth-child(2) { animation-delay:.2s; }
     .loading-dots span:nth-child(3) { animation-delay:.4s; }
 
-    /* ── WHATSAPP POPUP ── */
-    #whatsappPopup { font-family:'DM Sans',sans-serif !important; background:var(--bg2) !important; border:1px solid var(--border-hi) !important; border-radius:20px !important; box-shadow:0 24px 60px rgba(0,0,0,.8) !important; padding:24px !important; color:var(--txt) !important; overflow:hidden; }
+    /* WA popup */
+    #whatsappPopup { font-family:'DM Sans',sans-serif !important; background:var(--bg2) !important; border:1px solid var(--border-hi) !important; border-radius:20px !important; box-shadow:0 24px 60px rgba(0,0,0,.85) !important; padding:24px !important; color:var(--txt) !important; overflow:hidden; }
     #whatsappPopup::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,#25d366,#00c8f0,#25d366); background-size:200% auto; animation:shimmer 3s linear infinite; }
     #whatsappPopup strong { color:#fff !important; }
-    #wa-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); z-index:99998; }
+    #wa-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,.65); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); z-index:99998; }
     #wa-backdrop.show { display:block; animation:fade-in .3s ease both; }
 
     @media (max-width:600px) { body { padding-bottom:calc(120px + env(safe-area-inset-bottom)); } }
-
     :focus { outline:none; }
     a { text-decoration:none; color:inherit; }
-    #series-details { animation:fade-up .5s var(--transition) .1s both; }
-
+    #series-details { animation:fade-up .5s var(--ease) .1s both; }
     .ep-row-fade-wrap { position:relative; }
-    .ep-row-fade-wrap::after { content:''; position:absolute; top:0; right:0; bottom:16px; width:48px; background:linear-gradient(to right,transparent,var(--bg)); pointer-events:none; z-index:3; border-radius:0 14px 14px 0; }
-
-    .pro-episode-card-pro.card-animate { animation:card-in .4s var(--transition) both; }
+    .ep-row-fade-wrap::after { content:''; position:absolute; top:0; right:0; bottom:16px; width:52px; background:linear-gradient(to right,transparent,var(--bg)); pointer-events:none; z-index:3; }
+    .pro-episode-card-pro.card-animate { animation:card-in .45s var(--ease) both; }
     .section-divider { height:1px; background:linear-gradient(to right,transparent,var(--border-hi),transparent); margin:20px 0; }
   </style>
 
@@ -430,149 +485,152 @@
   <div id="wa-backdrop"></div>
 
   <div id="main-content">
-    <header><!-- back button added by JS --></header>
+    <header></header>
     <script type="text/javascript" src="//www.highperformanceformat.com/c91a82435d260630918ecc80c95125ac/invoke.js"></script>
     <div id="series-details" aria-live="polite"></div>
   </div>
 
-  <!-- ═══════════════════════════════════════════
-       PATCH SCRIPT
-       Fixes: poster, thumbnails, premium section,
-       episode title display, card animations
-  ═══════════════════════════════════════════ -->
   <script>
-  (function patchPosterAndCards() {
+  /* ══════════════════════════════════════════════════
+     PATCH SCRIPT
+     Runs whenever series.js injects content into DOM.
+  ══════════════════════════════════════════════════ */
+  (function patchAll() {
     const observer = new MutationObserver(() => {
 
-      /* ── 1. POSTER FIX ──
-         Full poster visible: contain + 200px height + dark bg
-      */
+      /* 1. POSTER */
       const poster = document.querySelector('.pro-series-poster-pro');
-      if (poster && !poster._patched) {
-        poster._patched = true;
-        poster.style.cssText += ';width:100%;height:200px;object-fit:contain;object-position:center;display:block;background:#0a0a0f;';
-        const header = poster.closest('.pro-series-header-pro');
-        if (header && !header.querySelector('.poster-gradient-overlay')) {
-          const grad = document.createElement('div');
-          grad.className = 'poster-gradient-overlay';
-          header.appendChild(grad);
-          const scan = document.createElement('div');
-          scan.className = 'poster-scan';
-          header.appendChild(scan);
+      if (poster && !poster._p) {
+        poster._p = true;
+        poster.style.cssText += ';width:100%;height:200px;object-fit:contain;object-position:center;display:block;background:#060c16;';
+        const hdr = poster.closest('.pro-series-header-pro');
+        if (hdr && !hdr.querySelector('.poster-gradient-overlay')) {
+          const g = document.createElement('div'); g.className='poster-gradient-overlay'; hdr.appendChild(g);
+          const s = document.createElement('div'); s.className='poster-scan'; hdr.appendChild(s);
         }
       }
 
-      /* ── 2. THUMBNAIL BLACK BOX FIX ──
-         img is forced to fill wrapper completely.
-         onerror hides broken images gracefully.
+      /* 2. SERIES TITLE FONT */
+      document.querySelectorAll('.pro-series-title-pro').forEach(el => {
+        if (el._fp) return; el._fp = true;
+        el.style.fontFamily = "'Cinzel', serif";
+        el.style.letterSpacing = ".05em";
+      });
+
+      /* 3. THUMBNAIL — THE DEFINITIVE FIX
+         
+         series.js generates:
+           <div class="pro-ep-thumb-wrap-pro">
+             <img class="pro-ep-thumb-pro" src="...">
+           </div>
+         
+         The CSS uses aspect-ratio:16/10 on the wrapper.
+         This works in theory but breaks when the img
+         has no explicit position, causing black fill.
+         
+         FIX: Override wrapper to a fixed pixel height
+         (height:Xpx) and set img position:absolute,inset:0.
+         Inline styles + !important beats everything.
       */
       document.querySelectorAll('.pro-ep-thumb-wrap-pro').forEach(wrap => {
-        if (wrap._patched) return;
-        wrap._patched = true;
-        wrap.style.background = '';
+        if (wrap._p) return;
+        wrap._p = true;
 
-        const img = wrap.querySelector('.pro-ep-thumb-pro, img');
+        const card = wrap.closest('.pro-episode-card-pro');
+        const cardW = card ? card.offsetWidth : 150;
+        const h = Math.round(cardW * 0.625); /* 16:10 */
+
+        /* Force wrapper: fixed height, relative, no aspect-ratio */
+        wrap.setAttribute('style',
+          `width:100% !important;` +
+          `height:${h || 94}px !important;` +
+          `display:block !important;` +
+          `position:relative !important;` +
+          `overflow:hidden !important;` +
+          `flex-shrink:0 !important;` +
+          `background:linear-gradient(145deg,#0e1e30,#091520,#060f1a) !important;`
+        );
+
+        /* Force img: absolute fill */
+        const img = wrap.querySelector('img');
         if (img) {
-          img.style.cssText +=
-            ';width:100%!important;height:100%!important;' +
-            'object-fit:cover!important;object-position:center!important;' +
-            'display:block!important;position:absolute!important;' +
-            'top:0!important;left:0!important;z-index:2;';
-          if (!img._errPatched) {
-            img._errPatched = true;
-            img.addEventListener('error', function(){ this.style.display='none'; });
+          img.setAttribute('style',
+            `position:absolute !important;` +
+            `top:0 !important; left:0 !important;` +
+            `width:100% !important; height:100% !important;` +
+            `object-fit:cover !important; object-position:center !important;` +
+            `display:block !important; z-index:2;`
+          );
+          if (!img._ep) {
+            img._ep = true;
+            img.addEventListener('error', function(){ this.style.opacity='0'; });
           }
         }
 
+        /* Play overlay */
         if (!wrap.querySelector('.ep-play-overlay')) {
           const pl = document.createElement('div');
           pl.className = 'ep-play-overlay';
-          pl.innerHTML = '▶';
+          pl.textContent = '▶';
           wrap.appendChild(pl);
         }
       });
 
-      /* ── 3. EPISODE TITLE DISPLAY ──
-         series.js already renders:
-           <div class="pro-ep-title-pro">Episode 1</div>          ← no title in json
-           <div class="pro-ep-title-pro">The Beginning</div>      ← title set in json
-         
-         We enhance the display so it always shows:
-           "Ep 1"  (if no custom title)
-           "Ep 1 — The Beginning"  (if title in json)
-         
-         We detect if the text is just "Episode N" (default)
-         or a custom title, and style them accordingly.
-         This works WITHOUT touching series.js.
-      */
-      document.querySelectorAll('.pro-ep-title-pro').forEach(titleEl => {
-        if (titleEl._titlePatched) return;
-        titleEl._titlePatched = true;
-
-        const raw = titleEl.textContent.trim();
-        // series.js sets title = ep.title || ('Episode ' + epNum)
-        // So if it starts with "Episode " followed by just a number, it's the default
-        const defaultMatch = raw.match(/^Episode\s+(\d+)$/i);
-
-        if (defaultMatch) {
-          // No custom title — just style the number nicely
-          titleEl.innerHTML = `<span class="ep-title-num">Episode ${defaultMatch[1]}</span>`;
+      /* 4. EPISODE TITLE STYLING */
+      document.querySelectorAll('.pro-ep-title-pro').forEach(el => {
+        if (el._tp) return; el._tp = true;
+        const raw = el.textContent.trim();
+        const def = raw.match(/^Episode\s+(\d+)$/i);
+        if (def) {
+          el.innerHTML = `<span class="ep-title-num">Episode ${def[1]}</span>`;
         } else {
-          // Has custom title from json — could be "The Beginning" or "Episode 1 — The Beginning"
-          // series.js sets it as ep.title directly, so raw IS the title text
-          // Check if it already contains "Episode N" prefix
-          const withEpMatch = raw.match(/^Episode\s+(\d+)\s*[—\-]\s*(.+)$/i);
-          if (withEpMatch) {
-            titleEl.innerHTML =
-              `<span class="ep-title-num">Ep ${withEpMatch[1]}</span>` +
-              `<span class="ep-title-name"> — ${withEpMatch[2]}</span>`;
+          const full = raw.match(/^Episode\s+(\d+)\s*[—\-]\s*(.+)$/i);
+          if (full) {
+            el.innerHTML = `<span class="ep-title-num">Ep ${full[1]}</span><span class="ep-title-name"> — ${full[2]}</span>`;
           } else {
-            // Pure custom title (e.g. "The Beginning") — wrap as name only
-            titleEl.innerHTML = `<span class="ep-title-name">${raw}</span>`;
+            el.innerHTML = `<span class="ep-title-name">${raw}</span>`;
           }
         }
       });
 
-      /* ── 4. CARD ENTRANCE STAGGER ── */
+      /* 5. HOW TO WATCH TITLE FONT */
+      document.querySelectorAll('.pro-tutorial-title').forEach(el => {
+        if (el._fp) return; el._fp = true;
+        el.style.fontFamily = "'Cormorant Garamond', serif";
+        el.style.fontStyle  = "italic";
+        el.style.fontSize   = "1.4em";
+        el.style.letterSpacing = ".03em";
+      });
+
+      /* 6. CARD STAGGER ENTRANCE */
       document.querySelectorAll('.pro-episode-card-pro').forEach((card, i) => {
-        if (card._animated) return;
-        card._animated = true;
-        card.style.animationDelay = `${i * 0.05}s`;
+        if (card._an) return; card._an = true;
+        card.style.animationDelay = `${i * 0.055}s`;
         card.classList.add('card-animate');
       });
 
-      /* ── 5. EPISODES SECTION LABEL ── */
+      /* 7. EPISODES LABEL */
       document.querySelectorAll('.pro-episodes-row-wrap-pro').forEach(wrap => {
-        if (wrap._labelDone) return;
-        wrap._labelDone = true;
+        if (wrap._ld) return; wrap._ld = true;
         const lbl = document.createElement('div');
         lbl.className = 'episodes-section-label';
         lbl.textContent = 'Episodes';
         wrap.insertBefore(lbl, wrap.firstChild);
       });
 
-      /* ── 6. PREMIUM SECTION — CORRECT VERSION ──
-         Crown icon, "Get Premium" CTA, NO WhatsApp logo,
-         NO "12K+ joined", premium features listed.
-      */
+      /* 8. PREMIUM SECTION */
       document.querySelectorAll('.premium-channel-message').forEach(pcm => {
-        if (pcm._upgraded) return;
-        pcm._upgraded = true;
+        if (pcm._up) return; pcm._up = true;
         if (pcm.querySelector('.pcm-inner')) return;
-
         pcm.innerHTML = `
           <div class="pcm-inner">
             <div class="pcm-particles">
-              <div class="pcm-particle"></div>
-              <div class="pcm-particle"></div>
-              <div class="pcm-particle"></div>
-              <div class="pcm-particle"></div>
+              <div class="pcm-particle"></div><div class="pcm-particle"></div>
+              <div class="pcm-particle"></div><div class="pcm-particle"></div>
             </div>
             <div class="pcm-icon-wrap">👑</div>
             <div class="pcm-content">
-              <div class="pcm-headline">
-                Watch <span class="gold-word">Premium</span> — Upgrade Now
-              </div>
+              <div class="pcm-headline">Watch <span class="gold-word">Premium</span> — Upgrade Now</div>
               <div class="pcm-sub">Ad-free episodes, fast downloads &amp; early access.</div>
               <div class="pcm-features">
                 <span class="pcm-feature pcm-feature-gold">⚡ No Ads</span>
@@ -583,40 +641,34 @@
             </div>
             <div class="pcm-cta-wrap">
               <a href="/premium.html" class="pcm-cta-btn">
-                <i class="fa-solid fa-crown"></i>
-                Get Premium
+                <i class="fa-solid fa-crown"></i> Get Premium
               </a>
               <a href="/premium.html" class="pcm-more-link">
                 See details <i class="fa-solid fa-chevron-right"></i>
               </a>
             </div>
-          </div>
-        `;
+          </div>`;
       });
     });
 
-    observer.observe(document.body, { childList: true, subtree: true });
-    setTimeout(() => observer.disconnect(), 8000);
+    observer.observe(document.body, { childList:true, subtree:true });
+    setTimeout(() => observer.disconnect(), 12000);
   })();
   </script>
 
-  <!-- DYNAMIC META/TITLE UPDATER (unchanged) -->
+  <!-- META UPDATER -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      const params = new URLSearchParams(window.location.search);
-      const slug = params.get('series');
+      const slug = new URLSearchParams(window.location.search).get('series');
       if (!slug) return;
-      fetch('/series.json')
-        .then(res => res.json())
-        .then(seriesArr => {
-          const meta = Array.isArray(seriesArr) ? seriesArr.find(s => s.slug === slug) : null;
-          if (meta && meta.title) {
-            document.title = `${meta.title} – SmTv Urdu`;
-            const metaDesc = document.querySelector('meta[name="description"]');
-            if (metaDesc) metaDesc.setAttribute('content',
-              `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`);
-          }
-        }).catch(() => {});
+      fetch('/series.json').then(r=>r.json()).then(arr=>{
+        const m = Array.isArray(arr) ? arr.find(s=>s.slug===slug) : null;
+        if (m && m.title) {
+          document.title = `${m.title} – SmTv Urdu`;
+          const d = document.querySelector('meta[name="description"]');
+          if (d) d.setAttribute('content', `${m.title} - Watch all episodes in Urdu on SmTv Urdu.`);
+        }
+      }).catch(()=>{});
     });
   </script>
 
@@ -636,45 +688,41 @@
       </a>
       <div style="margin-top:14px;">
         <button id="closeWhatsAppPopup"
-                style="background:none;border:1px solid rgba(255,255,255,.1);color:#7a99b0;font-weight:700;cursor:pointer;font-family:inherit;padding:6px 16px;border-radius:7px;font-size:.82em;transition:color .2s,border-color .2s;"
-                onmouseover="this.style.color='#ff4d6d';this.style.borderColor='rgba(255,77,109,.3)'"
-                onmouseout="this.style.color='#7a99b0';this.style.borderColor='rgba(255,255,255,.1)'">
+          style="background:none;border:1px solid rgba(255,255,255,.1);color:#7a99b0;font-weight:700;cursor:pointer;font-family:inherit;padding:6px 16px;border-radius:7px;font-size:.82em;transition:color .2s,border-color .2s;"
+          onmouseover="this.style.color='#ff4d6d';this.style.borderColor='rgba(255,77,109,.3)'"
+          onmouseout="this.style.color='#7a99b0';this.style.borderColor='rgba(255,255,255,.1)'">
           ✕ No thanks
         </button>
       </div>
     </div>
   </div>
-
   <script>
     window.addEventListener('DOMContentLoaded', function() {
-      const popup    = document.getElementById('whatsappPopup');
-      const backdrop = document.getElementById('wa-backdrop');
-      const closeBtn = document.getElementById('closeWhatsAppPopup');
-      function showPopup() { if(popup) popup.style.display='block'; if(backdrop) backdrop.classList.add('show'); }
-      function hidePopup() { if(popup) popup.style.display='none'; if(backdrop) backdrop.classList.remove('show'); }
-      setTimeout(showPopup, 2200);
-      if (closeBtn) closeBtn.addEventListener('click', hidePopup);
-      if (backdrop) backdrop.addEventListener('click', hidePopup);
+      const popup=document.getElementById('whatsappPopup');
+      const backdrop=document.getElementById('wa-backdrop');
+      const btn=document.getElementById('closeWhatsAppPopup');
+      function show(){ if(popup) popup.style.display='block'; if(backdrop) backdrop.classList.add('show'); }
+      function hide(){ if(popup) popup.style.display='none'; if(backdrop) backdrop.classList.remove('show'); }
+      setTimeout(show,2200);
+      if(btn) btn.addEventListener('click',hide);
+      if(backdrop) backdrop.addEventListener('click',hide);
     });
   </script>
 
-  <!-- PREVENT AUTO-SCROLL (unchanged) -->
+  <!-- PREVENT AUTO-SCROLL -->
   <script>
     (function(){
-      try { window.scrollTo(0,0); } catch(e){}
-      document.addEventListener('focusin', function(){
-        const x = window.scrollX||0, y = window.scrollY||0;
-        setTimeout(function(){ try{window.scrollTo(x,y);}catch(e){} }, 0);
-      }, true);
-      const details = document.getElementById('series-details');
-      if (details) {
-        const obs = new MutationObserver(() => {
-          if (details.childNodes.length > 0) {
-            try{window.scrollTo({top:0,left:0,behavior:'auto'});}catch(e){window.scrollTo(0,0);}
-            obs.disconnect();
-          }
+      try{window.scrollTo(0,0);}catch(e){}
+      document.addEventListener('focusin',function(){
+        const x=window.scrollX||0,y=window.scrollY||0;
+        setTimeout(function(){try{window.scrollTo(x,y);}catch(e){}},0);
+      },true);
+      const det=document.getElementById('series-details');
+      if(det){
+        const o=new MutationObserver(()=>{
+          if(det.childNodes.length>0){try{window.scrollTo({top:0,left:0,behavior:'auto'});}catch(e){window.scrollTo(0,0);}o.disconnect();}
         });
-        obs.observe(details, { childList:true, subtree:false });
+        o.observe(det,{childList:true,subtree:false});
       }
     })();
   </script>
@@ -682,14 +730,14 @@
   <!-- REVEAL ON SCROLL -->
   <script>
     (function(){
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); } });
-      }, { threshold:0.12 });
-      function observeReveal() { document.querySelectorAll('.reveal-item:not(.show)').forEach(el => io.observe(el)); }
-      observeReveal();
-      const mo = new MutationObserver(observeReveal);
-      const sd = document.getElementById('series-details');
-      if (sd) mo.observe(sd, { childList:true, subtree:true });
+      const io=new IntersectionObserver(entries=>{
+        entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show');io.unobserve(e.target);}});
+      },{threshold:0.1});
+      function go(){document.querySelectorAll('.reveal-item:not(.show)').forEach(el=>io.observe(el));}
+      go();
+      const mo=new MutationObserver(go);
+      const sd=document.getElementById('series-details');
+      if(sd) mo.observe(sd,{childList:true,subtree:true});
     })();
   </script>
 
@@ -697,47 +745,45 @@
   <div id="footer-placeholder"></div>
   <script>
   (async function loadFooterRobust(){
-    const candidates = ['/includes/footer.html','includes/footer.html','./includes/footer.html','/footer.html','footer.html'];
-    const placeholder = document.getElementById('footer-placeholder');
-    function initNav(html) {
-      try {
-        placeholder.innerHTML = html;
-        try { const curPad=parseInt(getComputedStyle(document.body).paddingBottom)||0; if(curPad<96) document.body.style.paddingBottom='calc(96px + env(safe-area-inset-bottom))'; } catch(e){}
-        const nav = placeholder.querySelector('#smtv-bottom-nav')||placeholder.querySelector('.smtv-bottom-nav');
-        if (!nav) return;
-        const items = Array.from(nav.querySelectorAll('.nav-item'));
-        items.forEach(i => i.classList.remove('active'));
-        let seriesItem = items.find(i => ((i.dataset&&(i.dataset.name||'').toLowerCase())==='series'));
-        if (!seriesItem) seriesItem = items.find(i => { const href=(i.getAttribute&&i.getAttribute('href')||'').toLowerCase(); return href&&href.includes('series'); });
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('series')&&seriesItem) { seriesItem.classList.add('active'); }
-        else { const path=location.pathname.toLowerCase(); const byPath=items.find(i=>(i.getAttribute('href')||'').toLowerCase().includes(path.split('/').pop())); if(byPath) byPath.classList.add('active'); else if(seriesItem) seriesItem.classList.add('active'); }
-        items.forEach(a => {
-          if (a._smtvInit) return; a._smtvInit=true;
-          a.addEventListener('click', function(e){ try{e.preventDefault&&e.preventDefault();}catch(err){} items.forEach(i=>i.classList.remove('active')); this.classList.add('active'); try{localStorage.setItem('smtv_last_nav',this.dataset.name||this.getAttribute('href'));}catch(e){} const href=this.getAttribute('href'); if(href) location.assign(href); }, {passive:false});
+    const cands=['/includes/footer.html','includes/footer.html','./includes/footer.html','/footer.html','footer.html'];
+    const ph=document.getElementById('footer-placeholder');
+    function initNav(html){
+      try{
+        ph.innerHTML=html;
+        try{const p=parseInt(getComputedStyle(document.body).paddingBottom)||0;if(p<96)document.body.style.paddingBottom='calc(96px + env(safe-area-inset-bottom))';}catch(e){}
+        const nav=ph.querySelector('#smtv-bottom-nav')||ph.querySelector('.smtv-bottom-nav');
+        if(!nav)return;
+        const items=Array.from(nav.querySelectorAll('.nav-item'));
+        items.forEach(i=>i.classList.remove('active'));
+        let si=items.find(i=>((i.dataset&&(i.dataset.name||'').toLowerCase())==='series'));
+        if(!si)si=items.find(i=>{const h=(i.getAttribute&&i.getAttribute('href')||'').toLowerCase();return h&&h.includes('series');});
+        const up=new URLSearchParams(window.location.search);
+        if(up.has('series')&&si)si.classList.add('active');
+        else{const p=location.pathname.toLowerCase();const bp=items.find(i=>(i.getAttribute('href')||'').toLowerCase().includes(p.split('/').pop()));if(bp)bp.classList.add('active');else if(si)si.classList.add('active');}
+        items.forEach(a=>{
+          if(a._si)return;a._si=true;
+          a.addEventListener('click',function(e){try{e.preventDefault&&e.preventDefault();}catch(x){}items.forEach(i=>i.classList.remove('active'));this.classList.add('active');try{localStorage.setItem('smtv_last_nav',this.dataset.name||this.getAttribute('href'));}catch(e){}const h=this.getAttribute('href');if(h)location.assign(h);},{passive:false});
         });
-      } catch(e){ console.warn('initNav error',e); }
+      }catch(e){console.warn('initNav',e);}
     }
-    for (const cand of candidates) {
-      try { const res=await fetch(cand,{cache:'no-cache'}); if(!res.ok) continue; const text=await res.text(); initNav(text); return; } catch(e){ continue; }
+    for(const c of cands){
+      try{const r=await fetch(c,{cache:'no-cache'});if(!r.ok)continue;const t=await r.text();initNav(t);return;}catch(e){continue;}
     }
-    placeholder.innerHTML = `
-      <nav class="smtv-bottom-nav" id="smtv-bottom-nav" role="navigation" aria-label="Main">
-        <a href="/index.html" class="nav-item" data-name="home"><span class="icon-wrap"><i class="fa-solid fa-house"></i></span><span class="label">Home</span></a>
-        <a href="/series.html" class="nav-item active" data-name="series"><span class="icon-wrap"><i class="fa-solid fa-film"></i></span><span class="label">Series</span></a>
-        <a href="/clips.html" class="nav-item" data-name="clips"><span class="icon-wrap"><i class="fa-solid fa-play-circle"></i></span><span class="label">Clips</span></a>
-        <a href="/premium.html" class="nav-item" data-name="premium"><span class="icon-wrap"><i class="fa-solid fa-star"></i></span><span class="label">Premium</span></a>
-        <a href="/more.html" class="nav-item" data-name="more"><span class="icon-wrap"><i class="fa-solid fa-circle-info"></i></span><span class="label">More</span></a>
-      </nav>
-      <style>
-        .smtv-bottom-nav{position:fixed;left:12px;right:12px;bottom:12px;height:64px;display:flex;gap:6px;padding:8px;border-radius:14px;background:rgba(10,10,12,0.9);backdrop-filter:blur(12px);align-items:center;z-index:1200;padding-bottom:calc(env(safe-area-inset-bottom) + 8px);}
-        .smtv-bottom-nav .nav-item{flex:1;text-align:center;color:#bdbdbd;text-decoration:none;padding:6px;border-radius:10px;transition:color .2s,transform .2s;}
-        .smtv-bottom-nav .nav-item.active{color:#fff;transform:translateY(-6px);}
-        .smtv-bottom-nav .icon-wrap{display:inline-flex;width:40px;height:40px;align-items:center;justify-content:center;border-radius:10px;}
-        .smtv-bottom-nav .label{display:block;font-size:12px;margin-top:3px;}
-      </style>
-    `;
-    try { document.body.style.paddingBottom='calc(96px + env(safe-area-inset-bottom))'; } catch(e){}
+    ph.innerHTML=`<nav class="smtv-bottom-nav" id="smtv-bottom-nav" role="navigation" aria-label="Main">
+      <a href="/index.html" class="nav-item" data-name="home"><span class="icon-wrap"><i class="fa-solid fa-house"></i></span><span class="label">Home</span></a>
+      <a href="/series.html" class="nav-item active" data-name="series"><span class="icon-wrap"><i class="fa-solid fa-film"></i></span><span class="label">Series</span></a>
+      <a href="/clips.html" class="nav-item" data-name="clips"><span class="icon-wrap"><i class="fa-solid fa-play-circle"></i></span><span class="label">Clips</span></a>
+      <a href="/premium.html" class="nav-item" data-name="premium"><span class="icon-wrap"><i class="fa-solid fa-star"></i></span><span class="label">Premium</span></a>
+      <a href="/more.html" class="nav-item" data-name="more"><span class="icon-wrap"><i class="fa-solid fa-circle-info"></i></span><span class="label">More</span></a>
+    </nav>
+    <style>
+      .smtv-bottom-nav{position:fixed;left:12px;right:12px;bottom:12px;height:64px;display:flex;gap:6px;padding:8px;border-radius:14px;background:rgba(10,10,12,0.9);backdrop-filter:blur(12px);align-items:center;z-index:1200;padding-bottom:calc(env(safe-area-inset-bottom)+8px);}
+      .smtv-bottom-nav .nav-item{flex:1;text-align:center;color:#bdbdbd;text-decoration:none;padding:6px;border-radius:10px;transition:color .2s,transform .2s;}
+      .smtv-bottom-nav .nav-item.active{color:#fff;transform:translateY(-6px);}
+      .smtv-bottom-nav .icon-wrap{display:inline-flex;width:40px;height:40px;align-items:center;justify-content:center;border-radius:10px;}
+      .smtv-bottom-nav .label{display:block;font-size:12px;margin-top:3px;}
+    </style>`;
+    try{document.body.style.paddingBottom='calc(96px + env(safe-area-inset-bottom))';}catch(e){}
   })();
   </script>
 
