@@ -235,10 +235,10 @@
               <div class="pcm-particle"></div><div class="pcm-particle"></div>
               <div class="pcm-particle"></div><div class="pcm-particle"></div>
             </div>
-            <div class="pcm-icon-wrap">👑</div>
+            <div class="pcm-icon-wrap">⭐</div>
             <div class="pcm-content">
-              <div class="pcm-headline">Watch <span class="gold-word">Premium</span> — Upgrade Now</div>
-              <div class="pcm-sub">Ad-free episodes, fast downloads &amp; early access.</div>
+              <div class="pcm-headline">Become a <span class="gold-word">SmTv VIP</span> Member</div>
+              <div class="pcm-sub">Ad-free episodes, early access &amp; direct streaming.</div>
               <div class="pcm-features">
                 <span class="pcm-feature pcm-feature-gold">⚡ No Ads</span>
                 <span class="pcm-feature pcm-feature-cyan">⬇ Fast Download</span>
@@ -248,7 +248,7 @@
             </div>
             <div class="pcm-cta-wrap">
               <a href="/premium.html" class="pcm-cta-btn" rel="noopener">
-                <i class="fa-solid fa-crown"></i> Get Premium
+                <i class="fa-solid fa-star"></i> Join VIP
               </a>
               <a href="/premium.html" class="pcm-more-link" rel="noopener">
                 See details <i class="fa-solid fa-chevron-right"></i>
@@ -383,8 +383,8 @@
                  data-source="${sourceParam || ''}"
                  tabindex="-1" 
                  aria-label="${epTitle}">
-                <div class="pro-ep-thumb-wrap-pro" style="position:relative;width:100%;height:94px;overflow:hidden;display:block;flex-shrink:0;background:linear-gradient(145deg,#0e1e30,#091520);">
-                  <img class="pro-ep-thumb-pro" src="${thumb}" alt="${epTitle}" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;z-index:2;">
+                <div class="pro-ep-thumb-wrap-pro" style="position:relative!important;width:100%!important;height:94px!important;aspect-ratio:unset!important;overflow:hidden!important;display:block!important;flex-shrink:0!important;background:linear-gradient(145deg,#0e1e30,#091520)!important;">
+                  <img class="pro-ep-thumb-pro" src="${thumb}" alt="${epTitle}" style="position:absolute!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;display:block!important;z-index:2!important;aspect-ratio:unset!important;">
                   <span class="pro-ep-num-pro">Ep ${epNum}</span>
                 </div>
                 <div class="pro-ep-title-pro">${epTitle}</div>
