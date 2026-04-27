@@ -11,23 +11,20 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-    /* ══════════════════════════════
-       RESET & BASE
-    ══════════════════════════════ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #080a0f;
-      --surface:   #0e1118;
-      --surface2:  #141820;
-      --border:    rgba(255,255,255,0.07);
-      --border2:   rgba(255,255,255,0.12);
-      --text:      #f0f4f8;
-      --muted:     #5a6a7a;
-      --accent:    #00c2ff;
-      --gold:      #facc15;
-      --gold2:     #fbbf24;
-      --radius:    14px;
+      --bg:       #07090d;
+      --surface:  #0d1018;
+      --surface2: #131a24;
+      --border:   rgba(255,255,255,0.07);
+      --border2:  rgba(255,255,255,0.13);
+      --text:     #f0f4f8;
+      --muted:    #4e5e70;
+      --accent:   #00c2ff;
+      --gold:     #facc15;
+      --gold2:    #fbbf24;
+      --radius:   13px;
     }
 
     html { scroll-behavior: smooth; }
@@ -41,382 +38,355 @@
       padding-bottom: calc(110px + env(safe-area-inset-bottom));
     }
 
-    /* ══════════════════════════════
-       BACKGROUND FX
-    ══════════════════════════════ */
-    .bg-layer {
-      position: fixed; inset: 0;
-      pointer-events: none; z-index: 0;
-      overflow: hidden;
-    }
-
-    /* Drifting orbs */
-    .orb {
-      position: absolute; border-radius: 50%;
-      filter: blur(100px); opacity: 0.09;
-    }
-    .orb-1 { width:500px; height:500px; background:#0077ff; top:-150px; left:-150px;
-              animation: driftA 12s ease-in-out infinite; }
-    .orb-2 { width:380px; height:380px; background:#7c3aed; bottom:0; right:-100px;
-              animation: driftB 14s ease-in-out infinite; }
-    .orb-3 { width:280px; height:280px; background:#facc15; top:40%; left:45%; opacity:0.05;
-              animation: driftC 16s ease-in-out infinite; }
+    /* ══ BACKGROUND ══ */
+    .bg-layer { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+    .orb { position:absolute; border-radius:50%; filter:blur(110px); }
+    .orb-1 { width:480px; height:480px; background:#0066ee; opacity:0.09; top:-160px; left:-140px;
+              animation: driftA 13s ease-in-out infinite; }
+    .orb-2 { width:360px; height:360px; background:#6d28d9; opacity:0.08; bottom:-60px; right:-80px;
+              animation: driftB 15s ease-in-out infinite; }
+    .orb-3 { width:240px; height:240px; background:#facc15; opacity:0.04; top:38%; left:48%;
+              animation: driftC 17s ease-in-out infinite; }
 
     @keyframes driftA {
       0%,100%{ transform:translate(0,0) scale(1); }
-      40%    { transform:translate(40px,60px) scale(1.1); }
-      70%    { transform:translate(-20px,30px) scale(0.93); }
+      40%    { transform:translate(44px,60px) scale(1.1); }
+      70%    { transform:translate(-22px,28px) scale(0.93); }
     }
     @keyframes driftB {
       0%,100%{ transform:translate(0,0) scale(1); }
-      35%    { transform:translate(-50px,-40px) scale(1.12); }
-      65%    { transform:translate(25px,-20px) scale(0.9); }
+      35%    { transform:translate(-48px,-38px) scale(1.12); }
+      68%    { transform:translate(24px,-18px) scale(0.91); }
     }
     @keyframes driftC {
       0%,100%{ transform:translate(0,0); }
-      50%    { transform:translate(-40px,40px); }
+      50%    { transform:translate(-38px,42px); }
     }
 
-    /* Moving grid */
+    /* Grid lines */
     .grid-bg {
-      position: fixed; inset: 0;
-      pointer-events: none; z-index: 0;
+      position:fixed; inset:0; pointer-events:none; z-index:0;
       background-image:
-        linear-gradient(rgba(255,255,255,0.013) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.013) 1px, transparent 1px);
-      background-size: 52px 52px;
-      animation: gridMove 25s linear infinite;
+        linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: gridMove 28s linear infinite;
     }
     @keyframes gridMove {
       from { background-position: 0 0; }
-      to   { background-position: 52px 52px; }
+      to   { background-position: 50px 50px; }
     }
 
-    /* ══════════════════════════════
-       PAGE WRAPPER
-    ══════════════════════════════ */
+    /* ══ PAGE ══ */
     .page {
-      position: relative; z-index: 1;
-      max-width: 1100px; margin: 0 auto;
-      padding: 28px 14px 16px;
+      position:relative; z-index:1;
+      max-width:1100px; margin:0 auto;
+      padding: 26px 14px 16px;
     }
 
-    /* ══════════════════════════════
-       HEADER
-    ══════════════════════════════ */
+    /* ══ HEADER ══ */
     .page-header {
-      text-align: center;
-      margin-bottom: 32px;
-      opacity: 0;
+      text-align:center; margin-bottom:24px;
+      opacity:0;
       animation: slideDown 0.7s 0.05s cubic-bezier(0.22,1,0.36,1) forwards;
     }
 
-    .header-eyebrow {
-      display: inline-flex; align-items: center; gap: 7px;
-      background: rgba(0,194,255,0.07);
-      border: 1px solid rgba(0,194,255,0.18);
-      border-radius: 100px;
-      padding: 4px 14px 4px 10px;
-      font-size: 11px; font-weight: 600;
-      letter-spacing: 2px; text-transform: uppercase;
-      color: var(--accent); margin-bottom: 14px;
+    .header-pill {
+      display:inline-flex; align-items:center; gap:7px;
+      background:rgba(0,194,255,0.07);
+      border:1px solid rgba(0,194,255,0.18);
+      border-radius:100px;
+      padding:4px 14px 4px 10px;
+      font-size:11px; font-weight:600;
+      letter-spacing:2px; text-transform:uppercase;
+      color:var(--accent); margin-bottom:12px;
     }
     .live-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: #4ade80;
-      animation: livePulse 2s ease infinite;
+      width:6px; height:6px; border-radius:50%;
+      background:#4ade80;
+      animation:livePulse 2s ease infinite;
     }
 
     .page-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(36px, 9vw, 58px);
-      letter-spacing: 4px; line-height: 1;
-      margin-bottom: 8px;
-      background: linear-gradient(90deg, #b8860b, var(--gold), #fff8c0, var(--gold2), #b8860b);
-      background-size: 250% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: goldShimmer 4s 1s linear infinite;
+      font-family:'Bebas Neue', sans-serif;
+      font-size: clamp(34px, 9vw, 54px);
+      letter-spacing:4px; line-height:1;
+      margin-bottom:6px;
+      background: linear-gradient(90deg, #a16207, var(--gold), #fef9c3, var(--gold2), #a16207);
+      background-size:260% auto;
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      animation: goldShimmer 3.5s 0.8s linear infinite;
+    }
+    .page-tagline {
+      font-size:13px; color:var(--muted); font-weight:400; letter-spacing:0.2px;
     }
 
-    .page-subtitle {
-      font-size: 14px; color: var(--muted);
-      font-weight: 400; letter-spacing: 0.3px;
+    /* ══ SEARCH BAR ══ */
+    .search-wrap {
+      margin-bottom:20px;
+      opacity:0;
+      animation: fadeUp 0.6s 0.18s cubic-bezier(0.22,1,0.36,1) forwards;
     }
 
-    @keyframes goldShimmer {
-      from { background-position: 0% center; }
-      to   { background-position: 250% center; }
+    .search-box {
+      position:relative; max-width:480px; margin:0 auto;
     }
 
-    /* ══════════════════════════════
-       FILTER BAR
-    ══════════════════════════════ */
-    .filter-wrap {
-      display: flex; flex-direction: column; align-items: center;
-      gap: 12px; margin-bottom: 24px;
-      opacity: 0;
-      animation: fadeUp 0.6s 0.25s cubic-bezier(0.22,1,0.36,1) forwards;
+    .search-box svg.s-icon {
+      position:absolute; left:14px; top:50%; transform:translateY(-50%);
+      width:17px; height:17px;
+      fill:none; stroke:var(--muted);
+      stroke-width:2; stroke-linecap:round; stroke-linejoin:round;
+      pointer-events:none;
+      transition:stroke 0.2s;
     }
 
-    .filter-bar {
-      display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+    .search-input {
+      width:100%;
+      padding:12px 40px 12px 42px;
+      background:var(--surface);
+      border:1px solid var(--border2);
+      border-radius:100px;
+      color:var(--text);
+      font-family:'Outfit', sans-serif;
+      font-size:14px; font-weight:500;
+      outline:none;
+      transition:border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .search-input::placeholder { color:var(--muted); }
+    .search-input:focus {
+      border-color:rgba(0,194,255,0.4);
+      background:var(--surface2);
+      box-shadow:0 0 0 3px rgba(0,194,255,0.08);
+    }
+    .search-input:focus + svg.s-icon { stroke:var(--accent); }
+    .search-box:focus-within svg.s-icon { stroke:var(--accent); }
+
+    .search-clear {
+      position:absolute; right:14px; top:50%; transform:translateY(-50%);
+      background:none; border:none; cursor:pointer;
+      color:var(--muted); font-size:18px; line-height:1;
+      display:none; padding:0;
+      transition:color 0.2s;
+    }
+    .search-clear:hover { color:var(--text); }
+    .search-clear.visible { display:block; }
+
+    /* ══ FILTER CONTROLS ══ */
+    .controls-wrap {
+      display:flex; flex-direction:column; align-items:center;
+      gap:10px; margin-bottom:22px;
+      opacity:0;
+      animation: fadeUp 0.6s 0.28s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    /* Toggle pill — Dubbed | Subtitles side by side */
+    .toggle-pill {
+      display:inline-flex;
+      background:var(--surface);
+      border:1px solid var(--border2);
+      border-radius:100px;
+      padding:4px;
+      gap:0;
     }
 
     .filter-btn {
-      border: 1px solid var(--border2);
-      border-radius: 100px;
-      padding: 9px 22px;
-      font-family: 'Outfit', sans-serif;
-      font-size: 14px; font-weight: 600;
-      cursor: pointer;
-      background: var(--surface);
-      color: var(--muted);
-      transition: all 0.22s ease;
-      letter-spacing: 0.3px;
+      border:none; border-radius:100px;
+      padding:11px 28px;
+      font-family:'Outfit', sans-serif;
+      font-size:14px; font-weight:600;
+      cursor:pointer;
+      background:transparent;
+      color:var(--muted);
+      transition:all 0.25s ease;
+      letter-spacing:0.3px;
+      white-space:nowrap;
     }
-    .filter-btn:hover {
-      color: var(--text);
-      border-color: rgba(255,255,255,0.2);
-      background: var(--surface2);
-      transform: translateY(-1px);
-    }
+    .filter-btn:hover { color:var(--text); }
     .filter-btn.active {
-      background: linear-gradient(135deg, #0077c8, #00c2ff);
-      border-color: transparent;
-      color: #fff;
-      font-weight: 700;
-      box-shadow: 0 4px 20px rgba(0,194,255,0.35);
-      transform: translateY(-1px);
+      background:linear-gradient(135deg,#0077c8,#00c2ff);
+      color:#fff;
+      font-weight:700;
+      box-shadow:0 3px 16px rgba(0,194,255,0.38);
     }
 
-    /* Sub-language bar */
+    /* Sub-language chips */
     .sub-lang-bar {
-      display: flex; gap: 8px; flex-wrap: wrap;
-      justify-content: center;
-      max-height: 0; overflow: hidden; opacity: 0;
-      transition: max-height 0.4s ease, opacity 0.35s ease;
+      display:flex; gap:7px; flex-wrap:wrap; justify-content:center;
+      max-height:0; overflow:hidden; opacity:0;
+      transition:max-height 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease;
     }
-    .sub-lang-bar.active {
-      max-height: 120px; opacity: 1;
-    }
+    .sub-lang-bar.active { max-height:80px; opacity:1; }
 
     .sub-btn {
-      border: 1px solid var(--border2);
-      border-radius: 100px;
-      padding: 7px 18px;
-      font-family: 'Outfit', sans-serif;
-      font-size: 13px; font-weight: 500;
-      cursor: pointer;
-      background: var(--surface);
-      color: var(--muted);
-      transition: all 0.2s ease;
+      border:1px solid var(--border2);
+      border-radius:100px;
+      padding:7px 16px;
+      font-family:'Outfit', sans-serif;
+      font-size:12px; font-weight:600;
+      cursor:pointer;
+      background:var(--surface);
+      color:var(--muted);
+      transition:all 0.2s ease;
+      letter-spacing:0.3px;
     }
-    .sub-btn:hover {
-      color: var(--text);
-      border-color: rgba(255,255,255,0.2);
-    }
+    .sub-btn:hover { color:var(--text); border-color:rgba(255,255,255,0.22); }
     .sub-btn.active {
-      background: linear-gradient(135deg, #c07800, var(--gold));
-      border-color: transparent;
-      color: #000;
-      font-weight: 700;
-      box-shadow: 0 3px 14px rgba(250,204,21,0.35);
+      background:linear-gradient(135deg,#a16207,var(--gold));
+      border-color:transparent; color:#000;
+      font-weight:700;
+      box-shadow:0 3px 14px rgba(250,204,21,0.35);
     }
 
-    /* ══════════════════════════════
-       RESULTS META
-    ══════════════════════════════ */
-    .results-meta {
-      display: flex; align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      opacity: 0;
-      animation: fadeUp 0.5s 0.4s ease forwards;
-    }
-    .results-count {
-      font-size: 13px; color: var(--muted); font-weight: 500;
-    }
-    .results-count strong { color: var(--accent); font-weight: 700; }
-
-    /* ══════════════════════════════
-       SERIES GRID
-    ══════════════════════════════ */
+    /* ══ SERIES GRID ══ */
     .series-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:13px;
     }
-    @media(min-width: 600px)  { .series-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media(min-width: 900px)  { .series-grid { grid-template-columns: repeat(4, 1fr); } }
-    @media(min-width: 1100px) { .series-grid { grid-template-columns: repeat(5, 1fr); } }
+    @media(min-width:560px)  { .series-grid{grid-template-columns:repeat(3,1fr);} }
+    @media(min-width:820px)  { .series-grid{grid-template-columns:repeat(4,1fr);} }
+    @media(min-width:1060px) { .series-grid{grid-template-columns:repeat(5,1fr);} }
 
-    /* Card */
+    /* ══ SERIES CARD ══ */
     .series-card {
-      display: block;
-      text-decoration: none;
-      border-radius: var(--radius);
-      overflow: hidden;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-      color: #fff;
-      position: relative;
+      display:block; text-decoration:none;
+      border-radius:var(--radius); overflow:hidden;
+      background:var(--surface);
+      border:1px solid var(--border);
+      color:#fff; position:relative;
+      opacity:0; transform:translateY(22px);
       transition:
-        transform 0.25s cubic-bezier(0.34,1.56,0.64,1),
-        box-shadow 0.25s ease,
-        border-color 0.2s ease;
-      opacity: 0;
-      transform: translateY(24px);
+        transform 0.28s cubic-bezier(0.34,1.56,0.64,1),
+        box-shadow 0.28s ease,
+        border-color 0.22s ease;
+      will-change:transform;
     }
-
     .series-card.visible {
-      animation: cardPop 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+      animation:cardPop 0.55s cubic-bezier(0.22,1,0.36,1) forwards;
     }
-
     .series-card:hover {
-      transform: translateY(-7px) scale(1.025);
-      box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,194,255,0.2);
-      border-color: rgba(0,194,255,0.25);
+      transform:translateY(-8px) scale(1.03);
+      box-shadow:0 22px 55px rgba(0,0,0,0.75), 0 0 0 1px rgba(0,194,255,0.22);
+      border-color:rgba(0,194,255,0.28);
     }
-    .series-card:active { transform: scale(0.97); transition-duration: 0.1s; }
-
-    /* Shimmer on hover */
-    .series-card::before {
-      content: '';
-      position: absolute; inset: 0; z-index: 3;
-      background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.05) 50%, transparent 60%);
-      background-size: 200% 200%;
-      background-position: 0% 0%;
-      transition: background-position 0.6s ease;
-      pointer-events: none;
-    }
-    .series-card:hover::before { background-position: 100% 100%; }
+    .series-card:active { transform:scale(0.96); transition-duration:0.1s; }
 
     /* Thumbnail */
     .series-thumb {
-      width: 100%; height: 0;
-      padding-bottom: 56%;
-      position: relative;
-      background: var(--surface2);
-      overflow: hidden;
+      width:100%; height:0; padding-bottom:56%;
+      position:relative; background:var(--surface2); overflow:hidden;
     }
     .series-thumb img {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      transition: transform 0.45s ease;
+      position:absolute; inset:0;
+      width:100%; height:100%; object-fit:cover;
+      transition:transform 0.5s ease;
     }
-    .series-card:hover .series-thumb img { transform: scale(1.07); }
+    .series-card:hover .series-thumb img { transform:scale(1.09); }
 
-    /* Gradient overlay on thumb */
+    /* Dark gradient overlay bottom */
     .series-thumb::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.8) 100%);
-      z-index: 1;
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(to bottom, transparent 45%, rgba(0,0,0,0.82) 100%);
+      z-index:1;
     }
 
-    /* Play icon on hover */
-    .play-icon {
-      position: absolute; inset: 0; z-index: 2;
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity 0.25s ease;
+    /* Glow ring on hover — animated */
+    .series-thumb::before {
+      content:''; position:absolute; inset:0; z-index:2;
+      border-radius:var(--radius) var(--radius) 0 0;
+      opacity:0;
+      background:radial-gradient(ellipse at 50% 0%, rgba(0,194,255,0.18) 0%, transparent 70%);
+      transition:opacity 0.3s ease;
     }
-    .play-icon svg {
-      width: 42px; height: 42px;
-      fill: rgba(255,255,255,0.9);
-      filter: drop-shadow(0 2px 12px rgba(0,0,0,0.8));
-    }
-    .series-card:hover .play-icon { opacity: 1; }
+    .series-card:hover .series-thumb::before { opacity:1; }
 
-    /* Badge (dubbed / sub) */
-    .card-badge {
-      position: absolute; top: 8px; left: 8px; z-index: 3;
-      font-size: 10px; font-weight: 700;
-      letter-spacing: 1px; text-transform: uppercase;
-      padding: 3px 8px; border-radius: 6px;
+    /* Play button — appears on hover */
+    .play-btn {
+      position:absolute; inset:0; z-index:3;
+      display:flex; align-items:center; justify-content:center;
+      opacity:0;
+      transition:opacity 0.25s ease;
     }
-    .badge-dubbed {
-      background: rgba(0,194,255,0.85);
-      color: #000;
+    .play-btn-inner {
+      width:44px; height:44px;
+      border-radius:50%;
+      background:rgba(255,255,255,0.15);
+      backdrop-filter:blur(8px);
+      border:1.5px solid rgba(255,255,255,0.35);
+      display:flex; align-items:center; justify-content:center;
+      transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1), background 0.2s;
     }
-    .badge-sub {
-      background: rgba(250,204,21,0.85);
-      color: #000;
+    .play-btn-inner svg { width:18px; height:18px; fill:#fff; margin-left:2px; }
+    .series-card:hover .play-btn { opacity:1; }
+    .series-card:hover .play-btn-inner { transform:scale(1.12); background:rgba(0,194,255,0.3); }
+
+    /* Sub language badge (only for subtitle cards) */
+    .lang-badge {
+      position:absolute; top:8px; left:8px; z-index:4;
+      font-size:10px; font-weight:700;
+      letter-spacing:1px; text-transform:uppercase;
+      padding:3px 8px; border-radius:6px;
+      background:rgba(250,204,21,0.88);
+      color:#000;
+      backdrop-filter:blur(4px);
     }
 
     /* Title */
     .series-title {
-      padding: 10px 12px 11px;
-      font-size: 13px; font-weight: 600;
-      line-height: 1.35;
-      text-align: center;
-      color: var(--text);
-      letter-spacing: 0.1px;
+      padding:9px 11px 10px;
+      font-size:13px; font-weight:600;
+      line-height:1.35; text-align:center;
+      color:var(--text); letter-spacing:0.1px;
     }
 
-    /* ══════════════════════════════
-       SKELETON LOADERS
-    ══════════════════════════════ */
+    /* ══ SKELETON ══ */
     .skeleton-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:13px;
     }
-    @media(min-width:600px)  { .skeleton-grid{ grid-template-columns:repeat(3,1fr); } }
-    @media(min-width:900px)  { .skeleton-grid{ grid-template-columns:repeat(4,1fr); } }
-    @media(min-width:1100px) { .skeleton-grid{ grid-template-columns:repeat(5,1fr); } }
+    @media(min-width:560px)  { .skeleton-grid{grid-template-columns:repeat(3,1fr);} }
+    @media(min-width:820px)  { .skeleton-grid{grid-template-columns:repeat(4,1fr);} }
+    @media(min-width:1060px) { .skeleton-grid{grid-template-columns:repeat(5,1fr);} }
 
-    .skeleton-card {
-      border-radius: var(--radius);
-      overflow: hidden;
-      background: var(--surface);
-      border: 1px solid var(--border);
+    .sk-card {
+      border-radius:var(--radius); overflow:hidden;
+      background:var(--surface); border:1px solid var(--border);
     }
-    .skeleton-thumb {
-      width: 100%; padding-bottom: 56%;
-      background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
-      background-size: 200% 100%;
-      animation: shimmerLoad 1.4s ease infinite;
+    .sk-thumb {
+      width:100%; padding-bottom:56%;
+      background:linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+      background-size:300% 100%;
+      animation:shimmerLoad 1.5s ease infinite;
     }
-    .skeleton-title {
-      height: 14px; margin: 12px 14px 14px;
-      border-radius: 6px;
-      background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
-      background-size: 200% 100%;
-      animation: shimmerLoad 1.4s ease infinite;
-    }
-    @keyframes shimmerLoad {
-      from { background-position: 200% 0; }
-      to   { background-position: -200% 0; }
+    .sk-label {
+      height:13px; margin:11px 14px 13px;
+      border-radius:6px;
+      background:linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+      background-size:300% 100%;
+      animation:shimmerLoad 1.5s ease infinite;
     }
 
-    /* ══════════════════════════════
-       EMPTY & ERROR STATE
-    ══════════════════════════════ */
+    /* ══ EMPTY / NO RESULTS ══ */
     .state-box {
-      text-align: center;
-      padding: 60px 20px;
-      display: none;
+      text-align:center; padding:60px 20px;
+      display:none;
     }
-    .state-box.visible { display: block; }
-    .state-icon {
-      font-size: 48px; margin-bottom: 14px; opacity: 0.35;
-    }
+    .state-box.visible { display:block; }
+    .state-emoji { font-size:46px; margin-bottom:12px; }
     .state-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 24px; letter-spacing: 2px;
-      color: var(--muted); margin-bottom: 6px;
+      font-family:'Bebas Neue',sans-serif;
+      font-size:22px; letter-spacing:2px;
+      color:var(--muted); margin-bottom:5px;
     }
-    .state-desc { font-size: 14px; color: var(--muted); }
+    .state-desc { font-size:13px; color:var(--muted); }
 
-    /* ══════════════════════════════
-       KEYFRAMES
-    ══════════════════════════════ */
+    /* ══ KEYFRAMES ══ */
     @keyframes slideDown {
-      from { opacity:0; transform:translateY(-20px); }
+      from { opacity:0; transform:translateY(-18px); }
       to   { opacity:1; transform:translateY(0); }
     }
     @keyframes fadeUp {
@@ -424,8 +394,16 @@
       to   { opacity:1; transform:translateY(0); }
     }
     @keyframes cardPop {
-      from { opacity:0; transform:translateY(24px) scale(0.97); }
+      from { opacity:0; transform:translateY(22px) scale(0.96); }
       to   { opacity:1; transform:translateY(0) scale(1); }
+    }
+    @keyframes goldShimmer {
+      from { background-position:0% center; }
+      to   { background-position:260% center; }
+    }
+    @keyframes shimmerLoad {
+      from { background-position:200% 0; }
+      to   { background-position:-200% 0; }
     }
     @keyframes livePulse {
       0%  { box-shadow:0 0 0 0   rgba(74,222,128,0.7); }
@@ -433,17 +411,15 @@
       100%{ box-shadow:0 0 0 0   rgba(74,222,128,0);   }
     }
 
-    /* Responsive tweaks */
     @media(max-width:380px){
-      .series-title { font-size:12px; padding:8px 10px; }
-      .filter-btn { font-size:13px; padding:8px 18px; }
+      .series-title { font-size:12px; }
+      .filter-btn { font-size:13px; padding:10px 20px; }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- Ambient background -->
   <div class="bg-layer">
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
@@ -455,20 +431,41 @@
 
     <!-- Header -->
     <div class="page-header">
-      <div class="header-eyebrow">
+      <div class="header-pill">
         <span class="live-dot"></span>
         SmTv Urdu
       </div>
-      <h1 class="page-title">All Series</h1>
-      <p class="page-subtitle">Turkish dramas, fully dubbed &amp; subtitled — watch free</p>
+      <h1 class="page-title">Series</h1>
+      <p class="page-tagline">Turkish dramas, fully dubbed &amp; subtitled — watch free</p>
+    </div>
+
+    <!-- Search -->
+    <div class="search-wrap">
+      <div class="search-box">
+        <input
+          class="search-input"
+          id="searchInput"
+          type="search"
+          placeholder="Search series..."
+          autocomplete="off"
+          spellcheck="false"
+        >
+        <!-- Search icon -->
+        <svg class="s-icon" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <button class="search-clear" id="searchClear" aria-label="Clear search">×</button>
+      </div>
     </div>
 
     <!-- Filters -->
-    <div class="filter-wrap">
-      <div class="filter-bar">
+    <div class="controls-wrap">
+      <!-- Side-by-side toggle -->
+      <div class="toggle-pill">
         <button class="filter-btn active" id="dubbedBtn">🎙 Dubbed</button>
         <button class="filter-btn" id="subBtn">📝 Subtitles</button>
       </div>
+      <!-- Sub language chips -->
       <div class="sub-lang-bar" id="subLangBar">
         <button class="sub-btn" data-lang="en">🇬🇧 English</button>
         <button class="sub-btn" data-lang="hi">🇮🇳 Hindi</button>
@@ -478,47 +475,45 @@
       </div>
     </div>
 
-    <!-- Results count -->
-    <div class="results-meta">
-      <span class="results-count" id="resultsCount">Loading...</span>
-    </div>
-
-    <!-- Skeleton loader -->
+    <!-- Skeletons while loading -->
     <div class="skeleton-grid" id="skeleton">
-      <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-title"></div></div>
-      <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-title"></div></div>
-      <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-title"></div></div>
-      <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-title"></div></div>
-      <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-title"></div></div>
-      <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-title"></div></div>
+      <div class="sk-card"><div class="sk-thumb"></div><div class="sk-label"></div></div>
+      <div class="sk-card"><div class="sk-thumb"></div><div class="sk-label"></div></div>
+      <div class="sk-card"><div class="sk-thumb"></div><div class="sk-label"></div></div>
+      <div class="sk-card"><div class="sk-thumb"></div><div class="sk-label"></div></div>
+      <div class="sk-card"><div class="sk-thumb"></div><div class="sk-label"></div></div>
+      <div class="sk-card"><div class="sk-thumb"></div><div class="sk-label"></div></div>
     </div>
 
-    <!-- Series grid -->
+    <!-- Grid -->
     <div id="series-list" class="series-grid" style="display:none;"></div>
 
     <!-- Empty state -->
     <div class="state-box" id="series-empty">
-      <div class="state-icon">📭</div>
-      <div class="state-title">No Series Found</div>
-      <div class="state-desc">Try a different filter or check back later.</div>
+      <div class="state-emoji">🔍</div>
+      <div class="state-title">Nothing Found</div>
+      <div class="state-desc">Try a different search or filter.</div>
     </div>
 
-  </div><!-- .page -->
+  </div>
 
   <div id="footer-placeholder"></div>
 
   <script>
   (async function(){
-    const grid      = document.getElementById('series-list');
-    const skeleton  = document.getElementById('skeleton');
-    const empty     = document.getElementById('series-empty');
-    const countEl   = document.getElementById('resultsCount');
-    const dubbedBtn = document.getElementById('dubbedBtn');
-    const subBtn    = document.getElementById('subBtn');
+    const grid       = document.getElementById('series-list');
+    const skeleton   = document.getElementById('skeleton');
+    const empty      = document.getElementById('series-empty');
+    const dubbedBtn  = document.getElementById('dubbedBtn');
+    const subBtn     = document.getElementById('subBtn');
     const subLangBar = document.getElementById('subLangBar');
-    const subBtns   = subLangBar.querySelectorAll('.sub-btn');
+    const subBtns    = subLangBar.querySelectorAll('.sub-btn');
+    const searchInput= document.getElementById('searchInput');
+    const searchClear= document.getElementById('searchClear');
 
-    let allSeries = [];
+    let allSeries    = [];
+    let currentFilter= { type:'dubbed' };
+    let searchQuery  = '';
 
     /* ── Load data ── */
     try {
@@ -529,7 +524,7 @@
       skeleton.style.display = 'none';
       grid.style.display = 'none';
       empty.classList.add('visible');
-      countEl.textContent = 'Could not load series.';
+      empty.querySelector('.state-desc').textContent = 'Could not load series. Please try again.';
       console.error(e);
       return;
     }
@@ -538,76 +533,84 @@
     grid.style.display = 'grid';
 
     /* ── Render ── */
-    function render(filter) {
+    function render() {
+      const q = searchQuery.trim().toLowerCase();
+
       const filtered = allSeries.filter(s => {
-        if (filter.type === 'dubbed') return s.track === 'dubbed';
-        if (filter.type === 'sub') {
-          if (!filter.lang) return s.track === 'sub';
-          return s.track === 'sub' && s.subLang === filter.lang;
+        // filter by type
+        let typeMatch = false;
+        if (currentFilter.type === 'dubbed') typeMatch = s.track === 'dubbed';
+        else if (currentFilter.type === 'sub') {
+          typeMatch = s.track === 'sub';
+          if (currentFilter.lang) typeMatch = typeMatch && s.subLang === currentFilter.lang;
         }
+        if (!typeMatch) return false;
+        // filter by search
+        if (q) return (s.title || '').toLowerCase().includes(q);
+        return true;
       });
 
       if (filtered.length === 0) {
         grid.innerHTML = '';
         grid.style.display = 'none';
         empty.classList.add('visible');
-        countEl.innerHTML = '<strong>0</strong> series';
         return;
       }
 
       empty.classList.remove('visible');
       grid.style.display = 'grid';
-      countEl.innerHTML = `<strong>${filtered.length}</strong> series`;
 
-      const badge = filter.type === 'dubbed'
-        ? `<span class="card-badge badge-dubbed">Dubbed</span>`
-        : `<span class="card-badge badge-sub">${(filter.lang || 'Sub').toUpperCase()}</span>`;
+      // Badge only for subtitle mode
+      const showBadge = currentFilter.type === 'sub';
 
-      grid.innerHTML = filtered.map((s, i) => `
-        <a class="series-card" href="series.html?series=${encodeURIComponent(s.slug)}${filter.type==='sub' && filter.lang ? '&lang='+filter.lang : ''}"
-           style="animation-delay:${Math.min(i * 0.04, 0.6)}s">
+      grid.innerHTML = filtered.map((s, i) => {
+        const badge = showBadge
+          ? `<span class="lang-badge">${(currentFilter.lang || 'sub').toUpperCase()}</span>`
+          : '';
+        return `
+        <a class="series-card"
+           href="series.html?series=${encodeURIComponent(s.slug)}${currentFilter.type==='sub'&&currentFilter.lang?'&lang='+currentFilter.lang:''}"
+           style="animation-delay:${Math.min(i*0.04,0.55)}s">
           <div class="series-thumb">
             <img src="${s.poster}" alt="${s.title}" loading="lazy">
             ${badge}
-            <div class="play-icon">
-              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <div class="play-btn">
+              <div class="play-btn-inner">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </div>
             </div>
           </div>
           <div class="series-title">${s.title}</div>
-        </a>
-      `).join('');
+        </a>`;
+      }).join('');
 
-      /* Intersection Observer for stagger-on-scroll */
+      /* Stagger-on-scroll via IntersectionObserver */
       const cards = grid.querySelectorAll('.series-card');
       if ('IntersectionObserver' in window) {
-        const io = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('visible');
-              io.unobserve(entry.target);
-            }
+        const io = new IntersectionObserver(entries => {
+          entries.forEach(e => {
+            if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
           });
-        }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+        }, { threshold:0.06, rootMargin:'0px 0px -10px 0px' });
         cards.forEach(c => io.observe(c));
       } else {
         cards.forEach(c => c.classList.add('visible'));
       }
     }
 
-    let currentFilter = { type: 'dubbed' };
-    render(currentFilter);
+    render();
 
     /* ── Filter buttons ── */
     dubbedBtn.onclick = () => {
-      currentFilter = { type: 'dubbed' };
+      currentFilter = { type:'dubbed' };
       dubbedBtn.classList.add('active');
       subBtn.classList.remove('active');
       subLangBar.classList.remove('active');
-      render(currentFilter);
+      render();
     };
 
     subBtn.onclick = () => {
-      currentFilter = { type: 'sub' };
+      currentFilter = { type:'sub' };
       subBtn.classList.add('active');
       dubbedBtn.classList.remove('active');
       subLangBar.classList.add('active');
@@ -616,31 +619,45 @@
       const btn = [...subBtns].find(b => b.dataset.lang === saved) || subBtns[0];
       btn.classList.add('active');
       currentFilter.lang = btn.dataset.lang;
-      render(currentFilter);
+      render();
     };
 
     subBtns.forEach(b => {
       b.onclick = () => {
         subBtns.forEach(x => x.classList.remove('active'));
         b.classList.add('active');
-        currentFilter = { type: 'sub', lang: b.dataset.lang };
+        currentFilter = { type:'sub', lang:b.dataset.lang };
         localStorage.setItem('smtv_sub_lang', b.dataset.lang);
-        render(currentFilter);
+        render();
       };
+    });
+
+    /* ── Search ── */
+    let searchTimer;
+    searchInput.addEventListener('input', () => {
+      searchQuery = searchInput.value;
+      searchClear.classList.toggle('visible', searchQuery.length > 0);
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(render, 180);
+    });
+
+    searchClear.addEventListener('click', () => {
+      searchInput.value = '';
+      searchQuery = '';
+      searchClear.classList.remove('visible');
+      searchInput.focus();
+      render();
     });
 
   })();
   </script>
 
-  <!-- Footer loader (robust, original logic preserved) -->
+  <!-- Footer loader — original robust logic preserved -->
   <script>
   (async function loadFooterRobust(){
     const candidates = [
-      '/includes/footer.html',
-      'includes/footer.html',
-      './includes/footer.html',
-      '/footer.html',
-      'footer.html'
+      '/includes/footer.html','includes/footer.html',
+      './includes/footer.html','/footer.html','footer.html'
     ];
     const placeholder = document.getElementById('footer-placeholder');
 
@@ -648,48 +665,47 @@
       try {
         placeholder.innerHTML = html;
         try {
-          const curPad = parseInt(getComputedStyle(document.body).paddingBottom) || 0;
-          if (curPad < 96) document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))';
+          const curPad = parseInt(getComputedStyle(document.body).paddingBottom)||0;
+          if(curPad<96) document.body.style.paddingBottom='calc(96px + env(safe-area-inset-bottom))';
         } catch(e){}
-        const nav = placeholder.querySelector('#smtv-bottom-nav') || placeholder.querySelector('.smtv-bottom-nav');
-        if (!nav) return;
+        const nav = placeholder.querySelector('#smtv-bottom-nav')||placeholder.querySelector('.smtv-bottom-nav');
+        if(!nav) return;
         const items = Array.from(nav.querySelectorAll('.nav-item'));
-        items.forEach(i => i.classList.remove('active'));
-        let seriesItem = items.find(i => ((i.dataset && (i.dataset.name||'').toLowerCase()) === 'series'));
-        if (!seriesItem) seriesItem = items.find(i => (i.getAttribute('href')||'').toLowerCase().includes('series'));
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('series') && seriesItem) seriesItem.classList.add('active');
+        items.forEach(i=>i.classList.remove('active'));
+        let si = items.find(i=>((i.dataset&&(i.dataset.name||'').toLowerCase())==='series'));
+        if(!si) si=items.find(i=>(i.getAttribute('href')||'').toLowerCase().includes('series'));
+        const up=new URLSearchParams(window.location.search);
+        if(up.has('series')&&si) si.classList.add('active');
         else {
-          const path = location.pathname.toLowerCase();
-          const byPath = items.find(i => (i.getAttribute('href')||'').toLowerCase().includes(path.split('/').pop()));
-          if (byPath) byPath.classList.add('active');
-          else if (seriesItem) seriesItem.classList.add('active');
+          const path=location.pathname.toLowerCase();
+          const bp=items.find(i=>(i.getAttribute('href')||'').toLowerCase().includes(path.split('/').pop()));
+          if(bp) bp.classList.add('active');
+          else if(si) si.classList.add('active');
         }
-        items.forEach(a => {
-          if (a._smtvInit) return;
-          a._smtvInit = true;
-          a.addEventListener('click', function(e){
-            try { e.preventDefault && e.preventDefault(); } catch(err){}
-            items.forEach(i => i.classList.remove('active'));
+        items.forEach(a=>{
+          if(a._smtvInit) return; a._smtvInit=true;
+          a.addEventListener('click',function(e){
+            try{e.preventDefault&&e.preventDefault();}catch(err){}
+            items.forEach(i=>i.classList.remove('active'));
             this.classList.add('active');
-            try { localStorage.setItem('smtv_last_nav', this.dataset.name || this.getAttribute('href')); } catch(e){}
-            const href = this.getAttribute('href');
-            if (href) location.assign(href);
-          }, { passive: false });
+            try{localStorage.setItem('smtv_last_nav',this.dataset.name||this.getAttribute('href'));}catch(e){}
+            const href=this.getAttribute('href');
+            if(href) location.assign(href);
+          },{passive:false});
         });
-      } catch(e) { console.warn('initNav error', e); }
+      } catch(e){console.warn('initNav error',e);}
     }
 
-    for (const cand of candidates) {
-      try {
-        const res = await fetch(cand, { cache: 'no-cache' });
-        if (!res.ok) continue;
-        const text = await res.text();
+    for(const cand of candidates){
+      try{
+        const res=await fetch(cand,{cache:'no-cache'});
+        if(!res.ok) continue;
+        const text=await res.text();
         initNav(text); return;
-      } catch(e) { continue; }
+      } catch(e){continue;}
     }
 
-    placeholder.innerHTML = `
+    placeholder.innerHTML=`
       <nav class="smtv-bottom-nav" id="smtv-bottom-nav" role="navigation" aria-label="Main">
         <a href="/index.html" class="nav-item" data-name="home"><span class="icon-wrap">🏠</span><span class="label">Home</span></a>
         <a href="/series.html" class="nav-item active" data-name="series"><span class="icon-wrap">🎬</span><span class="label">Series</span></a>
@@ -704,7 +720,7 @@
         .smtv-bottom-nav .icon-wrap{display:inline-flex;width:40px;height:40px;align-items:center;justify-content:center;border-radius:10px;}
         .smtv-bottom-nav .label{display:block;font-size:12px;margin-top:3px;}
       </style>`;
-    try { document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))'; } catch(e){}
+    try{document.body.style.paddingBottom='calc(96px + env(safe-area-inset-bottom))';}catch(e){}
   })();
   </script>
 
