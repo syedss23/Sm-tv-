@@ -238,13 +238,21 @@
     .price-amount { font-family:'Playfair Display',serif; font-size:2.7em; font-weight:800; color:#fff; letter-spacing:-.02em; line-height:1; }
     .price-tenure { font-size: .81em; color: var(--txt-muted); margin-top: 5px; margin-bottom: 22px; }
 
-    /* ★ "All benefits" subtle line instead of repeating list ★ */
-    .all-incl {
-      display: flex; align-items: center; gap: 7px;
-      font-size: .8em; color: var(--txt-muted); margin-bottom: 20px;
+    /* ★ perks list inside price cards ★ */
+    .price-perks { list-style: none; margin-bottom: 22px; }
+    .price-perks li {
+      display: flex; align-items: center; gap: 9px;
+      font-size: .86em; color: var(--txt); padding: 6px 0;
+      border-bottom: 1px solid var(--border);
     }
-    .price-card.featured .all-incl { color: rgba(232,168,0,.75); }
-    .all-incl::before { content:'✦'; font-size:.85em; }
+    .price-perks li:last-child { border-bottom: none; }
+    .perk-tick {
+      width: 17px; height: 17px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(232,168,0,.14); border: 1px solid rgba(232,168,0,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .64em; color: var(--gold); font-weight: 800;
+    }
+    .price-card.featured .price-perks li { color: var(--txt); }
 
     .btn-plan-gold {
       display: block; text-align: center;
@@ -479,7 +487,13 @@
           <div class="price-plan">Quarterly</div>
           <div class="price-amount">₹249</div>
           <div class="price-tenure">for 3 months — saves ₹48</div>
-          <div class="all-incl">All premium benefits included</div>
+          <ul class="price-perks">
+            <li><span class="perk-tick">✓</span> 3 months full access</li>
+            <li><span class="perk-tick">✓</span> Ad-free streaming</li>
+            <li><span class="perk-tick">✓</span> Early episode access</li>
+            <li><span class="perk-tick">✓</span> Fast downloads</li>
+            <li><span class="perk-tick">✓</span> Telegram support</li>
+          </ul>
           <a class="btn-plan-gold" href="/pay.html?label=Quarterly">Get Quarterly Plan</a>
           <div class="plan-note">Pay → Screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Telegram</a> → Instant access</div>
         </div>
@@ -489,7 +503,13 @@
           <div class="price-plan">Monthly</div>
           <div class="price-amount">₹99</div>
           <div class="price-tenure">per month</div>
-          <div class="all-incl">All premium benefits included</div>
+          <ul class="price-perks">
+            <li><span class="perk-tick">✓</span> 1 month full access</li>
+            <li><span class="perk-tick">✓</span> Ad-free streaming</li>
+            <li><span class="perk-tick">✓</span> Early episode access</li>
+            <li><span class="perk-tick">✓</span> Fast downloads</li>
+            <li><span class="perk-tick">✓</span> Telegram support</li>
+          </ul>
           <a class="btn-plan-outline" href="/pay.html?label=Monthly">Get Monthly Plan</a>
           <div class="plan-note">Pay → Screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Telegram</a> → Instant access</div>
         </div>
@@ -703,7 +723,9 @@
       });
       try {
         const curPad = parseInt(getComputedStyle(document.body).paddingBottom)||0;
-        if(curPad < 96) document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))';
+        const navH = nav.getBoundingClientRect().height || 64;
+        const needed = navH + 16 + (window.innerWidth <= 600 ? 20 : 0);
+        if(curPad < needed) document.body.style.paddingBottom = needed + 'px';
       } catch(e){}
     } catch(err) {
       console.warn('Footer load/init error:', err);
