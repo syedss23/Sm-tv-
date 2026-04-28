@@ -496,12 +496,20 @@
           wrap.appendChild(pl);
         }
         /* Extra safety: force img styles again in case anything overrode */
-        const img = wrap.querySelector('img');
-        if (img) {
+        
+      const img = wrap.querySelector('img');
+
+if (img && !img._fixed) {
+  img._fixed = true;
+
   img.style.objectFit = 'cover';
   img.style.objectPosition = 'center';
-        }
-      });
+
+  // 🔥 FORCE REPAINT (THIS IS KEY FIX)
+  requestAnimationFrame(() => {
+    img.style.opacity = '1';
+  });
+}
 
       /* Episode title styling */
       document.querySelectorAll('.pro-ep-title-pro').forEach(el => {
