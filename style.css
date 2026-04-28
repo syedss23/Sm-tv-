@@ -662,5 +662,7 @@ button:hover{background:#272838}
 .source-btn:hover {
   opacity: 0.9;
 }
-
+.pro-ep-thumb-pro {
+  background: #0a1624;
+}
 /* End of file */
