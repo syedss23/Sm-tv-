@@ -345,7 +345,8 @@
 
   opacity: 0.25; /* 🔥 THIS FIXES BLACK LOOK */
     }
-    .pro-ep-thumb-pro {
+    /* IMAGE LOADING FIX (FINAL) */
+.pro-ep-thumb-pro {
   position:absolute !important;
   top:0 !important;
   left:0 !important;
@@ -358,7 +359,15 @@
   display:block !important;
   z-index:2;
 
-  transition:transform .34s ease;
+  background:#0a1624;
+
+  opacity:0;
+  transition:opacity .35s ease, transform .34s ease;
+}
+
+.pro-ep-thumb-pro.loaded {
+  opacity:1;
+}
 
   /* FIXES */
   background: #0a1624;
