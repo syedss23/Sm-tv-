@@ -372,5 +372,45 @@
     "seasons": 3,
     "track": "sub",
     "subLang": "sp"
+  },
+  {
+  "id": 308,
+    "title": "The Legend Of History (English Subtitles)",
+    "slug": "history-en",
+    "poster": "assets/posters/history.jpg",
+    "desc": { "en": "The Legend Of History with English subtitles" },
+    "seasons": 1,
+    "track": "sub",
+    "subLang": "en"
+  },
+  {
+  "id": 309,
+    "title": "The Legend Of History (Arabic Subtitles)",
+    "slug": "history-ar",
+    "poster": "assets/posters/history.jpg",
+    "desc": { "en": "The Legend Of History with Arabic subtitles" },
+    "seasons": 1,
+    "track": "sub",
+    "subLang": "ar"
+  },
+  {
+  "id": 310,
+    "title": "The Legend Of History (Urdu Subtitles)",
+    "slug": "history-ur",
+    "poster": "assets/posters/history.jpg",
+    "desc": { "en": "The Legend Of History with Urdu subtitles" },
+    "seasons": 1,
+    "track": "sub",
+    "subLang": "ur"
+  },
+  {
+  "id": 311,
+    "title": "The Legend Of History (Spanish Subtitles)",
+    "slug": "history-sp",
+    "poster": "assets/posters/history.jpg",
+    "desc": { "en": "The Legend Of History with Spanish subtitles" },
+    "seasons": 1,
+    "track": "sub",
+    "subLang": "sp"
   }
 ]
