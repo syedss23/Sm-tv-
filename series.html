@@ -15,459 +15,1103 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="Watch Turkish drama series and historical shows in Urdu on SmTv Urdu. All series details and streaming links.">
 
-  <!-- main site CSS -->
   <link rel="stylesheet" href="style.css">
-
-  <!-- FontAwesome for footer icons (used by fallback nav) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Outfit:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 
-  <!-- SERIES PAGE INLINE STYLES (ready-to-use, tuned for compact cards & header) -->
   <style>
-    /* Page basics */
-    body { background:#0b0d10; color:#fff; margin:0; font-family: 'Segoe UI', Arial, sans-serif; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
-    #main-content { max-width:1100px; margin:0 auto; padding:14px; }
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      --gold: #f5c842;
+      --gold-dim: #c9a12a;
+      --cyan: #00d4f5;
+      --cyan-dark: #0097b2;
+      --bg: #07090e;
+      --bg2: #0d1117;
+      --bg3: #111823;
+      --card: #0f1722;
+      --card2: #131d2b;
+      --text: #e8f0f8;
+      --muted: #8ea0b5;
+      --vip-from: #f5c842;
+      --vip-to: #ff8c42;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
 
-    /* Header / poster block */
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Animated mesh background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 15% 10%, rgba(0,180,220,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 35% at 85% 80%, rgba(245,200,66,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(0,100,150,0.03) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #main-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 14px 140px 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== SERIES HEADER ===== */
     .pro-series-header-pro {
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      text-align:center;
-      gap:12px;
-      padding:18px;
-      border-radius:14px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
-      box-shadow: 0 10px 36px rgba(0,0,0,0.55);
-      position:relative;
-      margin-bottom:12px;
-    }
-    .pro-series-back-btn-pro {
-      position:absolute;
-      left:14px;
-      top:14px;
-      width:48px;
-      height:48px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      border-radius:12px;
-      background: rgba(0,150,200,0.08);
-      border: 2px solid rgba(0,160,210,0.14);
-      box-shadow: 0 6px 18px rgba(0,140,200,0.08);
-      text-decoration:none;
-    }
-    .pro-series-poster-pro {
-      width:220px;
-      height:120px;
-      border-radius:12px;
-      object-fit:cover;
-      display:block;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    }
-    .pro-series-title-pro { font-size:22px; margin:8px 0 4px 0; color:#00d0f0; font-weight:900; }
-    .pro-series-desc-pro { color:#cfd8df; line-height:1.45; max-width:820px; }
-
-    /* Seasons tabs */
-    .pro-seasons-tabs-pro { display:flex; gap:12px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
-    .pro-season-tab-pro {
-      background:rgba(255,255,255,0.03);
-      border:none;
-      color:#ddd;
-      padding:10px 18px;
-      border-radius:999px;
-      cursor:pointer;
-      font-weight:800;
-      font-size:16px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.45) inset;
-      outline: none;
-    }
-    .pro-season-tab-pro.active {
-      background: linear-gradient(90deg,#29f0ff,#00a9ff);
-      color:#05222b;
-      transform:translateY(-6px);
-      box-shadow: 0 18px 40px rgba(0,160,210,0.14);
-    }
-
-    /* Source Selector Buttons - NEW FEATURE for Barbarossa */
-    .source-selector {
       display: flex;
-      gap: 12px;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 14px;
+      padding: 22px 18px 20px;
+      border-radius: 20px;
+      background: linear-gradient(160deg, rgba(255,255,255,0.025) 0%, rgba(0,0,0,0.1) 100%);
+      border: 1px solid rgba(255,255,255,0.05);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.04);
+      position: relative;
+      margin-bottom: 14px;
+      animation: fadeSlideDown 0.55s cubic-bezier(.22,.68,0,1.2) both;
+    }
+
+    @keyframes fadeSlideDown {
+      from { opacity: 0; transform: translateY(-24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .pro-series-back-btn-pro {
+      position: absolute;
+      left: 14px;
+      top: 14px;
+      width: 44px;
+      height: 44px;
+      display: inline-flex;
+      align-items: center;
       justify-content: center;
-      margin: 16px 0;
+      border-radius: 12px;
+      background: rgba(0,180,220,0.1);
+      border: 1.5px solid rgba(0,180,220,0.2);
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .pro-series-back-btn-pro:hover { background: rgba(0,180,220,0.2); transform: scale(1.07); }
+
+    .pro-series-poster-pro {
+      width: 240px;
+      height: 135px;
+      border-radius: 14px;
+      object-fit: cover;
+      display: block;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.7), 0 0 0 2px rgba(255,255,255,0.04);
+    }
+
+    .pro-series-title-pro {
+      font-family: 'Cinzel', serif;
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--cyan);
+      letter-spacing: 0.02em;
+      text-shadow: 0 0 30px rgba(0,212,245,0.3);
+    }
+
+    .pro-series-desc-pro {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 680px;
+      font-weight: 400;
+    }
+
+    /* ===== VIP BANNER ===== */
+    .vip-banner {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      padding: 22px 20px;
+      margin-bottom: 14px;
+      background: linear-gradient(135deg, #0c1f2e 0%, #0a1a27 50%, #0d2235 100%);
+      border: 1px solid rgba(245,200,66,0.2);
+      box-shadow: 0 0 0 1px rgba(245,200,66,0.06) inset, 0 20px 50px rgba(0,0,0,0.55);
+      animation: fadeSlideDown 0.65s cubic-bezier(.22,.68,0,1.2) both;
+      animation-delay: 0.1s;
+    }
+
+    /* Shimmer stripe */
+    .vip-banner::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(245,200,66,0.06), transparent);
+      animation: shimmer 3s infinite;
+    }
+    @keyframes shimmer {
+      0%   { left: -100%; }
+      100% { left: 200%; }
+    }
+
+    /* Gold top bar */
+    .vip-banner::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), var(--vip-to), var(--gold), transparent);
+    }
+
+    .vip-crown-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .vip-crown {
+      font-size: 26px;
+      animation: floatCrown 2.5s ease-in-out infinite;
+    }
+    @keyframes floatCrown {
+      0%, 100% { transform: translateY(0) rotate(-4deg); }
+      50%       { transform: translateY(-5px) rotate(4deg); }
+    }
+
+    .vip-label {
+      font-family: 'Cinzel', serif;
+      font-size: 18px;
+      font-weight: 900;
+      background: linear-gradient(90deg, var(--gold), var(--vip-to), var(--gold));
+      background-size: 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: goldShift 3s linear infinite;
+    }
+    @keyframes goldShift {
+      0%   { background-position: 0%; }
+      100% { background-position: 200%; }
+    }
+
+    .vip-tagline {
+      text-align: center;
+      font-size: 13.5px;
+      color: rgba(200,220,235,0.85);
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    .vip-perks {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .vip-perk {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(245,200,66,0.12);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: rgba(220,235,248,0.9);
+      backdrop-filter: blur(6px);
+    }
+    .vip-perk i { color: var(--gold); font-size: 11px; }
+
+    .vip-btn-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
       flex-wrap: wrap;
     }
-    
-    .source-btn {
-      background: #1a4d5e;
-      color: white;
-      border: none;
-      padding: 10px 24px;
-      margin: 0;
+
+    .vip-join-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 28px;
       border-radius: 999px;
+      font-weight: 800;
       font-size: 15px;
+      text-decoration: none;
+      background: linear-gradient(90deg, var(--gold), var(--vip-to));
+      color: #0a0800;
+      box-shadow: 0 8px 28px rgba(245,200,66,0.3), 0 0 0 0 rgba(245,200,66,0.4);
+      transition: transform 0.15s, box-shadow 0.15s;
+      animation: pulseGlow 2.5s ease-in-out infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 8px 28px rgba(245,200,66,0.3), 0 0 0 0 rgba(245,200,66,0); }
+      50%       { box-shadow: 0 8px 28px rgba(245,200,66,0.45), 0 0 0 8px rgba(245,200,66,0); }
+    }
+    .vip-join-btn:hover { transform: translateY(-2px) scale(1.03); text-decoration: none; }
+
+    .vip-details-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 12px 22px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 14px;
+      text-decoration: none;
+      background: rgba(255,255,255,0.05);
+      color: rgba(200,220,235,0.9);
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: background 0.15s, transform 0.15s;
+    }
+    .vip-details-btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+
+    /* ===== SEASONS TABS ===== */
+    .pro-seasons-tabs-pro {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 16px 0 10px;
+      animation: fadeSlideDown 0.7s cubic-bezier(.22,.68,0,1.2) both;
+      animation-delay: 0.15s;
+    }
+
+    .pro-season-tab-pro {
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(255,255,255,0.07);
+      color: var(--muted);
+      padding: 10px 22px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 15px;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.22s cubic-bezier(.22,.68,0,1.2);
+      outline: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .pro-season-tab-pro::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--cyan), var(--cyan-dark));
+      opacity: 0;
+      transition: opacity 0.22s;
+      border-radius: 999px;
+    }
+    .pro-season-tab-pro span { position: relative; z-index: 1; }
+    .pro-season-tab-pro.active {
+      color: #05222b;
+      border-color: transparent;
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0,180,220,0.25);
+    }
+    .pro-season-tab-pro.active::after { opacity: 1; }
+    .pro-season-tab-pro:hover:not(.active) {
+      border-color: rgba(0,180,220,0.25);
+      color: var(--text);
+      transform: translateY(-2px);
+    }
+
+    /* ===== SOURCE SELECTOR ===== */
+    .source-selector {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 10px 0 14px;
+      flex-wrap: wrap;
+    }
+
+    .source-btn {
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+      border: 1.5px solid rgba(255,255,255,0.07);
+      padding: 9px 20px;
+      border-radius: 999px;
+      font-size: 14px;
       font-weight: 700;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(26, 77, 94, 0.3);
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.2s;
       outline: none;
     }
-    
     .source-btn.active {
-      background: linear-gradient(90deg, #00bcd4, #00a9c6);
+      background: linear-gradient(90deg, var(--cyan), var(--cyan-dark));
       color: #fff;
-      transform: scale(1.08);
-      box-shadow: 0 6px 20px rgba(0, 188, 212, 0.4);
+      border-color: transparent;
+      box-shadow: 0 6px 20px rgba(0,180,220,0.3);
+      transform: scale(1.06);
     }
-    
-    .source-btn:hover:not(.active) {
-      background: #2a6d7e;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(26, 77, 94, 0.5);
+    .source-btn:hover:not(.active) { border-color: rgba(0,180,220,0.25); color: var(--text); transform: translateY(-2px); }
+
+    /* ===== EPISODES SECTION TITLE ===== */
+    .episodes-section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 18px 0 12px;
+      padding: 0 4px;
+      animation: fadeIn 0.5s ease both;
     }
-    
-    .source-btn:active {
-      transform: scale(0.98);
+    .episodes-section-title .line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(0,180,220,0.3), transparent);
+    }
+    .episodes-section-title .line.right {
+      background: linear-gradient(270deg, rgba(0,180,220,0.3), transparent);
+    }
+    .episodes-section-title h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--cyan);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
     }
 
-    /* Episodes container */
-    .pro-episodes-row-wrap-pro { margin-top:16px; }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
 
-    /* horizontal scroller */
+    /* ===== EPISODES ROW ===== */
+    .pro-episodes-row-wrap-pro {
+      margin-bottom: 10px;
+      animation: fadeSlideUp 0.6s cubic-bezier(.22,.68,0,1.2) both;
+      animation-delay: 0.2s;
+    }
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
     .pro-episodes-row-pro {
-      display:flex;
-      gap:14px;
-      overflow-x:auto;
-      padding:12px 14px 10px 14px;
-      -webkit-overflow-scrolling:touch;
-      scroll-snap-type:x proximity;
-      align-items:flex-start;
-      transition: opacity .28s ease, transform .28s ease;
-      will-change: opacity, transform;
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding: 8px 6px 14px 6px;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x proximity;
+      align-items: flex-start;
+      transition: opacity 0.28s ease, transform 0.28s ease;
+      scrollbar-width: none;
     }
+    .pro-episodes-row-pro::-webkit-scrollbar { display: none; }
 
-    /* Compact square-style card */
+    /* ===== EPISODE CARD ===== */
     .pro-episode-card-pro {
-      scroll-snap-align:center;
-      flex:0 0 150px;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      align-items:center;
-      padding:8px;
-      text-decoration:none;
-      color:#fff;
-      border-radius:12px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));
-      box-shadow: 0 10px 30px rgba(0,0,0,0.45);
-      min-height:200px;
-      transition:transform .14s ease, box-shadow .14s ease;
-      position:relative;
+      scroll-snap-align: start;
+      flex: 0 0 158px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      text-decoration: none;
+      color: var(--text);
+      border-radius: var(--radius);
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.05);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      overflow: hidden;
+      transition: transform 0.18s cubic-bezier(.22,.68,0,1.4), box-shadow 0.18s ease, border-color 0.18s ease;
+      position: relative;
     }
-    @media (max-width:420px) {
-      .pro-episode-card-pro { flex:0 0 140px; min-height:190px; padding:8px; }
-    }
-    @media (min-width:900px) {
-      .pro-episode-card-pro { flex:0 0 200px; min-height:220px; }
+    @media (max-width: 420px) { .pro-episode-card-pro { flex: 0 0 145px; } }
+    @media (min-width: 900px) { .pro-episode-card-pro { flex: 0 0 190px; } }
+
+    .pro-episode-card-pro:hover,
+    .pro-episode-card-pro:focus {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 22px 55px rgba(0,0,0,0.7), 0 0 0 1.5px rgba(0,180,220,0.35);
+      border-color: rgba(0,180,220,0.35);
+      outline: none;
     }
 
-    /* thumbnail area - fixed square so image visible */
+    /* Thumbnail */
     .pro-ep-thumb-wrap-pro {
-      width:120px;
-      height:120px;
-      border-radius:12px;
-      overflow:hidden;
-      position:relative;
-      background:#0b0d10;
-      display:block;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.55) inset;
-      flex-shrink:0;
+      width: 100%;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      position: relative;
+      background: #0a0d14;
+      display: block;
+      flex-shrink: 0;
     }
-    @media (min-width:900px) { .pro-ep-thumb-wrap-pro{ width:160px; height:160px; border-radius:14px; } }
 
-    /* image fills thumbnail and is cropped - no empty space */
+    /* Play overlay on hover */
+    .pro-ep-thumb-wrap-pro::after {
+      content: '▶';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: rgba(255,255,255,0.9);
+      background: rgba(0,0,0,0.45);
+      opacity: 0;
+      transition: opacity 0.18s ease;
+      backdrop-filter: blur(2px);
+    }
+    .pro-episode-card-pro:hover .pro-ep-thumb-wrap-pro::after { opacity: 1; }
+
     .pro-ep-thumb-pro {
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.35s ease;
     }
+    .pro-episode-card-pro:hover .pro-ep-thumb-pro { transform: scale(1.07); }
 
-    /* Ep badge */
+    /* Episode number badge */
     .pro-ep-num-pro {
-      position:absolute;
-      right:8px;
-      top:8px;
-      background: linear-gradient(90deg,#ffcf33,#ff7a5f);
-      color:#111;
-      font-weight:800;
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:12px;
-      box-shadow: 0 6px 18px rgba(255,120,60,0.12);
+      position: absolute;
+      right: 7px;
+      top: 7px;
+      background: linear-gradient(90deg, #ffcf33, #ff7a5f);
+      color: #111;
+      font-weight: 800;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      box-shadow: 0 3px 10px rgba(255,120,60,0.3);
+      font-family: 'Outfit', sans-serif;
+      z-index: 2;
     }
 
-    /* Title area under thumbnail */
+    /* Card info section */
+    .pro-ep-info {
+      padding: 10px 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
     .pro-ep-title-pro {
-      width:100%;
-      text-align:center;
-      font-size:16px;
-      font-weight:800;
-      color:#fff;
-      padding:8px 6px;
-      border-radius:8px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
-      box-shadow: inset 0 -6px 12px rgba(0,0,0,0.08);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.35;
     }
 
-    .pro-episode-card-pro:focus,
-    .pro-episode-card-pro:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 20px 48px rgba(0,0,0,0.6);
+    .pro-ep-subtitle {
+      font-size: 11.5px;
+      font-weight: 400;
+      color: var(--muted);
+      line-height: 1.3;
+      font-style: italic;
     }
 
-    /* Premium message */
+    /* Bottom glow line on card */
+    .pro-episode-card-pro::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--cyan-dark));
+      opacity: 0;
+      transition: opacity 0.18s;
+    }
+    .pro-episode-card-pro:hover::after { opacity: 1; }
+
+    /* ===== TUTORIAL SECTION ===== */
+    .pro-tutorial-wrap { max-width: 920px; margin: 28px auto 0; padding: 0 4px; }
+
+    .pro-tutorial-hero {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      padding: 18px 20px 14px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(0,180,220,0.05), rgba(59,130,246,0.03));
+      border: 1px solid rgba(0,180,220,0.1);
+      box-shadow: 0 12px 36px rgba(6,30,60,0.36);
+      margin-bottom: 14px;
+    }
+
+    .pro-tutorial-hero .icon {
+      flex: 0 0 52px;
+      height: 52px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 14px;
+      background: rgba(0,180,220,0.1);
+      border: 1px solid rgba(0,180,220,0.15);
+    }
+    .pro-tutorial-hero .icon svg { width: 26px; height: 26px; color: var(--cyan); }
+
+    .pro-tutorial-hero h3 {
+      margin: 0;
+      font-family: 'Cinzel', serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+    .pro-tutorial-hero p { margin: 4px 0 0 0; color: var(--muted); font-size: 0.93rem; }
+
+    .pro-tutorial-card {
+      background: linear-gradient(180deg, #0f2430 0%, #0b1b28 100%);
+      border-radius: 16px;
+      padding: 14px;
+      border: 1px solid rgba(0,180,220,0.08);
+      box-shadow: 0 10px 28px rgba(2,12,20,0.6);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .pro-tutorial-card .small-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #e6f7ff;
+      margin: 0 0 10px;
+    }
+
+    .pro-video-frame-wrap {
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-bottom: 56.25%;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .pro-tutorial-card iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+      background: #000;
+    }
+
+    @media (max-width: 680px) {
+      .pro-tutorial-hero { padding: 12px; gap: 10px; }
+      .pro-tutorial-hero h3 { font-size: 1.25rem; }
+      .pro-tutorial-hero .icon { width: 44px; height: 44px; }
+    }
+
+    /* ===== PREMIUM CHANNEL MESSAGE (fallback for JS-rendered) ===== */
     .premium-channel-message {
       margin-top: 14px;
-      padding: 18px;
-      border-radius: 14px;
+      padding: 20px;
+      border-radius: 18px;
       background: linear-gradient(180deg, #042430 0%, #08323e 100%);
-      border: 1px solid rgba(0,160,200,0.12);
+      border: 1px solid rgba(0,160,200,0.15);
       color: #c6f5ff;
       box-shadow: 0 12px 34px rgba(0,0,0,0.45);
-      text-align:center;
+      text-align: center;
     }
 
-    /* Strong override: make Join Premium yellow with black text */
-    .premium-channel-message .join-btn,
-    .btn-primary {
-      background: linear-gradient(90deg, #ffd400 0%, #ffb357 100%) !important;
-      color: #111 !important;
+    .join-btn, .btn-primary {
+      background: linear-gradient(90deg, var(--gold), var(--vip-to)) !important;
+      color: #0a0800 !important;
       font-weight: 800;
-      padding: 12px 24px;
+      padding: 12px 26px;
       border-radius: 999px;
-      box-shadow: 0 14px 36px rgba(255,160,40,0.18);
+      box-shadow: 0 10px 30px rgba(245,200,66,0.25);
       text-decoration: none;
       display: inline-block;
-      transition: transform .12s ease, box-shadow .12s ease;
+      transition: transform 0.14s ease, box-shadow 0.14s ease;
+      font-family: 'Outfit', sans-serif;
     }
-    .premium-channel-message .join-btn:hover,
-    .btn-primary:hover {
-      box-shadow: 0 18px 44px rgba(255,160,40,0.22);
+    .join-btn:hover, .btn-primary:hover {
+      box-shadow: 0 14px 36px rgba(245,200,66,0.35);
       transform: translateY(-2px);
+    }
+
+    /* ===== WHATSAPP POPUP ===== */
+    #whatsappPopup {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 99999;
+      pointer-events: none;
+    }
+
+    .wa-popup-inner {
+      pointer-events: all;
+      background: linear-gradient(160deg, #0f1d2b 0%, #0b1520 100%);
+      border: 1px solid rgba(37,211,102,0.2);
+      border-bottom: none;
+      border-radius: 24px 24px 0 0;
+      padding: 22px 22px 32px;
+      max-width: 480px;
+      margin: 0 auto;
+      box-shadow: 0 -16px 60px rgba(0,0,0,0.65);
+      position: relative;
+      animation: slideUpPopup 0.45s cubic-bezier(.22,.68,0,1.2) both;
+    }
+
+    @keyframes slideUpPopup {
+      from { transform: translateY(100%); opacity: 0; }
+      to   { transform: translateY(0);   opacity: 1; }
+    }
+
+    /* Green accent top bar */
+    .wa-popup-inner::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      border-radius: 99px 99px 0 0;
+      background: linear-gradient(90deg, #25d366, #128c7e, #25d366);
+    }
+
+    /* Drag handle */
+    .wa-handle {
+      width: 36px;
+      height: 4px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 99px;
+      margin: 0 auto 18px;
+    }
+
+    .wa-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .wa-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .wa-title {
+      font-family: 'Cinzel', serif;
+      font-size: 17px;
+      font-weight: 900;
+      color: #fff;
+    }
+    .wa-subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .wa-body {
+      font-size: 14px;
+      color: rgba(200,220,235,0.85);
+      line-height: 1.55;
+      margin-bottom: 18px;
+    }
+
+    .wa-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      background: linear-gradient(90deg, #25d366, #128c7e);
+      color: #fff;
+      font-weight: 800;
+      font-size: 15px;
       text-decoration: none;
+      margin-bottom: 12px;
+      box-shadow: 0 8px 24px rgba(37,211,102,0.3);
+      transition: transform 0.14s, box-shadow 0.14s;
+      font-family: 'Outfit', sans-serif;
     }
-    .premium-channel-message .join-btn:active,
-    .btn-primary:active { transform: translateY(1px); }
+    .wa-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(37,211,102,0.4); }
 
-    /* Tutorial title highlight */
-    .pro-tutorial-title {
-      margin-top:18px;
-      font-weight:900;
-      font-size:20px;
-      color:#fff;
-      background: linear-gradient(90deg, rgba(34,193,195,0.04), rgba(253,187,45,0.02));
-      border-left: 8px solid #ffd400;
-      padding:10px 14px;
-      border-radius:10px;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+    .wa-close {
+      display: block;
+      width: 100%;
+      background: none;
+      border: none;
+      color: rgba(200,220,235,0.6);
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      padding: 6px;
+      font-family: 'Outfit', sans-serif;
+      transition: color 0.15s;
     }
-    .pro-video-frame-wrap { margin-top:12px; border-radius:10px; overflow:hidden; }
+    .wa-close:hover { color: rgba(255,100,100,0.9); }
 
-    /* Tutorial hero + cards (Google-like) */
-    .pro-tutorial-wrap { max-width:920px; margin:32px auto; padding:0 14px; }
-    .pro-tutorial-hero {
-      display:flex;
-      gap:14px;
-      align-items:center;
-      padding:18px 20px;
-      border-radius:14px;
-      background: linear-gradient(90deg, rgba(34,193,195,0.06), rgba(59,130,246,0.03));
-      box-shadow: 0 12px 36px rgba(6,30,60,0.36);
-      border: 1px solid rgba(255,255,255,0.03);
-      margin-bottom:10px;
-    }
-    .pro-tutorial-hero .icon { flex:0 0 56px; height:56px; display:inline-grid; place-items:center; border-radius:12px; background: linear-gradient(180deg,#00c6ff22,#0077b622); box-shadow: 0 8px 24px rgba(2,120,180,0.12), inset 0 1px 0 rgba(255,255,255,0.02); }
-    .pro-tutorial-hero .icon svg { width:28px; height:28px; display:block; color:#00d7ff; }
-    .pro-tutorial-hero h3 { margin:0; font-size:1.8rem; font-weight:800; line-height:1.05; color:#ffffff; letter-spacing:-0.01em; text-shadow: 0 6px 28px rgba(0,120,160,0.08); }
-    .pro-tutorial-hero p { margin:4px 0 0 0; color:#cfeefc; opacity:0.95; font-weight:600; font-size:0.98rem; }
-    .pro-tutorial-card { background: linear-gradient(180deg,#0f2430 0%, #0b1b28 100%); border-radius:14px; padding:14px; border: 1px solid rgba(15,30,40,0.45); box-shadow: 0 10px 28px rgba(2,12,20,0.6); overflow:hidden; margin-bottom:26px; }
-    .pro-tutorial-card .small-title { font-size:1.08rem; font-weight:700; color:#e6f7ff; margin:6px 6px 8px 6px; text-shadow: 0 2px 8px rgba(0,0,0,0.35); }
-    .pro-tutorial-card .pro-video-frame-wrap { position:relative; width:100%; height:0; padding-bottom:56.25%; border-radius:10px; overflow:hidden; border:1px solid rgba(255,255,255,0.03); box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 6px 18px rgba(0,0,0,0.55); }
-    .pro-tutorial-card iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:0; display:block; background:#000; }
-    @media (max-width:680px) { .pro-tutorial-hero { padding:12px; gap:10px; } .pro-tutorial-hero h3 { font-size:1.35rem; } .pro-tutorial-hero .icon { width:46px; height:46px; } .pro-tutorial-wrap { padding:0 10px; } }
-    .pro-tutorial-hero::after{ content:""; display:block; height:6px; margin-top:12px; border-radius:6px; background: linear-gradient(90deg, rgba(34,193,195,0.9), rgba(59,130,246,0.9)); opacity:0.08; }
-
-    /* Keep small bottom padding so no large empty area after scroller */
-    .pro-episodes-row-wrap-pro { padding-bottom:8px; margin-bottom:6px; }
-
-    /* Accessibility: ensure footer safe area */
-    @media (max-width:600px) {
-      body { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
+    /* Backdrop */
+    #wa-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 99998;
+      backdrop-filter: blur(3px);
+      animation: fadeIn 0.3s ease;
     }
 
-    /* Prevent browser automatic focus scrolling to break UX */
+    /* ===== SCROLL SNAP ARROW HINT ===== */
+    .scroll-hint {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 0 4px;
+      margin-top: -4px;
+      margin-bottom: 8px;
+    }
+    .scroll-hint i { font-size: 11px; animation: nudgeRight 1.5s ease-in-out infinite; }
+    @keyframes nudgeRight {
+      0%, 100% { transform: translateX(0); }
+      50%       { transform: translateX(5px); }
+    }
+
+    /* ===== BOTTOM NAV SAFE AREA ===== */
+    @media (max-width: 600px) {
+      body { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+    }
+
     :focus { outline: none; }
+
+    /* ===== STAGGER ANIMATION for cards ===== */
+    .pro-episode-card-pro {
+      animation: cardPop 0.45s cubic-bezier(.22,.68,0,1.3) both;
+    }
+    .pro-episode-card-pro:nth-child(1) { animation-delay: 0.05s; }
+    .pro-episode-card-pro:nth-child(2) { animation-delay: 0.1s; }
+    .pro-episode-card-pro:nth-child(3) { animation-delay: 0.15s; }
+    .pro-episode-card-pro:nth-child(4) { animation-delay: 0.2s; }
+    .pro-episode-card-pro:nth-child(5) { animation-delay: 0.25s; }
+    .pro-episode-card-pro:nth-child(6) { animation-delay: 0.3s; }
+    .pro-episode-card-pro:nth-child(n+7) { animation-delay: 0.35s; }
+
+    @keyframes cardPop {
+      from { opacity: 0; transform: translateY(16px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ===== RIPPLE on tab click ===== */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      transform: scale(0);
+      animation: rippleAnim 0.5s linear;
+      pointer-events: none;
+    }
+    @keyframes rippleAnim {
+      to { transform: scale(3); opacity: 0; }
+    }
   </style>
 
-  <!-- series.js (renders header + episodes) -->
   <script defer src="series.js"></script>
 </head>
 <body>
-  <div id="main-content">
-    <header><!-- back button added by JS --></header>
+  <!-- WA Backdrop -->
+  <div id="wa-backdrop"></div>
 
-    <!-- inline ad/legacy script kept as-is -->
+  <div id="main-content">
+    <header></header>
+
     <script type="text/javascript" src="//www.highperformanceformat.com/c91a82435d260630918ecc80c95125ac/invoke.js"></script>
 
-    <!-- main mount -->
     <div id="series-details" aria-live="polite"></div>
   </div>
 
-  <!-- dynamic meta/title updater (keeps your behavior) -->
+  <!-- Dynamic meta updater -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const params = new URLSearchParams(window.location.search);
       const slug = params.get('series');
-      if(!slug) return;
-      fetch('/series.json').then(res => res.json()).then(seriesArr => {
-        const meta = Array.isArray(seriesArr) ? seriesArr.find(s => s.slug === slug) : null;
+      if (!slug) return;
+      fetch('/series.json').then(r => r.json()).then(arr => {
+        const meta = Array.isArray(arr) ? arr.find(s => s.slug === slug) : null;
         if (meta && meta.title) {
           document.title = `${meta.title} – SmTv Urdu`;
-          const metaDesc = document.querySelector('meta[name="description"]');
-          if (metaDesc) metaDesc.setAttribute('content', `${meta.title} - Watch all episodes of ${meta.title} in Urdu on SmTv Urdu. Turkish historical drama complete series.`);
+          const md = document.querySelector('meta[name="description"]');
+          if (md) md.setAttribute('content', `${meta.title} - Watch all episodes in Urdu on SmTv Urdu.`);
         }
-      }).catch(()=>{/* ignore */});
+      }).catch(() => {});
     });
   </script>
 
-  <!-- Centered WhatsApp Update Popup -->
-  <div id="whatsappPopup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); max-width:340px; width:90vw; z-index:99999; background:#232936; color:#fff; padding:28px; border-radius:22px; box-shadow:0 8px 24px rgba(15,18,30,.13);">
-    <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
-      <img src="favicon.png" alt="Logo" style="width:40px;height:40px;border-radius:10px;">
-      <strong style="font-size:1.1em">Stay Updated!</strong>
-    </div>
-    <div style="margin-bottom:16px;">Get instant notifications for new episodes. Join our WhatsApp Channel.</div>
-    <div style="text-align:center;">
-      <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k" target="_blank" style="background:#29a345;color:#fff;padding:10px 18px;border-radius:10px;text-decoration:none;font-weight:700;">🟢 Join on WhatsApp</a>
-      <div style="margin-top:10px;"><button id="closeWhatsAppPopup" style="background:none;border:none;color:#ff6868;font-weight:700;cursor:pointer;">✖ Close</button></div>
+  <!-- ===== WHATSAPP POPUP ===== -->
+  <div id="whatsappPopup">
+    <div class="wa-popup-inner">
+      <div class="wa-handle"></div>
+      <div class="wa-header">
+        <img src="favicon.png" alt="SmTv Urdu" class="wa-icon">
+        <div>
+          <div class="wa-title">Stay Updated!</div>
+          <div class="wa-subtitle">SmTv Urdu • WhatsApp Channel</div>
+        </div>
+      </div>
+      <p class="wa-body">
+        Get instant notifications whenever a <strong style="color:#fff">new episode drops</strong>. Join thousands of viewers already on our channel!
+      </p>
+      <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k" target="_blank" class="wa-btn">
+        <i class="fab fa-whatsapp" style="font-size:20px;"></i>
+        Join on WhatsApp — It's Free
+      </a>
+      <button id="closeWhatsAppPopup" class="wa-close">✕ Maybe later</button>
     </div>
   </div>
 
   <script>
-    window.addEventListener('DOMContentLoaded', function() {
-      setTimeout(()=> { const p=document.getElementById('whatsappPopup'); if(p) p.style.display='block'; },2000);
-      const closeBtn=document.getElementById('closeWhatsAppPopup'); if(closeBtn) closeBtn.onclick=()=>document.getElementById('whatsappPopup').style.display='none';
+    window.addEventListener('DOMContentLoaded', function () {
+      const popup    = document.getElementById('whatsappPopup');
+      const backdrop = document.getElementById('wa-backdrop');
+      const closeBtn = document.getElementById('closeWhatsAppPopup');
+
+      function openPopup() {
+        popup.style.display    = 'block';
+        backdrop.style.display = 'block';
+      }
+      function closePopup() {
+        popup.style.display    = 'none';
+        backdrop.style.display = 'none';
+      }
+
+      setTimeout(openPopup, 2800);
+      closeBtn.onclick  = closePopup;
+      backdrop.onclick  = closePopup;
     });
   </script>
 
-  <!-- Prevent auto-scroll caused by focus: capture focusin and restore current scroll -->
+  <!-- Scroll-restore on focus -->
   <script>
-    (function(){
-      // On initial load, ensure top-of-page view:
-      try { window.scrollTo(0,0); } catch(e){}
-
-      // Capture and restore scroll when elements receive focus (prevents jump)
-      document.addEventListener('focusin', function(ev){
-        const x = window.scrollX || 0;
-        const y = window.scrollY || 0;
-        setTimeout(function(){ try { window.scrollTo(x,y); } catch(e){} }, 0);
+    (function () {
+      try { window.scrollTo(0, 0); } catch (e) {}
+      document.addEventListener('focusin', function () {
+        const x = window.scrollX || 0, y = window.scrollY || 0;
+        setTimeout(function () { try { window.scrollTo(x, y); } catch (e) {} }, 0);
       }, true);
-
-      // Ensure first time series-details populated we start at top
       const details = document.getElementById('series-details');
       if (details) {
-        const obs = new MutationObserver((mutations) => {
+        const obs = new MutationObserver(() => {
           if (details.childNodes.length > 0) {
-            try { window.scrollTo({ top: 0, left: 0, behavior: 'auto' }); } catch(e){}
+            try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (e) {}
             obs.disconnect();
           }
         });
-        obs.observe(details, { childList: true, subtree: false });
+        obs.observe(details, { childList: true });
       }
     })();
   </script>
 
-  <!-- FOOTER: robust include loader + fallback (same logic as before) -->
-  <div id="footer-placeholder"></div>
-
+  <!-- Tab ripple effect helper -->
   <script>
-  (async function loadFooterRobust(){
-    const candidates = ['/includes/footer.html','includes/footer.html','./includes/footer.html','/footer.html','footer.html'];
-    const placeholder = document.getElementById('footer-placeholder');
+    document.addEventListener('click', function(e) {
+      const tab = e.target.closest('.pro-season-tab-pro, .source-btn');
+      if (!tab) return;
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple';
+      const rect = tab.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      ripple.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX - rect.left - size/2}px;top:${e.clientY - rect.top - size/2}px`;
+      tab.style.position = 'relative';
+      tab.style.overflow = 'hidden';
+      tab.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 550);
+    });
+  </script>
 
-    function initNav(html) {
-      try {
-        placeholder.innerHTML = html;
+  <!-- Footer loader -->
+  <div id="footer-placeholder"></div>
+  <script>
+    (async function loadFooterRobust() {
+      const candidates = ['/includes/footer.html', 'includes/footer.html', './includes/footer.html', '/footer.html', 'footer.html'];
+      const placeholder = document.getElementById('footer-placeholder');
+
+      function initNav(html) {
         try {
-          const curPad = parseInt(getComputedStyle(document.body).paddingBottom) || 0;
-          const minPad = 96;
-          if (curPad < minPad) document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))';
-        } catch(e){}
-        const nav = placeholder.querySelector('#smtv-bottom-nav') || placeholder.querySelector('.smtv-bottom-nav');
-        if (!nav) return;
-        const items = Array.from(nav.querySelectorAll('.nav-item'));
-        items.forEach(i => i.classList.remove('active'));
-        let seriesItem = items.find(i => ((i.dataset && (i.dataset.name || '').toLowerCase()) === 'series'));
-        if (!seriesItem) {
-          seriesItem = items.find(i => {
-            const href = (i.getAttribute && i.getAttribute('href') || '').toLowerCase();
-            return href && href.includes('series');
+          placeholder.innerHTML = html;
+          try {
+            const curPad = parseInt(getComputedStyle(document.body).paddingBottom) || 0;
+            if (curPad < 96) document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))';
+          } catch (e) {}
+          const nav = placeholder.querySelector('#smtv-bottom-nav') || placeholder.querySelector('.smtv-bottom-nav');
+          if (!nav) return;
+          const items = Array.from(nav.querySelectorAll('.nav-item'));
+          items.forEach(i => i.classList.remove('active'));
+          let seriesItem = items.find(i => (i.dataset.name || '').toLowerCase() === 'series')
+            || items.find(i => (i.getAttribute('href') || '').toLowerCase().includes('series'));
+          const urlParams = new URLSearchParams(window.location.search);
+          if (urlParams.has('series') && seriesItem) seriesItem.classList.add('active');
+          else {
+            const path = location.pathname.toLowerCase();
+            const byPath = items.find(i => (i.getAttribute('href') || '').toLowerCase().includes(path.split('/').pop()));
+            if (byPath) byPath.classList.add('active');
+            else if (seriesItem) seriesItem.classList.add('active');
+          }
+          items.forEach(a => {
+            if (a._smtvInit) return;
+            a._smtvInit = true;
+            a.addEventListener('click', function (e) {
+              try { e.preventDefault(); } catch (err) {}
+              items.forEach(i => i.classList.remove('active'));
+              this.classList.add('active');
+              try { localStorage.setItem('smtv_last_nav', this.dataset.name || this.getAttribute('href')); } catch (e) {}
+              const href = this.getAttribute('href');
+              if (href) location.assign(href);
+            }, { passive: false });
           });
-        }
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('series') && seriesItem) {
-          seriesItem.classList.add('active');
-        } else {
-          const path = location.pathname.toLowerCase();
-          const byPath = items.find(i => (i.getAttribute('href')||'').toLowerCase().includes(path.split('/').pop()));
-          if (byPath) byPath.classList.add('active'); else if (seriesItem) seriesItem.classList.add('active');
-        }
-        items.forEach(a => {
-          if (a._smtvInit) return;
-          a._smtvInit = true;
-          a.addEventListener('click', function(e){
-            try { e.preventDefault && e.preventDefault(); } catch(err){}
-            items.forEach(i => i.classList.remove('active'));
-            this.classList.add('active');
-            try { localStorage.setItem('smtv_last_nav', this.dataset.name || this.getAttribute('href')); } catch(e){}
-            const href = this.getAttribute('href');
-            if (href) location.assign(href);
-          }, { passive: false });
-        });
-      } catch (e) { console.warn('initNav error', e); }
-    }
+        } catch (e) { console.warn('initNav error', e); }
+      }
 
-    for (const cand of candidates) {
-      try {
-        const res = await fetch(cand, { cache: 'no-cache' });
-        if (!res.ok) continue;
-        const text = await res.text();
-        if (text.includes('smtv-bottom-nav') || text.includes('smtv-bottom')) {
+      for (const cand of candidates) {
+        try {
+          const res = await fetch(cand, { cache: 'no-cache' });
+          if (!res.ok) continue;
+          const text = await res.text();
           initNav(text);
           return;
-        } else { initNav(text); return; }
-      } catch (e) { continue; }
-    }
+        } catch (e) { continue; }
+      }
 
-    // fallback inline nav
-    placeholder.innerHTML = `
-      <nav class="smtv-bottom-nav" id="smtv-bottom-nav" role="navigation" aria-label="Main">
-        <a href="/index.html" class="nav-item" data-name="home"><span class="icon-wrap"><i class="fa-solid fa-house"></i></span><span class="label">Home</span></a>
-        <a href="/series.html" class="nav-item active" data-name="series"><span class="icon-wrap"><i class="fa-solid fa-film"></i></span><span class="label">Series</span></a>
-        <a href="/clips.html" class="nav-item" data-name="clips"><span class="icon-wrap"><i class="fa-solid fa-play-circle"></i></span><span class="label">Clips</span></a>
-        <a href="/premium.html" class="nav-item" data-name="premium"><span class="icon-wrap"><i class="fa-solid fa-star"></i></span><span class="label">Premium</span></a>
-        <a href="/more.html" class="nav-item" data-name="more"><span class="icon-wrap"><i class="fa-solid fa-circle-info"></i></span><span class="label">More</span></a>
-      </nav>
-      <style>
-        .smtv-bottom-nav{position:fixed;left:12px;right:12px;bottom:12px;height:64px;display:flex;gap:6px;padding:8px;border-radius:14px;background:rgba(10,10,12,0.9);align-items:center;z-index:1200;padding-bottom:calc(env(safe-area-inset-bottom) + 8px);}
-        .smtv-bottom-nav .nav-item{flex:1;text-align:center;color:#bdbdbd;text-decoration:none;padding:6px;border-radius:10px;}
-        .smtv-bottom-nav .nav-item.active{color:#fff;transform:translateY(-6px);}
-        .smtv-bottom-nav .icon-wrap{display:inline-flex;width:40px;height:40px;align-items:center;justify-content:center;border-radius:10px;}
-        .smtv-bottom-nav .label{display:block;font-size:12px;margin-top:3px;}
-      </style>
-    `;
-    try { document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))'; } catch(e){}
-  })();
+      // Fallback nav
+      placeholder.innerHTML = `
+        <nav class="smtv-bottom-nav" id="smtv-bottom-nav" role="navigation" aria-label="Main">
+          <a href="/index.html" class="nav-item" data-name="home"><span class="icon-wrap"><i class="fa-solid fa-house"></i></span><span class="label">Home</span></a>
+          <a href="/series.html" class="nav-item active" data-name="series"><span class="icon-wrap"><i class="fa-solid fa-film"></i></span><span class="label">Series</span></a>
+          <a href="/clips.html" class="nav-item" data-name="clips"><span class="icon-wrap"><i class="fa-solid fa-play-circle"></i></span><span class="label">Clips</span></a>
+          <a href="/premium.html" class="nav-item" data-name="premium"><span class="icon-wrap"><i class="fa-solid fa-star"></i></span><span class="label">Premium</span></a>
+          <a href="/more.html" class="nav-item" data-name="more"><span class="icon-wrap"><i class="fa-solid fa-circle-info"></i></span><span class="label">More</span></a>
+        </nav>
+        <style>
+          .smtv-bottom-nav{position:fixed;left:12px;right:12px;bottom:12px;height:64px;display:flex;gap:6px;padding:8px;border-radius:14px;background:rgba(10,10,12,0.9);align-items:center;z-index:1200;padding-bottom:calc(env(safe-area-inset-bottom) + 8px);}
+          .smtv-bottom-nav .nav-item{flex:1;text-align:center;color:#bdbdbd;text-decoration:none;padding:6px;border-radius:10px;}
+          .smtv-bottom-nav .nav-item.active{color:#fff;transform:translateY(-6px);}
+          .smtv-bottom-nav .icon-wrap{display:inline-flex;width:40px;height:40px;align-items:center;justify-content:center;border-radius:10px;}
+          .smtv-bottom-nav .label{display:block;font-size:12px;margin-top:3px;}
+        </style>`;
+      try { document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))'; } catch (e) {}
+    })();
+  </script>
+
+  <!--
+  ═══════════════════════════════════════════════════════════
+  DEVELOPER NOTE — HOW TO USE THE NEW EPISODE CARD FORMAT
+  ═══════════════════════════════════════════════════════════
+
+  In your series.js, when rendering episode cards, use this
+  updated HTML structure for the new titled episode format:
+
+  OLD card HTML:
+  ──────────────
+  <a class="pro-episode-card-pro" href="...">
+    <div class="pro-ep-thumb-wrap-pro">
+      <img class="pro-ep-thumb-pro" src="...">
+      <span class="pro-ep-num-pro">Ep 1</span>
+    </div>
+    <div class="pro-ep-title-pro">Episode 1</div>
+  </a>
+
+  NEW card HTML (with subtitle title):
+  ──────────────────────────────────────
+  <a class="pro-episode-card-pro" href="...">
+    <div class="pro-ep-thumb-wrap-pro">
+      <img class="pro-ep-thumb-pro" src="..." loading="lazy">
+      <span class="pro-ep-num-pro">Ep 1</span>
+    </div>
+    <div class="pro-ep-info">
+      <div class="pro-ep-title-pro">Episode 1</div>
+      <div class="pro-ep-subtitle">The Beginning</div>
+    </div>
+  </a>
+
+  The `.pro-ep-subtitle` is optional — only add it when
+  the episode has a descriptive title. If not, omit it.
+
+  VIP BANNER — already built into this HTML page and will
+  render above the season tabs. It links to /premium.html.
+  You can customize the perks list below inside .vip-perks.
+  ═══════════════════════════════════════════════════════════
+  -->
+
+  <!-- 
+  VIP BANNER — rendered inline here for series.js to
+  insert via innerHTML if needed, OR you can inject it
+  in series.js before the season tabs. Copy from below:
+  -->
+  <template id="vip-banner-tpl">
+    <div class="vip-banner">
+      <div class="vip-crown-row">
+        <span class="vip-crown">👑</span>
+        <span class="vip-label">Become SmTv VIP</span>
+        <span class="vip-crown">👑</span>
+      </div>
+      <p class="vip-tagline">Unlock the full experience — watch smarter, faster, and ad-free.</p>
+      <div class="vip-perks">
+        <span class="vip-perk"><i class="fas fa-ban"></i> 100% Ad-Free</span>
+        <span class="vip-perk"><i class="fas fa-bolt"></i> Direct Episodes</span>
+        <span class="vip-perk"><i class="fas fa-download"></i> Fast Download</span>
+        <span class="vip-perk"><i class="fas fa-infinity"></i> Unlimited Access</span>
+        <span class="vip-perk"><i class="fas fa-star"></i> VIP Priority Support</span>
+      </div>
+      <div class="vip-btn-row">
+        <a href="/premium.html" class="vip-join-btn">
+          <i class="fas fa-crown"></i> Join VIP Now
+        </a>
+        <a href="/premium.html" class="vip-details-btn">
+          <i class="fas fa-info-circle"></i> See All Benefits
+        </a>
+      </div>
+    </div>
+  </template>
+
+  <!-- Auto-inject VIP banner into series-details if series.js doesn't do it -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const details = document.getElementById('series-details');
+      if (!details) return;
+
+      const tpl = document.getElementById('vip-banner-tpl');
+
+      const obs = new MutationObserver(() => {
+        // Only inject if series-details has content but no VIP banner yet
+        if (details.children.length > 0 && !details.querySelector('.vip-banner')) {
+          // Find season tabs to insert before them
+          const seasonTabs = details.querySelector('.pro-seasons-tabs-pro');
+          const clone = tpl.content.cloneNode(true);
+          if (seasonTabs) {
+            seasonTabs.parentNode.insertBefore(clone, seasonTabs);
+          } else {
+            // Fallback: insert after first child (header)
+            const firstChild = details.firstElementChild;
+            if (firstChild && firstChild.nextSibling) {
+              details.insertBefore(clone, firstChild.nextSibling);
+            } else {
+              details.appendChild(clone);
+            }
+          }
+          obs.disconnect();
+        }
+      });
+      obs.observe(details, { childList: true, subtree: true });
+    });
   </script>
 
 </body>
