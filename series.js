@@ -367,34 +367,39 @@
             const thumb = escapeHtml(ep.thumb || 'default-thumb.jpg');
             
             // Determine source parameter
-            const isBarbarossaS1Source2 = slug === 'barbarossa' && season === '1' && currentSource === 2;
-            const sourceParam = isBarbarossaS1Source2 ? currentSource : null;
-            
-            return `
-              <a class="pro-episode-card-pro reveal-item" 
-                 href="#" 
-                 data-series="${escapeHtml(slug)}"
-                 data-season="${escapeHtml(season)}"
-                 data-episode="${epNum}"
-                 data-lang="${escapeHtml(lang)}"
-                 data-source="${sourceParam || ''}"
-                 tabindex="-1" 
-                 aria-label="${epTitle}">
-                <div class="pro-ep-thumb-wrap-pro">
-                  <img 
-  class="pro-ep-thumb-pro"
-  src="${thumb}" 
-  alt="${epTitle}"
-  loading="lazy"
-  onerror="this.onerror=null;this.src='/fallback.jpg';"
-  onload="this.style.opacity='1'"
-  style="opacity:0;transition:opacity .3s ease;"
->
-                  <span class="pro-ep-num-pro">Ep ${epNum}</span>
-                </div>
-                <div class="pro-ep-title-pro">${epTitle}</div>
-              </a>
-            `;
+const isBarbarossaS1Source2 = slug === 'barbarossa' && season === '1' && currentSource === 2;
+const sourceParam = isBarbarossaS1Source2 ? currentSource : null;
+
+return `
+  <a class="pro-episode-card-pro reveal-item" 
+     href="#" 
+     data-series="${escapeHtml(slug)}"
+     data-season="${escapeHtml(season)}"
+     data-episode="${epNum}"
+     data-lang="${escapeHtml(lang)}"
+     data-source="${sourceParam || ''}"
+     tabindex="-1" 
+     aria-label="${epTitle}">
+    
+    <div class="pro-ep-thumb-wrap-pro">
+      
+      <img 
+        class="pro-ep-thumb-pro"
+        src="${thumb}" 
+        alt="${epTitle}"
+        loading="lazy"
+        decoding="async"
+        onload="this.classList.add('loaded')"
+        onerror="this.onerror=null;this.src='/fallback.jpg';this.classList.add('loaded')"
+      >
+
+      <span class="pro-ep-num-pro">Ep ${epNum}</span>
+      
+    </div>
+
+    <div class="pro-ep-title-pro">${epTitle}</div>
+  </a>
+`;
           }).join('');
 
           const tutorialBlock = `
