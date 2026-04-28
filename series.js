@@ -226,7 +226,7 @@
 
       try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch(e){ window.scrollTo(0,0); }
 
-      document.title = `${meta.title} â€“ SmTv Urdu`;
+      document.title = `${meta.title} – SmTv Urdu`;
 
       const premiumMsg = `
         <div class="premium-channel-message">
@@ -425,7 +425,7 @@
           
           wrap.innerHTML = `
             <div style="background:#1a1f2e;color:#fff;padding:18px;border-radius:12px;border:1px solid #ff6b6b;">
-              <div style="font-size:16px;font-weight:700;color:#ff6b6b;margin-bottom:8px;">âš ï¸ ${errorMsg}</div>
+              <div style="font-size:16px;font-weight:700;color:#ff6b6b;margin-bottom:8px;">⚠️ ${errorMsg}</div>
               ${details ? `<div style="font-size:13px;color:#aaa;font-family:monospace;">${details}</div>` : ''}
             </div>
           `;
