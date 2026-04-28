@@ -229,11 +229,31 @@
       document.title = `${meta.title} – SmTv Urdu`;
 
       const premiumMsg = `
-        <div class="premium-channel-message">
-          <strong>Go Ad-Free!</strong> Get direct access to all episodes by joining our <strong>Premium Channel</strong>.
-          <div class="premium-btn-row"><a href="/premium.html" class="btn-primary" rel="noopener">Join Premium</a></div>
+  <div class="premium-channel-message">
+    <div class="pcm-inner">
+
+      <div class="pcm-content">
+        <div class="pcm-headline">
+          👑 <span class="gold-word">SMTV VIP Membership</span>
         </div>
-      `;
+
+        <div class="pcm-features">
+          <span class="pcm-feature pcm-feature-gold">⚡ No Ads</span>
+          <span class="pcm-feature pcm-feature-cyan">⬇ Fast Download</span>
+          <span class="pcm-feature pcm-feature-green">🔓 Early Access</span>
+          <span class="pcm-feature pcm-feature-gold">🎬 HD Quality</span>
+        </div>
+      </div>
+
+      <div class="pcm-cta-wrap">
+        <a href="/premium.html" class="pcm-cta-btn">
+          Become VIP
+        </a>
+      </div>
+
+    </div>
+  </div>
+`;
 
       detailsEl.innerHTML = `
         <section class="pro-series-header-pro">
@@ -361,7 +381,15 @@
                  tabindex="-1" 
                  aria-label="${epTitle}">
                 <div class="pro-ep-thumb-wrap-pro">
-                  <img class="pro-ep-thumb-pro" src="${thumb}" alt="${epTitle}">
+                  <img 
+  class="pro-ep-thumb-pro"
+  src="${thumb}" 
+  alt="${epTitle}"
+  loading="lazy"
+  onerror="this.onerror=null;this.src='/fallback.jpg';"
+  onload="this.style.opacity='1'"
+  style="opacity:0;transition:opacity .3s ease;"
+>
                   <span class="pro-ep-num-pro">Ep ${epNum}</span>
                 </div>
                 <div class="pro-ep-title-pro">${epTitle}</div>
