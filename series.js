@@ -100,7 +100,7 @@
     try {
       const t = document.createElement('div');
       t.textContent = msg;
-      t.style.cssText = 'position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#122231;color:#9fe6ff;padding:10px 14px;border-radius:9px;border:1px solid #2d4b6a;font-weight:700;z-index:99999;font-family:Montserrat,sans-serif;';
+      t.style.cssText = 'position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#122231;color:#9fe6ff;padding:10px 14px;border-radius:9px;border:1px solid #2d4b6a;font-weight:7[...]
       document.body.appendChild(t);
       setTimeout(() => t.remove(), 2600);
     } catch (e) {}
@@ -258,7 +258,7 @@
       detailsEl.innerHTML = `
         <section class="pro-series-header-pro">
           <a href="/index.html" class="pro-series-back-btn-pro" title="Back" aria-label="Back">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><polyline points="12 4 6 10 12 16" fill="none" stroke="#23c6ed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><polyline points="12 4 6 10 12 16" fill="none" stroke="#23c6ed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="[...]
           </a>
           <img class="pro-series-poster-pro" src="${escapeHtml(meta.poster || '')}" alt="${escapeHtml(meta.title || '')}">
           <div class="pro-series-meta-pro">
