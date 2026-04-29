@@ -229,11 +229,31 @@
       document.title = `${meta.title} â€“ SmTv Urdu`;
 
       const premiumMsg = `
-        <div class="premium-channel-message">
-          <strong>Go Ad-Free!</strong> Get direct access to all episodes by joining our <strong>Premium Channel</strong>.
-          <div class="premium-btn-row"><a href="/premium.html" class="btn-primary" rel="noopener">Join Premium</a></div>
+  <div class="premium-channel-message">
+    <div class="pcm-inner">
+
+      <div class="pcm-content">
+        <div class="pcm-headline">
+          ðŸ‘‘ <span class="gold-word">SMTV VIP Membership</span>
         </div>
-      `;
+
+        <div class="pcm-features">
+          <span class="pcm-feature pcm-feature-gold">âš¡ No Ads</span>
+          <span class="pcm-feature pcm-feature-cyan">â¬‡ Fast Download</span>
+          <span class="pcm-feature pcm-feature-green">ðŸ”“ Early Access</span>
+          <span class="pcm-feature pcm-feature-gold">ðŸŽ¬ HD Quality</span>
+        </div>
+      </div>
+
+      <div class="pcm-cta-wrap">
+        <a href="/premium.html" class="pcm-cta-btn">
+          Become VIP
+        </a>
+      </div>
+
+    </div>
+  </div>
+`;
 
       detailsEl.innerHTML = `
         <section class="pro-series-header-pro">
@@ -347,26 +367,38 @@
             const thumb = escapeHtml(ep.thumb || 'default-thumb.jpg');
             
             // Determine source parameter
-            const isBarbarossaS1Source2 = slug === 'barbarossa' && season === '1' && currentSource === 2;
-            const sourceParam = isBarbarossaS1Source2 ? currentSource : null;
-            
-            return `
-              <a class="pro-episode-card-pro reveal-item" 
-                 href="#" 
-                 data-series="${escapeHtml(slug)}"
-                 data-season="${escapeHtml(season)}"
-                 data-episode="${epNum}"
-                 data-lang="${escapeHtml(lang)}"
-                 data-source="${sourceParam || ''}"
-                 tabindex="-1" 
-                 aria-label="${epTitle}">
-                <div class="pro-ep-thumb-wrap-pro">
-                  <img class="pro-ep-thumb-pro" src="${thumb}" alt="${epTitle}">
-                  <span class="pro-ep-num-pro">Ep ${epNum}</span>
-                </div>
-                <div class="pro-ep-title-pro">${epTitle}</div>
-              </a>
-            `;
+const isBarbarossaS1Source2 = slug === 'barbarossa' && season === '1' && currentSource === 2;
+const sourceParam = isBarbarossaS1Source2 ? currentSource : null;
+
+return `
+  <a class="pro-episode-card-pro reveal-item" 
+     href="#" 
+     data-series="${escapeHtml(slug)}"
+     data-season="${escapeHtml(season)}"
+     data-episode="${epNum}"
+     data-lang="${escapeHtml(lang)}"
+     data-source="${sourceParam || ''}"
+     tabindex="-1" 
+     aria-label="${epTitle}">
+    
+    <div class="pro-ep-thumb-wrap-pro" style="position:relative;width:100%;height:94px;overflow:hidden;display:block;background: transparent;">
+      
+      <img 
+  class="pro-ep-thumb-pro"
+  src="${thumb}" 
+  alt="${epTitle}"
+  loading="lazy"
+  decoding="async"
+  onerror="this.onerror=null;this.src='/fallback.jpg';"
+/>
+
+      <span class="pro-ep-num-pro">Ep ${epNum}</span>
+      
+    </div>
+
+    <div class="pro-ep-title-pro">${epTitle}</div>
+  </a>
+`;
           }).join('');
 
           const tutorialBlock = `
