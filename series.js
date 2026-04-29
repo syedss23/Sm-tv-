@@ -226,7 +226,7 @@
 
       try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch(e){ window.scrollTo(0,0); }
 
-      document.title = `${meta.title} â€“ SmTv Urdu`;
+      document.title = `${meta.title} – SmTv Urdu`;
 
       const premiumMsg = `
   <div class="premium-channel-message">
@@ -234,14 +234,14 @@
 
       <div class="pcm-content">
         <div class="pcm-headline">
-          ðŸ‘‘ <span class="gold-word">SMTV VIP Membership</span>
+          👑 <span class="gold-word">SMTV VIP Membership</span>
         </div>
 
         <div class="pcm-features">
-          <span class="pcm-feature pcm-feature-gold">âš¡ No Ads</span>
-          <span class="pcm-feature pcm-feature-cyan">â¬‡ Fast Download</span>
-          <span class="pcm-feature pcm-feature-green">ðŸ”“ Early Access</span>
-          <span class="pcm-feature pcm-feature-gold">ðŸŽ¬ HD Quality</span>
+          <span class="pcm-feature pcm-feature-gold">⚡ No Ads</span>
+          <span class="pcm-feature pcm-feature-cyan">⬇ Fast Download</span>
+          <span class="pcm-feature pcm-feature-green">🔓 Early Access</span>
+          <span class="pcm-feature pcm-feature-gold">🎬 HD Quality</span>
         </div>
       </div>
 
@@ -457,7 +457,7 @@ return `
           
           wrap.innerHTML = `
             <div style="background:#1a1f2e;color:#fff;padding:18px;border-radius:12px;border:1px solid #ff6b6b;">
-              <div style="font-size:16px;font-weight:700;color:#ff6b6b;margin-bottom:8px;">âš ï¸ ${errorMsg}</div>
+              <div style="font-size:16px;font-weight:700;color:#ff6b6b;margin-bottom:8px;">⚠️ ${errorMsg}</div>
               ${details ? `<div style="font-size:13px;color:#aaa;font-family:monospace;">${details}</div>` : ''}
             </div>
           `;
