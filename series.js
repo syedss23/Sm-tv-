@@ -384,13 +384,13 @@ return `
     <div class="pro-ep-thumb-wrap-pro" style="position:relative;width:100%;height:94px;overflow:hidden;display:block;background:#0a1624;">
       
       <img 
-        src="${thumb}" 
-        alt="${epTitle}"
-        loading="lazy"
-        decoding="async"
-        style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:1;display:block;z-index:2;"
-        onerror="this.onerror=null;this.src='/fallback.jpg';"
-      >
+  class="pro-ep-thumb-pro"
+  src="${thumb}" 
+  alt="${epTitle}"
+  loading="lazy"
+  decoding="async"
+  onerror="this.onerror=null;this.src='/fallback.jpg';"
+/>
 
       <span class="pro-ep-num-pro">Ep ${epNum}</span>
       
