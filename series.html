@@ -263,33 +263,55 @@
     @media (max-width:420px) { .pro-episode-card-pro { flex:0 0 132px; } }
     @media (min-width:900px) { .pro-episode-card-pro { flex:0 0 178px; } }
 
-    /* ── THUMBNAIL — FIXED (NO RENDER BUG) ── */
-.pro-ep-thumb-wrap-pro {
-  position: relative;
-  width: 100%;
-  height: 94px;
-  overflow: hidden;
-  display: block;
-  flex-shrink: 0;
-  background: #0a1624;
-}
+     /* thumbnail area - fixed square so image visible */
+    .pro-ep-thumb-wrap-pro {
+      width:120px;
+      height:120px;
+      border-radius:12px;
+      overflow:hidden;
+      position:relative;
+      background:#0b0d10;
+      display:block;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.55) inset;
+      flex-shrink:0;
+    }
+    @media (min-width:900px) { .pro-ep-thumb-wrap-pro{ width:160px; height:160px; border-radius:14px; } }
 
-/* ✅ FIXED IMAGE (REMOVE ABSOLUTE POSITION) */
-.pro-ep-thumb-pro {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  display: block;
+    /* image fills thumbnail and is cropped - no empty space */
+    .pro-ep-thumb-pro {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
 
-  /* ❌ REMOVE THESE (CAUSE BLANK / NOT SHOW ISSUE) */
-  position: static;
-  top: auto;
-  left: auto;
+    /* Ep badge */
+    .pro-ep-num-pro {
+      position:absolute;
+      right:8px;
+      top:8px;
+      background: linear-gradient(90deg,#ffcf33,#ff7a5f);
+      color:#111;
+      font-weight:800;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      box-shadow: 0 6px 18px rgba(255,120,60,0.12);
+    }
 
-  /* keep your animation */
-  transition: transform .34s ease;
-}
+    /* Title area under thumbnail */
+    .pro-ep-title-pro {
+      width:100%;
+      text-align:center;
+      font-size:16px;
+      font-weight:800;
+      color:#fff;
+      padding:8px 6px;
+      border-radius:8px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
+      box-shadow: inset 0 -6px 12px rgba(0,0,0,0.08);
+    }
+
     .pro-episode-card-pro:hover .pro-ep-thumb-pro { transform:scale(1.09); }
     @media (max-width:420px) { .pro-ep-thumb-wrap-pro { height:83px; } }
     @media (min-width:900px) { .pro-ep-thumb-wrap-pro { height:111px; } }
