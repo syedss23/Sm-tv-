@@ -1,4 +1,4 @@
-// series.js - FULLY FIXED & OPTIMIZED VERSION
+// series.js - STABLE FINAL VERSION (FIXED EVERYTHING)
 (function () {
   'use strict';
 
@@ -9,51 +9,41 @@
 
   let currentSource = 1;
 
-  // ✅ Default config (prevents race condition)
+  // ✅ Default config (prevents blank screen)
   let featureConfig = { shortlink: false, sponsorPopup: true };
 
   let currentEpisodesData = [];
 
-  const HOWTO_PROCESS_1 = `<iframe class="rumble" src="https://rumble.com/embed/v6yg45g/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
-  const HOWTO_PROCESS_2 = `<iframe class="rumble" src="https://rumble.com/embed/v6yg466/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
-
   // ================= CONFIG =================
   async function loadFeatureConfig() {
     try {
-      const response = await fetch('/config.json', { cache: 'no-cache' });
-      if (response.ok) {
-        const config = await response.json();
-        if (config && config.redirectionFeatures) {
-          featureConfig = config.redirectionFeatures;
+      const res = await fetch('config.json', { cache: 'no-cache' });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.redirectionFeatures) {
+          featureConfig = data.redirectionFeatures;
         }
       }
-      console.log('Feature config:', featureConfig);
-    } catch (error) {
-      console.warn('Config load failed, using default:', featureConfig);
+      console.log("Config:", featureConfig);
+    } catch (e) {
+      console.warn("Using default config");
     }
   }
 
-  // ================= TOAST (FIXED) =================
+  // ================= TOAST =================
   function toast(msg) {
     try {
       const t = document.createElement('div');
       t.textContent = msg;
 
       t.style.cssText = `
-        position:fixed;
-        left:50%;
-        bottom:18px;
+        position:fixed;left:50%;bottom:18px;
         transform:translateX(-50%);
-        background:#122231;
-        color:#9fe6ff;
-        padding:10px 14px;
-        border-radius:9px;
-        border:1px solid #2d4b6a;
-        font-weight:700;
-        z-index:99999;
-        font-family:Montserrat,sans-serif;
-        opacity:1;
-        transition:opacity .3s ease;
+        background:#122231;color:#9fe6ff;
+        padding:10px 14px;border-radius:9px;
+        border:1px solid #2d4b6a;font-weight:700;
+        z-index:99999;font-family:Montserrat,sans-serif;
+        opacity:1;transition:opacity .3s;
       `;
 
       document.body.appendChild(t);
@@ -66,81 +56,70 @@
       }, 2300);
 
     } catch (e) {
-      console.error('Toast error:', e);
+      console.error(e);
     }
   }
 
-  // ================= SHORTLINK + NAVIGATION =================
-  function handleEpisodeClick(event, episodeData) {
-    event.preventDefault();
+  // ================= FETCH WITH FALLBACK =================
+  async function fetchEpisodes(season) {
+    const files = [
+      `episode-data/${slug}-${lang}-sub-s${season}.json`,
+      `episode-data/${slug}-s${season}.json`,
+      `episode-data/${slug}-s${season}-${lang}.json`,
+      `episode-data/${slug}-s${season}-en.json`,
+      `episode-data/${slug}-s${season}-hi.json`,
+      `episode-data/${slug}-s${season}-ur.json`
+    ];
 
-    const { seriesSlug, season, episode, lang, source } = episodeData;
+    for (const file of files) {
+      try {
+        console.log("Trying:", file);
 
-    // ✅ FIXED: Always prioritize shortlink if enabled
-    if (featureConfig.shortlink) {
+        const res = await fetch(file, { cache: 'no-cache' });
+        if (!res.ok) continue;
 
-      const episodeObj = currentEpisodesData.find(
-        ep => Number(ep.ep) === Number(episode)
-      );
+        const text = await res.text();
 
-      if (episodeObj && episodeObj.shortlink) {
-
-        // ✅ SECURITY CHECK
-        if (!/^https?:\/\//.test(episodeObj.shortlink)) {
-          console.warn('Blocked invalid shortlink:', episodeObj.shortlink);
-        } else {
-
-          console.log('Redirecting to shortlink:', episodeObj.shortlink);
-
-          if (typeof gtag !== 'undefined') {
-            gtag('event', 'shortlink_redirect', {
-              episode: `${seriesSlug}_s${season}e${episode}`
-            });
-          }
-
-          window.location.href = episodeObj.shortlink;
-          return;
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          console.error("JSON error:", file);
         }
+
+      } catch (e) {
+        console.warn("Fetch failed:", file);
       }
     }
 
-    // ================= FALLBACK: NORMAL PAGE =================
-    let url = `episode.html?series=${encodeURIComponent(seriesSlug)}&season=${encodeURIComponent(season)}&ep=${encodeURIComponent(episode)}`;
+    throw new Error("No episode file found");
+  }
 
-    if (lang) url += '&lang=' + encodeURIComponent(lang);
-    if (source) url += '&source=' + encodeURIComponent(source);
+  // ================= CLICK HANDLER =================
+  function handleEpisodeClick(e, data) {
+    e.preventDefault();
 
-    if (typeof gtag !== 'undefined') {
-      gtag('event', 'episode_page_visit', {
-        episode: `${seriesSlug}_s${season}e${episode}`
-      });
+    const { seriesSlug, season, episode, lang, source } = data;
+
+    // ✅ Shortlink priority
+    if (featureConfig.shortlink) {
+
+      const ep = currentEpisodesData.find(
+        x => Number(x.ep) === Number(episode)
+      );
+
+      if (ep && ep.shortlink && /^https?:\/\//.test(ep.shortlink)) {
+        window.location.href = ep.shortlink;
+        return;
+      }
     }
 
+    // fallback
+    let url = `episode.html?series=${seriesSlug}&season=${season}&ep=${episode}`;
+
+    if (lang) url += `&lang=${lang}`;
+    if (source) url += `&source=${source}`;
+
     window.location.href = url;
-  }
-
-  // ================= UTILS =================
-  function bust(url) {
-    const v = (qs.get('v') || '1');
-    return url + (url.includes('?') ? '&' : '?') + 'v=' + encodeURIComponent(v);
-  }
-
-  function escapeHtml(s) {
-    if (s == null) return '';
-    return String(s).replace(/[&<>"'`=/]/g, c =>
-      ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','/':'&#x2F;','`':'&#x60;','=':'&#x3D;' }[c])
-    );
-  }
-
-  // ================= FETCH =================
-  async function fetchEpisodes(season) {
-    const file = `/episode-data/${slug}-s${season}.json`;
-    const res = await fetch(bust(file), { cache: 'no-cache' });
-
-    if (!res.ok) throw new Error('Episode file not found');
-
-    const data = await res.json();
-    return data;
   }
 
   // ================= INIT =================
@@ -148,46 +127,59 @@
 
     await loadFeatureConfig();
 
+    // wait DOM
     if (document.readyState !== 'complete') {
       await new Promise(r => window.addEventListener('load', r, { once: true }));
     }
 
     const wrap = document.getElementById('pro-episodes-row-wrap');
-    if (!wrap) return;
+
+    // ❌ CRITICAL FIX
+    if (!wrap) {
+      console.error("Missing #pro-episodes-row-wrap in HTML");
+      return;
+    }
+
+    if (!slug) {
+      wrap.innerHTML = `<div style="color:#fff">No series selected</div>`;
+      return;
+    }
 
     try {
-
       const episodes = await fetchEpisodes(seasonQuery);
+
       currentEpisodesData = episodes;
 
-      if (!Array.isArray(episodes) || !episodes.length) {
-        wrap.innerHTML = `<div style="color:#fff;">No episodes</div>`;
+      if (!Array.isArray(episodes) || episodes.length === 0) {
+        wrap.innerHTML = `<div style="color:#fff">No episodes found</div>`;
         return;
       }
 
       wrap.innerHTML = episodes.map(ep => {
-        const epNum = escapeHtml(ep.ep);
-        const title = escapeHtml(ep.title || `Episode ${epNum}`);
-        const thumb = escapeHtml(ep.thumb || 'fallback.jpg');
+        const num = ep.ep;
+        const title = ep.title || `Episode ${num}`;
+        const thumb = ep.thumb || 'fallback.jpg';
 
         return `
           <a class="pro-episode-card-pro"
-            href="#"
-            data-series="${slug}"
-            data-season="${seasonQuery}"
-            data-episode="${epNum}"
-            data-lang="${lang}"
-            data-source="${currentSource}">
-            
-            <img src="${thumb}" alt="${title}">
-            <div>${title}</div>
+             href="#"
+             data-series="${slug}"
+             data-season="${seasonQuery}"
+             data-episode="${num}"
+             data-lang="${lang}"
+             data-source="${currentSource}">
+             
+            <img src="${thumb}" 
+                 style="width:100%;height:120px;object-fit:cover;">
+                 
+            <div style="padding:6px">${title}</div>
           </a>
         `;
       }).join('');
 
       // attach click
-      wrap.querySelectorAll('.pro-episode-card-pro').forEach(card => {
-        card.addEventListener('click', function (e) {
+      wrap.querySelectorAll('.pro-episode-card-pro').forEach(el => {
+        el.addEventListener('click', function (e) {
           handleEpisodeClick(e, {
             seriesSlug: this.dataset.series,
             season: this.dataset.season,
@@ -200,7 +192,13 @@
 
     } catch (err) {
       console.error(err);
-      wrap.innerHTML = `<div style="color:red;">Error loading episodes</div>`;
+
+      wrap.innerHTML = `
+        <div style="color:#ff6b6b;padding:20px">
+          ⚠️ Failed to load episodes<br>
+          Check JSON file path
+        </div>
+      `;
     }
 
   })();
