@@ -245,7 +245,7 @@
     .pro-episodes-row-pro { display:flex; gap:12px; overflow-x:auto; padding:4px 2px 16px; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity; align-items:flex-start; scrollbar-width:thin; scrollbar-color:rgba(0,200,240,.22) transparent; }
     .pro-episodes-row-pro::-webkit-scrollbar { height:4px; }
     .pro-episodes-row-pro::-webkit-scrollbar-track { background:transparent; }
-    .pro-episodes-row-pro::-webkit-scrollbar-thumb { background:rgba(0,200,240,.22); border-radius:4px; }
+    .pro-episodes-row-pro::-webkit-scrollbar-thumb { background: transparent; }
 
     .pro-episode-card-pro {
       scroll-snap-align:start; flex:0 0 150px;
@@ -317,7 +317,8 @@
       transform: translateY(-6px);
       box-shadow: 0 20px 48px rgba(0,0,0,0.6);
     }
-    
+    @media (max-width:420px) { .pro-ep-thumb-wrap-pro { height:83px; } }
+    @media (min-width:900px) { .pro-ep-thumb-wrap-pro { height:111px; } }
     .pro-ep-num-pro {
       position:absolute; bottom:6px; left:6px; z-index:3;
       background:rgba(4,8,15,.9); border:1px solid var(--border-hi);
