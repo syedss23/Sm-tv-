@@ -381,7 +381,7 @@ return `
      tabindex="-1" 
      aria-label="${epTitle}">
     
-    <div class="pro-ep-thumb-wrap-pro" style="position:relative;width:100%;height:94px;overflow:hidden;display:block;background:#0a1624;">
+    <div class="pro-ep-thumb-wrap-pro" style="position:relative;width:100%;height:94px;overflow:hidden;display:block;background:transparent;">
       
       <img 
         src="${thumb}" 
