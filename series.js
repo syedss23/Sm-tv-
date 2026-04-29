@@ -381,17 +381,15 @@ return `
      tabindex="-1" 
      aria-label="${epTitle}">
     
-    <div class="pro-ep-thumb-wrap-pro">
+    <div class="pro-ep-thumb-wrap-pro" style="position:relative;width:100%;height:94px;overflow:hidden;display:block;background:#0a1624;">
       
       <img 
-        class="pro-ep-thumb-pro"
         src="${thumb}" 
         alt="${epTitle}"
         loading="lazy"
         decoding="async"
-        onload="this.style.opacity='1'"
-onerror="this.onerror=null;this.src='/fallback.jpg';this.style.opacity='1'"
-style="opacity:0;transition:opacity .35s ease"
+        style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:1;display:block;z-index:2;"
+        onerror="this.onerror=null;this.src='/fallback.jpg';"
       >
 
       <span class="pro-ep-num-pro">Ep ${epNum}</span>
