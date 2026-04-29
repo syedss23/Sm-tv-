@@ -226,34 +226,14 @@
 
       try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch(e){ window.scrollTo(0,0); }
 
-      document.title = `${meta.title} – SmTv Urdu`;
+      document.title = `${meta.title} â€“ SmTv Urdu`;
 
       const premiumMsg = `
-  <div class="premium-channel-message">
-    <div class="pcm-inner">
-
-      <div class="pcm-content">
-        <div class="pcm-headline">
-          👑 <span class="gold-word">SMTV VIP Membership</span>
+        <div class="premium-channel-message">
+          <strong>Go Ad-Free!</strong> Get direct access to all episodes by joining our <strong>Premium Channel</strong>.
+          <div class="premium-btn-row"><a href="/premium.html" class="btn-primary" rel="noopener">Join Premium</a></div>
         </div>
-
-        <div class="pcm-features">
-          <span class="pcm-feature pcm-feature-gold">⚡ No Ads</span>
-          <span class="pcm-feature pcm-feature-cyan">⬇ Fast Download</span>
-          <span class="pcm-feature pcm-feature-green">🔓 Early Access</span>
-          <span class="pcm-feature pcm-feature-gold">🎬 HD Quality</span>
-        </div>
-      </div>
-
-      <div class="pcm-cta-wrap">
-        <a href="/premium.html" class="pcm-cta-btn">
-          Become VIP
-        </a>
-      </div>
-
-    </div>
-  </div>
-`;
+      `;
 
       detailsEl.innerHTML = `
         <section class="pro-series-header-pro">
@@ -367,38 +347,26 @@
             const thumb = escapeHtml(ep.thumb || 'default-thumb.jpg');
             
             // Determine source parameter
-const isBarbarossaS1Source2 = slug === 'barbarossa' && season === '1' && currentSource === 2;
-const sourceParam = isBarbarossaS1Source2 ? currentSource : null;
-
-return `
-  <a class="pro-episode-card-pro reveal-item" 
-     href="#" 
-     data-series="${escapeHtml(slug)}"
-     data-season="${escapeHtml(season)}"
-     data-episode="${epNum}"
-     data-lang="${escapeHtml(lang)}"
-     data-source="${sourceParam || ''}"
-     tabindex="-1" 
-     aria-label="${epTitle}">
-    
-    <div class="pro-ep-thumb-wrap-pro" style="position:relative;width:100%;height:94px;overflow:hidden;display:block;background: transparent;">
-      
-      <img 
-  class="pro-ep-thumb-pro"
-  src="${thumb}" 
-  alt="${epTitle}"
-  loading="lazy"
-  decoding="async"
-  onerror="this.onerror=null;this.src='/fallback.jpg';"
-/>
-
-      <span class="pro-ep-num-pro">Ep ${epNum}</span>
-      
-    </div>
-
-    <div class="pro-ep-title-pro">${epTitle}</div>
-  </a>
-`;
+            const isBarbarossaS1Source2 = slug === 'barbarossa' && season === '1' && currentSource === 2;
+            const sourceParam = isBarbarossaS1Source2 ? currentSource : null;
+            
+            return `
+              <a class="pro-episode-card-pro reveal-item" 
+                 href="#" 
+                 data-series="${escapeHtml(slug)}"
+                 data-season="${escapeHtml(season)}"
+                 data-episode="${epNum}"
+                 data-lang="${escapeHtml(lang)}"
+                 data-source="${sourceParam || ''}"
+                 tabindex="-1" 
+                 aria-label="${epTitle}">
+                <div class="pro-ep-thumb-wrap-pro">
+                  <img class="pro-ep-thumb-pro" src="${thumb}" alt="${epTitle}">
+                  <span class="pro-ep-num-pro">Ep ${epNum}</span>
+                </div>
+                <div class="pro-ep-title-pro">${epTitle}</div>
+              </a>
+            `;
           }).join('');
 
           const tutorialBlock = `
@@ -457,7 +425,7 @@ return `
           
           wrap.innerHTML = `
             <div style="background:#1a1f2e;color:#fff;padding:18px;border-radius:12px;border:1px solid #ff6b6b;">
-              <div style="font-size:16px;font-weight:700;color:#ff6b6b;margin-bottom:8px;">⚠️ ${errorMsg}</div>
+              <div style="font-size:16px;font-weight:700;color:#ff6b6b;margin-bottom:8px;">âš ï¸ ${errorMsg}</div>
               ${details ? `<div style="font-size:13px;color:#aaa;font-family:monospace;">${details}</div>` : ''}
             </div>
           `;
