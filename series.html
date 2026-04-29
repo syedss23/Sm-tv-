@@ -51,7 +51,6 @@
       -webkit-font-smoothing:antialiased; overflow-x:hidden; min-height:100dvh;
     }
 
-    /* Background grid */
     body::before {
       content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
       background-image:
@@ -68,7 +67,6 @@
       animation:bg-breathe 14s ease-in-out infinite;
     }
 
-    /* KEYFRAMES */
     @keyframes bg-breathe    { 0%,100%{opacity:1}50%{opacity:.6} }
     @keyframes fade-up       { from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)} }
     @keyframes fade-up-sm    { from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)} }
@@ -91,35 +89,23 @@
       100%{transform:translateY(0) translateX(0);opacity:.5}
     }
 
-    /* Reveal on scroll */
     .reveal-item { opacity:0; transform:translateY(14px); transition:opacity .5s var(--ease),transform .5s var(--ease); }
     .reveal-item.show { opacity:1; transform:translateY(0); }
 
     #main-content { max-width:900px; margin:0 auto; padding:14px 14px 0; position:relative; z-index:1; }
 
-    /* ── SERIES HEADER ── */
     .pro-series-header-pro {
       display:flex; flex-direction:column; align-items:stretch;
-      text-align:center;
-      /* ROUNDED CORNERS ALL AROUND on the whole card */
-      border-radius:22px;
-      background:var(--bg2);
-      border:1px solid var(--border);
-      position:relative; margin-bottom:22px;
-      animation:fade-up .7s var(--ease) both;
-      overflow:hidden; /* clips poster to border-radius */
+      text-align:center; border-radius:22px; background:var(--bg2);
+      border:1px solid var(--border); position:relative; margin-bottom:22px;
+      animation:fade-up .7s var(--ease) both; overflow:hidden;
       box-shadow:0 8px 32px rgba(0,0,0,.4);
     }
 
-    /* POSTER — contain so full image shows + good rounded top */
     .pro-series-poster-pro {
-      width:100%;
-      height:210px;
-      border-radius:20px 20px 0 0; /* nice rounded top corners */
-      object-fit:cover;             /* cover fills the area nicely */
-      object-position:center top;   /* show faces at top */
-      display:block; flex-shrink:0;
-      background:#060c16;
+      width:100%; height:210px; border-radius:20px 20px 0 0;
+      object-fit:cover; object-position:center top;
+      display:block; flex-shrink:0; background:#060c16;
     }
 
     .poster-gradient-overlay {
@@ -135,21 +121,16 @@
 
     .pro-series-back-btn-pro {
       position:absolute; left:12px; top:12px; z-index:10;
-      width:40px; height:40px;
-      display:inline-flex; align-items:center; justify-content:center;
-      border-radius:var(--rad-sm); background:rgba(4,8,15,.85);
-      border:1px solid var(--border-hi);
+      width:40px; height:40px; display:inline-flex; align-items:center; justify-content:center;
+      border-radius:var(--rad-sm); background:rgba(4,8,15,.85); border:1px solid var(--border-hi);
       backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
       text-decoration:none; transition:background .22s,border-color .22s,transform .18s;
       box-shadow:0 4px 16px rgba(0,0,0,.5);
     }
     .pro-series-back-btn-pro:hover { background:rgba(0,200,240,.18); border-color:rgba(0,200,240,.45); transform:translateX(-2px); }
-    .pro-series-back-btn-pro i { color:var(--txt); font-size:.9em; }
 
-    /* Meta area */
     .pro-series-meta-pro {
-      width:100%; background:var(--bg2);
-      border-top:1px solid var(--border);
+      width:100%; background:var(--bg2); border-top:1px solid var(--border);
       padding:20px 20px 24px; text-align:center; position:relative; z-index:3;
     }
     .pro-series-meta-pro::before {
@@ -157,19 +138,15 @@
       background:linear-gradient(90deg,transparent,var(--border-hi),transparent);
     }
 
-    /* SERIES TITLE — Cinzel */
     .pro-series-title-pro {
-      font-family:'Cinzel',serif;
-      font-size:clamp(1.25em,4.8vw,1.9em);
-      font-weight:800; color:#fff;
-      margin:0 0 10px; letter-spacing:.05em; line-height:1.2;
+      font-family:'Cinzel',serif; font-size:clamp(1.25em,4.8vw,1.9em);
+      font-weight:800; color:#fff; margin:0 0 10px; letter-spacing:.05em; line-height:1.2;
       animation:title-glow 5s ease-in-out infinite, fade-up-sm .6s var(--ease) both;
     }
 
     .pro-series-desc-pro {
       font-size:.875em; color:var(--txt-soft); line-height:1.7;
-      max-width:640px; margin:0 auto 18px;
-      animation:fade-up-sm .6s var(--ease) .15s both;
+      max-width:640px; margin:0 auto 18px; animation:fade-up-sm .6s var(--ease) .15s both;
     }
 
     .series-stats-row { display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
@@ -178,43 +155,28 @@
     .stat-badge-gold  { background:rgba(232,168,0,.08); border-color:rgba(232,168,0,.2);  color:var(--gold); }
     .stat-badge-green { background:rgba(0,217,139,.08); border-color:rgba(0,217,139,.2);  color:var(--green); }
 
-    /* ── PREMIUM SECTION ── */
     .premium-channel-message {
       position:relative; overflow:hidden; border-radius:14px;
-      background:linear-gradient(145deg,#0f1d2e,#08121e);
-      border:1px solid rgba(232,168,0,.3);
-      margin-top:6px;
-      animation:premium-in .65s var(--ease) .3s both;
+      background:linear-gradient(145deg,#0f1d2e,#08121e); border:1px solid rgba(232,168,0,.3);
+      margin-top:6px; animation:premium-in .65s var(--ease) .3s both;
       box-shadow:0 8px 32px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.04);
     }
-    /* Animated shimmer top border */
     .premium-channel-message::before {
       content:''; position:absolute; top:0; left:0; right:0; height:2px;
       background:linear-gradient(90deg,transparent,var(--gold-dim),var(--gold),var(--gold-lt),var(--gold-dim),transparent);
       background-size:200% auto; animation:shimmer 2.5s linear infinite;
     }
     .premium-channel-message::after {
-      content:''; position:absolute; top:-35px; right:-35px;
-      width:130px; height:130px;
-      background:radial-gradient(circle,rgba(232,168,0,.18) 0%,transparent 65%);
-      pointer-events:none;
+      content:''; position:absolute; top:-35px; right:-35px; width:130px; height:130px;
+      background:radial-gradient(circle,rgba(232,168,0,.18) 0%,transparent 65%); pointer-events:none;
     }
     .pcm-inner { display:flex; align-items:center; gap:14px; padding:14px 16px; position:relative; z-index:1; }
-    .pcm-particles { position:absolute; inset:0; pointer-events:none; overflow:hidden; border-radius:13px; }
     .pcm-particle  { position:absolute; width:3px; height:3px; border-radius:50%; background:var(--gold); opacity:.4; }
     .pcm-particle:nth-child(1){ top:20%;left:8%;  animation:particle-float 3.2s ease-in-out infinite; }
     .pcm-particle:nth-child(2){ top:65%;left:15%; animation:particle-float 4.1s ease-in-out infinite .6s; }
     .pcm-particle:nth-child(3){ top:35%;right:12%;animation:particle-float 3.7s ease-in-out infinite 1.2s;background:var(--cyan); }
     .pcm-particle:nth-child(4){ top:75%;right:20%;animation:particle-float 2.9s ease-in-out infinite .3s; }
 
-    .pcm-icon-wrap {
-      flex-shrink:0; width:44px; height:44px; border-radius:11px;
-      background:linear-gradient(145deg,rgba(232,168,0,.22),rgba(232,168,0,.07));
-      border:1px solid rgba(232,168,0,.35);
-      display:flex; align-items:center; justify-content:center; font-size:1.3em;
-      box-shadow:0 4px 16px rgba(232,168,0,.2);
-      animation:float 3s ease-in-out infinite,pulse-ring 3s ease-in-out infinite;
-    }
     .pcm-content { flex:1; min-width:0; }
     .pcm-headline { font-size:.88em; font-weight:800; color:#fff; line-height:1.3; margin-bottom:3px; }
     .pcm-headline .gold-word {
@@ -222,7 +184,6 @@
       -webkit-background-clip:text; -webkit-text-fill-color:transparent;
       background-clip:text; background-size:200% auto; animation:shimmer 2.5s linear infinite;
     }
-    .pcm-sub { font-size:.74em; color:var(--txt-muted); line-height:1.4; margin-bottom:8px; }
     .pcm-features { display:flex; gap:5px; flex-wrap:wrap; }
     .pcm-feature { font-size:.65em; font-weight:700; padding:2px 8px; border-radius:100px; letter-spacing:.03em; white-space:nowrap; }
     .pcm-feature-gold  { background:rgba(232,168,0,.1);  border:1px solid rgba(232,168,0,.22); color:var(--gold-lt); }
@@ -233,9 +194,8 @@
     .pcm-cta-btn {
       display:inline-flex; align-items:center; justify-content:center; gap:6px;
       background:linear-gradient(135deg,var(--gold),var(--gold-lt),#ffdc70);
-      color:#1a0800; font-weight:900; font-size:.78em;
-      font-family:'DM Sans',sans-serif; letter-spacing:.05em; text-transform:uppercase;
-      padding:10px 16px; border-radius:var(--rad-sm);
+      color:#1a0800; font-weight:900; font-size:.78em; font-family:'DM Sans',sans-serif;
+      letter-spacing:.05em; text-transform:uppercase; padding:10px 16px; border-radius:var(--rad-sm);
       box-shadow:0 4px 20px var(--gold-glow),inset 0 1px 0 rgba(255,255,255,.3);
       text-decoration:none; position:relative; overflow:hidden;
       transition:box-shadow .25s,transform .15s; white-space:nowrap; border:none; cursor:pointer;
@@ -247,8 +207,6 @@
     }
     .pcm-cta-btn:hover { box-shadow:0 6px 28px rgba(232,168,0,.65); transform:translateY(-2px) scale(1.04); }
     .pcm-cta-btn:active { transform:scale(.95); }
-    .pcm-more-link { font-size:.66em; color:var(--txt-muted); text-decoration:none; letter-spacing:.02em; transition:color .2s; white-space:nowrap; display:flex; align-items:center; gap:3px; }
-    .pcm-more-link:hover { color:var(--gold); }
 
     @media (max-width:520px) {
       .pcm-inner { flex-direction:column; align-items:flex-start; gap:12px; padding:12px 14px; }
@@ -256,7 +214,6 @@
       .pcm-cta-btn { flex:1; justify-content:center; }
     }
 
-    /* ── SEASON TABS ── */
     .pro-seasons-tabs-pro { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:20px 0 14px; }
     .pro-season-tab-pro {
       background:var(--bg2); border:1px solid var(--border-hi); color:var(--txt-muted);
@@ -268,26 +225,20 @@
     .pro-season-tab-pro.active { background:linear-gradient(135deg,var(--cyan),#0090b8); border-color:transparent; color:#021018; font-weight:800; transform:translateY(-2px); box-shadow:0 6px 24px var(--cyan-glow); }
     .pro-season-tab-pro:active { transform:scale(.96); }
 
-    /* ── SOURCE SELECTOR ── */
     .source-selector { display:flex; gap:8px; justify-content:center; margin:0 0 18px; flex-wrap:wrap; }
     .source-btn { background:var(--bg3); border:1px solid var(--border-hi); color:var(--txt-muted); padding:7px 20px; border-radius:var(--rad-xs); font-size:.83em; font-weight:700; font-family:'DM Sans',sans-serif; cursor:pointer; transition:all .22s var(--ease); outline:none; }
     .source-btn:hover:not(.active) { border-color:rgba(0,200,240,.35); color:var(--txt); background:rgba(0,200,240,.07); }
     .source-btn.active { background:linear-gradient(135deg,var(--cyan),#0090b8); border-color:transparent; color:#021018; font-weight:800; box-shadow:0 4px 16px var(--cyan-glow); transform:translateY(-1px); }
     .source-btn:active { transform:scale(.96); }
 
-    /* ── EPISODES ROW ── */
     .pro-episodes-row-wrap-pro { margin-top:6px; padding-bottom:10px; margin-bottom:8px; transition:opacity .2s ease; }
     .pro-episodes-row-wrap-pro.is-loading { opacity:.55; pointer-events:none; }
     .pro-episodes-row-wrap-pro::before { display:none !important; }
 
-    /* Section label — Cormorant Garamond italic */
     .episodes-section-label {
-      display:flex; align-items:center; gap:10px;
-      font-family:'Cormorant Garamond',serif;
-      font-size:1.05em; font-weight:700; font-style:italic;
-      letter-spacing:.06em; color:var(--cyan);
-      text-transform:uppercase; margin-bottom:14px; padding-left:2px;
-      animation:howto-slide .5s var(--ease) both;
+      display:flex; align-items:center; gap:10px; font-family:'Cormorant Garamond',serif;
+      font-size:1.05em; font-weight:700; font-style:italic; letter-spacing:.06em; color:var(--cyan);
+      text-transform:uppercase; margin-bottom:14px; padding-left:2px; animation:howto-slide .5s var(--ease) both;
     }
     .episodes-section-label::after { content:''; flex:1; height:1px; background:linear-gradient(to right,rgba(0,200,240,.3),transparent); }
 
@@ -296,12 +247,11 @@
     .pro-episodes-row-pro::-webkit-scrollbar-track { background:transparent; }
     .pro-episodes-row-pro::-webkit-scrollbar-thumb { background:rgba(0,200,240,.22); border-radius:4px; }
 
-    /* ── EPISODE CARD ── */
     .pro-episode-card-pro {
       scroll-snap-align:start; flex:0 0 150px;
       display:flex; flex-direction:column; align-items:stretch;
-      text-decoration:none; color:var(--txt);
-      border-radius:14px; background:var(--bg2); border:1px solid var(--border);
+      text-decoration:none; color:var(--txt); border-radius:14px;
+      background:var(--bg2); border:1px solid var(--border);
       overflow:hidden; min-height:0;
       transition:transform .28s var(--ease),box-shadow .28s ease,border-color .28s ease;
       position:relative;
@@ -313,39 +263,30 @@
     @media (max-width:420px) { .pro-episode-card-pro { flex:0 0 132px; } }
     @media (min-width:900px) { .pro-episode-card-pro { flex:0 0 178px; } }
 
-    /* THUMBNAIL — styles here are backup; series.js now inlines the critical styles */
+    /* ── THUMBNAIL — CLEAN, NO PSEUDO ELEMENTS ── */
     .pro-ep-thumb-wrap-pro {
-  position: relative;
-  width: 100%;
-  height: 94px;
-  overflow: hidden;
-  display: block;
-  flex-shrink: 0;
-  background: #0a1624;
+      position: relative;
+      width: 100%;
+      height: 94px;
+      overflow: hidden;
+      display: block;
+      flex-shrink: 0;
+      background: #0a1624;
     }
-    /* IMAGE LOADING FIX (FINAL) */
-.pro-ep-thumb-pro {
-  position:absolute !important;
-  top:0 !important;
-  left:0 !important;
-  width:100% !important;
-  height:100% !important;
-
-  object-fit:cover !important;
-  object-position:center !important;
-
-  display:block !important;
-  z-index:2;
-
-  background:#0a1624;
-
-  opacity:1;
-transition:transform .34s ease;
-}
-
-.pro-ep-thumb-pro.loaded {
-  opacity:1;
-}
+    /* NO ::before on thumb wrap — that was causing the black overlay */
+    .pro-ep-thumb-pro {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      z-index: 2;
+      opacity: 1;
+      transition: transform .34s ease;
+    }
     .pro-episode-card-pro:hover .pro-ep-thumb-pro { transform:scale(1.09); }
     @media (max-width:420px) { .pro-ep-thumb-wrap-pro { height:83px; } }
     @media (min-width:900px) { .pro-ep-thumb-wrap-pro { height:111px; } }
@@ -368,7 +309,6 @@ transition:transform .34s ease;
     }
     .pro-episode-card-pro:hover .ep-play-overlay { opacity:1; transform:translate(-50%,-50%) scale(1); }
 
-    /* Episode title */
     .pro-ep-title-pro {
       font-size:.77em; font-weight:600; color:var(--txt);
       padding:9px 10px 11px; line-height:1.45;
@@ -377,47 +317,35 @@ transition:transform .34s ease;
     .ep-title-num  { color:var(--txt-muted); font-weight:700; }
     .ep-title-name { color:var(--txt); }
 
-    /* ── HOW TO WATCH — Cormorant Garamond ── */
     .pro-tutorial-title {
       font-family:'Cormorant Garamond',serif !important;
       font-size:1.4em !important; font-weight:700 !important; font-style:italic !important;
       color:#fff !important; margin:32px 0 14px 2px !important;
       display:flex !important; align-items:center !important; gap:12px !important;
-      letter-spacing:.03em !important; position:relative;
-      animation:howto-slide .6s var(--ease) both;
+      letter-spacing:.03em !important; position:relative; animation:howto-slide .6s var(--ease) both;
     }
     .pro-tutorial-title::before {
       content:'' !important; width:18px; height:2px;
       background:var(--cyan); border-radius:2px; display:inline-block; flex-shrink:0;
     }
     .pro-tutorial-title::after {
-      content:'' !important; position:absolute; bottom:-5px; left:0;
-      height:1.5px; width:100%;
+      content:'' !important; position:absolute; bottom:-5px; left:0; height:1.5px; width:100%;
       background:linear-gradient(90deg,var(--cyan),rgba(0,200,240,.1));
       transform-origin:left; animation:underline-grow .8s var(--ease) .2s both;
     }
 
     .pro-video-frame-wrap {
       position:relative; width:100%; height:0; padding-bottom:56.25%;
-      border-radius:var(--radius); overflow:hidden;
-      border:1px solid var(--border-hi); background:var(--bg2);
-      box-shadow:0 12px 36px rgba(0,0,0,.65);
+      border-radius:var(--radius); overflow:hidden; border:1px solid var(--border-hi);
+      background:var(--bg2); box-shadow:0 12px 36px rgba(0,0,0,.65);
     }
     .pro-video-frame-wrap iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:0; display:block; background:#000; }
-    .pro-tutorial-wrap { padding:0; }
-    .pro-tutorial-hero { display:flex; flex-direction:column; gap:6px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:14px; }
-    .pro-tutorial-hero h3 { font-family:'Cormorant Garamond',serif; font-size:1.15em; font-weight:700; color:#fff; }
-    .pro-tutorial-hero p { font-size:.85em; color:var(--txt-soft); }
-    .pro-tutorial-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:24px; }
-    .pro-tutorial-card .small-title { font-family:'Cormorant Garamond',serif; font-size:1em; font-weight:700; font-style:italic; color:#fff; margin:0 0 12px; }
 
-    /* Loading */
     .episodes-loading { display:flex; align-items:center; gap:12px; padding:22px 4px; color:var(--txt-muted); font-size:.88em; }
     .loading-dots span { display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--cyan); animation:dot-blink 1.2s ease-in-out infinite; }
     .loading-dots span:nth-child(2) { animation-delay:.2s; }
     .loading-dots span:nth-child(3) { animation-delay:.4s; }
 
-    /* WA popup */
     #whatsappPopup { font-family:'DM Sans',sans-serif !important; background:var(--bg2) !important; border:1px solid var(--border-hi) !important; border-radius:20px !important; box-shadow:0 24px 60px rgba(0,0,0,.85) !important; padding:24px !important; color:var(--txt) !important; overflow:hidden; }
     #whatsappPopup::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,#25d366,#00c8f0,#25d366); background-size:200% auto; animation:shimmer 3s linear infinite; }
     #whatsappPopup strong { color:#fff !important; }
@@ -428,8 +356,6 @@ transition:transform .34s ease;
     :focus { outline:none; }
     a { text-decoration:none; color:inherit; }
     #series-details { animation:fade-up .5s var(--ease) .1s both; }
-    .ep-row-fade-wrap { position:relative; }
-    .ep-row-fade-wrap::after { content:''; position:absolute; top:0; right:0; bottom:16px; width:52px; background:linear-gradient(to right,transparent,var(--bg)); pointer-events:none; z-index:3; }
     .pro-episode-card-pro.card-animate { animation:card-in .45s var(--ease) both; }
     .section-divider { height:1px; background:linear-gradient(to right,transparent,var(--border-hi),transparent); margin:20px 0; }
   </style>
@@ -446,109 +372,98 @@ transition:transform .34s ease;
     <div id="series-details" aria-live="polite"></div>
   </div>
 
+  <!-- PATCH SCRIPT — clean, no broken brackets -->
   <script>
-  /* Lightweight patch — only handles things series.js can't do itself */
   (function patch() {
-    const obs = new MutationObserver(() => {
+    const obs = new MutationObserver(function() {
 
       /* Poster: inject gradient overlay + scan */
-      const poster = document.querySelector('.pro-series-poster-pro');
+      var poster = document.querySelector('.pro-series-poster-pro');
       if (poster && !poster._p) {
         poster._p = true;
-        const hdr = poster.closest('.pro-series-header-pro');
+        var hdr = poster.closest('.pro-series-header-pro');
         if (hdr && !hdr.querySelector('.poster-gradient-overlay')) {
-          const g = document.createElement('div'); g.className='poster-gradient-overlay'; hdr.appendChild(g);
-          const s = document.createElement('div'); s.className='poster-scan'; hdr.appendChild(s);
-
-
-    <script>
-(function patch() {
-  const obs = new MutationObserver(() => {
-
-    /* Poster: inject gradient overlay + scan */
-    const poster = document.querySelector('.pro-series-poster-pro');
-    if (poster && !poster._p) {
-      poster._p = true;
-      const hdr = poster.closest('.pro-series-header-pro');
-      if (hdr && !hdr.querySelector('.poster-gradient-overlay')) {
-        const g = document.createElement('div'); g.className='poster-gradient-overlay'; hdr.appendChild(g);
-        const s = document.createElement('div'); s.className='poster-scan'; hdr.appendChild(s);
-      }
-    }
-
-    /* Series title: apply Cinzel font */
-    document.querySelectorAll('.pro-series-title-pro').forEach(el => {
-      if (el._fp) return; el._fp = true;
-      el.style.fontFamily = "'Cinzel',serif";
-      el.style.letterSpacing = ".05em";
-    });
-
-    /* Inject play overlay into thumbnails */
-    document.querySelectorAll('.pro-ep-thumb-wrap-pro').forEach(wrap => {
-      if (wrap._p) return; wrap._p = true;
-      if (!wrap.querySelector('.ep-play-overlay')) {
-        const pl = document.createElement('div');
-        pl.className = 'ep-play-overlay'; pl.textContent = '▶';
-        wrap.appendChild(pl);
-      }
-    }); /* ✅ CORRECTLY CLOSED */
-
-    /* Episode title styling */
-    document.querySelectorAll('.pro-ep-title-pro').forEach(el => {
-      if (el._tp) return; el._tp = true;
-      const raw = el.textContent.trim();
-      const def = raw.match(/^Episode\s+(\d+)$/i);
-      if (def) {
-        el.innerHTML = `<span class="ep-title-num">Episode ${def[1]}</span>`;
-      } else {
-        const full = raw.match(/^Episode\s+(\d+)\s*[—\-]\s*(.+)$/i);
-        if (full) {
-          el.innerHTML = `<span class="ep-title-num">Ep ${full[1]}</span><span class="ep-title-name"> — ${full[2]}</span>`;
+          var g = document.createElement('div'); g.className = 'poster-gradient-overlay'; hdr.appendChild(g);
+          var sc = document.createElement('div'); sc.className = 'poster-scan'; hdr.appendChild(sc);
         }
       }
+
+      /* Series title font */
+      document.querySelectorAll('.pro-series-title-pro').forEach(function(el) {
+        if (el._fp) return; el._fp = true;
+        el.style.fontFamily = "'Cinzel',serif";
+        el.style.letterSpacing = ".05em";
+      });
+
+      /* Play overlay into thumbnails — NO opacity touching */
+      document.querySelectorAll('.pro-ep-thumb-wrap-pro').forEach(function(wrap) {
+        if (wrap._p) return; wrap._p = true;
+        if (!wrap.querySelector('.ep-play-overlay')) {
+          var pl = document.createElement('div');
+          pl.className = 'ep-play-overlay';
+          pl.textContent = '▶';
+          wrap.appendChild(pl);
+        }
+      });
+
+      /* Episode title styling */
+      document.querySelectorAll('.pro-ep-title-pro').forEach(function(el) {
+        if (el._tp) return; el._tp = true;
+        var raw = el.textContent.trim();
+        var def = raw.match(/^Episode\s+(\d+)$/i);
+        if (def) {
+          el.innerHTML = '<span class="ep-title-num">Episode ' + def[1] + '</span>';
+        } else {
+          var full = raw.match(/^Episode\s+(\d+)\s*[—\-]\s*(.+)$/i);
+          if (full) {
+            el.innerHTML = '<span class="ep-title-num">Ep ' + full[1] + '</span><span class="ep-title-name"> — ' + full[2] + '</span>';
+          }
+        }
+      });
+
+      /* How to Watch title font */
+      document.querySelectorAll('.pro-tutorial-title').forEach(function(el) {
+        if (el._fp) return; el._fp = true;
+        el.style.fontFamily = "'Cormorant Garamond',serif";
+        el.style.fontStyle = "italic";
+      });
+
+      /* Card stagger animation */
+      document.querySelectorAll('.pro-episode-card-pro').forEach(function(card, i) {
+        if (card._an) return; card._an = true;
+        card.style.animationDelay = (i * 0.055) + 's';
+        card.classList.add('card-animate');
+      });
+
+      /* Episodes section label */
+      document.querySelectorAll('.pro-episodes-row-wrap-pro').forEach(function(wrap) {
+        if (wrap._ld) return; wrap._ld = true;
+        var lbl = document.createElement('div');
+        lbl.className = 'episodes-section-label';
+        lbl.textContent = 'Episodes';
+        wrap.insertBefore(lbl, wrap.firstChild);
+      });
+
     });
 
-    /* How to Watch title font */
-    document.querySelectorAll('.pro-tutorial-title').forEach(el => {
-      if (el._fp) return; el._fp = true;
-      el.style.fontFamily = "'Cormorant Garamond',serif";
-      el.style.fontStyle  = "italic";
-    });
+    obs.observe(document.body, { childList: true, subtree: true });
+    setTimeout(function() { obs.disconnect(); }, 12000);
+  })();
+  </script>
 
-    /* Card stagger */
-    document.querySelectorAll('.pro-episode-card-pro').forEach((card, i) => {
-      if (card._an) return; card._an = true;
-      card.style.animationDelay = `${i * 0.055}s`;
-      card.classList.add('card-animate');
-    });
-
-    /* Episodes section label */
-    document.querySelectorAll('.pro-episodes-row-wrap-pro').forEach(wrap => {
-      if (wrap._ld) return; wrap._ld = true;
-      const lbl = document.createElement('div');
-      lbl.className = 'episodes-section-label'; lbl.textContent = 'Episodes';
-      wrap.insertBefore(lbl, wrap.firstChild);
-    });
-
-  });
-
-  obs.observe(document.body, { childList:true, subtree:true });
-  setTimeout(() => obs.disconnect(), 12000);
-})();
-</script>
   <!-- META UPDATER -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      const slug = new URLSearchParams(window.location.search).get('series');
+      var slug = new URLSearchParams(window.location.search).get('series');
       if (!slug) return;
-      fetch('/series.json').then(r=>r.json()).then(arr=>{
-        const m = Array.isArray(arr) ? arr.find(s=>s.slug===slug) : null;
+      fetch('/series.json').then(function(r){ return r.json(); }).then(function(arr){
+        var m = Array.isArray(arr) ? arr.find(function(s){ return s.slug === slug; }) : null;
         if (m && m.title) {
-          document.title = `${m.title} – SmTv Urdu`;
-          const d = document.querySelector('meta[name="description"]');
-          if (d) d.setAttribute('content',`${m.title} - Watch all episodes in Urdu on SmTv Urdu.`);
+          document.title = m.title + ' \u2013 SmTv Urdu';
+          var d = document.querySelector('meta[name="description"]');
+          if (d) d.setAttribute('content', m.title + ' - Watch all episodes in Urdu on SmTv Urdu.');
         }
-      }).catch(()=>{});
+      }).catch(function(){});
     });
   </script>
 
@@ -578,14 +493,14 @@ transition:transform .34s ease;
   </div>
   <script>
     window.addEventListener('DOMContentLoaded', function() {
-      const popup=document.getElementById('whatsappPopup');
-      const backdrop=document.getElementById('wa-backdrop');
-      const btn=document.getElementById('closeWhatsAppPopup');
+      var popup = document.getElementById('whatsappPopup');
+      var backdrop = document.getElementById('wa-backdrop');
+      var btn = document.getElementById('closeWhatsAppPopup');
       function show(){ if(popup) popup.style.display='block'; if(backdrop) backdrop.classList.add('show'); }
       function hide(){ if(popup) popup.style.display='none'; if(backdrop) backdrop.classList.remove('show'); }
-      setTimeout(show,2200);
-      if(btn) btn.addEventListener('click',hide);
-      if(backdrop) backdrop.addEventListener('click',hide);
+      setTimeout(show, 2200);
+      if(btn) btn.addEventListener('click', hide);
+      if(backdrop) backdrop.addEventListener('click', hide);
     });
   </script>
 
@@ -593,16 +508,19 @@ transition:transform .34s ease;
   <script>
     (function(){
       try{window.scrollTo(0,0);}catch(e){}
-      document.addEventListener('focusin',function(){
-        const x=window.scrollX||0,y=window.scrollY||0;
-        setTimeout(function(){try{window.scrollTo(x,y);}catch(e){}},0);
-      },true);
-      const det=document.getElementById('series-details');
+      document.addEventListener('focusin', function(){
+        var x = window.scrollX||0, y = window.scrollY||0;
+        setTimeout(function(){ try{window.scrollTo(x,y);}catch(e){} }, 0);
+      }, true);
+      var det = document.getElementById('series-details');
       if(det){
-        const o=new MutationObserver(()=>{
-          if(det.childNodes.length>0){try{window.scrollTo({top:0,left:0,behavior:'auto'});}catch(e){window.scrollTo(0,0);}o.disconnect();}
+        var o = new MutationObserver(function(){
+          if(det.childNodes.length > 0){
+            try{window.scrollTo({top:0,left:0,behavior:'auto'});}catch(e){window.scrollTo(0,0);}
+            o.disconnect();
+          }
         });
-        o.observe(det,{childList:true,subtree:false});
+        o.observe(det, {childList:true, subtree:false});
       }
     })();
   </script>
@@ -610,14 +528,14 @@ transition:transform .34s ease;
   <!-- REVEAL ON SCROLL -->
   <script>
     (function(){
-      const io=new IntersectionObserver(entries=>{
-        entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show');io.unobserve(e.target);}});
-      },{threshold:0.1});
-      function go(){document.querySelectorAll('.reveal-item:not(.show)').forEach(el=>io.observe(el));}
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); } });
+      }, {threshold:0.1});
+      function go(){ document.querySelectorAll('.reveal-item:not(.show)').forEach(function(el){ io.observe(el); }); }
       go();
-      const mo=new MutationObserver(go);
-      const sd=document.getElementById('series-details');
-      if(sd) mo.observe(sd,{childList:true,subtree:true});
+      var mo = new MutationObserver(go);
+      var sd = document.getElementById('series-details');
+      if(sd) mo.observe(sd, {childList:true, subtree:true});
     })();
   </script>
 
@@ -625,45 +543,46 @@ transition:transform .34s ease;
   <div id="footer-placeholder"></div>
   <script>
   (async function(){
-    const cands=['/includes/footer.html','includes/footer.html','./includes/footer.html','/footer.html','footer.html'];
-    const ph=document.getElementById('footer-placeholder');
+    var cands = ['/includes/footer.html','includes/footer.html','./includes/footer.html','/footer.html','footer.html'];
+    var ph = document.getElementById('footer-placeholder');
     function initNav(html){
       try{
-        ph.innerHTML=html;
-        try{const p=parseInt(getComputedStyle(document.body).paddingBottom)||0;if(p<96)document.body.style.paddingBottom='calc(96px + env(safe-area-inset-bottom))';}catch(e){}
-        const nav=ph.querySelector('#smtv-bottom-nav')||ph.querySelector('.smtv-bottom-nav');
-        if(!nav)return;
-        const items=Array.from(nav.querySelectorAll('.nav-item'));
-        items.forEach(i=>i.classList.remove('active'));
-        let si=items.find(i=>((i.dataset&&(i.dataset.name||'').toLowerCase())==='series'));
-        if(!si)si=items.find(i=>{const h=(i.getAttribute&&i.getAttribute('href')||'').toLowerCase();return h&&h.includes('series');});
-        const up=new URLSearchParams(window.location.search);
-        if(up.has('series')&&si)si.classList.add('active');
-        else{const p=location.pathname.toLowerCase();const bp=items.find(i=>(i.getAttribute('href')||'').toLowerCase().includes(p.split('/').pop()));if(bp)bp.classList.add('active');else if(si)si.classList.add('active');}
-        items.forEach(a=>{
-          if(a._si)return;a._si=true;
-          a.addEventListener('click',function(e){try{e.preventDefault&&e.preventDefault();}catch(x){}items.forEach(i=>i.classList.remove('active'));this.classList.add('active');try{localStorage.setItem('smtv_last_nav',this.dataset.name||this.getAttribute('href'));}catch(e){}const h=this.getAttribute('href');if(h)location.assign(h);},{passive:false});
+        ph.innerHTML = html;
+        try{ var p=parseInt(getComputedStyle(document.body).paddingBottom)||0; if(p<96) document.body.style.paddingBottom='calc(96px + env(safe-area-inset-bottom))'; }catch(e){}
+        var nav = ph.querySelector('#smtv-bottom-nav') || ph.querySelector('.smtv-bottom-nav');
+        if(!nav) return;
+        var items = Array.from(nav.querySelectorAll('.nav-item'));
+        items.forEach(function(i){ i.classList.remove('active'); });
+        var si = items.find(function(i){ return ((i.dataset&&(i.dataset.name||'').toLowerCase())==='series'); });
+        if(!si) si = items.find(function(i){ var h=(i.getAttribute&&i.getAttribute('href')||'').toLowerCase(); return h&&h.includes('series'); });
+        var up = new URLSearchParams(window.location.search);
+        if(up.has('series') && si) si.classList.add('active');
+        else {
+          var pp = location.pathname.toLowerCase();
+          var bp = items.find(function(i){ return (i.getAttribute('href')||'').toLowerCase().includes(pp.split('/').pop()); });
+          if(bp) bp.classList.add('active'); else if(si) si.classList.add('active');
+        }
+        items.forEach(function(a){
+          if(a._si) return; a._si = true;
+          a.addEventListener('click', function(e){
+            try{ e.preventDefault&&e.preventDefault(); }catch(x){}
+            items.forEach(function(i){ i.classList.remove('active'); });
+            this.classList.add('active');
+            try{ localStorage.setItem('smtv_last_nav', this.dataset.name||this.getAttribute('href')); }catch(e){}
+            var h = this.getAttribute('href'); if(h) location.assign(h);
+          }, {passive:false});
         });
-      }catch(e){console.warn('initNav',e);}
+      }catch(e){ console.warn('initNav',e); }
     }
-    for(const c of cands){
-      try{const r=await fetch(c,{cache:'no-cache'});if(!r.ok)continue;const t=await r.text();initNav(t);return;}catch(e){continue;}
+    for(var i=0; i<cands.length; i++){
+      try{
+        var r = await fetch(cands[i], {cache:'no-cache'});
+        if(!r.ok) continue;
+        var t = await r.text(); initNav(t); return;
+      }catch(e){ continue; }
     }
-    ph.innerHTML=`<nav class="smtv-bottom-nav" id="smtv-bottom-nav" role="navigation" aria-label="Main">
-      <a href="/index.html" class="nav-item" data-name="home"><span class="icon-wrap"><i class="fa-solid fa-house"></i></span><span class="label">Home</span></a>
-      <a href="/series.html" class="nav-item active" data-name="series"><span class="icon-wrap"><i class="fa-solid fa-film"></i></span><span class="label">Series</span></a>
-      <a href="/clips.html" class="nav-item" data-name="clips"><span class="icon-wrap"><i class="fa-solid fa-play-circle"></i></span><span class="label">Clips</span></a>
-      <a href="/premium.html" class="nav-item" data-name="premium"><span class="icon-wrap"><i class="fa-solid fa-star"></i></span><span class="label">Premium</span></a>
-      <a href="/more.html" class="nav-item" data-name="more"><span class="icon-wrap"><i class="fa-solid fa-circle-info"></i></span><span class="label">More</span></a>
-    </nav>
-    <style>
-      .smtv-bottom-nav{position:fixed;left:12px;right:12px;bottom:12px;height:64px;display:flex;gap:6px;padding:8px;border-radius:14px;background:rgba(10,10,12,0.9);backdrop-filter:blur(12px);align-items:center;z-index:1200;padding-bottom:calc(env(safe-area-inset-bottom)+8px);}
-      .smtv-bottom-nav .nav-item{flex:1;text-align:center;color:#bdbdbd;text-decoration:none;padding:6px;border-radius:10px;transition:color .2s,transform .2s;}
-      .smtv-bottom-nav .nav-item.active{color:#fff;transform:translateY(-6px);}
-      .smtv-bottom-nav .icon-wrap{display:inline-flex;width:40px;height:40px;align-items:center;justify-content:center;border-radius:10px;}
-      .smtv-bottom-nav .label{display:block;font-size:12px;margin-top:3px;}
-    </style>`;
-    try{document.body.style.paddingBottom='calc(96px + env(safe-area-inset-bottom))';}catch(e){}
+    ph.innerHTML = '<nav class="smtv-bottom-nav" id="smtv-bottom-nav" role="navigation" aria-label="Main"><a href="/index.html" class="nav-item" data-name="home"><span class="icon-wrap"><i class="fa-solid fa-house"></i></span><span class="label">Home</span></a><a href="/series.html" class="nav-item active" data-name="series"><span class="icon-wrap"><i class="fa-solid fa-film"></i></span><span class="label">Series</span></a><a href="/clips.html" class="nav-item" data-name="clips"><span class="icon-wrap"><i class="fa-solid fa-play-circle"></i></span><span class="label">Clips</span></a><a href="/premium.html" class="nav-item" data-name="premium"><span class="icon-wrap"><i class="fa-solid fa-star"></i></span><span class="label">Premium</span></a><a href="/more.html" class="nav-item" data-name="more"><span class="icon-wrap"><i class="fa-solid fa-circle-info"></i></span><span class="label">More</span></a></nav><style>.smtv-bottom-nav{position:fixed;left:12px;right:12px;bottom:12px;height:64px;display:flex;gap:6px;padding:8px;border-radius:14px;background:rgba(10,10,12,0.9);backdrop-filter:blur(12px);align-items:center;z-index:1200;padding-bottom:calc(env(safe-area-inset-bottom)+8px);}.smtv-bottom-nav .nav-item{flex:1;text-align:center;color:#bdbdbd;text-decoration:none;padding:6px;border-radius:10px;transition:color .2s,transform .2s;}.smtv-bottom-nav .nav-item.active{color:#fff;transform:translateY(-6px);}.smtv-bottom-nav .icon-wrap{display:inline-flex;width:40px;height:40px;align-items:center;justify-content:center;border-radius:10px;}.smtv-bottom-nav .label{display:block;font-size:12px;margin-top:3px;}</style>';
+    try{ document.body.style.paddingBottom='calc(96px + env(safe-area-inset-bottom))'; }catch(e){}
   })();
   </script>
 
