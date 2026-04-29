@@ -389,8 +389,9 @@ return `
         alt="${epTitle}"
         loading="lazy"
         decoding="async"
-        onload="this.classList.add('loaded')"
-        onerror="this.onerror=null;this.src='/fallback.jpg';this.classList.add('loaded')"
+        onload="this.style.opacity='1'"
+onerror="this.onerror=null;this.src='/fallback.jpg';this.style.opacity='1'"
+style="opacity:0;transition:opacity .35s ease"
       >
 
       <span class="pro-ep-num-pro">Ep ${epNum}</span>
