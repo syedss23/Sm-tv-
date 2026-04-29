@@ -245,7 +245,7 @@
     .pro-episodes-row-pro { display:flex; gap:12px; overflow-x:auto; padding:4px 2px 16px; -webkit-overflow-scrolling:touch; scroll-snap-type:x proximity; align-items:flex-start; scrollbar-width:thin; scrollbar-color:rgba(0,200,240,.22) transparent; }
     .pro-episodes-row-pro::-webkit-scrollbar { height:4px; }
     .pro-episodes-row-pro::-webkit-scrollbar-track { background:transparent; }
-    
+    .pro-episodes-row-pro::-webkit-scrollbar-thumb { background:rgba(0,200,240,.22); border-radius:4px; }
 
     .pro-episode-card-pro {
       scroll-snap-align:start; flex:0 0 150px;
@@ -326,15 +326,7 @@
       padding:2px 8px; border-radius:5px;
       backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); letter-spacing:.05em;
     }
-    .ep-play-overlay {
-      position:absolute; top:50%; left:50%;
-      transform:translate(-50%,-50%) scale(.7);
-      width:32px; height:32px; background:rgba(0,200,240,.9); border-radius:50%;
-      display:flex; align-items:center; justify-content:center;
-      color:#021018; font-size:.62em;
-      opacity:0; transition:opacity .22s,transform .22s; z-index:4; pointer-events:none;
-      box-shadow:0 0 20px var(--cyan-glow);
-    }
+  
     .pro-episode-card-pro:hover .ep-play-overlay { opacity:1; transform:translate(-50%,-50%) scale(1); }
 
     .pro-ep-title-pro {
