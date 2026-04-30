@@ -662,4 +662,7 @@ button:hover{background:#272838}
 .source-btn:hover {
   opacity: 0.9;
 }
+* {
+  -webkit-tap-highlight-color: transparent;
+}
 /* End of file */
