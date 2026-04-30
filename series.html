@@ -387,6 +387,20 @@
     #series-details { animation:fade-up .5s var(--ease) .1s both; }
     .pro-episode-card-pro.card-animate { animation:card-in .45s var(--ease) both; }
     .section-divider { height:1px; background:linear-gradient(to right,transparent,var(--border-hi),transparent); margin:20px 0; }
+    /* FIX: prevent black flash during card animation */
+.pro-episode-card-pro.card-animate .pro-ep-thumb-wrap-pro,
+.pro-episode-card-pro.card-animate .pro-ep-thumb-pro {
+  animation: none !important;
+  opacity: 1 !important;
+}
+
+.pro-ep-thumb-pro {
+  background: transparent !important;
+}
+
+.pro-ep-thumb-wrap-pro {
+  background: var(--bg2) !important; /* softer, matches card bg */
+}
   </style>
 
   <script defer src="series.js"></script>
