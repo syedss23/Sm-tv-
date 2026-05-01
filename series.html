@@ -1,754 +1,1190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-WM3KEDD127"></script>
   <script>
-    window.dataLayer = window.dataLayer || [];
+    window.dataLayer=window.dataLayer||[];
     function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-WM3KEDD127');
+    gtag('js',new Date()); gtag('config','G-WM3KEDD127');
   </script>
 
   <meta charset="UTF-8">
   <title>SmTv Urdu</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
   <meta name="description" content="Watch Turkish drama series and historical shows in Urdu on SmTv Urdu.">
 
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800;9..40,900&display=swap" rel="stylesheet"/>
 
   <style>
-    /* ─── Reset & Base ─────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { -webkit-tap-highlight-color: transparent; }
+  /* ═══════════════════════════════════════════════════════════════
+     DESIGN TOKENS
+  ═══════════════════════════════════════════════════════════════ */
+  :root {
+    --bg:          #04080f;
+    --bg2:         #07101c;
+    --bg3:         #0b1828;
+    --bg4:         #0e1f30;
+    --border:      rgba(255,255,255,.07);
+    --border-hi:   rgba(255,255,255,.13);
+    --gold:        #e8a800;
+    --gold-lt:     #ffc93c;
+    --gold-dim:    #b07f00;
+    --gold-glow:   rgba(232,168,0,.32);
+    --gold-glow2:  rgba(232,168,0,.12);
+    --cyan:        #00c8f0;
+    --cyan-dim:    rgba(0,200,240,.18);
+    --cyan-glow:   rgba(0,200,240,.32);
+    --green:       #00d98b;
+    --txt:         #d8e8f8;
+    --txt-muted:   #4e6880;
+    --txt-soft:    #7a99b0;
+    --radius:      16px;
+    --rad-sm:      10px;
+    --rad-xs:      7px;
+    --ease:        cubic-bezier(.22,.68,0,1.2);
+    --ease-out:    cubic-bezier(.25,.46,.45,.94);
+  }
 
-    body {
-      background: #080c14;
-      color: #fff;
-      font-family: -apple-system, 'Segoe UI', Arial, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      min-height: 100vh;
-      overflow-x: hidden;
-      padding-bottom: calc(100px + env(safe-area-inset-bottom));
-    }
-    :focus { outline: none; }
+  /* ═══════════════════════════════════════════════════════════════
+     RESET
+  ═══════════════════════════════════════════════════════════════ */
+  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; -webkit-tap-highlight-color:transparent; }
+  body {
+    background:var(--bg); color:var(--txt);
+    font-family:'DM Sans','Segoe UI',Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    overflow-x:hidden; min-height:100dvh;
+  }
+  :focus { outline:none; }
+  a { text-decoration:none; color:inherit; }
 
-    /* ─── Page wrapper ─────────────────────────────────────── */
-    #page { max-width: 480px; margin: 0 auto; }
+  /* ═══════════════════════════════════════════════════════════════
+     GLOBAL AMBIENT BACKGROUND
+  ═══════════════════════════════════════════════════════════════ */
+  body::before {
+    content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(0,200,240,.016) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(0,200,240,.016) 1px,transparent 1px);
+    background-size:52px 52px;
+    mask-image:radial-gradient(ellipse 100% 60% at 50% 0%,black 30%,transparent);
+    -webkit-mask-image:radial-gradient(ellipse 100% 60% at 50% 0%,black 30%,transparent);
+  }
+  body::after {
+    content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(ellipse 70% 50% at 85% 8%,rgba(232,168,0,.08) 0%,transparent 65%),
+      radial-gradient(ellipse 55% 45% at 8% 75%,rgba(0,200,240,.065) 0%,transparent 65%);
+    animation:bg-breathe 14s ease-in-out infinite;
+  }
 
-    /* ─── HERO POSTER ──────────────────────────────────────── */
-    .hero-poster {
-      width: 100%;
-      position: relative;
-      overflow: hidden;
-      background: #0a0e18;
-    }
-    .hero-poster img {
-      width: 100%;
-      display: block;
-      object-fit: cover;
-      max-height: 320px;
-    }
-    .hero-poster-fade {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 65%;
-      background: linear-gradient(to bottom, transparent 0%, #080c14 100%);
-    }
+  /* ═══════════════════════════════════════════════════════════════
+     KEYFRAMES
+  ═══════════════════════════════════════════════════════════════ */
+  @keyframes bg-breathe    { 0%,100%{opacity:1} 50%{opacity:.55} }
+  @keyframes fade-up       { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fade-up-sm    { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fade-in       { from{opacity:0} to{opacity:1} }
+  @keyframes shimmer       { 0%{background-position:-200% center} 100%{background-position:200% center} }
+  @keyframes btn-shine     { 0%{left:-100%} 55%,100%{left:150%} }
+  @keyframes dot-pulse     { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.25;transform:scale(.7)} }
+  @keyframes float         { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+  @keyframes pulse-ring-gold {
+    0%   { box-shadow:0 0 0 0 var(--gold-glow); }
+    70%  { box-shadow:0 0 0 10px rgba(232,168,0,0); }
+    100% { box-shadow:0 0 0 0 rgba(232,168,0,0); }
+  }
+  @keyframes card-in       { from{opacity:0;transform:translateY(20px) scale(.95)} to{opacity:1;transform:translateY(0) scale(1)} }
+  @keyframes premium-in    { from{opacity:0;transform:translateY(16px) scale(.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+  @keyframes scan-line     { 0%{top:-12%} 100%{top:112%} }
+  @keyframes title-glow    { 0%,100%{text-shadow:0 2px 24px rgba(0,0,0,.7)} 50%{text-shadow:0 2px 24px rgba(0,0,0,.7),0 0 48px rgba(232,168,0,.18)} }
+  @keyframes underline-grow{ from{transform:scaleX(0)} to{transform:scaleX(1)} }
+  @keyframes howto-slide   { from{opacity:0;transform:translateX(-16px)} to{opacity:1;transform:translateX(0)} }
+  @keyframes particle-float {
+    0%  { transform:translateY(0) translateX(0);   opacity:.45 }
+    33% { transform:translateY(-9px) translateX(4px); opacity:.9 }
+    66% { transform:translateY(-4px) translateX(-3px); opacity:.6 }
+    100%{ transform:translateY(0) translateX(0);   opacity:.45 }
+  }
+  @keyframes popup-up      { from{opacity:0;transform:translate(-50%,24px)} to{opacity:1;transform:translate(-50%,0)} }
+  @keyframes popup-down    { from{opacity:1;transform:translate(-50%,0)} to{opacity:0;transform:translate(-50%,18px)} }
+  @keyframes ep-row-in     { from{opacity:0;transform:translateX(16px)} to{opacity:1;transform:translateX(0)} }
 
-    /* ─── SERIES INFO ──────────────────────────────────────── */
-    .series-info {
-      padding: 0 18px 8px;
-      text-align: center;
-    }
-    .series-title {
-      font-size: 23px;
-      font-weight: 900;
-      color: #fff;
-      font-variant: small-caps;
-      line-height: 1.2;
-      margin-bottom: 9px;
-    }
-    .series-desc {
-      font-size: 14px;
-      color: #7a9ab0;
-      line-height: 1.6;
-    }
+  /* ═══════════════════════════════════════════════════════════════
+     SCROLL REVEAL
+  ═══════════════════════════════════════════════════════════════ */
+  .reveal { opacity:0; transform:translateY(16px); transition:opacity .52s var(--ease-out),transform .52s var(--ease-out); }
+  .reveal.show { opacity:1; transform:translateY(0); }
 
-    /* ─── VIP BOX ──────────────────────────────────────────── */
-    .vip-box {
-      margin: 18px 14px 0;
-      border-radius: 16px;
-      border: 1.5px solid rgba(190,140,20,0.3);
-      background: linear-gradient(155deg, #0d1a28 0%, #0a1420 100%);
-      padding: 18px 16px 16px;
-      position: relative;
-      overflow: hidden;
-    }
-    .vip-box::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 15%; right: 15%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,195,30,0.45), transparent);
-    }
-    .vip-title-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-    .vip-crown { font-size: 20px; }
-    .vip-title-text {
-      font-size: 15.5px;
-      font-weight: 800;
-      color: #f5c518;
-    }
-    .vip-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      justify-content: center;
-      margin-bottom: 15px;
-    }
-    .vip-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 6px 13px;
-      border-radius: 999px;
-      font-size: 12.5px;
-      font-weight: 700;
-    }
-    .vip-badge.dark  { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #c8dde8; }
-    .vip-badge.teal  { background: rgba(0,155,130,0.1);   border: 1px solid rgba(0,185,155,0.35);   color: #40e0c0; }
-    .vip-btn {
-      display: block;
-      width: 100%;
-      padding: 15px 0;
-      border-radius: 12px;
-      background: linear-gradient(90deg, #f5c518 0%, #f09c18 100%);
-      color: #1a0800;
-      font-size: 15px;
-      font-weight: 900;
-      letter-spacing: 0.09em;
-      text-transform: uppercase;
-      text-align: center;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 6px 24px rgba(245,197,24,0.22);
-      transition: transform 0.15s ease;
-    }
-    .vip-btn:active { transform: scale(0.97); }
+  /* ═══════════════════════════════════════════════════════════════
+     LAYOUT
+  ═══════════════════════════════════════════════════════════════ */
+  #main-content {
+    max-width:900px; margin:0 auto;
+    padding:14px 14px 0; position:relative; z-index:1;
+  }
 
-    /* ─── SEASON TABS ──────────────────────────────────────── */
-    .seasons-wrap {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      padding: 22px 14px 0;
-      flex-wrap: wrap;
-    }
-    .season-tab {
-      padding: 12px 28px;
-      border-radius: 999px;
-      border: 1.5px solid rgba(255,255,255,0.09);
-      background: rgba(255,255,255,0.04);
-      color: #5a7a90;
-      font-family: inherit;
-      font-size: 16px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: all 0.22s cubic-bezier(.4,1.4,.6,1);
-    }
-    .season-tab.active {
-      background: linear-gradient(135deg, #00d4f0 0%, #009ec8 100%);
-      color: #041820;
-      border-color: transparent;
-      box-shadow: 0 8px 28px rgba(0,185,220,0.28);
-      transform: translateY(-3px);
-    }
+  /* ═══════════════════════════════════════════════════════════════
+     SERIES HEADER CARD
+  ═══════════════════════════════════════════════════════════════ */
+  .pro-series-header-pro {
+    display:flex; flex-direction:column; align-items:stretch;
+    border-radius:22px; background:var(--bg2); border:1px solid var(--border);
+    position:relative; margin-bottom:22px; overflow:hidden;
+    box-shadow:0 10px 40px rgba(0,0,0,.5);
+    animation:fade-up .65s var(--ease) both;
+  }
 
-    /* ─── SOURCE SELECTOR ──────────────────────────────────── */
-    .source-selector {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      padding: 14px 14px 0;
-      flex-wrap: wrap;
-    }
-    .source-btn {
-      padding: 8px 20px;
-      border-radius: 999px;
-      border: 1.5px solid rgba(0,190,220,0.22);
-      background: rgba(0,190,220,0.05);
-      color: #4a7a90;
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.18s ease;
-    }
-    .source-btn.active {
-      background: rgba(0,190,220,0.16);
-      border-color: rgba(0,190,220,0.5);
-      color: #00d4f0;
-    }
+  /* Poster */
+  .pro-series-poster-pro {
+    width:100%; height:210px;
+    border-radius:20px 20px 0 0;
+    object-fit:cover; object-position:center top;
+    display:block; background:#060c16;
+    transition:transform 8s ease;
+  }
+  .pro-series-header-pro:hover .pro-series-poster-pro { transform:scale(1.03); }
 
-    /* ─── EPISODES CONTAINER ───────────────────────────────── */
-    .episodes-outer {
-      margin: 14px 10px 0;
-      background: #0d1525;
-      border-radius: 18px;
-      padding: 12px 0 14px;
-      overflow: hidden;
-    }
-    .episodes-scroll {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      padding: 4px 14px 6px;
-      -webkit-overflow-scrolling: touch;
-      scroll-snap-type: x mandatory;
-      scrollbar-width: none;
-      transition: opacity 0.18s ease;
-    }
-    .episodes-scroll::-webkit-scrollbar { display: none; }
-    .episodes-scroll.fade { opacity: 0; }
+  /* Gradient fade at bottom of poster */
+  .poster-gradient-overlay {
+    position:absolute; left:0; right:0; top:130px; height:100px;
+    background:linear-gradient(to bottom,transparent,var(--bg2));
+    pointer-events:none; z-index:2;
+  }
+  /* Scan-line effect over poster */
+  .poster-scan {
+    position:absolute; left:0; right:0; top:0; height:36px;
+    background:linear-gradient(to bottom,rgba(0,200,240,.055),transparent);
+    animation:scan-line 7s linear infinite;
+    pointer-events:none; z-index:3;
+  }
 
-    /* ─── EPISODE CARD ─────────────────────────────────────── */
-    .ep-card {
-      scroll-snap-align: start;
-      flex: 0 0 148px;
-      border-radius: 13px;
-      overflow: hidden;
-      background: #111d2e;
-      border: 1.5px solid rgba(255,255,255,0.07);
-      text-decoration: none;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    }
-    @media (hover: hover) {
-      .ep-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 14px 36px rgba(0,0,0,0.6);
-        border-color: rgba(0,190,220,0.3);
-      }
-    }
-    .ep-card:active { transform: scale(0.96); }
+  /* Back button */
+  .pro-series-back-btn-pro {
+    position:absolute; left:12px; top:12px; z-index:10;
+    width:40px; height:40px;
+    display:inline-flex; align-items:center; justify-content:center;
+    border-radius:var(--rad-sm);
+    background:rgba(4,8,15,.85); border:1px solid var(--border-hi);
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    transition:background .22s,border-color .22s,transform .2s;
+    box-shadow:0 4px 18px rgba(0,0,0,.55);
+  }
+  .pro-series-back-btn-pro:hover {
+    background:rgba(0,200,240,.18); border-color:rgba(0,200,240,.45);
+    transform:translateX(-2px);
+  }
+  .pro-series-back-btn-pro:active { transform:scale(.92); }
 
-    .ep-thumb-wrap {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      background: #090f18;
-      overflow: hidden;
-    }
-    .ep-thumb {
-      width: 100%; height: 100%;
-      object-fit: cover; display: block;
-    }
-    .ep-num-badge {
-      position: absolute;
-      top: 7px; left: 7px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(0,185,215,0.88);
-      backdrop-filter: blur(4px);
-      color: #02161e;
-      font-size: 11.5px;
-      font-weight: 900;
-      letter-spacing: 0.03em;
-    }
-    .ep-info {
-      padding: 9px 10px 11px;
-      line-height: 1.35;
-    }
-    .ep-lbl  { font-size: 13px; font-weight: 800; color: #00c8e8; }
-    .ep-sep  { font-size: 13px; color: #4a6a80; }
-    .ep-sub  { font-size: 12.5px; color: #7a9db8; font-weight: 500; }
-    .ep-sub2 { font-size: 12px; color: #5a7a90; margin-top: 2px; }
+  /* Meta block under poster */
+  .pro-series-meta-pro {
+    width:100%; background:var(--bg2); border-top:1px solid var(--border);
+    padding:20px 20px 24px; text-align:center; position:relative; z-index:3;
+  }
+  .pro-series-meta-pro::before {
+    content:''; position:absolute; top:0; left:10%; right:10%; height:1px;
+    background:linear-gradient(90deg,transparent,var(--border-hi),transparent);
+  }
 
-    /* ─── HOW TO WATCH ─────────────────────────────────────── */
-    .htw-section { margin: 26px 14px 0; }
-    .htw-heading {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding-bottom: 10px;
-      margin-bottom: 14px;
-      border-bottom: 1.5px solid rgba(0,185,215,0.2);
-    }
-    .htw-dash { width: 22px; height: 3px; background: #00bcd4; border-radius: 2px; flex-shrink: 0; }
-    .htw-title {
-      font-size: 18px;
-      font-style: italic;
-      font-weight: 700;
-      color: #cce8f5;
-    }
-    .htw-card {
-      border-radius: 14px;
-      overflow: hidden;
-      background: #d8d5cc;
-      margin-bottom: 14px;
-    }
-    .htw-card-lbl {
-      padding: 10px 14px 6px;
-      background: #e8e5dc;
-      font-size: 12px;
-      font-weight: 900;
-      color: #111;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-    .htw-video-wrap {
-      position: relative;
-      width: 100%;
-      padding-bottom: 56.25%;
-    }
-    .htw-video-wrap iframe {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      border: 0; display: block;
-    }
+  /* Series title */
+  .pro-series-title-pro {
+    font-family:'Cinzel',serif;
+    font-size:clamp(1.22em,4.8vw,1.88em);
+    font-weight:800; color:#fff;
+    margin:0 0 10px; letter-spacing:.05em; line-height:1.2;
+    animation:title-glow 5s ease-in-out infinite, fade-up-sm .6s var(--ease) both;
+  }
 
-    /* ─── WHATSAPP POPUP ───────────────────────────────────── */
-    #wa-overlay {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.55);
-      z-index: 9000;
-    }
-    #wa-popup {
-      display: none;
-      position: fixed;
-      left: 50%;
-      bottom: 90px;
-      transform: translateX(-50%) translateY(28px);
-      width: calc(100% - 24px);
-      max-width: 440px;
-      z-index: 9001;
-      background: #0f1e2e;
-      border: 1px solid rgba(0,185,215,0.18);
-      border-top: 2.5px solid #00bcd4;
-      border-radius: 22px;
-      padding: 22px 20px 18px;
-      box-shadow: 0 24px 70px rgba(0,0,0,0.75);
-      opacity: 0;
-      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(.34,1.2,.64,1);
-    }
-    #wa-popup.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .wa-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-    .wa-icon {
-      width: 48px; height: 48px;
-      border-radius: 14px; object-fit: cover; flex-shrink: 0;
-      background: #1a2838;
-    }
-    .wa-popup-title { font-size: 17px; font-weight: 900; color: #fff; }
-    .wa-body { font-size: 14px; color: #7090a8; line-height: 1.55; margin-bottom: 18px; }
-    .wa-body strong { color: #c0d8e8; }
-    .wa-join {
-      display: flex; align-items: center; justify-content: center; gap: 9px;
-      width: 100%; padding: 14px; border-radius: 12px;
-      background: #25d366; color: #fff;
-      font-size: 15px; font-weight: 800;
-      text-decoration: none; margin-bottom: 10px;
-      transition: filter 0.15s;
-    }
-    .wa-join:active { filter: brightness(0.9); }
-    .wa-no {
-      display: block; width: 100%; padding: 11px;
-      border-radius: 10px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #5a7888; font-family: inherit;
-      font-size: 14px; font-weight: 600;
-      cursor: pointer; text-align: center;
-      transition: background 0.15s;
-    }
-    .wa-no:active { background: rgba(255,255,255,0.09); }
+  /* Description */
+  .pro-series-desc-pro {
+    font-size:.875em; color:var(--txt-soft); line-height:1.7;
+    max-width:640px; margin:0 auto 18px;
+    animation:fade-up-sm .6s var(--ease) .15s both;
+  }
 
-    /* ─── BOTTOM NAV (fallback) ────────────────────────────── */
-    .smtv-bottom-nav {
-      position: fixed;
-      left: 12px; right: 12px; bottom: 12px;
-      display: flex; align-items: center;
-      height: 62px;
-      border-radius: 18px;
-      background: rgba(6,10,18,0.94);
-      backdrop-filter: blur(18px) saturate(160%);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(255,255,255,0.07);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.55);
-      z-index: 1200;
-      padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
-      gap: 2px;
-    }
-    .smtv-bottom-nav .nav-item {
-      flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 2px;
-      text-decoration: none; color: #4a6a80;
-      border-radius: 12px; height: 100%;
-      font-size: 10px; font-weight: 700;
-      transition: all 0.22s cubic-bezier(.34,1.4,.64,1);
-    }
-    .smtv-bottom-nav .nav-item i { font-size: 17px; }
-    .smtv-bottom-nav .nav-item.active {
-      background: linear-gradient(135deg, #00d4f0, #0096c8);
-      color: #041820;
-      transform: translateY(-5px);
-      box-shadow: 0 10px 28px rgba(0,175,215,0.32);
-    }
+  /* Stat badges row */
+  .series-stats-row {
+    display:flex; align-items:center; justify-content:center;
+    gap:8px; flex-wrap:wrap; margin-bottom:18px;
+  }
+  .series-stat-badge {
+    display:inline-flex; align-items:center; gap:5px;
+    padding:5px 12px; border-radius:100px;
+    font-size:.73em; font-weight:700; letter-spacing:.04em; border:1px solid;
+  }
+  .stat-cyan  { background:rgba(0,200,240,.08); border-color:rgba(0,200,240,.22);  color:var(--cyan); }
+  .stat-gold  { background:rgba(232,168,0,.08); border-color:rgba(232,168,0,.22);  color:var(--gold); }
+  .stat-green { background:rgba(0,217,139,.08); border-color:rgba(0,217,139,.22);  color:var(--green); }
 
-    /* ─── Animations ───────────────────────────────────────── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
+  /* ═══════════════════════════════════════════════════════════════
+     PREMIUM VIP BOX  (exact screenshot match)
+  ═══════════════════════════════════════════════════════════════ */
+  .premium-channel-message {
+    position:relative; overflow:hidden;
+    border-radius:14px;
+    background:linear-gradient(145deg,#0f1d2e,#08121e);
+    border:1px solid rgba(232,168,0,.32);
+    margin-top:6px;
+    animation:premium-in .65s var(--ease) .3s both;
+    box-shadow:0 8px 32px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.04);
+  }
+  /* Shimmering gold top bar */
+  .premium-channel-message::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:linear-gradient(90deg,transparent,var(--gold-dim),var(--gold),var(--gold-lt),var(--gold-dim),transparent);
+    background-size:200% auto; animation:shimmer 2.5s linear infinite;
+  }
+  /* Corner glow */
+  .premium-channel-message::after {
+    content:''; position:absolute; top:-40px; right:-40px;
+    width:140px; height:140px;
+    background:radial-gradient(circle,rgba(232,168,0,.16) 0%,transparent 65%);
+    pointer-events:none;
+  }
+
+  /* Floating particles */
+  .pcm-particle {
+    position:absolute; width:3px; height:3px;
+    border-radius:50%; background:var(--gold); opacity:.4;
+    pointer-events:none;
+  }
+  .pcm-particle:nth-child(1){ top:22%;left:7%;   animation:particle-float 3.2s ease-in-out infinite; }
+  .pcm-particle:nth-child(2){ top:65%;left:14%;  animation:particle-float 4.1s ease-in-out infinite .6s; }
+  .pcm-particle:nth-child(3){ top:38%;right:11%; animation:particle-float 3.7s ease-in-out infinite 1.2s; background:var(--cyan); }
+  .pcm-particle:nth-child(4){ top:74%;right:19%; animation:particle-float 2.9s ease-in-out infinite .3s; }
+
+  /* Inner layout — stacked (screenshot layout) */
+  .pcm-body {
+    position:relative; z-index:1;
+    padding:16px 16px 18px; text-align:center;
+  }
+
+  /* Crown + title row */
+  .pcm-title-row {
+    display:flex; align-items:center; justify-content:center;
+    gap:8px; margin-bottom:13px;
+  }
+  .pcm-crown { font-size:1.25em; animation:float 3s ease-in-out infinite; }
+  .pcm-title-text {
+    font-size:.95em; font-weight:800;
+    background:linear-gradient(90deg,var(--gold),var(--gold-lt));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    background-clip:text; background-size:200% auto;
+    animation:shimmer 2.5s linear infinite;
+    letter-spacing:.02em;
+  }
+
+  /* Feature badges */
+  .pcm-features {
+    display:flex; gap:7px; flex-wrap:wrap;
+    justify-content:center; margin-bottom:14px;
+  }
+  .pcm-feat {
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:.72em; font-weight:700; padding:5px 12px;
+    border-radius:100px; letter-spacing:.03em; white-space:nowrap;
+  }
+  .pcm-feat-dark  { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); color:#c8dde8; }
+  .pcm-feat-cyan  { background:rgba(0,200,240,.08);   border:1px solid rgba(0,200,240,.22);   color:var(--cyan); }
+  .pcm-feat-green { background:rgba(0,217,139,.08);   border:1px solid rgba(0,217,139,.22);   color:var(--green); }
+
+  /* VIP button */
+  .pcm-vip-btn {
+    display:block; width:100%;
+    padding:15px 0;
+    border-radius:var(--rad-sm);
+    background:linear-gradient(135deg,var(--gold),var(--gold-lt),#ffdc70);
+    color:#1a0800; font-family:'DM Sans',sans-serif;
+    font-size:.9em; font-weight:900; letter-spacing:.09em;
+    text-transform:uppercase; text-align:center;
+    border:none; cursor:pointer; text-decoration:none;
+    position:relative; overflow:hidden;
+    box-shadow:0 6px 26px var(--gold-glow),inset 0 1px 0 rgba(255,255,255,.3);
+    transition:box-shadow .25s,transform .15s;
+    animation:pulse-ring-gold 2.8s ease-out infinite;
+  }
+  /* Shine sweep */
+  .pcm-vip-btn::before {
+    content:''; position:absolute; top:0; left:-100%; width:60%; height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);
+    animation:btn-shine 2s ease-in-out infinite;
+  }
+  .pcm-vip-btn:hover { box-shadow:0 8px 32px rgba(232,168,0,.65); transform:translateY(-2px) scale(1.03); }
+  .pcm-vip-btn:active { transform:scale(.96); }
+
+  /* ═══════════════════════════════════════════════════════════════
+     SEASON TABS
+  ═══════════════════════════════════════════════════════════════ */
+  .pro-seasons-tabs-pro {
+    display:flex; gap:8px; justify-content:center;
+    flex-wrap:wrap; margin:22px 0 16px;
+  }
+  .pro-season-tab-pro {
+    background:var(--bg2); border:1px solid var(--border-hi);
+    color:var(--txt-muted); padding:10px 24px; border-radius:100px;
+    cursor:pointer; font-weight:700; font-size:.88em;
+    font-family:'DM Sans',sans-serif; letter-spacing:.03em;
+    transition:all .22s var(--ease); outline:none;
+    position:relative; overflow:hidden;
+  }
+  .pro-season-tab-pro:hover:not(.active) {
+    border-color:rgba(0,200,240,.38); color:var(--txt);
+    background:rgba(0,200,240,.07); transform:translateY(-1px);
+  }
+  .pro-season-tab-pro.active {
+    background:linear-gradient(135deg,var(--cyan),#0090b8);
+    border-color:transparent; color:#021018; font-weight:800;
+    transform:translateY(-2px);
+    box-shadow:0 6px 24px var(--cyan-glow);
+  }
+  .pro-season-tab-pro:active { transform:scale(.95); }
+
+  /* ═══════════════════════════════════════════════════════════════
+     SOURCE SELECTOR
+  ═══════════════════════════════════════════════════════════════ */
+  .source-selector {
+    display:flex; gap:8px; justify-content:center;
+    margin:0 0 18px; flex-wrap:wrap;
+  }
+  .source-btn {
+    background:var(--bg3); border:1px solid var(--border-hi);
+    color:var(--txt-muted); padding:7px 20px; border-radius:var(--rad-xs);
+    font-size:.82em; font-weight:700;
+    font-family:'DM Sans',sans-serif; cursor:pointer;
+    transition:all .22s var(--ease); outline:none;
+  }
+  .source-btn:hover:not(.active) {
+    border-color:rgba(0,200,240,.38); color:var(--txt);
+    background:rgba(0,200,240,.07);
+  }
+  .source-btn.active {
+    background:linear-gradient(135deg,var(--cyan),#0090b8);
+    border-color:transparent; color:#021018; font-weight:800;
+    box-shadow:0 4px 16px var(--cyan-glow); transform:translateY(-1px);
+  }
+  .source-btn:active { transform:scale(.95); }
+
+  /* ═══════════════════════════════════════════════════════════════
+     EPISODES SECTION
+  ═══════════════════════════════════════════════════════════════ */
+  .pro-episodes-row-wrap-pro {
+    margin-top:6px; padding-bottom:10px; margin-bottom:8px;
+  }
+
+  /* "Episodes" label */
+  .episodes-section-label {
+    display:flex; align-items:center; gap:10px;
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.06em; font-weight:700; font-style:italic;
+    letter-spacing:.07em; color:var(--cyan);
+    text-transform:uppercase; margin-bottom:14px;
+    animation:howto-slide .5s var(--ease) both;
+  }
+  .episodes-section-label::after {
+    content:''; flex:1; height:1px;
+    background:linear-gradient(to right,rgba(0,200,240,.35),transparent);
+  }
+
+  /* Horizontal scroll row */
+  .pro-episodes-row-pro {
+    display:flex; gap:12px; overflow-x:auto;
+    padding:4px 2px 16px;
+    -webkit-overflow-scrolling:touch;
+    scroll-snap-type:x proximity;
+    scrollbar-width:thin;
+    scrollbar-color:rgba(0,200,240,.22) transparent;
+  }
+  .pro-episodes-row-pro::-webkit-scrollbar { height:3px; }
+  .pro-episodes-row-pro::-webkit-scrollbar-track { background:transparent; }
+  .pro-episodes-row-pro::-webkit-scrollbar-thumb { background:rgba(0,200,240,.25); border-radius:4px; }
+
+  /* Row swap animation */
+  .pro-episodes-row-pro.row-switching {
+    opacity:0; transform:translateX(12px);
+    transition:opacity .18s ease, transform .18s ease;
+  }
+  .pro-episodes-row-pro.row-visible {
+    opacity:1; transform:translateX(0);
+    transition:opacity .25s ease .06s, transform .25s var(--ease) .06s;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     EPISODE CARD
+  ═══════════════════════════════════════════════════════════════ */
+  .pro-episode-card-pro {
+    scroll-snap-align:start; flex:0 0 150px;
+    display:flex; flex-direction:column; align-items:stretch;
+    text-decoration:none; color:var(--txt);
+    border-radius:14px; background:var(--bg2); border:1px solid var(--border);
+    overflow:hidden; position:relative;
+    transition:transform .28s var(--ease), box-shadow .28s ease, border-color .28s ease;
+  }
+  .pro-episode-card-pro.card-animate { animation:card-in .4s var(--ease) both; }
+
+  @media (max-width:420px) { .pro-episode-card-pro { flex:0 0 132px; } }
+  @media (min-width:900px) { .pro-episode-card-pro { flex:0 0 178px; } }
+
+  /* Hover top cyan line */
+  .pro-episode-card-pro::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+    opacity:0; transition:opacity .22s; z-index:5; pointer-events:none;
+  }
+  .pro-episode-card-pro:hover::before { opacity:1; }
+
+  @media (hover:hover) {
+    .pro-episode-card-pro:hover {
+      transform:translateY(-7px) scale(1.025);
+      box-shadow:0 20px 48px rgba(0,0,0,.7),0 0 0 1px rgba(0,200,240,.38);
+      border-color:rgba(0,200,240,.4);
     }
-    .a1 { animation: fadeUp 0.38s ease 0.04s both; }
-    .a2 { animation: fadeUp 0.38s ease 0.10s both; }
-    .a3 { animation: fadeUp 0.38s ease 0.18s both; }
-    .a4 { animation: fadeUp 0.38s ease 0.26s both; }
-    .a5 { animation: fadeUp 0.38s ease 0.34s both; }
-    .a6 { animation: fadeUp 0.38s ease 0.42s both; }
+  }
+  .pro-episode-card-pro:active { transform:scale(.95); }
+
+  /* Thumbnail wrapper — clean, no pseudo overlay */
+  .pro-ep-thumb-wrap-pro {
+    position:relative; width:100%; height:94px;
+    overflow:hidden; display:block; flex-shrink:0;
+    background:#0a1624;
+  }
+  @media (max-width:420px) { .pro-ep-thumb-wrap-pro { height:83px; } }
+  @media (min-width:900px) { .pro-ep-thumb-wrap-pro { height:111px; } }
+
+  /* Thumbnail image — always visible, no broken opacity */
+  .pro-ep-thumb-pro {
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    object-fit:cover; object-position:center;
+    display:block; z-index:1;
+    transition:transform .35s ease;
+  }
+  .pro-episode-card-pro:hover .pro-ep-thumb-pro { transform:scale(1.08); }
+
+  /* Ep number badge — bottom-left of thumb */
+  .pro-ep-num-pro {
+    position:absolute; bottom:6px; left:6px; z-index:3;
+    background:rgba(4,8,15,.88); border:1px solid var(--border-hi);
+    color:var(--cyan); font-size:.67em; font-weight:800;
+    padding:2px 9px; border-radius:5px;
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    letter-spacing:.05em;
+  }
+
+  /* Play overlay on hover */
+  .ep-play-overlay {
+    position:absolute; top:50%; left:50%; z-index:4;
+    transform:translate(-50%,-50%) scale(.65);
+    width:34px; height:34px;
+    background:rgba(0,200,240,.92); border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    color:#021018; font-size:.62em;
+    opacity:0; pointer-events:none;
+    transition:opacity .22s, transform .22s var(--ease);
+    box-shadow:0 0 22px var(--cyan-glow);
+  }
+  .pro-episode-card-pro:hover .ep-play-overlay {
+    opacity:1; transform:translate(-50%,-50%) scale(1);
+  }
+
+  /* Title block under thumb */
+  .pro-ep-title-pro {
+    font-size:.77em; font-weight:600; color:var(--txt);
+    padding:9px 10px 11px; line-height:1.45;
+    display:-webkit-box; -webkit-line-clamp:2;
+    -webkit-box-orient:vertical; overflow:hidden;
+  }
+  /* "Ep 1" in cyan */
+  .ep-title-num  { color:var(--cyan); font-weight:800; }
+  /* " — subtitle" in softer colour */
+  .ep-title-name { color:var(--txt-soft); font-weight:500; }
+
+  /* ═══════════════════════════════════════════════════════════════
+     HOW TO WATCH
+  ═══════════════════════════════════════════════════════════════ */
+  .pro-tutorial-title {
+    font-family:'Cormorant Garamond',serif !important;
+    font-size:1.42em !important; font-weight:700 !important;
+    font-style:italic !important; color:#fff !important;
+    margin:34px 0 14px 2px !important;
+    display:flex !important; align-items:center !important;
+    gap:12px !important; letter-spacing:.03em !important;
+    position:relative;
+    animation:howto-slide .6s var(--ease) both;
+  }
+  .pro-tutorial-title::before {
+    content:'' !important; width:18px; height:2.5px;
+    background:var(--cyan); border-radius:2px;
+    display:inline-block; flex-shrink:0;
+  }
+  .pro-tutorial-title::after {
+    content:'' !important; position:absolute;
+    bottom:-5px; left:0; height:1.5px; width:100%;
+    background:linear-gradient(90deg,var(--cyan),rgba(0,200,240,.08));
+    transform-origin:left; animation:underline-grow .8s var(--ease) .25s both;
+  }
+
+  /* Video frame */
+  .pro-video-frame-wrap {
+    position:relative; width:100%; height:0; padding-bottom:56.25%;
+    border-radius:var(--radius); overflow:hidden;
+    border:1px solid var(--border-hi); background:var(--bg2);
+    box-shadow:0 12px 36px rgba(0,0,0,.65);
+    margin-bottom:20px;
+  }
+  .pro-video-frame-wrap iframe {
+    position:absolute; top:0; left:0;
+    width:100%; height:100%;
+    border:0; display:block; background:#000;
+  }
+
+  /* Video label (shown above iframe) */
+  .video-card-wrap { margin-bottom:22px; }
+  .video-card-label {
+    font-size:.78em; font-weight:800; color:var(--txt-muted);
+    letter-spacing:.07em; text-transform:uppercase;
+    margin-bottom:10px; padding-left:2px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .video-card-label::before {
+    content:''; width:8px; height:8px; border-radius:50%;
+    background:var(--cyan); flex-shrink:0;
+    box-shadow:0 0 8px var(--cyan-glow);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     LOADING DOTS
+  ═══════════════════════════════════════════════════════════════ */
+  .ep-loading {
+    display:flex; align-items:center; gap:12px;
+    padding:22px 4px; color:var(--txt-muted); font-size:.88em;
+  }
+  .dot-wrap { display:flex; gap:5px; align-items:center; }
+  .dot-wrap span {
+    display:inline-block; width:7px; height:7px;
+    border-radius:50%; background:var(--cyan);
+    animation:dot-pulse 1.2s ease-in-out infinite;
+  }
+  .dot-wrap span:nth-child(2) { animation-delay:.2s; }
+  .dot-wrap span:nth-child(3) { animation-delay:.4s; }
+
+  /* ═══════════════════════════════════════════════════════════════
+     WHATSAPP POPUP
+  ═══════════════════════════════════════════════════════════════ */
+  #wa-backdrop {
+    display:none; position:fixed; inset:0;
+    background:rgba(0,0,0,.65);
+    backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px);
+    z-index:9000;
+  }
+  #wa-backdrop.show { display:block; animation:fade-in .3s ease both; }
+
+  #whatsappPopup {
+    display:none; position:fixed;
+    left:50%; bottom:100px;
+    transform:translate(-50%,0);
+    max-width:340px; width:90vw; z-index:9001;
+    font-family:'DM Sans',sans-serif;
+    background:var(--bg2);
+    border:1px solid var(--border-hi);
+    border-top:2.5px solid var(--cyan);
+    border-radius:20px;
+    padding:22px 20px 18px;
+    box-shadow:0 24px 70px rgba(0,0,0,.85);
+    overflow:hidden;
+  }
+  #whatsappPopup.popup-show { display:block; animation:popup-up .38s var(--ease) both; }
+  #whatsappPopup.popup-hide { animation:popup-down .28s ease both; }
+
+  /* Shimmer stripe at very top */
+  #whatsappPopup::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:linear-gradient(90deg,#25d366,var(--cyan),#25d366);
+    background-size:200% auto; animation:shimmer 3s linear infinite;
+  }
+
+  .wa-inner { position:relative; z-index:1; }
+  .wa-head  { display:flex; align-items:center; gap:11px; margin-bottom:11px; }
+  .wa-logo  { width:44px; height:44px; border-radius:11px; object-fit:cover; background:var(--bg3); flex-shrink:0; }
+  .wa-head-title { font-size:1.06em; font-weight:900; color:#fff; }
+
+  .wa-body-text {
+    font-size:.86em; color:var(--txt-soft);
+    line-height:1.6; margin-bottom:16px;
+  }
+  .wa-body-text strong { color:var(--txt); }
+
+  .wa-join-btn {
+    display:inline-flex; align-items:center; justify-content:center;
+    gap:8px; width:100%; padding:13px;
+    border-radius:10px;
+    background:linear-gradient(135deg,#25d366,#1da857);
+    color:#fff; font-size:.9em; font-weight:800;
+    text-decoration:none; margin-bottom:10px;
+    box-shadow:0 4px 18px rgba(37,211,102,.32);
+    transition:filter .15s,transform .15s;
+  }
+  .wa-join-btn:active { filter:brightness(.9); transform:scale(.97); }
+
+  .wa-dismiss-btn {
+    display:block; width:100%; padding:9px;
+    background:none; border:1px solid rgba(255,255,255,.1);
+    color:var(--txt-muted); font-family:'DM Sans',sans-serif;
+    font-size:.82em; font-weight:700; cursor:pointer;
+    border-radius:7px; text-align:center;
+    transition:color .2s, border-color .2s;
+  }
+  .wa-dismiss-btn:hover { color:#ff4d6d; border-color:rgba(255,77,109,.35); }
+
+  /* ═══════════════════════════════════════════════════════════════
+     SECTION DIVIDER
+  ═══════════════════════════════════════════════════════════════ */
+  .section-divider {
+    height:1px; margin:20px 0;
+    background:linear-gradient(to right,transparent,var(--border-hi),transparent);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     FOOTER / BOTTOM NAV — body padding
+  ═══════════════════════════════════════════════════════════════ */
+  @media (max-width:600px) {
+    body { padding-bottom:calc(120px + env(safe-area-inset-bottom)); }
+  }
+  .smtv-bottom-nav {
+    position:fixed; left:12px; right:12px; bottom:12px;
+    height:64px; display:flex; gap:6px; padding:8px;
+    border-radius:16px;
+    background:rgba(7,16,28,.93);
+    backdrop-filter:blur(16px) saturate(160%);
+    -webkit-backdrop-filter:blur(16px);
+    border:1px solid var(--border-hi);
+    align-items:center; z-index:1200;
+    box-shadow:0 8px 36px rgba(0,0,0,.6);
+    padding-bottom:calc(env(safe-area-inset-bottom) + 8px);
+  }
+  .smtv-bottom-nav .nav-item {
+    flex:1; text-align:center; color:#5a7a90;
+    text-decoration:none; padding:6px;
+    border-radius:10px;
+    transition:color .2s, transform .22s var(--ease);
+    font-size:10px; font-weight:700;
+  }
+  .smtv-bottom-nav .nav-item i { display:block; font-size:17px; margin-bottom:2px; }
+  .smtv-bottom-nav .nav-item.active {
+    color:#fff; transform:translateY(-5px);
+  }
+  .smtv-bottom-nav .icon-wrap {
+    display:inline-flex; width:38px; height:38px;
+    align-items:center; justify-content:center; border-radius:10px;
+  }
+  .smtv-bottom-nav .nav-item.active .icon-wrap {
+    background:linear-gradient(135deg,var(--cyan),#0090b8);
+    color:#021018;
+    box-shadow:0 6px 20px var(--cyan-glow);
+  }
+  .smtv-bottom-nav .label { display:block; font-size:10px; margin-top:2px; }
   </style>
 
   <script defer src="series.js"></script>
 </head>
 <body>
 
-<div id="page">
-  <script type="text/javascript" src="//www.highperformanceformat.com/c91a82435d260630918ecc80c95125ac/invoke.js"></script>
-  <div id="series-details" aria-live="polite"></div>
-</div>
+  <!-- Backdrop for WA popup -->
+  <div id="wa-backdrop"></div>
 
-<!-- WhatsApp popup -->
-<div id="wa-overlay"></div>
-<div id="wa-popup" role="dialog">
-  <div class="wa-header">
-    <img class="wa-icon" src="favicon.png" alt="SmTv"
-         onerror="this.style.background='#1a2838';this.removeAttribute('src')">
-    <div class="wa-popup-title">Stay Updated on SmTv!</div>
+  <div id="main-content">
+    <header><!-- back button injected by series.js --></header>
+    <script type="text/javascript" src="//www.highperformanceformat.com/c91a82435d260630918ecc80c95125ac/invoke.js"></script>
+    <div id="series-details" aria-live="polite"></div>
   </div>
-  <p class="wa-body">Get <strong>instant episode alerts</strong> before anyone else — totally free.</p>
-  <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k"
-     target="_blank" rel="noopener" class="wa-join">
-    <i class="fa-brands fa-whatsapp" style="font-size:19px;"></i>
-    Join WhatsApp Channel
-  </a>
-  <button class="wa-no" id="wa-no">&#x2715; No thanks</button>
-</div>
 
-<div id="footer-placeholder"></div>
+  <!-- ═══════════════════════════════════════════════════════════
+       WHATSAPP POPUP
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="whatsappPopup" role="dialog" aria-modal="true" aria-label="Stay Updated">
+    <div class="wa-inner">
+      <div class="wa-head">
+        <img class="wa-logo" src="favicon.png" alt="SmTv Urdu"
+             onerror="this.style.background='var(--bg3)';this.removeAttribute('src')">
+        <div class="wa-head-title">Stay Updated on SmTv!</div>
+      </div>
+      <p class="wa-body-text">
+        Get <strong>instant episode alerts</strong> before anyone else — totally free.
+      </p>
+      <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k"
+         target="_blank" rel="noopener" class="wa-join-btn">
+        <i class="fa-brands fa-whatsapp" style="font-size:1.1em"></i>
+        Join WhatsApp Channel
+      </a>
+      <button class="wa-dismiss-btn" id="wa-dismiss">✕ No thanks</button>
+    </div>
+  </div>
 
-<!-- ── Scripts ─────────────────────────────────────────────── -->
-<script>
-/* Page title updater */
-document.addEventListener('DOMContentLoaded', function () {
-  var slug = new URLSearchParams(location.search).get('series');
-  if (!slug) return;
-  fetch('/series.json').then(function(r){return r.json();}).then(function(arr){
-    var s = Array.isArray(arr) ? arr.find(function(x){return x.slug===slug;}) : null;
-    if (s && s.title) {
-      document.title = s.title + ' \u2013 SmTv Urdu';
-      var m = document.querySelector('meta[name="description"]');
-      if (m) m.content = s.title + ' - Watch all episodes in Urdu on SmTv Urdu.';
+  <div id="footer-placeholder"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       DYNAMIC META UPDATER
+  ═══════════════════════════════════════════════════════════ -->
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var slug = new URLSearchParams(window.location.search).get('series');
+    if (!slug) return;
+    fetch('/series.json')
+      .then(function(r){ return r.json(); })
+      .then(function(arr){
+        var s = Array.isArray(arr) ? arr.find(function(x){ return x.slug === slug; }) : null;
+        if (s && s.title) {
+          document.title = s.title + ' \u2013 SmTv Urdu';
+          var m = document.querySelector('meta[name="description"]');
+          if (m) m.setAttribute('content', s.title + ' - Watch all episodes in Urdu on SmTv Urdu.');
+        }
+      }).catch(function(){});
+  });
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       WHATSAPP POPUP LOGIC
+  ═══════════════════════════════════════════════════════════ -->
+  <script>
+  (function(){
+    var popup    = document.getElementById('whatsappPopup');
+    var backdrop = document.getElementById('wa-backdrop');
+    var dismiss  = document.getElementById('wa-dismiss');
+
+    function showPopup(){
+      backdrop.classList.add('show');
+      popup.classList.remove('popup-hide');
+      popup.classList.add('popup-show');
     }
-  }).catch(function(){});
-});
-</script>
-
-<script>
-/* WhatsApp popup */
-(function(){
-  var pop=document.getElementById('wa-popup'),
-      ov =document.getElementById('wa-overlay'),
-      no =document.getElementById('wa-no');
-  function show(){ov.style.display='block';pop.style.display='block';requestAnimationFrame(function(){requestAnimationFrame(function(){pop.classList.add('show');});});}
-  function hide(){pop.classList.remove('show');setTimeout(function(){pop.style.display='none';ov.style.display='none';},350);}
-  setTimeout(show, 2500);
-  no.addEventListener('click', hide);
-  ov.addEventListener('click', hide);
-})();
-</script>
-
-<script>
-/* Scroll lock */
-(function(){
-  try{window.scrollTo(0,0);}catch(e){}
-  document.addEventListener('focusin',function(){var x=window.scrollX,y=window.scrollY;setTimeout(function(){try{window.scrollTo(x,y);}catch(e){}},0);},true);
-  var d=document.getElementById('series-details');
-  if(d){var o=new MutationObserver(function(){if(d.childNodes.length){try{window.scrollTo({top:0,behavior:'auto'});}catch(e){}o.disconnect();}});o.observe(d,{childList:true});}
-})();
-</script>
-
-<script>
-/* ═══════════════════════════════════════════════════════════
-   SERIES RENDERER  —  window.renderSmtvSeries(data)
-   Called automatically by slug, OR from your series.js
-
-   Episode fields:
-     num      : 1
-     title    : "The Beginning"   (optional — shown as "Ep 1 — The Beginning")
-     thumb    : "ep1.jpg"
-     link     : "watch.html?ep=1"
-═══════════════════════════════════════════════════════════ */
-(function(){
-  'use strict';
-
-  function esc(s){
-    return String(s==null?'':s)
-      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  function buildCard(ep){
-    var lbl = 'Ep '+ep.num;
-    var thumb = ep.thumb
-      ? '<img class="ep-thumb" src="'+esc(ep.thumb)+'" alt="'+esc(lbl)+'" loading="lazy">'
-      : '<div style="width:100%;height:100%;background:#0a1020;"></div>';
-
-    var info;
-    if(ep.title && ep.title.trim()){
-      info = '<div class="ep-info">'
-           + '<span class="ep-lbl">'+esc(lbl)+'</span>'
-           + '<span class="ep-sep"> \u2014 </span>'
-           + '<span class="ep-sub">'+esc(ep.title)+'</span>'
-           + '</div>';
-    } else {
-      info = '<div class="ep-info"><span class="ep-lbl">'+esc(lbl)+'</span></div>';
+    function hidePopup(){
+      backdrop.classList.remove('show');
+      popup.classList.remove('popup-show');
+      popup.classList.add('popup-hide');
+      setTimeout(function(){ popup.classList.remove('popup-hide'); }, 300);
     }
 
-    return '<a class="ep-card" href="'+esc(ep.link||'#')+'">'
-         + '<div class="ep-thumb-wrap">'
-         + thumb
-         + '<span class="ep-num-badge">'+esc(lbl)+'</span>'
-         + '</div>'
-         + info
-         + '</a>';
-  }
+    setTimeout(showPopup, 2200);
+    dismiss.addEventListener('click', hidePopup);
+    backdrop.addEventListener('click', hidePopup);
+  })();
+  </script>
 
-  function scrollHTML(eps){ return (eps||[]).map(buildCard).join(''); }
-
-  window.renderSmtvSeries = function(data){
-    var mount = document.getElementById('series-details');
-    if(!mount) return;
-
-    var seasons    = data.seasons||[];
-    var hasPremium = data.premium && data.premium.enabled;
-    var hasHTW     = data.howToWatch && data.howToWatch.videos && data.howToWatch.videos.length;
-    var html       = '';
-
-    /* 1 ── Hero image */
-    var img = data.backdropImage || data.posterImage;
-    if(img){
-      html += '<div class="hero-poster a1">'
-            + '<img src="'+esc(img)+'" alt="'+esc(data.title)+'">'
-            + '<div class="hero-poster-fade"></div>'
-            + '</div>';
-    }
-
-    /* 2 ── Title + description */
-    html += '<div class="series-info a2">'
-          + '<h1 class="series-title">'+esc(data.title)+'</h1>'
-          + (data.description ? '<p class="series-desc">'+esc(data.description)+'</p>' : '')
-          + '</div>';
-
-    /* 3 ── VIP box */
-    if(hasPremium){
-      html += '<div class="vip-box a3">'
-            + '<div class="vip-title-row"><span class="vip-crown">&#x1F451;</span>'
-            + '<span class="vip-title-text">SMTV VIP Membership</span></div>'
-            + '<div class="vip-badges">'
-            + '<span class="vip-badge dark">&#x26A1; No Ads</span>'
-            + '<span class="vip-badge dark">&#x2193; Fast Download</span>'
-            + '<span class="vip-badge teal">&#x1F512; Early Access</span>'
-            + '<span class="vip-badge dark">&#x1F3AC; HD Quality</span>'
-            + '</div>'
-            + '<a href="'+esc(data.premium.link||'premium.html')+'" class="vip-btn">BECOME VIP</a>'
-            + '</div>';
-    }
-
-    /* 4 ── Season tabs (only if > 1 season) */
-    if(seasons.length > 1){
-      html += '<div class="seasons-wrap a4" id="stabs">';
-      seasons.forEach(function(s,i){
-        html += '<button class="season-tab'+(i===0?' active':'')+'" data-i="'+i+'">'
-              + esc(s.label||('Season '+(i+1)))+'</button>';
+  <!-- ═══════════════════════════════════════════════════════════
+       PREVENT AUTO-SCROLL ON FOCUS
+  ═══════════════════════════════════════════════════════════ -->
+  <script>
+  (function(){
+    try{ window.scrollTo(0,0); }catch(e){}
+    document.addEventListener('focusin', function(){
+      var x=window.scrollX||0, y=window.scrollY||0;
+      setTimeout(function(){ try{ window.scrollTo(x,y); }catch(e){} }, 0);
+    }, true);
+    var det = document.getElementById('series-details');
+    if(det){
+      var obs = new MutationObserver(function(){
+        if(det.childNodes.length){
+          try{ window.scrollTo({top:0,behavior:'auto'}); }catch(e){ window.scrollTo(0,0); }
+          obs.disconnect();
+        }
       });
-      html += '</div>';
+      obs.observe(det,{childList:true});
+    }
+  })();
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCROLL REVEAL
+  ═══════════════════════════════════════════════════════════ -->
+  <script>
+  (function(){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); }
+      });
+    },{threshold:0.08});
+
+    function observe(){
+      document.querySelectorAll('.reveal:not(.show)').forEach(function(el){ io.observe(el); });
+    }
+    observe();
+
+    var sd = document.getElementById('series-details');
+    if(sd){
+      var mo = new MutationObserver(observe);
+      mo.observe(sd,{childList:true,subtree:true});
+    }
+  })();
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SERIES RENDERER
+       ─────────────────────────────────────────────────────────
+       Your series.js should call:  window.renderSmtvSeries(data)
+       OR this file auto-loads from /series.json by ?series= slug.
+
+       series.json episode shape:
+         { num:1, title:"The Beginning", thumb:"ep1.jpg", link:"watch.html?ep=1" }
+         (title is optional — omit for plain "Ep 1" cards)
+  ═══════════════════════════════════════════════════════════ -->
+  <script>
+  (function(){
+    'use strict';
+
+    /* ── tiny HTML escape ── */
+    function esc(s){
+      return String(s==null?'':s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    /* 5 ── Season panels */
-    seasons.forEach(function(s,si){
-      var hasSrc = s.sources && s.sources.length>1;
-      html += '<div id="sp-'+si+'"'+(si>0?' style="display:none"':'')+' class="a5">';
+    /* ── Build one episode card ── */
+    function buildCard(ep, delay){
+      var lbl     = 'Ep ' + ep.num;
+      var hasTitle = ep.title && String(ep.title).trim();
+      var style    = delay ? ' style="animation-delay:' + delay + 's"' : '';
 
-      if(hasSrc){
-        html += '<div class="source-selector" id="src-'+si+'">';
-        s.sources.forEach(function(src,ri){
-          html += '<button class="source-btn'+(ri===0?' active':'')+'" data-si="'+si+'" data-ri="'+ri+'">'+esc(src.label)+'</button>';
+      var thumbHTML = ep.thumb
+        ? '<img class="pro-ep-thumb-pro" src="' + esc(ep.thumb) + '" alt="' + esc(lbl) + '" loading="lazy">'
+        : '<div style="position:absolute;inset:0;background:#0a1020;"></div>';
+
+      /* Title line: "Ep 1" or "Ep 1 — Subtitle" */
+      var titleHTML;
+      if(hasTitle){
+        titleHTML = '<span class="ep-title-num">' + esc(lbl) + '</span>'
+                  + '<span class="ep-title-name"> \u2014 ' + esc(ep.title) + '</span>';
+      } else {
+        titleHTML = '<span class="ep-title-num">' + esc(lbl) + '</span>';
+      }
+
+      return '<a class="pro-episode-card-pro card-animate reveal"' + style
+           + ' href="' + esc(ep.link||'#') + '">'
+           + '<div class="pro-ep-thumb-wrap-pro">'
+           + thumbHTML
+           + '<span class="pro-ep-num-pro">' + esc(lbl) + '</span>'
+           + '<div class="ep-play-overlay"><i class="fa-solid fa-play" style="margin-left:2px;"></i></div>'
+           + '</div>'
+           + '<div class="pro-ep-title-pro">' + titleHTML + '</div>'
+           + '</a>';
+    }
+
+    /* ── Build scroll row from episode array ── */
+    function buildRow(eps){
+      return (eps||[]).map(function(ep,i){ return buildCard(ep, i*0.055); }).join('');
+    }
+
+    /* ── Main renderer ── */
+    window.renderSmtvSeries = function(data){
+      var mount = document.getElementById('series-details');
+      if(!mount) return;
+
+      var seasons    = data.seasons || [];
+      var hasPremium = data.premium && data.premium.enabled;
+      var hasHTW     = data.howToWatch && data.howToWatch.videos && data.howToWatch.videos.length;
+      var html       = '';
+
+      /* ─ 1. Header card ─ */
+      html += '<div class="pro-series-header-pro">';
+
+      /* Back button */
+      html += '<a class="pro-series-back-btn-pro" href="' + esc(data.backLink||'series.html') + '" aria-label="Back">'
+            + '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--cyan)">'
+            + '<path d="M19 12H5M12 5l-7 7 7 7"/></svg></a>';
+
+      /* Poster */
+      var posterSrc = data.backdropImage || data.posterImage || '';
+      if(posterSrc){
+        html += '<img class="pro-series-poster-pro" src="' + esc(posterSrc) + '" alt="' + esc(data.title) + '">';
+      } else {
+        html += '<div class="pro-series-poster-pro" style="height:210px;background:linear-gradient(135deg,#0d1e30,#060c18);"></div>';
+      }
+
+      /* Overlays (JS appended below for posterSrc; here we inline them) */
+      html += '<div class="poster-gradient-overlay"></div>';
+      html += '<div class="poster-scan"></div>';
+
+      /* Meta block */
+      html += '<div class="pro-series-meta-pro">';
+      html += '<h1 class="pro-series-title-pro">' + esc(data.title) + '</h1>';
+      if(data.description){
+        html += '<p class="pro-series-desc-pro">' + esc(data.description) + '</p>';
+      }
+
+      /* Stat badges */
+      if(data.year || data.language || seasons.length){
+        html += '<div class="series-stats-row">';
+        if(seasons.length) html += '<span class="series-stat-badge stat-cyan"><i class="fa-solid fa-layer-group" style="font-size:.8em"></i>' + seasons.length + ' Season' + (seasons.length>1?'s':'') + '</span>';
+        if(data.year)      html += '<span class="series-stat-badge stat-gold"><i class="fa-solid fa-calendar" style="font-size:.8em"></i>' + esc(data.year) + '</span>';
+        if(data.language)  html += '<span class="series-stat-badge stat-green"><i class="fa-solid fa-language" style="font-size:.8em"></i>' + esc(data.language) + '</span>';
+        html += '</div>';
+      }
+
+      /* ─ 2. VIP box ─ */
+      if(hasPremium){
+        html += '<div class="premium-channel-message reveal">'
+              + '<div class="pcm-particle"></div><div class="pcm-particle"></div>'
+              + '<div class="pcm-particle"></div><div class="pcm-particle"></div>'
+              + '<div class="pcm-body">'
+              + '<div class="pcm-title-row">'
+              + '<span class="pcm-crown">&#x1F451;</span>'
+              + '<span class="pcm-title-text">SMTV VIP Membership</span>'
+              + '</div>'
+              + '<div class="pcm-features">'
+              + '<span class="pcm-feat pcm-feat-dark">&#x26A1; No Ads</span>'
+              + '<span class="pcm-feat pcm-feat-dark">&#x2193; Fast Download</span>'
+              + '<span class="pcm-feat pcm-feat-cyan">&#x1F512; Early Access</span>'
+              + '<span class="pcm-feat pcm-feat-dark">&#x1F3AC; HD Quality</span>'
+              + '</div>'
+              + '<a href="' + esc(data.premium.link||'premium.html') + '" class="pcm-vip-btn">BECOME VIP</a>'
+              + '</div></div>';
+      }
+
+      html += '</div>'; /* /meta */
+      html += '</div>'; /* /header card */
+
+      /* ─ 3. Season tabs ─ */
+      if(seasons.length > 1){
+        html += '<div class="pro-seasons-tabs-pro reveal" id="stabs">';
+        seasons.forEach(function(s,i){
+          html += '<button class="pro-season-tab-pro' + (i===0?' active':'') + '" data-si="' + i + '">'
+                + esc(s.label || ('Season '+(i+1))) + '</button>';
         });
         html += '</div>';
       }
 
-      var firstEps = hasSrc ? (s.sources[0].episodes||[]) : (s.episodes||[]);
-      html += '<div class="episodes-outer">'
-            + '<div class="episodes-scroll" id="es-'+si+'">'+scrollHTML(firstEps)+'</div>'
-            + '</div></div>';
-    });
+      /* ─ 4. Season panels ─ */
+      seasons.forEach(function(s, si){
+        var hasSrc   = s.sources && s.sources.length > 1;
+        var firstEps = hasSrc ? (s.sources[0].episodes||[]) : (s.episodes||[]);
 
-    /* 6 ── How to Watch */
-    if(hasHTW){
-      html += '<div class="htw-section a6">'
-            + '<div class="htw-heading"><div class="htw-dash"></div>'
-            + '<span class="htw-title">How to Watch Episodes</span></div>';
-      data.howToWatch.videos.forEach(function(v){
-        html += '<div class="htw-card">'
-              + (v.title?'<div class="htw-card-lbl">'+esc(v.title)+'</div>':'')
-              + '<div class="htw-video-wrap">'
-              + '<iframe src="'+esc(v.embedUrl)+'" allowfullscreen loading="lazy"></iframe>'
+        html += '<div id="sp-' + si + '"' + (si>0?' style="display:none"':'') + ' class="reveal">';
+
+        /* Source selector */
+        if(hasSrc){
+          html += '<div class="source-selector" id="src-' + si + '">';
+          s.sources.forEach(function(src,ri){
+            html += '<button class="source-btn' + (ri===0?' active':'') + '" data-si="' + si + '" data-ri="' + ri + '">'
+                  + esc(src.label) + '</button>';
+          });
+          html += '</div>';
+        }
+
+        /* Episodes row */
+        html += '<div class="pro-episodes-row-wrap-pro">'
+              + '<div class="episodes-section-label">Episodes</div>'
+              + '<div class="pro-episodes-row-pro row-visible" id="es-' + si + '">'
+              + buildRow(firstEps)
               + '</div></div>';
+
+        html += '</div>'; /* /sp */
       });
-      html += '</div>';
+
+      /* ─ 5. How to Watch ─ */
+      if(hasHTW){
+        html += '<h2 class="pro-tutorial-title reveal">How to Watch Episodes</h2>';
+        data.howToWatch.videos.forEach(function(v){
+          html += '<div class="video-card-wrap reveal">'
+                + (v.title ? '<div class="video-card-label">' + esc(v.title) + '</div>' : '')
+                + '<div class="pro-video-frame-wrap">'
+                + '<iframe src="' + esc(v.embedUrl) + '" allowfullscreen loading="lazy" title="' + esc(v.title||'How to Watch') + '"></iframe>'
+                + '</div></div>';
+        });
+      }
+
+      /* Extra bottom padding so last card isn't behind nav */
+      html += '<div style="height:24px;"></div>';
+
+      mount.innerHTML = html;
+
+      /* ── Wire season tabs ── */
+      document.querySelectorAll('.pro-season-tab-pro').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var idx = parseInt(this.dataset.si, 10);
+          document.querySelectorAll('.pro-season-tab-pro').forEach(function(b){ b.classList.remove('active'); });
+          this.classList.add('active');
+          for(var i=0; i<seasons.length; i++){
+            var p = document.getElementById('sp-'+i);
+            if(p) p.style.display = (i===idx ? '' : 'none');
+          }
+        });
+      });
+
+      /* ── Wire source buttons ── */
+      document.querySelectorAll('.source-btn').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var si  = parseInt(this.dataset.si, 10);
+          var ri  = parseInt(this.dataset.ri, 10);
+          var season = data.seasons[si];
+          if(!season || !season.sources) return;
+
+          document.querySelectorAll('.source-btn[data-si="'+si+'"]').forEach(function(b){ b.classList.remove('active'); });
+          this.classList.add('active');
+
+          var row = document.getElementById('es-'+si);
+          if(!row) return;
+
+          /* Animate out */
+          row.classList.remove('row-visible');
+          row.classList.add('row-switching');
+
+          setTimeout(function(){
+            row.innerHTML = buildRow(season.sources[ri].episodes||[]);
+            row.classList.remove('row-switching');
+            row.classList.add('row-visible');
+            /* re-trigger scroll reveal for new cards */
+            row.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('show'); });
+          }, 200);
+        });
+      });
+
+      /* ── Immediately show all reveal items in viewport ── */
+      setTimeout(function(){
+        document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('show'); });
+      }, 50);
+    };
+
+    /* ── Auto-load from /series.json by ?series= slug ── */
+    function autoLoad(){
+      var slug = new URLSearchParams(location.search).get('series');
+      if(!slug){ renderDemo(); return; }
+      fetch('/series.json')
+        .then(function(r){ return r.json(); })
+        .then(function(arr){
+          var d = Array.isArray(arr) ? arr.find(function(x){ return x.slug===slug; }) : null;
+          d ? window.renderSmtvSeries(d) : renderDemo();
+        }).catch(renderDemo);
     }
 
-    mount.innerHTML = html;
+    /* ── Demo render (no slug / not found) ── */
+    function renderDemo(){
+      window.renderSmtvSeries({
+        title:        'Sultan Mehmet Fatih',
+        description:  'Life and conquests of Sultan Mehmet the Conqueror.',
+        backdropImage:'',
+        year:         '2024',
+        language:     'Urdu Dubbed',
+        backLink:     'series.html',
+        premium:{ enabled:true, link:'premium.html' },
+        seasons:[
+          {
+            label:'Season 1',
+            sources:[
+              { label:'Source 1', episodes:[
+                { num:1, title:'Khalid ibn al walid... Part 1', thumb:'', link:'#' },
+                { num:2, title:'Khalid ibn al walid... Part 2', thumb:'', link:'#' },
+                { num:3, title:'',                              thumb:'', link:'#' },
+                { num:4, title:'The Siege Begins',              thumb:'', link:'#' },
+                { num:5, title:'',                              thumb:'', link:'#' },
+              ]},
+              { label:'Source 2', episodes:[
+                { num:1, title:'Khalid ibn al walid... Part 1', thumb:'', link:'#' },
+                { num:2, title:'',                              thumb:'', link:'#' },
+              ]},
+            ]
+          },
+          {
+            label:'Season 2',
+            episodes:[
+              { num:1, title:'A New Era', thumb:'', link:'#' },
+              { num:2, title:'',          thumb:'', link:'#' },
+            ]
+          }
+        ],
+        howToWatch:{ videos:[
+          { title:'Old Process', embedUrl:'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+          { title:'New Process', embedUrl:'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+        ]}
+      });
+    }
 
-    /* Wire season tabs */
-    document.querySelectorAll('.season-tab').forEach(function(btn){
-      btn.addEventListener('click',function(){
-        var idx=parseInt(this.dataset.i,10);
-        document.querySelectorAll('.season-tab').forEach(function(b){b.classList.remove('active');});
-        this.classList.add('active');
-        for(var i=0;i<seasons.length;i++){
-          var p=document.getElementById('sp-'+i);
-          if(p) p.style.display=i===idx?'':'none';
+    if(document.readyState==='loading'){
+      document.addEventListener('DOMContentLoaded', autoLoad);
+    } else {
+      autoLoad();
+    }
+  })();
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       FOOTER LOADER
+  ═══════════════════════════════════════════════════════════ -->
+  <script>
+  (async function(){
+    var paths = ['/includes/footer.html','includes/footer.html','./includes/footer.html','/footer.html','footer.html'];
+    var ph    = document.getElementById('footer-placeholder');
+
+    function initNav(html){
+      try {
+        ph.innerHTML = html;
+        try{
+          var p = parseInt(getComputedStyle(document.body).paddingBottom)||0;
+          if(p<96) document.body.style.paddingBottom='calc(96px + env(safe-area-inset-bottom))';
+        }catch(e){}
+
+        var nav   = ph.querySelector('#smtv-bottom-nav,.smtv-bottom-nav');
+        if(!nav) return;
+        var items = Array.from(nav.querySelectorAll('.nav-item'));
+        items.forEach(function(i){ i.classList.remove('active'); });
+
+        var si = items.find(function(i){
+          return (i.dataset.name||'').toLowerCase()==='series'
+              || (i.getAttribute('href')||'').includes('series');
+        });
+        if(new URLSearchParams(location.search).has('series') && si) si.classList.add('active');
+        else {
+          var pp = location.pathname.toLowerCase();
+          var bp = items.find(function(i){ return (i.getAttribute('href')||'').toLowerCase().includes(pp.split('/').pop()); });
+          if(bp) bp.classList.add('active'); else if(si) si.classList.add('active');
         }
-      });
-    });
 
-    /* Wire source buttons */
-    document.querySelectorAll('.source-btn').forEach(function(btn){
-      btn.addEventListener('click',function(){
-        var si=parseInt(this.dataset.si,10), ri=parseInt(this.dataset.ri,10);
-        var season=data.seasons[si];
-        if(!season||!season.sources) return;
-        document.querySelectorAll('.source-btn[data-si="'+si+'"]').forEach(function(b){b.classList.remove('active');});
-        this.classList.add('active');
-        var scroll=document.getElementById('es-'+si);
-        if(!scroll) return;
-        scroll.classList.add('fade');
-        setTimeout(function(){
-          scroll.innerHTML=scrollHTML(season.sources[ri].episodes||[]);
-          scroll.classList.remove('fade');
-        },180);
-      });
-    });
-  };
+        items.forEach(function(a){
+          if(a._si) return; a._si=true;
+          a.addEventListener('click', function(e){
+            try{ e.preventDefault&&e.preventDefault(); }catch(x){}
+            items.forEach(function(i){ i.classList.remove('active'); });
+            this.classList.add('active');
+            try{ localStorage.setItem('smtv_last_nav', this.dataset.name||this.getAttribute('href')); }catch(e){}
+            var h=this.getAttribute('href'); if(h) location.assign(h);
+          },{passive:false});
+        });
+      } catch(e){ console.warn('footer initNav',e); }
+    }
 
-  /* Auto-load */
-  function load(){
-    var slug=new URLSearchParams(location.search).get('series');
-    if(!slug){ demo(); return; }
-    fetch('/series.json')
-      .then(function(r){return r.json();})
-      .then(function(arr){
-        var d=Array.isArray(arr)?arr.find(function(x){return x.slug===slug;}):null;
-        d ? window.renderSmtvSeries(d) : demo();
-      }).catch(demo);
-  }
+    for(var i=0; i<paths.length; i++){
+      try{
+        var r = await fetch(paths[i],{cache:'no-cache'});
+        if(!r.ok) continue;
+        initNav(await r.text()); return;
+      }catch(e){ continue; }
+    }
 
-  function demo(){
-    window.renderSmtvSeries({
-      title:'Sultan Mehmet Fatih',
-      description:'Life and conquests of Sultan Mehmet the Conqueror.',
-      backdropImage:'',
-      premium:{enabled:true,link:'premium.html'},
-      seasons:[
-        {
-          label:'Season 1',
-          sources:[
-            {label:'Source 1',episodes:[
-              {num:1,title:'Khalid ibn al walid... Part 1',thumb:'',link:'#'},
-              {num:2,title:'Khalid ibn al walid... Part 2',thumb:'',link:'#'},
-              {num:3,title:'',thumb:'',link:'#'},
-              {num:4,title:'The Siege Begins',thumb:'',link:'#'},
-              {num:5,title:'',thumb:'',link:'#'},
-            ]},
-            {label:'Source 2',episodes:[
-              {num:1,title:'Khalid ibn al walid... Part 1',thumb:'',link:'#'},
-              {num:2,title:'',thumb:'',link:'#'},
-            ]}
-          ]
-        },
-        {
-          label:'Season 2',
-          episodes:[
-            {num:1,title:'A New Era',thumb:'',link:'#'},
-            {num:2,title:'',thumb:'',link:'#'},
-          ]
-        }
-      ],
-      howToWatch:{videos:[
-        {title:'OLD PROCESS',embedUrl:'https://www.youtube.com/embed/dQw4w9WgXcQ'},
-        {title:'NEW PROCESS',embedUrl:'https://www.youtube.com/embed/dQw4w9WgXcQ'}
-      ]}
-    });
-  }
-
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',load);
-  } else { load(); }
-})();
-</script>
-
-<script>
-/* Footer loader */
-(async function(){
-  var ph=document.getElementById('footer-placeholder');
-  var paths=['/includes/footer.html','includes/footer.html','./includes/footer.html','/footer.html','footer.html'];
-
-  function initNav(html){
-    ph.innerHTML=html;
-    try{var cur=parseInt(getComputedStyle(document.body).paddingBottom)||0;if(cur<96)document.body.style.paddingBottom='calc(96px + env(safe-area-inset-bottom))';}catch(e){}
-    var nav=ph.querySelector('#smtv-bottom-nav,.smtv-bottom-nav');
-    if(!nav)return;
-    var items=Array.from(nav.querySelectorAll('.nav-item'));
-    items.forEach(function(i){i.classList.remove('active');});
-    var si=items.find(function(i){return(i.dataset.name||'').toLowerCase()==='series'||(i.getAttribute('href')||'').includes('series');});
-    if(new URLSearchParams(location.search).has('series')&&si)si.classList.add('active');
-    items.forEach(function(a){
-      if(a._i)return;a._i=true;
-      a.addEventListener('click',function(ev){
-        ev.preventDefault&&ev.preventDefault();
-        items.forEach(function(i){i.classList.remove('active');});
-        this.classList.add('active');
-        var href=this.getAttribute('href');if(href)location.assign(href);
-      });
-    });
-  }
-
-  for(var i=0;i<paths.length;i++){
-    try{var r=await fetch(paths[i],{cache:'no-cache'});if(!r.ok)continue;initNav(await r.text());return;}catch(e){continue;}
-  }
-
-  ph.innerHTML=`
-    <nav class="smtv-bottom-nav" id="smtv-bottom-nav">
-      <a href="/index.html"   class="nav-item" data-name="home"   ><i class="fa-solid fa-house"></i><span>Home</span></a>
-      <a href="/series.html"  class="nav-item active" data-name="series" ><i class="fa-solid fa-film"></i><span>Series</span></a>
-      <a href="/clips.html"   class="nav-item" data-name="clips"  ><i class="fa-solid fa-circle-play"></i><span>Clips</span></a>
-      <a href="/premium.html" class="nav-item" data-name="premium"><i class="fa-solid fa-star"></i><span>Premium</span></a>
-      <a href="/more.html"    class="nav-item" data-name="more"   ><i class="fa-solid fa-circle-info"></i><span>More</span></a>
-    </nav>`;
-  try{document.body.style.paddingBottom='calc(96px + env(safe-area-inset-bottom))';}catch(e){}
-})();
-</script>
+    /* Fallback inline nav */
+    ph.innerHTML = `
+      <nav class="smtv-bottom-nav" id="smtv-bottom-nav" role="navigation" aria-label="Main">
+        <a href="/index.html"   class="nav-item" data-name="home">
+          <span class="icon-wrap"><i class="fa-solid fa-house"></i></span>
+          <span class="label">Home</span>
+        </a>
+        <a href="/series.html"  class="nav-item active" data-name="series">
+          <span class="icon-wrap"><i class="fa-solid fa-film"></i></span>
+          <span class="label">Series</span>
+        </a>
+        <a href="/clips.html"   class="nav-item" data-name="clips">
+          <span class="icon-wrap"><i class="fa-solid fa-circle-play"></i></span>
+          <span class="label">Clips</span>
+        </a>
+        <a href="/premium.html" class="nav-item" data-name="premium">
+          <span class="icon-wrap"><i class="fa-solid fa-star"></i></span>
+          <span class="label">Premium</span>
+        </a>
+        <a href="/more.html"    class="nav-item" data-name="more">
+          <span class="icon-wrap"><i class="fa-solid fa-circle-info"></i></span>
+          <span class="label">More</span>
+        </a>
+      </nav>`;
+    try{ document.body.style.paddingBottom='calc(96px + env(safe-area-inset-bottom))'; }catch(e){}
+  })();
+  </script>
 
 </body>
 </html>
