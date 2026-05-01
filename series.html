@@ -247,7 +247,7 @@
     @media (max-width:420px) { .pro-episode-card-pro { flex:0 0 132px; } }
     @media (min-width:900px) { .pro-episode-card-pro { flex:0 0 178px; } }
 
-    /* ── THUMBNAIL — CLEAN, NO PSEUDO ELEMENTS ── */
+    /* BUG FIXED THUMBNAIL BLOCK */
     .pro-ep-thumb-wrap-pro {
       position: relative;
       width: 100%;
@@ -256,26 +256,34 @@
       display: block;
       flex-shrink: 0;
       background: #0a1624;
+      isolation: isolate;
     }
-    /* NO ::before on thumb wrap — that was causing the black overlay */
+
+    .pro-ep-thumb-wrap-pro::before,
+    .pro-ep-thumb-wrap-pro::after {
+      content: none !important;
+      display: none !important;
+    }
+
     .pro-ep-thumb-pro {
       position: absolute;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
       object-position: center;
       display: block;
-      z-index: 2;
+      z-index: 1;
       opacity: 1;
+      background: #0a1624;
+      transform: none;
       transition: transform .34s ease;
+      filter: none;
+      mix-blend-mode: normal;
     }
-    .pro-ep-thumb-pro {
-  backface-visibility: hidden;
-  transform: translateZ(0);
-    }
-    .pro-episode-card-pro:hover .pro-ep-thumb-pro { transform:scale(1.09); }
+
+    .pro-episode-card-pro:hover .pro-ep-thumb-pro { transform: scale(1.09); }
+
     @media (max-width:420px) { .pro-ep-thumb-wrap-pro { height:83px; } }
     @media (min-width:900px) { .pro-ep-thumb-wrap-pro { height:111px; } }
 
@@ -286,6 +294,7 @@
       padding:2px 8px; border-radius:5px;
       backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); letter-spacing:.05em;
     }
+
     .ep-play-overlay {
       position:absolute; top:50%; left:50%;
       transform:translate(-50%,-50%) scale(.7);
@@ -334,13 +343,44 @@
     .loading-dots span:nth-child(2) { animation-delay:.2s; }
     .loading-dots span:nth-child(3) { animation-delay:.4s; }
 
-    #whatsappPopup { font-family:'DM Sans',sans-serif !important; background:var(--bg2) !important; border:1px solid var(--border-hi) !important; border-radius:20px !important; box-shadow:0 24px 60px rgba(0,0,0,.85) !important; padding:24px !important; color:var(--txt) !important; overflow:hidden; }
-    #whatsappPopup::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,#25d366,#00c8f0,#25d366); background-size:200% auto; animation:shimmer 3s linear infinite; }
+    #whatsappPopup {
+      font-family:'DM Sans',sans-serif !important;
+      background:var(--bg2) !important;
+      border:1px solid var(--border-hi) !important;
+      border-radius:20px !important;
+      box-shadow:0 24px 60px rgba(0,0,0,.85) !important;
+      padding:24px !important;
+      color:var(--txt) !important;
+      overflow:hidden;
+    }
+    #whatsappPopup::before {
+      content:'';
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      height:2px;
+      background:linear-gradient(90deg,#25d366,#00c8f0,#25d366);
+      background-size:200% auto;
+      animation:shimmer 3s linear infinite;
+    }
     #whatsappPopup strong { color:#fff !important; }
-    #wa-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,.65); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); z-index:99998; }
+
+    #wa-backdrop {
+      display:none;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.65);
+      backdrop-filter:blur(5px);
+      -webkit-backdrop-filter:blur(5px);
+      z-index:99998;
+    }
     #wa-backdrop.show { display:block; animation:fade-in .3s ease both; }
 
-    @media (max-width:600px) { body { padding-bottom:calc(120px + env(safe-area-inset-bottom)); } }
+    @media (max-width:600px) {
+      body { padding-bottom:calc(120px + env(safe-area-inset-bottom)); }
+    }
+
     :focus { outline:none; }
     a { text-decoration:none; color:inherit; }
     #series-details { animation:fade-up .5s var(--ease) .1s both; }
@@ -360,12 +400,10 @@
     <div id="series-details" aria-live="polite"></div>
   </div>
 
-  <!-- PATCH SCRIPT — clean, no broken brackets -->
   <script>
   (function patch() {
     const obs = new MutationObserver(function() {
 
-      /* Poster: inject gradient overlay + scan */
       var poster = document.querySelector('.pro-series-poster-pro');
       if (poster && !poster._p) {
         poster._p = true;
@@ -376,14 +414,12 @@
         }
       }
 
-      /* Series title font */
       document.querySelectorAll('.pro-series-title-pro').forEach(function(el) {
         if (el._fp) return; el._fp = true;
         el.style.fontFamily = "'Cinzel',serif";
         el.style.letterSpacing = ".05em";
       });
 
-      /* Play overlay into thumbnails — NO opacity touching */
       document.querySelectorAll('.pro-ep-thumb-wrap-pro').forEach(function(wrap) {
         if (wrap._p) return; wrap._p = true;
         if (!wrap.querySelector('.ep-play-overlay')) {
@@ -394,36 +430,32 @@
         }
       });
 
-      /* Episode title styling */
       document.querySelectorAll('.pro-ep-title-pro').forEach(function(el) {
         if (el._tp) return; el._tp = true;
         var raw = el.textContent.trim();
-        var def = raw.match(/^Episode\s+(\d+)$/i);
+        var def = raw.match(/^Episodes+(d+)$/i);
         if (def) {
           el.innerHTML = '<span class="ep-title-num">Episode ' + def[1] + '</span>';
         } else {
-          var full = raw.match(/^Episode\s+(\d+)\s*[—\-]\s*(.+)$/i);
+          var full = raw.match(/^Episodes+(d+)s*[—-]s*(.+)$/i);
           if (full) {
             el.innerHTML = '<span class="ep-title-num">Ep ' + full[1] + '</span><span class="ep-title-name"> — ' + full[2] + '</span>';
           }
         }
       });
 
-      /* How to Watch title font */
       document.querySelectorAll('.pro-tutorial-title').forEach(function(el) {
         if (el._fp) return; el._fp = true;
         el.style.fontFamily = "'Cormorant Garamond',serif";
         el.style.fontStyle = "italic";
       });
 
-      /* Card stagger animation */
       document.querySelectorAll('.pro-episode-card-pro').forEach(function(card, i) {
         if (card._an) return; card._an = true;
         card.style.animationDelay = (i * 0.055) + 's';
         card.classList.add('card-animate');
       });
 
-      /* Episodes section label */
       document.querySelectorAll('.pro-episodes-row-wrap-pro').forEach(function(wrap) {
         if (wrap._ld) return; wrap._ld = true;
         var lbl = document.createElement('div');
@@ -439,7 +471,6 @@
   })();
   </script>
 
-  <!-- META UPDATER -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       var slug = new URLSearchParams(window.location.search).get('series');
@@ -447,7 +478,7 @@
       fetch('/series.json').then(function(r){ return r.json(); }).then(function(arr){
         var m = Array.isArray(arr) ? arr.find(function(s){ return s.slug === slug; }) : null;
         if (m && m.title) {
-          document.title = m.title + ' \u2013 SmTv Urdu';
+          document.title = m.title + ' – SmTv Urdu';
           var d = document.querySelector('meta[name="description"]');
           if (d) d.setAttribute('content', m.title + ' - Watch all episodes in Urdu on SmTv Urdu.');
         }
@@ -455,7 +486,6 @@
     });
   </script>
 
-  <!-- WHATSAPP POPUP -->
   <div id="whatsappPopup" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:340px;width:90vw;z-index:99999;">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
       <img src="favicon.png" alt="Logo" style="width:42px;height:42px;border-radius:11px;">
@@ -465,7 +495,7 @@
       Get <strong style="color:#d8e8f8">instant episode alerts</strong> before anyone else — totally free.
     </div>
     <div style="text-align:center;">
-      <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k" target="_blank"
+      <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k" target="_blank" rel="noopener noreferrer"
          style="background:linear-gradient(135deg,#25d366,#1da857);color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:800;display:inline-flex;align-items:center;gap:8px;font-size:.9em;box-shadow:0 4px 16px rgba(37,211,102,.3);">
         <i class="fa-brands fa-whatsapp"></i> Join WhatsApp Channel
       </a>
@@ -479,6 +509,7 @@
       </div>
     </div>
   </div>
+
   <script>
     window.addEventListener('DOMContentLoaded', function() {
       var popup = document.getElementById('whatsappPopup');
@@ -492,7 +523,6 @@
     });
   </script>
 
-  <!-- PREVENT AUTO-SCROLL -->
   <script>
     (function(){
       try{window.scrollTo(0,0);}catch(e){}
@@ -513,7 +543,6 @@
     })();
   </script>
 
-  <!-- REVEAL ON SCROLL -->
   <script>
     (function(){
       var io = new IntersectionObserver(function(entries){
@@ -527,7 +556,6 @@
     })();
   </script>
 
-  <!-- FOOTER -->
   <div id="footer-placeholder"></div>
   <script>
   (async function(){
