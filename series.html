@@ -3,1186 +3,906 @@
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-WM3KEDD127"></script>
   <script>
-    window.dataLayer=window.dataLayer||[];
+    window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('js',new Date()); gtag('config','G-WM3KEDD127');
+    gtag('js', new Date());
+    gtag('config', 'G-WM3KEDD127');
   </script>
 
   <meta charset="UTF-8">
   <title>SmTv Urdu</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="Watch Turkish drama series and historical shows in Urdu on SmTv Urdu.">
 
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800;9..40,900&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
-  /* ═══════════════════════════════════════════════════════════════
-     DESIGN TOKENS
-  ═══════════════════════════════════════════════════════════════ */
-  :root {
-    --bg:          #04080f;
-    --bg2:         #07101c;
-    --bg3:         #0b1828;
-    --bg4:         #0e1f30;
-    --border:      rgba(255,255,255,.07);
-    --border-hi:   rgba(255,255,255,.13);
-    --gold:        #e8a800;
-    --gold-lt:     #ffc93c;
-    --gold-dim:    #b07f00;
-    --gold-glow:   rgba(232,168,0,.32);
-    --gold-glow2:  rgba(232,168,0,.12);
-    --cyan:        #00c8f0;
-    --cyan-dim:    rgba(0,200,240,.18);
-    --cyan-glow:   rgba(0,200,240,.32);
-    --green:       #00d98b;
-    --txt:         #d8e8f8;
-    --txt-muted:   #4e6880;
-    --txt-soft:    #7a99b0;
-    --radius:      16px;
-    --rad-sm:      10px;
-    --rad-xs:      7px;
-    --ease:        cubic-bezier(.22,.68,0,1.2);
-    --ease-out:    cubic-bezier(.25,.46,.45,.94);
-  }
+    /* ─── RESET & BASE ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: none; }
 
-  /* ═══════════════════════════════════════════════════════════════
-     RESET
-  ═══════════════════════════════════════════════════════════════ */
-  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
-  html { scroll-behavior:smooth; -webkit-tap-highlight-color:transparent; }
-  body {
-    background:var(--bg); color:var(--txt);
-    font-family:'DM Sans','Segoe UI',Arial,sans-serif;
-    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-    overflow-x:hidden; min-height:100dvh;
-  }
-  :focus { outline:none; }
-  a { text-decoration:none; color:inherit; }
-
-  /* ═══════════════════════════════════════════════════════════════
-     GLOBAL AMBIENT BACKGROUND
-  ═══════════════════════════════════════════════════════════════ */
-  body::before {
-    content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
-    background-image:
-      linear-gradient(rgba(0,200,240,.016) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(0,200,240,.016) 1px,transparent 1px);
-    background-size:52px 52px;
-    mask-image:radial-gradient(ellipse 100% 60% at 50% 0%,black 30%,transparent);
-    -webkit-mask-image:radial-gradient(ellipse 100% 60% at 50% 0%,black 30%,transparent);
-  }
-  body::after {
-    content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
-    background:
-      radial-gradient(ellipse 70% 50% at 85% 8%,rgba(232,168,0,.08) 0%,transparent 65%),
-      radial-gradient(ellipse 55% 45% at 8% 75%,rgba(0,200,240,.065) 0%,transparent 65%);
-    animation:bg-breathe 14s ease-in-out infinite;
-  }
-
-  /* ═══════════════════════════════════════════════════════════════
-     KEYFRAMES
-  ═══════════════════════════════════════════════════════════════ */
-  @keyframes bg-breathe    { 0%,100%{opacity:1} 50%{opacity:.55} }
-  @keyframes fade-up       { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
-  @keyframes fade-up-sm    { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-  @keyframes fade-in       { from{opacity:0} to{opacity:1} }
-  @keyframes shimmer       { 0%{background-position:-200% center} 100%{background-position:200% center} }
-  @keyframes btn-shine     { 0%{left:-100%} 55%,100%{left:150%} }
-  @keyframes dot-pulse     { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.25;transform:scale(.7)} }
-  @keyframes float         { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
-  @keyframes pulse-ring-gold {
-    0%   { box-shadow:0 0 0 0 var(--gold-glow); }
-    70%  { box-shadow:0 0 0 10px rgba(232,168,0,0); }
-    100% { box-shadow:0 0 0 0 rgba(232,168,0,0); }
-  }
-  @keyframes card-in       { from{opacity:0;transform:translateY(20px) scale(.95)} to{opacity:1;transform:translateY(0) scale(1)} }
-  @keyframes premium-in    { from{opacity:0;transform:translateY(16px) scale(.97)} to{opacity:1;transform:translateY(0) scale(1)} }
-  @keyframes scan-line     { 0%{top:-12%} 100%{top:112%} }
-  @keyframes title-glow    { 0%,100%{text-shadow:0 2px 24px rgba(0,0,0,.7)} 50%{text-shadow:0 2px 24px rgba(0,0,0,.7),0 0 48px rgba(232,168,0,.18)} }
-  @keyframes underline-grow{ from{transform:scaleX(0)} to{transform:scaleX(1)} }
-  @keyframes howto-slide   { from{opacity:0;transform:translateX(-16px)} to{opacity:1;transform:translateX(0)} }
-  @keyframes particle-float {
-    0%  { transform:translateY(0) translateX(0);   opacity:.45 }
-    33% { transform:translateY(-9px) translateX(4px); opacity:.9 }
-    66% { transform:translateY(-4px) translateX(-3px); opacity:.6 }
-    100%{ transform:translateY(0) translateX(0);   opacity:.45 }
-  }
-  @keyframes popup-up      { from{opacity:0;transform:translate(-50%,24px)} to{opacity:1;transform:translate(-50%,0)} }
-  @keyframes popup-down    { from{opacity:1;transform:translate(-50%,0)} to{opacity:0;transform:translate(-50%,18px)} }
-  @keyframes ep-row-in     { from{opacity:0;transform:translateX(16px)} to{opacity:1;transform:translateX(0)} }
-
-  /* ═══════════════════════════════════════════════════════════════
-     SCROLL REVEAL
-  ═══════════════════════════════════════════════════════════════ */
-  .reveal { opacity:0; transform:translateY(16px); transition:opacity .52s var(--ease-out),transform .52s var(--ease-out); }
-  .reveal.show { opacity:1; transform:translateY(0); }
-
-  /* ═══════════════════════════════════════════════════════════════
-     LAYOUT
-  ═══════════════════════════════════════════════════════════════ */
-  #main-content {
-    max-width:900px; margin:0 auto;
-    padding:14px 14px 0; position:relative; z-index:1;
-  }
-
-  /* ═══════════════════════════════════════════════════════════════
-     SERIES HEADER CARD
-  ═══════════════════════════════════════════════════════════════ */
-  .pro-series-header-pro {
-    display:flex; flex-direction:column; align-items:stretch;
-    border-radius:22px; background:var(--bg2); border:1px solid var(--border);
-    position:relative; margin-bottom:22px; overflow:hidden;
-    box-shadow:0 10px 40px rgba(0,0,0,.5);
-    animation:fade-up .65s var(--ease) both;
-  }
-
-  /* Poster */
-  .pro-series-poster-pro {
-    width:100%; height:210px;
-    border-radius:20px 20px 0 0;
-    object-fit:cover; object-position:center top;
-    display:block; background:#060c16;
-    transition:transform 8s ease;
-  }
-  .pro-series-header-pro:hover .pro-series-poster-pro { transform:scale(1.03); }
-
-  /* Gradient fade at bottom of poster */
-  .poster-gradient-overlay {
-    position:absolute; left:0; right:0; top:130px; height:100px;
-    background:linear-gradient(to bottom,transparent,var(--bg2));
-    pointer-events:none; z-index:2;
-  }
-  /* Scan-line effect over poster */
-  .poster-scan {
-    position:absolute; left:0; right:0; top:0; height:36px;
-    background:linear-gradient(to bottom,rgba(0,200,240,.055),transparent);
-    animation:scan-line 7s linear infinite;
-    pointer-events:none; z-index:3;
-  }
-
-  /* Back button */
-  .pro-series-back-btn-pro {
-    position:absolute; left:12px; top:12px; z-index:10;
-    width:40px; height:40px;
-    display:inline-flex; align-items:center; justify-content:center;
-    border-radius:var(--rad-sm);
-    background:rgba(4,8,15,.85); border:1px solid var(--border-hi);
-    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
-    transition:background .22s,border-color .22s,transform .2s;
-    box-shadow:0 4px 18px rgba(0,0,0,.55);
-  }
-  .pro-series-back-btn-pro:hover {
-    background:rgba(0,200,240,.18); border-color:rgba(0,200,240,.45);
-    transform:translateX(-2px);
-  }
-  .pro-series-back-btn-pro:active { transform:scale(.92); }
-
-  /* Meta block under poster */
-  .pro-series-meta-pro {
-    width:100%; background:var(--bg2); border-top:1px solid var(--border);
-    padding:20px 20px 24px; text-align:center; position:relative; z-index:3;
-  }
-  .pro-series-meta-pro::before {
-    content:''; position:absolute; top:0; left:10%; right:10%; height:1px;
-    background:linear-gradient(90deg,transparent,var(--border-hi),transparent);
-  }
-
-  /* Series title */
-  .pro-series-title-pro {
-    font-family:'Cinzel',serif;
-    font-size:clamp(1.22em,4.8vw,1.88em);
-    font-weight:800; color:#fff;
-    margin:0 0 10px; letter-spacing:.05em; line-height:1.2;
-    animation:title-glow 5s ease-in-out infinite, fade-up-sm .6s var(--ease) both;
-  }
-
-  /* Description */
-  .pro-series-desc-pro {
-    font-size:.875em; color:var(--txt-soft); line-height:1.7;
-    max-width:640px; margin:0 auto 18px;
-    animation:fade-up-sm .6s var(--ease) .15s both;
-  }
-
-  /* Stat badges row */
-  .series-stats-row {
-    display:flex; align-items:center; justify-content:center;
-    gap:8px; flex-wrap:wrap; margin-bottom:18px;
-  }
-  .series-stat-badge {
-    display:inline-flex; align-items:center; gap:5px;
-    padding:5px 12px; border-radius:100px;
-    font-size:.73em; font-weight:700; letter-spacing:.04em; border:1px solid;
-  }
-  .stat-cyan  { background:rgba(0,200,240,.08); border-color:rgba(0,200,240,.22);  color:var(--cyan); }
-  .stat-gold  { background:rgba(232,168,0,.08); border-color:rgba(232,168,0,.22);  color:var(--gold); }
-  .stat-green { background:rgba(0,217,139,.08); border-color:rgba(0,217,139,.22);  color:var(--green); }
-
-  /* ═══════════════════════════════════════════════════════════════
-     PREMIUM VIP BOX  (exact screenshot match)
-  ═══════════════════════════════════════════════════════════════ */
-  .premium-channel-message {
-    position:relative; overflow:hidden;
-    border-radius:14px;
-    background:linear-gradient(145deg,#0f1d2e,#08121e);
-    border:1px solid rgba(232,168,0,.32);
-    margin-top:6px;
-    animation:premium-in .65s var(--ease) .3s both;
-    box-shadow:0 8px 32px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.04);
-  }
-  /* Shimmering gold top bar */
-  .premium-channel-message::before {
-    content:''; position:absolute; top:0; left:0; right:0; height:2px;
-    background:linear-gradient(90deg,transparent,var(--gold-dim),var(--gold),var(--gold-lt),var(--gold-dim),transparent);
-    background-size:200% auto; animation:shimmer 2.5s linear infinite;
-  }
-  /* Corner glow */
-  .premium-channel-message::after {
-    content:''; position:absolute; top:-40px; right:-40px;
-    width:140px; height:140px;
-    background:radial-gradient(circle,rgba(232,168,0,.16) 0%,transparent 65%);
-    pointer-events:none;
-  }
-
-  /* Floating particles */
-  .pcm-particle {
-    position:absolute; width:3px; height:3px;
-    border-radius:50%; background:var(--gold); opacity:.4;
-    pointer-events:none;
-  }
-  .pcm-particle:nth-child(1){ top:22%;left:7%;   animation:particle-float 3.2s ease-in-out infinite; }
-  .pcm-particle:nth-child(2){ top:65%;left:14%;  animation:particle-float 4.1s ease-in-out infinite .6s; }
-  .pcm-particle:nth-child(3){ top:38%;right:11%; animation:particle-float 3.7s ease-in-out infinite 1.2s; background:var(--cyan); }
-  .pcm-particle:nth-child(4){ top:74%;right:19%; animation:particle-float 2.9s ease-in-out infinite .3s; }
-
-  /* Inner layout — stacked (screenshot layout) */
-  .pcm-body {
-    position:relative; z-index:1;
-    padding:16px 16px 18px; text-align:center;
-  }
-
-  /* Crown + title row */
-  .pcm-title-row {
-    display:flex; align-items:center; justify-content:center;
-    gap:8px; margin-bottom:13px;
-  }
-  .pcm-crown { font-size:1.25em; animation:float 3s ease-in-out infinite; }
-  .pcm-title-text {
-    font-size:.95em; font-weight:800;
-    background:linear-gradient(90deg,var(--gold),var(--gold-lt));
-    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-    background-clip:text; background-size:200% auto;
-    animation:shimmer 2.5s linear infinite;
-    letter-spacing:.02em;
-  }
-
-  /* Feature badges */
-  .pcm-features {
-    display:flex; gap:7px; flex-wrap:wrap;
-    justify-content:center; margin-bottom:14px;
-  }
-  .pcm-feat {
-    display:inline-flex; align-items:center; gap:5px;
-    font-size:.72em; font-weight:700; padding:5px 12px;
-    border-radius:100px; letter-spacing:.03em; white-space:nowrap;
-  }
-  .pcm-feat-dark  { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); color:#c8dde8; }
-  .pcm-feat-cyan  { background:rgba(0,200,240,.08);   border:1px solid rgba(0,200,240,.22);   color:var(--cyan); }
-  .pcm-feat-green { background:rgba(0,217,139,.08);   border:1px solid rgba(0,217,139,.22);   color:var(--green); }
-
-  /* VIP button */
-  .pcm-vip-btn {
-    display:block; width:100%;
-    padding:15px 0;
-    border-radius:var(--rad-sm);
-    background:linear-gradient(135deg,var(--gold),var(--gold-lt),#ffdc70);
-    color:#1a0800; font-family:'DM Sans',sans-serif;
-    font-size:.9em; font-weight:900; letter-spacing:.09em;
-    text-transform:uppercase; text-align:center;
-    border:none; cursor:pointer; text-decoration:none;
-    position:relative; overflow:hidden;
-    box-shadow:0 6px 26px var(--gold-glow),inset 0 1px 0 rgba(255,255,255,.3);
-    transition:box-shadow .25s,transform .15s;
-    animation:pulse-ring-gold 2.8s ease-out infinite;
-  }
-  /* Shine sweep */
-  .pcm-vip-btn::before {
-    content:''; position:absolute; top:0; left:-100%; width:60%; height:100%;
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);
-    animation:btn-shine 2s ease-in-out infinite;
-  }
-  .pcm-vip-btn:hover { box-shadow:0 8px 32px rgba(232,168,0,.65); transform:translateY(-2px) scale(1.03); }
-  .pcm-vip-btn:active { transform:scale(.96); }
-
-  /* ═══════════════════════════════════════════════════════════════
-     SEASON TABS
-  ═══════════════════════════════════════════════════════════════ */
-  .pro-seasons-tabs-pro {
-    display:flex; gap:8px; justify-content:center;
-    flex-wrap:wrap; margin:22px 0 16px;
-  }
-  .pro-season-tab-pro {
-    background:var(--bg2); border:1px solid var(--border-hi);
-    color:var(--txt-muted); padding:10px 24px; border-radius:100px;
-    cursor:pointer; font-weight:700; font-size:.88em;
-    font-family:'DM Sans',sans-serif; letter-spacing:.03em;
-    transition:all .22s var(--ease); outline:none;
-    position:relative; overflow:hidden;
-  }
-  .pro-season-tab-pro:hover:not(.active) {
-    border-color:rgba(0,200,240,.38); color:var(--txt);
-    background:rgba(0,200,240,.07); transform:translateY(-1px);
-  }
-  .pro-season-tab-pro.active {
-    background:linear-gradient(135deg,var(--cyan),#0090b8);
-    border-color:transparent; color:#021018; font-weight:800;
-    transform:translateY(-2px);
-    box-shadow:0 6px 24px var(--cyan-glow);
-  }
-  .pro-season-tab-pro:active { transform:scale(.95); }
-
-  /* ═══════════════════════════════════════════════════════════════
-     SOURCE SELECTOR
-  ═══════════════════════════════════════════════════════════════ */
-  .source-selector {
-    display:flex; gap:8px; justify-content:center;
-    margin:0 0 18px; flex-wrap:wrap;
-  }
-  .source-btn {
-    background:var(--bg3); border:1px solid var(--border-hi);
-    color:var(--txt-muted); padding:7px 20px; border-radius:var(--rad-xs);
-    font-size:.82em; font-weight:700;
-    font-family:'DM Sans',sans-serif; cursor:pointer;
-    transition:all .22s var(--ease); outline:none;
-  }
-  .source-btn:hover:not(.active) {
-    border-color:rgba(0,200,240,.38); color:var(--txt);
-    background:rgba(0,200,240,.07);
-  }
-  .source-btn.active {
-    background:linear-gradient(135deg,var(--cyan),#0090b8);
-    border-color:transparent; color:#021018; font-weight:800;
-    box-shadow:0 4px 16px var(--cyan-glow); transform:translateY(-1px);
-  }
-  .source-btn:active { transform:scale(.95); }
-
-  /* ═══════════════════════════════════════════════════════════════
-     EPISODES SECTION
-  ═══════════════════════════════════════════════════════════════ */
-  .pro-episodes-row-wrap-pro {
-    margin-top:6px; padding-bottom:10px; margin-bottom:8px;
-  }
-
-  /* "Episodes" label */
-  .episodes-section-label {
-    display:flex; align-items:center; gap:10px;
-    font-family:'Cormorant Garamond',serif;
-    font-size:1.06em; font-weight:700; font-style:italic;
-    letter-spacing:.07em; color:var(--cyan);
-    text-transform:uppercase; margin-bottom:14px;
-    animation:howto-slide .5s var(--ease) both;
-  }
-  .episodes-section-label::after {
-    content:''; flex:1; height:1px;
-    background:linear-gradient(to right,rgba(0,200,240,.35),transparent);
-  }
-
-  /* Horizontal scroll row */
-  .pro-episodes-row-pro {
-    display:flex; gap:12px; overflow-x:auto;
-    padding:4px 2px 16px;
-    -webkit-overflow-scrolling:touch;
-    scroll-snap-type:x proximity;
-    scrollbar-width:thin;
-    scrollbar-color:rgba(0,200,240,.22) transparent;
-  }
-  .pro-episodes-row-pro::-webkit-scrollbar { height:3px; }
-  .pro-episodes-row-pro::-webkit-scrollbar-track { background:transparent; }
-  .pro-episodes-row-pro::-webkit-scrollbar-thumb { background:rgba(0,200,240,.25); border-radius:4px; }
-
-  /* Row swap animation */
-  .pro-episodes-row-pro.row-switching {
-    opacity:0; transform:translateX(12px);
-    transition:opacity .18s ease, transform .18s ease;
-  }
-  .pro-episodes-row-pro.row-visible {
-    opacity:1; transform:translateX(0);
-    transition:opacity .25s ease .06s, transform .25s var(--ease) .06s;
-  }
-
-  /* ═══════════════════════════════════════════════════════════════
-     EPISODE CARD
-  ═══════════════════════════════════════════════════════════════ */
-  .pro-episode-card-pro {
-    scroll-snap-align:start; flex:0 0 150px;
-    display:flex; flex-direction:column; align-items:stretch;
-    text-decoration:none; color:var(--txt);
-    border-radius:14px; background:var(--bg2); border:1px solid var(--border);
-    overflow:hidden; position:relative;
-    transition:transform .28s var(--ease), box-shadow .28s ease, border-color .28s ease;
-  }
-  .pro-episode-card-pro.card-animate { animation:card-in .4s var(--ease) both; }
-
-  @media (max-width:420px) { .pro-episode-card-pro { flex:0 0 132px; } }
-  @media (min-width:900px) { .pro-episode-card-pro { flex:0 0 178px; } }
-
-  /* Hover top cyan line */
-  .pro-episode-card-pro::before {
-    content:''; position:absolute; top:0; left:0; right:0; height:2px;
-    background:linear-gradient(90deg,transparent,var(--cyan),transparent);
-    opacity:0; transition:opacity .22s; z-index:5; pointer-events:none;
-  }
-  .pro-episode-card-pro:hover::before { opacity:1; }
-
-  @media (hover:hover) {
-    .pro-episode-card-pro:hover {
-      transform:translateY(-7px) scale(1.025);
-      box-shadow:0 20px 48px rgba(0,0,0,.7),0 0 0 1px rgba(0,200,240,.38);
-      border-color:rgba(0,200,240,.4);
+    body {
+      background: #07090f;
+      color: #e2ecf8;
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      min-height: 100dvh;
     }
-  }
-  .pro-episode-card-pro:active { transform:scale(.95); }
 
-  /* Thumbnail wrapper — clean, no pseudo overlay */
-  .pro-ep-thumb-wrap-pro {
-    position:relative; width:100%; height:94px;
-    overflow:hidden; display:block; flex-shrink:0;
-    background:#0a1624;
-  }
-  @media (max-width:420px) { .pro-ep-thumb-wrap-pro { height:83px; } }
-  @media (min-width:900px) { .pro-ep-thumb-wrap-pro { height:111px; } }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+    button { font-family: inherit; cursor: pointer; }
+    :focus { outline: none; }
 
-  /* Thumbnail image — always visible, no broken opacity */
-  .pro-ep-thumb-pro {
-    position:absolute; top:0; left:0; width:100%; height:100%;
-    object-fit:cover; object-position:center;
-    display:block; z-index:1;
-    transition:transform .35s ease;
-  }
-  .pro-episode-card-pro:hover .pro-ep-thumb-pro { transform:scale(1.08); }
+    #main-content {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 12px 12px 0;
+    }
 
-  /* Ep number badge — bottom-left of thumb */
-  .pro-ep-num-pro {
-    position:absolute; bottom:6px; left:6px; z-index:3;
-    background:rgba(4,8,15,.88); border:1px solid var(--border-hi);
-    color:var(--cyan); font-size:.67em; font-weight:800;
-    padding:2px 9px; border-radius:5px;
-    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
-    letter-spacing:.05em;
-  }
+    /* ─── ANIMATIONS ──────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes shimmerSlide {
+      0%   { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+    @keyframes btnGlow {
+      0%, 100% { box-shadow: 0 6px 24px rgba(255,200,50,.28); }
+      50%       { box-shadow: 0 10px 36px rgba(255,200,50,.5); }
+    }
+    @keyframes crownFloat {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50%       { transform: translateY(-3px) rotate(3deg); }
+    }
+    @keyframes cardFadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes tabPop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
 
-  /* Play overlay on hover */
-  .ep-play-overlay {
-    position:absolute; top:50%; left:50%; z-index:4;
-    transform:translate(-50%,-50%) scale(.65);
-    width:34px; height:34px;
-    background:rgba(0,200,240,.92); border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    color:#021018; font-size:.62em;
-    opacity:0; pointer-events:none;
-    transition:opacity .22s, transform .22s var(--ease);
-    box-shadow:0 0 22px var(--cyan-glow);
-  }
-  .pro-episode-card-pro:hover .ep-play-overlay {
-    opacity:1; transform:translate(-50%,-50%) scale(1);
-  }
+    /* ─── SERIES HEADER ───────────────────────────── */
+    .pro-series-header-pro {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #0d1220;
+      border: 1px solid rgba(255,255,255,.07);
+      box-shadow: 0 20px 60px rgba(0,0,0,.55);
+      margin-bottom: 20px;
+      animation: fadeUp .6s cubic-bezier(.22,.8,.2,1) both;
+    }
 
-  /* Title block under thumb */
-  .pro-ep-title-pro {
-    font-size:.77em; font-weight:600; color:var(--txt);
-    padding:9px 10px 11px; line-height:1.45;
-    display:-webkit-box; -webkit-line-clamp:2;
-    -webkit-box-orient:vertical; overflow:hidden;
-  }
-  /* "Ep 1" in cyan */
-  .ep-title-num  { color:var(--cyan); font-weight:800; }
-  /* " — subtitle" in softer colour */
-  .ep-title-name { color:var(--txt-soft); font-weight:500; }
+    /* Poster: full-width, short tall banner like screenshots */
+    .pro-series-poster-pro {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      background: #0a0e1a;
+    }
 
-  /* ═══════════════════════════════════════════════════════════════
-     HOW TO WATCH
-  ═══════════════════════════════════════════════════════════════ */
-  .pro-tutorial-title {
-    font-family:'Cormorant Garamond',serif !important;
-    font-size:1.42em !important; font-weight:700 !important;
-    font-style:italic !important; color:#fff !important;
-    margin:34px 0 14px 2px !important;
-    display:flex !important; align-items:center !important;
-    gap:12px !important; letter-spacing:.03em !important;
-    position:relative;
-    animation:howto-slide .6s var(--ease) both;
-  }
-  .pro-tutorial-title::before {
-    content:'' !important; width:18px; height:2.5px;
-    background:var(--cyan); border-radius:2px;
-    display:inline-block; flex-shrink:0;
-  }
-  .pro-tutorial-title::after {
-    content:'' !important; position:absolute;
-    bottom:-5px; left:0; height:1.5px; width:100%;
-    background:linear-gradient(90deg,var(--cyan),rgba(0,200,240,.08));
-    transform-origin:left; animation:underline-grow .8s var(--ease) .25s both;
-  }
+    /* Gradient fade on poster bottom */
+    .pro-series-header-pro::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      top: 100px; height: 120px;
+      background: linear-gradient(to bottom, transparent, #0d1220);
+      pointer-events: none;
+      z-index: 1;
+    }
 
-  /* Video frame */
-  .pro-video-frame-wrap {
-    position:relative; width:100%; height:0; padding-bottom:56.25%;
-    border-radius:var(--radius); overflow:hidden;
-    border:1px solid var(--border-hi); background:var(--bg2);
-    box-shadow:0 12px 36px rgba(0,0,0,.65);
-    margin-bottom:20px;
-  }
-  .pro-video-frame-wrap iframe {
-    position:absolute; top:0; left:0;
-    width:100%; height:100%;
-    border:0; display:block; background:#000;
-  }
+    .pro-series-meta-pro {
+      position: relative;
+      z-index: 2;
+      padding: 16px 18px 22px;
+      text-align: center;
+    }
 
-  /* Video label (shown above iframe) */
-  .video-card-wrap { margin-bottom:22px; }
-  .video-card-label {
-    font-size:.78em; font-weight:800; color:var(--txt-muted);
-    letter-spacing:.07em; text-transform:uppercase;
-    margin-bottom:10px; padding-left:2px;
-    display:flex; align-items:center; gap:8px;
-  }
-  .video-card-label::before {
-    content:''; width:8px; height:8px; border-radius:50%;
-    background:var(--cyan); flex-shrink:0;
-    box-shadow:0 0 8px var(--cyan-glow);
-  }
+    .pro-series-back-btn-pro {
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      z-index: 10;
+      width: 40px; height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: rgba(10,14,24,.82);
+      border: 1px solid rgba(255,255,255,.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #a8c4e0;
+      font-size: 17px;
+      transition: background .2s, border-color .2s, transform .18s;
+      box-shadow: 0 4px 16px rgba(0,0,0,.4);
+    }
+    .pro-series-back-btn-pro:hover {
+      background: rgba(0,195,225,.12);
+      border-color: rgba(0,195,225,.35);
+      transform: translateX(-2px);
+    }
 
-  /* ═══════════════════════════════════════════════════════════════
-     LOADING DOTS
-  ═══════════════════════════════════════════════════════════════ */
-  .ep-loading {
-    display:flex; align-items:center; gap:12px;
-    padding:22px 4px; color:var(--txt-muted); font-size:.88em;
-  }
-  .dot-wrap { display:flex; gap:5px; align-items:center; }
-  .dot-wrap span {
-    display:inline-block; width:7px; height:7px;
-    border-radius:50%; background:var(--cyan);
-    animation:dot-pulse 1.2s ease-in-out infinite;
-  }
-  .dot-wrap span:nth-child(2) { animation-delay:.2s; }
-  .dot-wrap span:nth-child(3) { animation-delay:.4s; }
+    .pro-series-title-pro {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.35rem, 4.5vw, 1.85rem);
+      font-weight: 800;
+      letter-spacing: .06em;
+      color: #ffffff;
+      text-shadow: 0 2px 18px rgba(0,0,0,.5);
+      margin: 0 0 10px;
+      line-height: 1.2;
+    }
 
-  /* ═══════════════════════════════════════════════════════════════
-     WHATSAPP POPUP
-  ═══════════════════════════════════════════════════════════════ */
-  #wa-backdrop {
-    display:none; position:fixed; inset:0;
-    background:rgba(0,0,0,.65);
-    backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px);
-    z-index:9000;
-  }
-  #wa-backdrop.show { display:block; animation:fade-in .3s ease both; }
+    .pro-series-desc-pro {
+      font-size: .9rem;
+      color: #8fa8c4;
+      line-height: 1.65;
+      max-width: 600px;
+      margin: 0 auto 18px;
+    }
 
-  #whatsappPopup {
-    display:none; position:fixed;
-    left:50%; bottom:100px;
-    transform:translate(-50%,0);
-    max-width:340px; width:90vw; z-index:9001;
-    font-family:'DM Sans',sans-serif;
-    background:var(--bg2);
-    border:1px solid var(--border-hi);
-    border-top:2.5px solid var(--cyan);
-    border-radius:20px;
-    padding:22px 20px 18px;
-    box-shadow:0 24px 70px rgba(0,0,0,.85);
-    overflow:hidden;
-  }
-  #whatsappPopup.popup-show { display:block; animation:popup-up .38s var(--ease) both; }
-  #whatsappPopup.popup-hide { animation:popup-down .28s ease both; }
+    /* ─── PREMIUM CARD ────────────────────────────── */
+    .premium-channel-message {
+      position: relative;
+      overflow: hidden;
+      max-width: 440px;
+      margin: 0 auto;
+      padding: 16px 16px 18px;
+      border-radius: 18px;
+      background: linear-gradient(160deg, #0f1e35 0%, #091425 100%);
+      border: 1.5px solid rgba(255,195,50,.22);
+      box-shadow:
+        0 16px 48px rgba(0,0,0,.5),
+        inset 0 1px 0 rgba(255,255,255,.04);
+      animation: fadeUp .65s cubic-bezier(.22,.8,.2,1) .1s both;
+    }
 
-  /* Shimmer stripe at very top */
-  #whatsappPopup::before {
-    content:''; position:absolute; top:0; left:0; right:0; height:2px;
-    background:linear-gradient(90deg,#25d366,var(--cyan),#25d366);
-    background-size:200% auto; animation:shimmer 3s linear infinite;
-  }
+    /* Animated gold shimmer border */
+    .premium-channel-message::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255,195,50,.3) 20%,
+        rgba(255,215,80,1) 50%,
+        rgba(255,195,50,.3) 80%,
+        transparent 100%
+      );
+      background-size: 400px 2px;
+      animation: shimmerSlide 2.2s linear infinite;
+    }
 
-  .wa-inner { position:relative; z-index:1; }
-  .wa-head  { display:flex; align-items:center; gap:11px; margin-bottom:11px; }
-  .wa-logo  { width:44px; height:44px; border-radius:11px; object-fit:cover; background:var(--bg3); flex-shrink:0; }
-  .wa-head-title { font-size:1.06em; font-weight:900; color:#fff; }
+    .premium-channel-message::after {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 120px; height: 120px;
+      background: radial-gradient(circle, rgba(255,195,50,.14), transparent 65%);
+      pointer-events: none;
+    }
 
-  .wa-body-text {
-    font-size:.86em; color:var(--txt-soft);
-    line-height:1.6; margin-bottom:16px;
-  }
-  .wa-body-text strong { color:var(--txt); }
+    .pcm-head {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: .95rem;
+      font-weight: 900;
+      color: #ffd560;
+      margin-bottom: 12px;
+      letter-spacing: .02em;
+    }
 
-  .wa-join-btn {
-    display:inline-flex; align-items:center; justify-content:center;
-    gap:8px; width:100%; padding:13px;
-    border-radius:10px;
-    background:linear-gradient(135deg,#25d366,#1da857);
-    color:#fff; font-size:.9em; font-weight:800;
-    text-decoration:none; margin-bottom:10px;
-    box-shadow:0 4px 18px rgba(37,211,102,.32);
-    transition:filter .15s,transform .15s;
-  }
-  .wa-join-btn:active { filter:brightness(.9); transform:scale(.97); }
+    .pcm-crown {
+      font-size: 1.05rem;
+      animation: crownFloat 2.5s ease-in-out infinite;
+      display: inline-block;
+    }
 
-  .wa-dismiss-btn {
-    display:block; width:100%; padding:9px;
-    background:none; border:1px solid rgba(255,255,255,.1);
-    color:var(--txt-muted); font-family:'DM Sans',sans-serif;
-    font-size:.82em; font-weight:700; cursor:pointer;
-    border-radius:7px; text-align:center;
-    transition:color .2s, border-color .2s;
-  }
-  .wa-dismiss-btn:hover { color:#ff4d6d; border-color:rgba(255,77,109,.35); }
+    .pcm-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
 
-  /* ═══════════════════════════════════════════════════════════════
-     SECTION DIVIDER
-  ═══════════════════════════════════════════════════════════════ */
-  .section-divider {
-    height:1px; margin:20px 0;
-    background:linear-gradient(to right,transparent,var(--border-hi),transparent);
-  }
+    .pcm-feat {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .72rem;
+      font-weight: 700;
+      padding: 6px 11px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.09);
+      color: #cce8ff;
+      white-space: nowrap;
+      letter-spacing: .02em;
+    }
 
-  /* ═══════════════════════════════════════════════════════════════
-     FOOTER / BOTTOM NAV — body padding
-  ═══════════════════════════════════════════════════════════════ */
-  @media (max-width:600px) {
-    body { padding-bottom:calc(120px + env(safe-area-inset-bottom)); }
-  }
-  .smtv-bottom-nav {
-    position:fixed; left:12px; right:12px; bottom:12px;
-    height:64px; display:flex; gap:6px; padding:8px;
-    border-radius:16px;
-    background:rgba(7,16,28,.93);
-    backdrop-filter:blur(16px) saturate(160%);
-    -webkit-backdrop-filter:blur(16px);
-    border:1px solid var(--border-hi);
-    align-items:center; z-index:1200;
-    box-shadow:0 8px 36px rgba(0,0,0,.6);
-    padding-bottom:calc(env(safe-area-inset-bottom) + 8px);
-  }
-  .smtv-bottom-nav .nav-item {
-    flex:1; text-align:center; color:#5a7a90;
-    text-decoration:none; padding:6px;
-    border-radius:10px;
-    transition:color .2s, transform .22s var(--ease);
-    font-size:10px; font-weight:700;
-  }
-  .smtv-bottom-nav .nav-item i { display:block; font-size:17px; margin-bottom:2px; }
-  .smtv-bottom-nav .nav-item.active {
-    color:#fff; transform:translateY(-5px);
-  }
-  .smtv-bottom-nav .icon-wrap {
-    display:inline-flex; width:38px; height:38px;
-    align-items:center; justify-content:center; border-radius:10px;
-  }
-  .smtv-bottom-nav .nav-item.active .icon-wrap {
-    background:linear-gradient(135deg,var(--cyan),#0090b8);
-    color:#021018;
-    box-shadow:0 6px 20px var(--cyan-glow);
-  }
-  .smtv-bottom-nav .label { display:block; font-size:10px; margin-top:2px; }
+    .join-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 260px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      border-radius: 14px;
+      border: none;
+      font-size: .88rem;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #1a0900;
+      background: linear-gradient(135deg, #ffd84a 0%, #ffcf45 40%, #ffb83a 100%);
+      box-shadow:
+        0 10px 30px rgba(255,196,50,.28),
+        inset 0 1px 0 rgba(255,255,255,.3);
+      text-decoration: none;
+      transition: transform .2s, box-shadow .2s;
+      animation: btnGlow 2.8s ease-in-out infinite;
+    }
+
+    .join-btn:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 16px 38px rgba(255,196,50,.38),
+        inset 0 1px 0 rgba(255,255,255,.3);
+    }
+    .join-btn:active { transform: scale(.97); }
+
+    /* ─── SEASON TABS ─────────────────────────────── */
+    .pro-seasons-tabs-pro {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 20px 0 14px;
+      animation: fadeUp .55s cubic-bezier(.22,.8,.2,1) .15s both;
+    }
+
+    .pro-season-tab-pro {
+      padding: 10px 24px;
+      border-radius: 999px;
+      border: 1.5px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      color: #7a9ab6;
+      font-size: .9rem;
+      font-weight: 800;
+      transition: all .24s cubic-bezier(.22,.8,.2,1);
+      outline: none;
+    }
+    .pro-season-tab-pro:hover:not(.active) {
+      color: #d8eeff;
+      border-color: rgba(0,205,230,.25);
+      transform: translateY(-1px);
+    }
+    .pro-season-tab-pro.active {
+      background: linear-gradient(135deg, #1de8ff, #00b4e0);
+      border-color: transparent;
+      color: #031c26;
+      font-weight: 900;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(0,205,235,.28);
+      animation: tabPop .3s ease;
+    }
+    .pro-season-tab-pro:active { transform: scale(.96); }
+
+    /* ─── SOURCE SELECTOR ─────────────────────────── */
+    .source-selector {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 0 0 16px;
+    }
+
+    .source-btn {
+      padding: 8px 20px;
+      border-radius: 999px;
+      border: 1.5px solid rgba(255,255,255,.07);
+      background: rgba(255,255,255,.03);
+      color: #7090ae;
+      font-size: .83rem;
+      font-weight: 800;
+      transition: all .22s ease;
+      outline: none;
+    }
+    .source-btn:hover:not(.active) {
+      color: #d8eeff;
+      border-color: rgba(0,205,230,.22);
+      transform: translateY(-1px);
+    }
+    .source-btn.active {
+      background: linear-gradient(135deg, #1de8ff, #00b4e0);
+      border-color: transparent;
+      color: #031c26;
+      font-weight: 900;
+      box-shadow: 0 8px 22px rgba(0,205,235,.22);
+    }
+    .source-btn:active { transform: scale(.96); }
+
+    /* ─── EPISODES WRAPPER ────────────────────────── */
+    .pro-episodes-row-wrap-pro {
+      margin-top: 4px;
+      padding-bottom: 6px;
+      margin-bottom: 6px;
+      animation: fadeUp .6s cubic-bezier(.22,.8,.2,1) .2s both;
+    }
+
+    /* ─── EPISODE SCROLL ROW ──────────────────────── */
+    .pro-episodes-row-pro {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 6px 2px 14px;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x proximity;
+      scrollbar-width: none;
+      align-items: flex-start;
+    }
+    .pro-episodes-row-pro::-webkit-scrollbar { display: none; }
+
+    /* ─── EPISODE CARD ────────────────────────────── */
+    .pro-episode-card-pro {
+      flex: 0 0 148px;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      padding: 8px 8px 10px;
+      text-decoration: none;
+      color: #e0ecff;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #141e34 0%, #0e1828 100%);
+      border: 1px solid rgba(255,255,255,.06);
+      box-shadow: 0 8px 24px rgba(0,0,0,.38);
+      transition: transform .26s cubic-bezier(.22,.8,.2,1),
+                  box-shadow .26s ease,
+                  border-color .26s ease;
+      position: relative;
+      overflow: hidden;
+      animation: cardFadeUp .5s cubic-bezier(.22,.8,.2,1) both;
+    }
+
+    .pro-episode-card-pro:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 18px 40px rgba(0,0,0,.5);
+      border-color: rgba(0,205,235,.16);
+    }
+    .pro-episode-card-pro:active { transform: scale(.96); }
+
+    @media (max-width: 420px) {
+      .pro-episode-card-pro { flex: 0 0 138px; }
+    }
+    @media (min-width: 900px) {
+      .pro-episode-card-pro { flex: 0 0 180px; }
+    }
+
+    /* ─── THUMBNAIL (same as old code — no hacks) ─── */
+    .pro-ep-thumb-wrap-pro {
+      width: 130px;
+      height: 130px;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      background: #0a0e1a;
+      flex-shrink: 0;
+      display: block;
+    }
+
+    @media (max-width: 420px) {
+      .pro-ep-thumb-wrap-pro { width: 122px; height: 122px; }
+    }
+    @media (min-width: 900px) {
+      .pro-ep-thumb-wrap-pro { width: 164px; height: 164px; }
+    }
+
+    .pro-ep-thumb-pro {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .32s cubic-bezier(.22,.8,.2,1);
+    }
+    .pro-episode-card-pro:hover .pro-ep-thumb-pro {
+      transform: scale(1.05);
+    }
+
+    /* ─── EP NUMBER BADGE ─────────────────────────── */
+    .pro-ep-num-pro {
+      position: absolute;
+      top: 7px;
+      left: 7px;
+      z-index: 2;
+      background: rgba(8,12,22,.85);
+      border: 1px solid rgba(0,205,235,.2);
+      color: #1de8ff;
+      font-size: .68rem;
+      font-weight: 900;
+      padding: 3px 8px;
+      border-radius: 7px;
+      letter-spacing: .04em;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    /* ─── EPISODE TITLE ───────────────────────────── */
+    .pro-ep-title-pro {
+      width: 100%;
+      font-size: .82rem;
+      font-weight: 700;
+      color: #d4e6ff;
+      padding: 9px 4px 2px;
+      text-align: center;
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Number part (e.g. "Ep 1") */
+    .ep-num-part {
+      color: #78a8cc;
+      font-weight: 800;
+    }
+
+    /* Name part after dash (e.g. "- The Beginning") */
+    .ep-name-part {
+      color: #e4f0ff;
+      font-weight: 700;
+    }
+
+    /* ─── HOW TO WATCH ────────────────────────────── */
+    .pro-tutorial-title {
+      margin: 28px 0 14px 2px;
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: #e8f4ff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .pro-tutorial-title::before {
+      content: '';
+      width: 4px;
+      height: 22px;
+      background: linear-gradient(180deg, #1de8ff, #0098c8);
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .pro-video-frame-wrap {
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-bottom: 56.25%;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #07090f;
+      border: 1px solid rgba(255,255,255,.06);
+      box-shadow: 0 16px 40px rgba(0,0,0,.4);
+      margin-top: 10px;
+    }
+    .pro-video-frame-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    /* ─── TUTORIAL HERO CARDS ─────────────────────── */
+    .pro-tutorial-wrap { max-width: 920px; margin: 0 auto; }
+    .pro-tutorial-hero {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      padding: 16px 18px;
+      border-radius: 14px;
+      background: linear-gradient(90deg, rgba(0,205,235,.05), rgba(0,140,200,.03));
+      border: 1px solid rgba(255,255,255,.04);
+      box-shadow: 0 10px 30px rgba(0,0,0,.3);
+      margin-bottom: 10px;
+    }
+    .pro-tutorial-hero .icon {
+      flex: 0 0 50px; height: 50px;
+      display: inline-grid; place-items: center;
+      border-radius: 12px;
+      background: rgba(0,205,235,.07);
+    }
+    .pro-tutorial-hero .icon svg { width: 26px; height: 26px; color: #1de8ff; }
+    .pro-tutorial-hero h3 { font-size: 1.5rem; font-weight: 800; color: #fff; line-height: 1.1; }
+    .pro-tutorial-hero p { font-size: .9rem; color: #8ab4d4; margin-top: 3px; }
+    .pro-tutorial-card {
+      background: linear-gradient(180deg, #0f2030, #0a1825);
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,.04);
+      box-shadow: 0 10px 28px rgba(0,0,0,.5);
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+    .pro-tutorial-card .small-title {
+      font-size: 1rem; font-weight: 700; color: #d6eeff;
+      margin: 4px 4px 10px; line-height: 1.4;
+    }
+    .pro-tutorial-card .pro-video-frame-wrap {
+      position: relative; width: 100%; height: 0;
+      padding-bottom: 56.25%;
+      border-radius: 10px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,.03);
+    }
+    .pro-tutorial-card iframe {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; border: 0; background: #000;
+    }
+    @media (max-width: 640px) {
+      .pro-tutorial-hero { padding: 12px; gap: 10px; }
+      .pro-tutorial-hero h3 { font-size: 1.2rem; }
+    }
+
+    /* ─── WHATSAPP POPUP ──────────────────────────── */
+    #wa-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 99998;
+    }
+    #wa-backdrop.open { display: block; animation: fadeIn .3s ease both; }
+
+    #whatsappPopup {
+      display: none;
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 340px;
+      width: 90vw;
+      z-index: 99999;
+      background: linear-gradient(160deg, #101828, #0b1220);
+      color: #e2ecf8;
+      padding: 24px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 28px 70px rgba(0,0,0,.65);
+    }
+    #whatsappPopup.open {
+      display: block;
+      animation: fadeUp .35s cubic-bezier(.22,.8,.2,1) both;
+    }
+
+    /* ─── BOTTOM NAV SAFE AREA ────────────────────── */
+    @media (max-width: 600px) {
+      body { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
+    }
+
+    /* ─── LOADING SKELETON ────────────────────────── */
+    .ep-skeleton-row {
+      display: flex;
+      gap: 12px;
+      padding: 6px 2px 14px;
+      overflow: hidden;
+    }
+    .ep-skeleton-card {
+      flex: 0 0 148px;
+      height: 200px;
+      border-radius: 14px;
+      background: linear-gradient(90deg, #121c2e 25%, #1a2840 50%, #121c2e 75%);
+      background-size: 400px 100%;
+      animation: shimmerSlide 1.4s ease-in-out infinite;
+    }
   </style>
 
   <script defer src="series.js"></script>
 </head>
 <body>
 
-  <!-- Backdrop for WA popup -->
   <div id="wa-backdrop"></div>
 
   <div id="main-content">
-    <header><!-- back button injected by series.js --></header>
+    <header></header>
     <script type="text/javascript" src="//www.highperformanceformat.com/c91a82435d260630918ecc80c95125ac/invoke.js"></script>
     <div id="series-details" aria-live="polite"></div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════
-       WHATSAPP POPUP
-  ═══════════════════════════════════════════════════════════ -->
-  <div id="whatsappPopup" role="dialog" aria-modal="true" aria-label="Stay Updated">
-    <div class="wa-inner">
-      <div class="wa-head">
-        <img class="wa-logo" src="favicon.png" alt="SmTv Urdu"
-             onerror="this.style.background='var(--bg3)';this.removeAttribute('src')">
-        <div class="wa-head-title">Stay Updated on SmTv!</div>
-      </div>
-      <p class="wa-body-text">
-        Get <strong>instant episode alerts</strong> before anyone else — totally free.
-      </p>
+  <!-- ─── EPISODE TITLE FORMATTER ─────────────────── -->
+  <script>
+    /**
+     * Episode title rules:
+     *  "Episode 1"               → "Episode 1"        (no change, short title)
+     *  "Episode 1 - The Beginning" → "Ep 1 - The Beginning"  (shortened)
+     *  "Episode 1 The Beginning"   → "Ep 1 The Beginning"    (shortened)
+     */
+    function formatEpTitle(raw) {
+      if (!raw) return '';
+      var s = String(raw).trim();
+
+      // Only has number, no extra name → keep as-is
+      if (/^Episodes+d+s*$/i.test(s)) {
+        return { type: 'plain', text: s };
+      }
+
+      // Has name after number → shorten "Episode" to "Ep"
+      var m = s.match(/^Episodes+(d+)s*([-–—]?s*)(.+)$/i);
+      if (m) {
+        var numPart  = 'Ep ' + m[1];
+        var sep      = m[2].trim() ? ' ' + m[2].trim() + ' ' : ' ';
+        var namePart = m[3].trim();
+        return { type: 'split', num: numPart, sep: sep, name: namePart };
+      }
+
+      // Not "Episode X" at all → show raw
+      return { type: 'plain', text: s };
+    }
+
+    function applyEpTitles() {
+      document.querySelectorAll('.pro-ep-title-pro').forEach(function(el) {
+        if (el.dataset.fmt === '1') return;
+        el.dataset.fmt = '1';
+
+        var raw = el.textContent.trim();
+        var result = formatEpTitle(raw);
+
+        if (result.type === 'plain') {
+          el.innerHTML = '<span class="ep-num-part">' + result.text + '</span>';
+        } else {
+          el.innerHTML =
+            '<span class="ep-num-part">' + result.num + '</span>' +
+            '<span class="ep-name-part">' + result.sep + result.name + '</span>';
+        }
+      });
+    }
+
+    // Run when series.js finishes injecting cards
+    (function() {
+      var sd = document.getElementById('series-details');
+      if (!sd) { document.addEventListener('DOMContentLoaded', function(){ applyEpTitles(); }); return; }
+      var obs = new MutationObserver(function() { applyEpTitles(); });
+      obs.observe(sd, { childList: true, subtree: true });
+      setTimeout(function() { obs.disconnect(); applyEpTitles(); }, 14000);
+    })();
+  </script>
+
+  <!-- ─── PREMIUM CARD UPGRADE ─────────────────────── -->
+  <script>
+    (function() {
+      function upgradePremium() {
+        document.querySelectorAll('.premium-channel-message').forEach(function(box) {
+          if (box.dataset.upg === '1') return;
+          box.dataset.upg = '1';
+
+          var link = box.querySelector('a');
+          var href = '/premium.html';
+          if (link) href = link.getAttribute('href') || href;
+
+          box.innerHTML =
+            '<div class="pcm-head">' +
+              '<span class="pcm-crown">👑</span>' +
+              'SMTV VIP Membership' +
+            '</div>' +
+            '<div class="pcm-features">' +
+              '<span class="pcm-feat">⚡ No Ads</span>' +
+              '<span class="pcm-feat">⬇ Fast Download</span>' +
+              '<span class="pcm-feat">🔓 Early Access</span>' +
+              '<span class="pcm-feat">🎞 HD Quality</span>' +
+            '</div>' +
+            '<a class="join-btn" href="' + href + '">BECOME VIP</a>';
+        });
+      }
+
+      var sd = document.getElementById('series-details');
+      if (sd) {
+        var obs = new MutationObserver(upgradePremium);
+        obs.observe(sd, { childList: true, subtree: true });
+        setTimeout(function(){ obs.disconnect(); }, 14000);
+      }
+      document.addEventListener('DOMContentLoaded', upgradePremium);
+    })();
+  </script>
+
+  <!-- ─── DYNAMIC META UPDATER ─────────────────────── -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var slug = new URLSearchParams(window.location.search).get('series');
+      if (!slug) return;
+      fetch('/series.json')
+        .then(function(r){ return r.json(); })
+        .then(function(arr) {
+          var meta = Array.isArray(arr) ? arr.find(function(s){ return s.slug === slug; }) : null;
+          if (meta && meta.title) {
+            document.title = meta.title + ' – SmTv Urdu';
+            var d = document.querySelector('meta[name="description"]');
+            if (d) d.setAttribute('content', meta.title + ' - Watch all episodes in Urdu on SmTv Urdu.');
+          }
+        })
+        .catch(function(){});
+    });
+  </script>
+
+  <!-- ─── WHATSAPP POPUP ───────────────────────────── -->
+  <div id="whatsappPopup">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+      <img src="favicon.png" alt="SmTv Logo" width="42" height="42" style="border-radius:11px;">
+      <strong style="font-size:1.05rem;">Stay Updated on SmTv!</strong>
+    </div>
+    <p style="font-size:.88rem;color:#8fa8c4;line-height:1.6;margin-bottom:16px;">
+      Get <strong style="color:#e2ecf8;">instant episode alerts</strong> before anyone else. Free forever.
+    </p>
+    <div style="text-align:center;">
       <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k"
-         target="_blank" rel="noopener" class="wa-join-btn">
-        <i class="fa-brands fa-whatsapp" style="font-size:1.1em"></i>
-        Join WhatsApp Channel
+         target="_blank" rel="noopener noreferrer"
+         style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#25d366,#1aaa50);color:#fff;padding:12px 22px;border-radius:12px;font-weight:800;font-size:.9rem;box-shadow:0 6px 20px rgba(37,211,102,.28);">
+        <i class="fa-brands fa-whatsapp"></i> Join WhatsApp Channel
       </a>
-      <button class="wa-dismiss-btn" id="wa-dismiss">✕ No thanks</button>
+      <div style="margin-top:14px;">
+        <button id="closeWaPopup"
+          style="background:none;border:1px solid rgba(255,255,255,.1);color:#6888a8;font-weight:700;cursor:pointer;padding:6px 16px;border-radius:8px;font-size:.82rem;transition:color .2s,border-color .2s;"
+          onmouseover="this.style.color='#ff7090';this.style.borderColor='rgba(255,112,144,.3)'"
+          onmouseout="this.style.color='#6888a8';this.style.borderColor='rgba(255,255,255,.1)'">
+          ✕ No thanks
+        </button>
+      </div>
     </div>
   </div>
 
+  <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      var popup    = document.getElementById('whatsappPopup');
+      var backdrop = document.getElementById('wa-backdrop');
+      var closeBtn = document.getElementById('closeWaPopup');
+
+      function openPopup()  { popup.classList.add('open'); backdrop.classList.add('open'); }
+      function closePopup() { popup.classList.remove('open'); backdrop.classList.remove('open'); }
+
+      setTimeout(openPopup, 2400);
+      if (closeBtn)  closeBtn.addEventListener('click', closePopup);
+      if (backdrop)  backdrop.addEventListener('click', closePopup);
+    });
+  </script>
+
+  <!-- ─── SCROLL FIX ───────────────────────────────── -->
+  <script>
+    (function(){
+      try { window.scrollTo(0,0); } catch(e){}
+      document.addEventListener('focusin', function(){
+        var x = window.scrollX||0, y = window.scrollY||0;
+        setTimeout(function(){ try{ window.scrollTo(x,y); }catch(e){} }, 0);
+      }, true);
+      var det = document.getElementById('series-details');
+      if (det) {
+        var o = new MutationObserver(function(){
+          if (det.childNodes.length > 0) {
+            try{ window.scrollTo({top:0,left:0,behavior:'auto'}); }catch(e){ window.scrollTo(0,0); }
+            o.disconnect();
+          }
+        });
+        o.observe(det, { childList:true, subtree:false });
+      }
+    })();
+  </script>
+
+  <!-- ─── FOOTER LOADER ────────────────────────────── -->
   <div id="footer-placeholder"></div>
-
-  <!-- ═══════════════════════════════════════════════════════════
-       DYNAMIC META UPDATER
-  ═══════════════════════════════════════════════════════════ -->
-  <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var slug = new URLSearchParams(window.location.search).get('series');
-    if (!slug) return;
-    fetch('/series.json')
-      .then(function(r){ return r.json(); })
-      .then(function(arr){
-        var s = Array.isArray(arr) ? arr.find(function(x){ return x.slug === slug; }) : null;
-        if (s && s.title) {
-          document.title = s.title + ' \u2013 SmTv Urdu';
-          var m = document.querySelector('meta[name="description"]');
-          if (m) m.setAttribute('content', s.title + ' - Watch all episodes in Urdu on SmTv Urdu.');
-        }
-      }).catch(function(){});
-  });
-  </script>
-
-  <!-- ═══════════════════════════════════════════════════════════
-       WHATSAPP POPUP LOGIC
-  ═══════════════════════════════════════════════════════════ -->
-  <script>
-  (function(){
-    var popup    = document.getElementById('whatsappPopup');
-    var backdrop = document.getElementById('wa-backdrop');
-    var dismiss  = document.getElementById('wa-dismiss');
-
-    function showPopup(){
-      backdrop.classList.add('show');
-      popup.classList.remove('popup-hide');
-      popup.classList.add('popup-show');
-    }
-    function hidePopup(){
-      backdrop.classList.remove('show');
-      popup.classList.remove('popup-show');
-      popup.classList.add('popup-hide');
-      setTimeout(function(){ popup.classList.remove('popup-hide'); }, 300);
-    }
-
-    setTimeout(showPopup, 2200);
-    dismiss.addEventListener('click', hidePopup);
-    backdrop.addEventListener('click', hidePopup);
-  })();
-  </script>
-
-  <!-- ═══════════════════════════════════════════════════════════
-       PREVENT AUTO-SCROLL ON FOCUS
-  ═══════════════════════════════════════════════════════════ -->
-  <script>
-  (function(){
-    try{ window.scrollTo(0,0); }catch(e){}
-    document.addEventListener('focusin', function(){
-      var x=window.scrollX||0, y=window.scrollY||0;
-      setTimeout(function(){ try{ window.scrollTo(x,y); }catch(e){} }, 0);
-    }, true);
-    var det = document.getElementById('series-details');
-    if(det){
-      var obs = new MutationObserver(function(){
-        if(det.childNodes.length){
-          try{ window.scrollTo({top:0,behavior:'auto'}); }catch(e){ window.scrollTo(0,0); }
-          obs.disconnect();
-        }
-      });
-      obs.observe(det,{childList:true});
-    }
-  })();
-  </script>
-
-  <!-- ═══════════════════════════════════════════════════════════
-       SCROLL REVEAL
-  ═══════════════════════════════════════════════════════════ -->
-  <script>
-  (function(){
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(e){
-        if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); }
-      });
-    },{threshold:0.08});
-
-    function observe(){
-      document.querySelectorAll('.reveal:not(.show)').forEach(function(el){ io.observe(el); });
-    }
-    observe();
-
-    var sd = document.getElementById('series-details');
-    if(sd){
-      var mo = new MutationObserver(observe);
-      mo.observe(sd,{childList:true,subtree:true});
-    }
-  })();
-  </script>
-
-  <!-- ═══════════════════════════════════════════════════════════
-       SERIES RENDERER
-       ─────────────────────────────────────────────────────────
-       Your series.js should call:  window.renderSmtvSeries(data)
-       OR this file auto-loads from /series.json by ?series= slug.
-
-       series.json episode shape:
-         { num:1, title:"The Beginning", thumb:"ep1.jpg", link:"watch.html?ep=1" }
-         (title is optional — omit for plain "Ep 1" cards)
-  ═══════════════════════════════════════════════════════════ -->
-  <script>
-  (function(){
-    'use strict';
-
-    /* ── tiny HTML escape ── */
-    function esc(s){
-      return String(s==null?'':s)
-        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
-
-    /* ── Build one episode card ── */
-    function buildCard(ep, delay){
-      var lbl     = 'Ep ' + ep.num;
-      var hasTitle = ep.title && String(ep.title).trim();
-      var style    = delay ? ' style="animation-delay:' + delay + 's"' : '';
-
-      var thumbHTML = ep.thumb
-        ? '<img class="pro-ep-thumb-pro" src="' + esc(ep.thumb) + '" alt="' + esc(lbl) + '" loading="lazy">'
-        : '<div style="position:absolute;inset:0;background:#0a1020;"></div>';
-
-      /* Title line: "Ep 1" or "Ep 1 — Subtitle" */
-      var titleHTML;
-      if(hasTitle){
-        titleHTML = '<span class="ep-title-num">' + esc(lbl) + '</span>'
-                  + '<span class="ep-title-name"> \u2014 ' + esc(ep.title) + '</span>';
-      } else {
-        titleHTML = '<span class="ep-title-num">' + esc(lbl) + '</span>';
-      }
-
-      return '<a class="pro-episode-card-pro card-animate reveal"' + style
-           + ' href="' + esc(ep.link||'#') + '">'
-           + '<div class="pro-ep-thumb-wrap-pro">'
-           + thumbHTML
-           + '<span class="pro-ep-num-pro">' + esc(lbl) + '</span>'
-           + '<div class="ep-play-overlay"><i class="fa-solid fa-play" style="margin-left:2px;"></i></div>'
-           + '</div>'
-           + '<div class="pro-ep-title-pro">' + titleHTML + '</div>'
-           + '</a>';
-    }
-
-    /* ── Build scroll row from episode array ── */
-    function buildRow(eps){
-      return (eps||[]).map(function(ep,i){ return buildCard(ep, i*0.055); }).join('');
-    }
-
-    /* ── Main renderer ── */
-    window.renderSmtvSeries = function(data){
-      var mount = document.getElementById('series-details');
-      if(!mount) return;
-
-      var seasons    = data.seasons || [];
-      var hasPremium = data.premium && data.premium.enabled;
-      var hasHTW     = data.howToWatch && data.howToWatch.videos && data.howToWatch.videos.length;
-      var html       = '';
-
-      /* ─ 1. Header card ─ */
-      html += '<div class="pro-series-header-pro">';
-
-      /* Back button */
-      html += '<a class="pro-series-back-btn-pro" href="' + esc(data.backLink||'series.html') + '" aria-label="Back">'
-            + '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--cyan)">'
-            + '<path d="M19 12H5M12 5l-7 7 7 7"/></svg></a>';
-
-      /* Poster */
-      var posterSrc = data.backdropImage || data.posterImage || '';
-      if(posterSrc){
-        html += '<img class="pro-series-poster-pro" src="' + esc(posterSrc) + '" alt="' + esc(data.title) + '">';
-      } else {
-        html += '<div class="pro-series-poster-pro" style="height:210px;background:linear-gradient(135deg,#0d1e30,#060c18);"></div>';
-      }
-
-      /* Overlays (JS appended below for posterSrc; here we inline them) */
-      html += '<div class="poster-gradient-overlay"></div>';
-      html += '<div class="poster-scan"></div>';
-
-      /* Meta block */
-      html += '<div class="pro-series-meta-pro">';
-      html += '<h1 class="pro-series-title-pro">' + esc(data.title) + '</h1>';
-      if(data.description){
-        html += '<p class="pro-series-desc-pro">' + esc(data.description) + '</p>';
-      }
-
-      /* Stat badges */
-      if(data.year || data.language || seasons.length){
-        html += '<div class="series-stats-row">';
-        if(seasons.length) html += '<span class="series-stat-badge stat-cyan"><i class="fa-solid fa-layer-group" style="font-size:.8em"></i>' + seasons.length + ' Season' + (seasons.length>1?'s':'') + '</span>';
-        if(data.year)      html += '<span class="series-stat-badge stat-gold"><i class="fa-solid fa-calendar" style="font-size:.8em"></i>' + esc(data.year) + '</span>';
-        if(data.language)  html += '<span class="series-stat-badge stat-green"><i class="fa-solid fa-language" style="font-size:.8em"></i>' + esc(data.language) + '</span>';
-        html += '</div>';
-      }
-
-      /* ─ 2. VIP box ─ */
-      if(hasPremium){
-        html += '<div class="premium-channel-message reveal">'
-              + '<div class="pcm-particle"></div><div class="pcm-particle"></div>'
-              + '<div class="pcm-particle"></div><div class="pcm-particle"></div>'
-              + '<div class="pcm-body">'
-              + '<div class="pcm-title-row">'
-              + '<span class="pcm-crown">&#x1F451;</span>'
-              + '<span class="pcm-title-text">SMTV VIP Membership</span>'
-              + '</div>'
-              + '<div class="pcm-features">'
-              + '<span class="pcm-feat pcm-feat-dark">&#x26A1; No Ads</span>'
-              + '<span class="pcm-feat pcm-feat-dark">&#x2193; Fast Download</span>'
-              + '<span class="pcm-feat pcm-feat-cyan">&#x1F512; Early Access</span>'
-              + '<span class="pcm-feat pcm-feat-dark">&#x1F3AC; HD Quality</span>'
-              + '</div>'
-              + '<a href="' + esc(data.premium.link||'premium.html') + '" class="pcm-vip-btn">BECOME VIP</a>'
-              + '</div></div>';
-      }
-
-      html += '</div>'; /* /meta */
-      html += '</div>'; /* /header card */
-
-      /* ─ 3. Season tabs ─ */
-      if(seasons.length > 1){
-        html += '<div class="pro-seasons-tabs-pro reveal" id="stabs">';
-        seasons.forEach(function(s,i){
-          html += '<button class="pro-season-tab-pro' + (i===0?' active':'') + '" data-si="' + i + '">'
-                + esc(s.label || ('Season '+(i+1))) + '</button>';
-        });
-        html += '</div>';
-      }
-
-      /* ─ 4. Season panels ─ */
-      seasons.forEach(function(s, si){
-        var hasSrc   = s.sources && s.sources.length > 1;
-        var firstEps = hasSrc ? (s.sources[0].episodes||[]) : (s.episodes||[]);
-
-        html += '<div id="sp-' + si + '"' + (si>0?' style="display:none"':'') + ' class="reveal">';
-
-        /* Source selector */
-        if(hasSrc){
-          html += '<div class="source-selector" id="src-' + si + '">';
-          s.sources.forEach(function(src,ri){
-            html += '<button class="source-btn' + (ri===0?' active':'') + '" data-si="' + si + '" data-ri="' + ri + '">'
-                  + esc(src.label) + '</button>';
-          });
-          html += '</div>';
-        }
-
-        /* Episodes row */
-        html += '<div class="pro-episodes-row-wrap-pro">'
-              + '<div class="episodes-section-label">Episodes</div>'
-              + '<div class="pro-episodes-row-pro row-visible" id="es-' + si + '">'
-              + buildRow(firstEps)
-              + '</div></div>';
-
-        html += '</div>'; /* /sp */
-      });
-
-      /* ─ 5. How to Watch ─ */
-      if(hasHTW){
-        html += '<h2 class="pro-tutorial-title reveal">How to Watch Episodes</h2>';
-        data.howToWatch.videos.forEach(function(v){
-          html += '<div class="video-card-wrap reveal">'
-                + (v.title ? '<div class="video-card-label">' + esc(v.title) + '</div>' : '')
-                + '<div class="pro-video-frame-wrap">'
-                + '<iframe src="' + esc(v.embedUrl) + '" allowfullscreen loading="lazy" title="' + esc(v.title||'How to Watch') + '"></iframe>'
-                + '</div></div>';
-        });
-      }
-
-      /* Extra bottom padding so last card isn't behind nav */
-      html += '<div style="height:24px;"></div>';
-
-      mount.innerHTML = html;
-
-      /* ── Wire season tabs ── */
-      document.querySelectorAll('.pro-season-tab-pro').forEach(function(btn){
-        btn.addEventListener('click', function(){
-          var idx = parseInt(this.dataset.si, 10);
-          document.querySelectorAll('.pro-season-tab-pro').forEach(function(b){ b.classList.remove('active'); });
-          this.classList.add('active');
-          for(var i=0; i<seasons.length; i++){
-            var p = document.getElementById('sp-'+i);
-            if(p) p.style.display = (i===idx ? '' : 'none');
-          }
-        });
-      });
-
-      /* ── Wire source buttons ── */
-      document.querySelectorAll('.source-btn').forEach(function(btn){
-        btn.addEventListener('click', function(){
-          var si  = parseInt(this.dataset.si, 10);
-          var ri  = parseInt(this.dataset.ri, 10);
-          var season = data.seasons[si];
-          if(!season || !season.sources) return;
-
-          document.querySelectorAll('.source-btn[data-si="'+si+'"]').forEach(function(b){ b.classList.remove('active'); });
-          this.classList.add('active');
-
-          var row = document.getElementById('es-'+si);
-          if(!row) return;
-
-          /* Animate out */
-          row.classList.remove('row-visible');
-          row.classList.add('row-switching');
-
-          setTimeout(function(){
-            row.innerHTML = buildRow(season.sources[ri].episodes||[]);
-            row.classList.remove('row-switching');
-            row.classList.add('row-visible');
-            /* re-trigger scroll reveal for new cards */
-            row.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('show'); });
-          }, 200);
-        });
-      });
-
-      /* ── Immediately show all reveal items in viewport ── */
-      setTimeout(function(){
-        document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('show'); });
-      }, 50);
-    };
-
-    /* ── Auto-load from /series.json by ?series= slug ── */
-    function autoLoad(){
-      var slug = new URLSearchParams(location.search).get('series');
-      if(!slug){ renderDemo(); return; }
-      fetch('/series.json')
-        .then(function(r){ return r.json(); })
-        .then(function(arr){
-          var d = Array.isArray(arr) ? arr.find(function(x){ return x.slug===slug; }) : null;
-          d ? window.renderSmtvSeries(d) : renderDemo();
-        }).catch(renderDemo);
-    }
-
-    /* ── Demo render (no slug / not found) ── */
-    function renderDemo(){
-      window.renderSmtvSeries({
-        title:        'Sultan Mehmet Fatih',
-        description:  'Life and conquests of Sultan Mehmet the Conqueror.',
-        backdropImage:'',
-        year:         '2024',
-        language:     'Urdu Dubbed',
-        backLink:     'series.html',
-        premium:{ enabled:true, link:'premium.html' },
-        seasons:[
-          {
-            label:'Season 1',
-            sources:[
-              { label:'Source 1', episodes:[
-                { num:1, title:'Khalid ibn al walid... Part 1', thumb:'', link:'#' },
-                { num:2, title:'Khalid ibn al walid... Part 2', thumb:'', link:'#' },
-                { num:3, title:'',                              thumb:'', link:'#' },
-                { num:4, title:'The Siege Begins',              thumb:'', link:'#' },
-                { num:5, title:'',                              thumb:'', link:'#' },
-              ]},
-              { label:'Source 2', episodes:[
-                { num:1, title:'Khalid ibn al walid... Part 1', thumb:'', link:'#' },
-                { num:2, title:'',                              thumb:'', link:'#' },
-              ]},
-            ]
-          },
-          {
-            label:'Season 2',
-            episodes:[
-              { num:1, title:'A New Era', thumb:'', link:'#' },
-              { num:2, title:'',          thumb:'', link:'#' },
-            ]
-          }
-        ],
-        howToWatch:{ videos:[
-          { title:'Old Process', embedUrl:'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-          { title:'New Process', embedUrl:'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-        ]}
-      });
-    }
-
-    if(document.readyState==='loading'){
-      document.addEventListener('DOMContentLoaded', autoLoad);
-    } else {
-      autoLoad();
-    }
-  })();
-  </script>
-
-  <!-- ═══════════════════════════════════════════════════════════
-       FOOTER LOADER
-  ═══════════════════════════════════════════════════════════ -->
   <script>
   (async function(){
-    var paths = ['/includes/footer.html','includes/footer.html','./includes/footer.html','/footer.html','footer.html'];
-    var ph    = document.getElementById('footer-placeholder');
+    var cands = ['/includes/footer.html','includes/footer.html','./includes/footer.html','/footer.html','footer.html'];
+    var ph = document.getElementById('footer-placeholder');
 
-    function initNav(html){
+    function initNav(html) {
       try {
         ph.innerHTML = html;
-        try{
+        try {
           var p = parseInt(getComputedStyle(document.body).paddingBottom)||0;
-          if(p<96) document.body.style.paddingBottom='calc(96px + env(safe-area-inset-bottom))';
-        }catch(e){}
+          if (p < 96) document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))';
+        } catch(e){}
 
-        var nav   = ph.querySelector('#smtv-bottom-nav,.smtv-bottom-nav');
-        if(!nav) return;
+        var nav = ph.querySelector('#smtv-bottom-nav') || ph.querySelector('.smtv-bottom-nav');
+        if (!nav) return;
+
         var items = Array.from(nav.querySelectorAll('.nav-item'));
         items.forEach(function(i){ i.classList.remove('active'); });
 
-        var si = items.find(function(i){
-          return (i.dataset.name||'').toLowerCase()==='series'
-              || (i.getAttribute('href')||'').includes('series');
-        });
-        if(new URLSearchParams(location.search).has('series') && si) si.classList.add('active');
-        else {
-          var pp = location.pathname.toLowerCase();
-          var bp = items.find(function(i){ return (i.getAttribute('href')||'').toLowerCase().includes(pp.split('/').pop()); });
-          if(bp) bp.classList.add('active'); else if(si) si.classList.add('active');
+        var si = items.find(function(i){ return (i.dataset.name||'').toLowerCase() === 'series'; });
+        if (!si) si = items.find(function(i){ return (i.getAttribute('href')||'').toLowerCase().includes('series'); });
+
+        var hasSlug = new URLSearchParams(window.location.search).has('series');
+        if (hasSlug && si) {
+          si.classList.add('active');
+        } else {
+          var pp = location.pathname.toLowerCase().split('/').pop();
+          var bp = items.find(function(i){ return (i.getAttribute('href')||'').toLowerCase().includes(pp); });
+          if (bp) bp.classList.add('active');
+          else if (si) si.classList.add('active');
         }
 
         items.forEach(function(a){
-          if(a._si) return; a._si=true;
+          if (a.dataset.bound) return;
+          a.dataset.bound = '1';
           a.addEventListener('click', function(e){
-            try{ e.preventDefault&&e.preventDefault(); }catch(x){}
+            try { e.preventDefault(); } catch(x){}
             items.forEach(function(i){ i.classList.remove('active'); });
             this.classList.add('active');
-            try{ localStorage.setItem('smtv_last_nav', this.dataset.name||this.getAttribute('href')); }catch(e){}
-            var h=this.getAttribute('href'); if(h) location.assign(h);
-          },{passive:false});
+            var h = this.getAttribute('href');
+            if (h) location.assign(h);
+          }, { passive:false });
         });
-      } catch(e){ console.warn('footer initNav',e); }
+      } catch(e) { console.warn('initNav', e); }
     }
 
-    for(var i=0; i<paths.length; i++){
-      try{
-        var r = await fetch(paths[i],{cache:'no-cache'});
-        if(!r.ok) continue;
-        initNav(await r.text()); return;
-      }catch(e){ continue; }
+    for (var i=0; i<cands.length; i++) {
+      try {
+        var r = await fetch(cands[i], { cache:'no-cache' });
+        if (!r.ok) continue;
+        var t = await r.text();
+        initNav(t);
+        return;
+      } catch(e) { continue; }
     }
 
-    /* Fallback inline nav */
     ph.innerHTML = `
       <nav class="smtv-bottom-nav" id="smtv-bottom-nav" role="navigation" aria-label="Main">
-        <a href="/index.html"   class="nav-item" data-name="home">
-          <span class="icon-wrap"><i class="fa-solid fa-house"></i></span>
-          <span class="label">Home</span>
-        </a>
-        <a href="/series.html"  class="nav-item active" data-name="series">
-          <span class="icon-wrap"><i class="fa-solid fa-film"></i></span>
-          <span class="label">Series</span>
-        </a>
-        <a href="/clips.html"   class="nav-item" data-name="clips">
-          <span class="icon-wrap"><i class="fa-solid fa-circle-play"></i></span>
-          <span class="label">Clips</span>
-        </a>
-        <a href="/premium.html" class="nav-item" data-name="premium">
-          <span class="icon-wrap"><i class="fa-solid fa-star"></i></span>
-          <span class="label">Premium</span>
-        </a>
-        <a href="/more.html"    class="nav-item" data-name="more">
-          <span class="icon-wrap"><i class="fa-solid fa-circle-info"></i></span>
-          <span class="label">More</span>
-        </a>
-      </nav>`;
-    try{ document.body.style.paddingBottom='calc(96px + env(safe-area-inset-bottom))'; }catch(e){}
+        <a href="/index.html"   class="nav-item" data-name="home">    <span class="icon-wrap"><i class="fa-solid fa-house"></i></span>      <span class="label">Home</span></a>
+        <a href="/series.html"  class="nav-item active" data-name="series">  <span class="icon-wrap"><i class="fa-solid fa-film"></i></span>       <span class="label">Series</span></a>
+        <a href="/clips.html"   class="nav-item" data-name="clips">   <span class="icon-wrap"><i class="fa-solid fa-play-circle"></i></span> <span class="label">Clips</span></a>
+        <a href="/premium.html" class="nav-item" data-name="premium"> <span class="icon-wrap"><i class="fa-solid fa-star"></i></span>        <span class="label">Premium</span></a>
+        <a href="/more.html"    class="nav-item" data-name="more">    <span class="icon-wrap"><i class="fa-solid fa-circle-info"></i></span> <span class="label">More</span></a>
+      </nav>
+      <style>
+        .smtv-bottom-nav{
+          position:fixed;left:12px;right:12px;bottom:12px;height:66px;
+          display:flex;gap:6px;padding:8px;border-radius:18px;
+          background:rgba(9,11,18,.92);
+          backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+          border:1px solid rgba(255,255,255,.07);
+          box-shadow:0 18px 50px rgba(0,0,0,.5);
+          align-items:center;z-index:1200;
+          padding-bottom:calc(env(safe-area-inset-bottom) + 8px);
+        }
+        .smtv-bottom-nav .nav-item{
+          flex:1;text-align:center;color:#6a86a8;text-decoration:none;
+          padding:6px;border-radius:12px;
+          transition:color .22s ease,transform .22s ease,background .22s ease;
+        }
+        .smtv-bottom-nav .nav-item.active{
+          color:#fff;background:rgba(0,205,235,.1);transform:translateY(-4px);
+        }
+        .smtv-bottom-nav .icon-wrap{
+          display:inline-flex;width:38px;height:38px;
+          align-items:center;justify-content:center;border-radius:10px;
+        }
+        .smtv-bottom-nav .label{display:block;font-size:11px;margin-top:2px;font-weight:600;}
+      </style>`;
+
+    try { document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))'; } catch(e){}
   })();
   </script>
 
