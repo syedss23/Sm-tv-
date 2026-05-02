@@ -108,11 +108,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
 }
 
 /* ═══════════════════════════════════════
-   VIP PREMIUM CARD  ← FIXED & COMPACT
+   VIP PREMIUM CARD
 ═══════════════════════════════════════ */
 .smtv-vip-card{
   position:relative;
-  max-width:360px;          /* ← smaller than before */
+  max-width:360px;
   margin:0 auto 4px;
   padding:1.5px;
   border-radius:16px;
@@ -123,7 +123,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
 .smtv-vip-inner{
   background:linear-gradient(160deg,#0c1a2e,#080f1d);
   border-radius:15px;
-  padding:13px 13px 14px;   /* ← tighter padding */
+  padding:13px 13px 14px;
   position:relative;overflow:hidden;
 }
 .smtv-vip-inner::after{
@@ -132,16 +132,14 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
   background:radial-gradient(circle,rgba(255,196,50,.12),transparent 65%);
   pointer-events:none;
 }
-
-/* Title row — compact */
 .smtv-vip-title{
   display:flex;align-items:center;gap:7px;
   margin-bottom:11px;
-  font-size:.88rem;           /* ← was .98rem */
+  font-size:.88rem;
   font-weight:900;color:#fff;line-height:1.2;
 }
 .smtv-vip-crown{
-  font-size:1rem;flex-shrink:0;  /* ← was 1.2rem */
+  font-size:1rem;flex-shrink:0;
   animation:crownBob 2.2s ease-in-out infinite;display:inline-block;
 }
 .smtv-vip-title-text{
@@ -149,30 +147,26 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
   background-size:200% auto;animation:shine 2.6s linear infinite;
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-
-/* 2×2 feature grid — compact pills */
 .smtv-vip-feats{
   display:grid;grid-template-columns:1fr 1fr;
-  gap:6px;margin-bottom:12px;  /* ← tighter gap & margin */
+  gap:6px;margin-bottom:12px;
 }
 .smtv-vip-feat{
   display:flex;align-items:center;justify-content:center;gap:4px;
-  padding:7px 5px;             /* ← was 9px 6px */
+  padding:7px 5px;
   border-radius:8px;
   background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);
-  font-size:.73rem;             /* ← was .78rem */
+  font-size:.73rem;
   font-weight:700;color:#c8e0f8;
   white-space:nowrap;
   transition:background .2s,border-color .2s,color .2s;
 }
 .smtv-vip-feat:hover{background:rgba(255,196,50,.1);border-color:rgba(255,196,50,.28);color:#ffd84a;}
-
-/* BECOME VIP button — compact */
 .smtv-vip-btn{
   display:flex;align-items:center;justify-content:center;gap:7px;
-  width:100%;padding:11px 14px;  /* ← was 14px 16px */
+  width:100%;padding:11px 14px;
   border-radius:10px;
-  font-size:.82rem;              /* ← was .9rem */
+  font-size:.82rem;
   font-weight:900;letter-spacing:.08em;text-transform:uppercase;
   color:#1a0500;text-decoration:none;
   position:relative;overflow:hidden;
@@ -191,7 +185,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
 .smtv-vip-btn:active{transform:scale(.97);}
 
 /* ═══════════════════════════════════════
-   SEASON TABS
+   SEASON TABS  — pill style like screenshot
 ═══════════════════════════════════════ */
 .pro-seasons-tabs-pro{
   display:flex;gap:9px;justify-content:center;flex-wrap:wrap;
@@ -199,10 +193,16 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
   animation:fadeUp .5s cubic-bezier(.22,.8,.2,1) .12s both;
 }
 .pro-season-tab-pro{
-  padding:9px 26px;border-radius:999px;
-  border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);
-  color:#607890;font-size:.86rem;font-weight:800;letter-spacing:.02em;
-  transition:all .26s cubic-bezier(.22,.8,.2,1);outline:none;
+  padding:9px 28px;
+  border-radius:999px;
+  border:1.5px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);
+  color:#607890;
+  font-size:.88rem;
+  font-weight:800;
+  letter-spacing:.02em;
+  transition:all .26s cubic-bezier(.22,.8,.2,1);
+  outline:none;
   position:relative;overflow:hidden;
 }
 .pro-season-tab-pro:hover:not(.active){
@@ -211,178 +211,298 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
 }
 .pro-season-tab-pro.active{
   background:linear-gradient(135deg,#1de8ff,#00a8d0);
-  border-color:transparent;color:#021820;font-weight:900;
-  box-shadow:0 8px 22px rgba(0,200,235,.32),0 0 0 3px rgba(0,200,235,.1);
+  border-color:transparent;
+  color:#021820;
+  font-weight:900;
+  box-shadow:0 8px 22px rgba(0,200,235,.35),0 0 0 3px rgba(0,200,235,.12);
   animation:tabBounce .35s cubic-bezier(.22,.8,.2,1) both;
 }
 .pro-season-tab-pro:active{transform:scale(.95);}
 
 /* ═══════════════════════════════════════
-   SOURCE BUTTONS
+   SOURCE BUTTONS  — same pill style
 ═══════════════════════════════════════ */
-.source-selector{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin:0 0 13px;}
-.source-btn{
-  padding:6px 18px;border-radius:999px;
-  border:1.5px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);
-  color:#607890;font-size:.81rem;font-weight:800;
-  transition:all .2s ease;outline:none;
+.source-selector{
+  display:flex;gap:7px;justify-content:center;flex-wrap:wrap;
+  margin:0 0 16px;
 }
-.source-btn:hover:not(.active){color:#d0e8ff;border-color:rgba(0,205,235,.28);background:rgba(0,205,235,.05);transform:translateY(-1px);}
-.source-btn.active{background:linear-gradient(135deg,#1de8ff,#00a8d0);border-color:transparent;color:#021820;font-weight:900;box-shadow:0 6px 18px rgba(0,205,235,.25);}
+.source-btn{
+  padding:7px 22px;
+  border-radius:999px;
+  border:1.5px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.03);
+  color:#607890;
+  font-size:.84rem;
+  font-weight:800;
+  transition:all .2s ease;
+  outline:none;
+}
+.source-btn:hover:not(.active){
+  color:#d0e8ff;border-color:rgba(0,205,235,.28);
+  background:rgba(0,205,235,.05);transform:translateY(-1px);
+}
+.source-btn.active{
+  background:linear-gradient(135deg,#1de8ff,#00a8d0);
+  border-color:transparent;color:#021820;
+  font-weight:900;
+  box-shadow:0 6px 18px rgba(0,205,235,.28);
+}
 .source-btn:active{transform:scale(.96);}
 
 /* ═══════════════════════════════════════
-   EPISODES SECTION LABEL
+   EPISODES LABEL  — "EPISODES" italic Cinzel
+   cyan text + full-width cyan underline border
+   Exactly like screenshot
 ═══════════════════════════════════════ */
-.smtv-ep-label{display:flex;align-items:center;gap:9px;margin:5px 0 11px;}
-.smtv-ep-label-bar{width:4px;height:20px;border-radius:3px;flex-shrink:0;background:#1de8ff;box-shadow:0 0 9px rgba(0,205,235,.5);}
-.smtv-ep-label-txt{font-size:.82rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#1de8ff;}
+.smtv-ep-label{
+  display:flex;
+  align-items:center;
+  margin:4px 0 14px;
+  padding-bottom:9px;
+  border-bottom:1.5px solid rgba(0,205,235,.3);
+}
+.smtv-ep-label-txt{
+  font-family:'Cinzel',serif;
+  font-size:1.05rem;
+  font-weight:900;
+  font-style:italic;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:#1de8ff;
+  text-shadow:0 0 20px rgba(0,205,235,.35);
+}
 
 /* ═══════════════════════════════════════
    EPISODE ROW
 ═══════════════════════════════════════ */
 .pro-episodes-row-wrap-pro{margin-top:4px;margin-bottom:8px;}
 .pro-episodes-row-pro{
-  display:flex;gap:9px;overflow-x:auto;
+  display:flex;gap:10px;overflow-x:auto;
   padding:4px 2px 14px;
   -webkit-overflow-scrolling:touch;
   scroll-snap-type:x proximity;
-  scrollbar-width:none;align-items:flex-start;
+  scrollbar-width:none;
+  align-items:flex-start;
 }
 .pro-episodes-row-pro::-webkit-scrollbar{display:none;}
 
 /* ═══════════════════════════════════════
-   EPISODE CARD
+   EPISODE CARD  — matches screenshot
+   Dark rounded card, 16:9 thumb on top,
+   badge bottom-left of thumb,
+   title text below card (outside thumb)
 ═══════════════════════════════════════ */
 .pro-episode-card-pro{
-  flex:0 0 140px;           /* ← slightly smaller card */
+  flex:0 0 148px;
   scroll-snap-align:start;
-  display:flex;flex-direction:column;
+  display:flex;
+  flex-direction:column;
   text-decoration:none;
-  border-radius:11px;
-  background:#0e1624;
-  border:1px solid rgba(255,255,255,.07);
-  overflow:hidden;position:relative;
-  opacity:0;transform:translateY(14px);
-  transition:transform .28s cubic-bezier(.22,.8,.2,1),box-shadow .28s ease,border-color .28s ease;
+  border-radius:13px;
+  background:#0d1422;
+  border:1px solid rgba(255,255,255,.08);
+  overflow:hidden;
+  position:relative;
+  opacity:0;
+  transform:translateY(14px);
+  transition:transform .28s cubic-bezier(.22,.8,.2,1),
+              box-shadow .28s ease,
+              border-color .28s ease;
   will-change:transform;
 }
-.pro-episode-card-pro.smtv-card-in{animation:cardPop .4s cubic-bezier(.22,.8,.2,1) both;}
+.pro-episode-card-pro.smtv-card-in{
+  animation:cardPop .4s cubic-bezier(.22,.8,.2,1) both;
+}
 .pro-episode-card-pro:hover{
-  transform:translateY(-5px) scale(1.01);
-  box-shadow:0 14px 30px rgba(0,0,0,.5),0 0 0 1px rgba(0,205,235,.2);
-  border-color:rgba(0,205,235,.25);
+  transform:translateY(-5px) scale(1.02);
+  box-shadow:0 16px 36px rgba(0,0,0,.55),
+             0 0 0 1px rgba(0,205,235,.22);
+  border-color:rgba(0,205,235,.28);
 }
 .pro-episode-card-pro:active{transform:scale(.96);}
-@media(max-width:420px){.pro-episode-card-pro{flex:0 0 124px;}}
-@media(min-width:900px){.pro-episode-card-pro{flex:0 0 165px;}}
 
-/* ── THUMBNAIL: 16:9 aspect fill ── */
+@media(max-width:420px){.pro-episode-card-pro{flex:0 0 130px;}}
+@media(min-width:900px){.pro-episode-card-pro{flex:0 0 170px;}}
+
+/* ── THUMBNAIL 16:9 ── */
 .pro-ep-thumb-wrap-pro{
-  position:relative;width:100%;padding-top:56.25%;
-  overflow:hidden;background:#070b16;flex-shrink:0;display:block;
+  position:relative;
+  width:100%;
+  padding-top:56.25%;   /* 16:9 ratio */
+  overflow:hidden;
+  background:#060a14;
+  flex-shrink:0;
+  display:block;
 }
 .pro-ep-thumb-pro{
-  position:absolute!important;top:0!important;left:0!important;
+  position:absolute!important;
+  top:0!important;left:0!important;
   width:100%!important;height:100%!important;
-  object-fit:cover!important;object-position:center!important;
-  display:block!important;background:#070b16;
+  object-fit:cover!important;
+  object-position:center!important;
+  display:block!important;
+  background:#060a14;
   transition:transform .32s cubic-bezier(.22,.8,.2,1);
 }
 .pro-episode-card-pro:hover .pro-ep-thumb-pro{transform:scale(1.06);}
 
-/* Play overlay */
+/* Play overlay on hover */
 .smtv-play-overlay{
   position:absolute;inset:0;
   display:flex;align-items:center;justify-content:center;
-  opacity:0;transition:opacity .2s;z-index:3;pointer-events:none;
+  opacity:0;transition:opacity .22s;
+  z-index:3;pointer-events:none;
+  background:rgba(0,0,0,.18);
 }
 .smtv-play-overlay span{
-  width:30px;height:30px;border-radius:50%;
-  background:rgba(0,205,235,.9);
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(0,205,235,.92);
   display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 16px rgba(0,205,235,.45);
+  box-shadow:0 0 20px rgba(0,205,235,.5);
 }
-.smtv-play-overlay i{font-size:.6rem;color:#021820;margin-left:2px;}
+.smtv-play-overlay i{font-size:.65rem;color:#021820;margin-left:2px;}
 .pro-episode-card-pro:hover .smtv-play-overlay{opacity:1;}
 
-/* Ep badge */
+/* ── EP BADGE: BOTTOM-LEFT of thumbnail ── */
 .pro-ep-num-pro{
-  position:absolute;top:5px;left:5px;z-index:2;
-  background:rgba(4,7,16,.88);border:1px solid rgba(0,205,235,.28);
-  color:#1de8ff;font-size:.6rem;font-weight:900;
-  padding:2px 6px;border-radius:4px;letter-spacing:.04em;
-  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-  white-space:nowrap;line-height:1.4;
-  max-width:calc(100% - 10px);overflow:hidden;text-overflow:ellipsis;
+  position:absolute!important;
+  bottom:6px!important;
+  left:6px!important;
+  top:auto!important;
+  right:auto!important;
+  z-index:4;
+  background:rgba(4,7,18,.85);
+  border:1px solid rgba(0,205,235,.32);
+  color:#1de8ff;
+  font-size:.62rem;
+  font-weight:900;
+  padding:3px 7px;
+  border-radius:5px;
+  letter-spacing:.05em;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  white-space:nowrap;
+  line-height:1.4;
+  max-width:calc(100% - 12px);
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
-/* ═══════════════════════════════════════
-   EPISODE TITLE  ← THE KEY FIX
-   Rules:
-   • "Episode 1"            → "Ep 1"        (1 line, no wrap)
-   • "Episode 1 - Name..."  → "Ep 1" BOLD
-                               "Name..."    smaller muted (1 line)
-   Card height stays fixed — title area is
-   always exactly 2 text rows tall.
+/* ── EPISODE TITLE BELOW THUMBNAIL ──
+   "Ep 1 — Title name here"
+   Bold ep num, muted dash + name
+   Wraps to 2 lines max, no overflow
 ═══════════════════════════════════════ */
 .pro-ep-title-pro{
-  display:flex;
-  flex-direction:column;
-  padding:6px 7px 8px;
-  gap:1px;
-  min-height:0;        /* let flexbox decide */
-  width:100%;
-  overflow:hidden;
+  padding:7px 8px 10px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  width:100%!important;
+  white-space:normal!important;
+  min-height:0!important;
 }
-/* Row 1: "Ep 1" — always 1 line */
-.smtv-ep-num-line{
-  font-size:.73rem;
-  font-weight:800;
-  color:#d0e8ff;
-  white-space:nowrap;
+/* Inline span wrapping everything — wraps naturally */
+.smtv-ep-inline{
+  font-size:.74rem;
+  line-height:1.45;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
   overflow:hidden;
-  text-overflow:ellipsis;
-  line-height:1.3;
-  display:block;
+  word-break:break-word;
 }
-/* Row 2: episode name — 1 line, smaller muted text */
-.smtv-ep-name-line{
-  font-size:.66rem;
+.smtv-ep-inline .smtv-epn{
+  font-weight:900;
+  color:#ddeeff;
+}
+.smtv-ep-inline .smtv-dash{
+  color:#3a5a70;
+  font-weight:400;
+  margin:0 3px;
+}
+.smtv-ep-inline .smtv-epname{
+  color:#7a9cb8;
   font-weight:500;
-  color:#7090a8;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  line-height:1.3;
-  display:block;
 }
 
 /* ═══════════════════════════════════════
-   HOW TO WATCH
+   HOW TO WATCH  — exact screenshot style:
+   • Cyan vertical bar left
+   • Italic bold Cinzel title
+   • Cyan underline below title row
+   • "OLD PROCESS" / "NEW PROCESS" with pulsing cyan dot
 ═══════════════════════════════════════ */
-.howto-section{margin:22px 0 18px;}
+.howto-section{margin:24px 0 20px;}
+
+/* Title row */
 .pro-tutorial-title{
-  display:flex;align-items:center;gap:10px;
-  font-size:1.15rem;font-weight:800;color:#fff;
-  margin:0 0 16px;letter-spacing:.01em;
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding-bottom:10px;
+  border-bottom:1.5px solid rgba(0,205,235,.32);
+  margin-bottom:0;
 }
 .pro-tutorial-title .smtv-bar{
-  width:4px;height:22px;border-radius:3px;flex-shrink:0;
-  background:#1de8ff;box-shadow:0 0 9px rgba(0,205,235,.4);
+  width:4px;
+  height:26px;
+  border-radius:3px;
+  flex-shrink:0;
+  background:#1de8ff;
+  box-shadow:0 0 12px rgba(0,205,235,.55);
+}
+/* The text node inside .pro-tutorial-title gets wrapped by JS */
+.pro-tutorial-title .smtv-howto-text{
+  font-family:'Cinzel',serif;
+  font-size:1.18rem;
+  font-weight:800;
+  font-style:italic;
+  color:#ffffff;
+  line-height:1.25;
+  letter-spacing:.01em;
+}
+
+/* Process label: dot + uppercase label */
+.smtv-process-label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:16px 0 10px;
 }
 .smtv-dot{
-  width:6px;height:6px;border-radius:50%;flex-shrink:0;
-  background:#1de8ff;box-shadow:0 0 6px rgba(0,205,235,.5);
+  width:8px;height:8px;
+  border-radius:50%;
+  flex-shrink:0;
+  background:#1de8ff;
+  box-shadow:0 0 8px rgba(0,205,235,.65);
   animation:dotPulse 2s ease-in-out infinite;
 }
-.smtv-video-card{
-  border-radius:13px;overflow:hidden;
-  background:#0a0f1c;border:1px solid rgba(255,255,255,.06);
-  box-shadow:0 10px 26px rgba(0,0,0,.4);
+.smtv-process-label-txt{
+  font-size:.76rem;
+  font-weight:900;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:#1de8ff;
 }
-.pro-video-frame-wrap{position:relative;width:100%;height:0;padding-bottom:56.25%;overflow:hidden;}
-.pro-video-frame-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:#000;}
+
+/* Video card frame */
+.smtv-video-card{
+  border-radius:13px;
+  overflow:hidden;
+  background:#080c18;
+  border:1px solid rgba(255,255,255,.06);
+  box-shadow:0 10px 28px rgba(0,0,0,.45);
+}
+.pro-video-frame-wrap{
+  position:relative;width:100%;height:0;
+  padding-bottom:56.25%;overflow:hidden;
+}
+.pro-video-frame-wrap iframe{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  border:0;display:block;background:#000;
+}
 
 /* ═══════════════════════════════════════
    WHATSAPP POPUP
@@ -451,22 +571,27 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
 </div>
 
 <!-- ════════════════════════════════════════════
-     SMTV ENHANCEMENT ENGINE  v4
+     SMTV ENHANCEMENT ENGINE  v5
+     UI only — zero workflow changes
 ════════════════════════════════════════════ -->
 <script>
 (function(){
   'use strict';
 
-  /* POSTER FX */
+  /* ── POSTER FX ── */
   function doPosterFX(){
     document.querySelectorAll('.pro-series-header-pro').forEach(function(h){
       if(h._fx) return; h._fx=true;
-      if(!h.querySelector('.smtv-scan')){var s=document.createElement('div');s.className='smtv-scan';h.appendChild(s);}
-      if(!h.querySelector('.smtv-poster-fade')){var f=document.createElement('div');f.className='smtv-poster-fade';h.appendChild(f);}
+      if(!h.querySelector('.smtv-scan')){
+        var s=document.createElement('div');s.className='smtv-scan';h.appendChild(s);
+      }
+      if(!h.querySelector('.smtv-poster-fade')){
+        var f=document.createElement('div');f.className='smtv-poster-fade';h.appendChild(f);
+      }
     });
   }
 
-  /* VIP CARD — compact rebuild */
+  /* ── VIP CARD ── */
   function doVipCard(){
     document.querySelectorAll('.premium-channel-message').forEach(function(box){
       if(box._vip) return; box._vip=true;
@@ -493,13 +618,13 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
     });
   }
 
-  /* SEASON TABS */
+  /* ── SEASON TABS ── */
   function doTabAnim(){
     document.querySelectorAll('.pro-season-tab-pro').forEach(function(tab){
       if(tab._click) return; tab._click=true;
       tab.addEventListener('click',function(){
         document.querySelectorAll('.pro-season-tab-pro').forEach(function(t){
-          t.classList.remove('active'); delete t._anim;
+          t.classList.remove('active');
         });
         this.classList.add('active');
         this.style.animation='none';
@@ -509,13 +634,13 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
     });
   }
 
-  /* THUMBNAIL FIX */
+  /* ── THUMBNAIL FIX ── */
   function doThumbs(){
     document.querySelectorAll('.pro-ep-thumb-pro').forEach(function(img){
       if(img._fix) return; img._fix=true;
       var wrap=img.parentElement;
       if(wrap&&wrap.classList.contains('pro-ep-thumb-wrap-pro')){
-        wrap.style.height=''; wrap.style.minHeight=''; wrap.style.maxHeight='';
+        wrap.style.height='';wrap.style.minHeight='';wrap.style.maxHeight='';
       }
       img.style.setProperty('position','absolute','important');
       img.style.setProperty('top','0','important');
@@ -526,64 +651,62 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
     });
   }
 
-  /* EP BADGE */
+  /* ── EP BADGE: force bottom-left ── */
   function doBadge(){
     document.querySelectorAll('.pro-ep-num-pro').forEach(function(el){
       if(el._b) return; el._b=true;
       var t=(el.textContent||'').trim();
-      var m=/[Ee]pisodes*(d+)/.exec(t);
+      var m=/[Ee]pisode\s*(\d+)/.exec(t);
       if(m) el.textContent='Ep '+m[1];
+      /* Position bottom-left */
+      el.style.setProperty('top','auto','important');
+      el.style.setProperty('bottom','6px','important');
+      el.style.setProperty('left','6px','important');
+      el.style.setProperty('right','auto','important');
     });
   }
 
-  /* ═══════════════════════════════════════════
-     EPISODE TITLE — THE CORE FIX
-     
-     Cases:
-     "Episode 1"              → <b>Ep 1</b>           (num only, 1 row)
-     "Episode 1 - The Start"  → <b>Ep 1</b>           (row 1)
-                                 <s>The Start</s>      (row 2, muted small)
-     
-     Title area height is FIXED via flex —
-     exactly 2 text rows, never overflows card.
-  ═══════════════════════════════════════════ */
+  /* ── EPISODE TITLE ──
+     Input: "Episode 1 - Khalid ibn al walid Part 1"
+     Output: <b>Ep 1</b> — <span muted>Khalid ibn al walid Part 1</span>
+     Wraps to max 2 lines. No overflow.
+  ── */
   function doTitle(){
     document.querySelectorAll('.pro-ep-title-pro').forEach(function(el){
       if(el._t) return; el._t=true;
 
       var raw=(el.textContent||'').replace(/<[^>]+>/g,'').trim();
 
-      /* Parse "Episode N" or "Episode N - Name" */
-      var m=raw.match(/^[Ee]pisodes*(d+)s*[-–—:s]?s*(.*)$/);
-      var num=m?m[1]:null;
-      var name=m?(m[2]||'').trim():'';
+      /* Match: Episode N - Name  OR  Episode N */
+      var mFull=raw.match(/^[Ee]pisode\s*(\d+)\s*[-–—:]\s*(.+)$/);
+      var mNum =raw.match(/^[Ee]pisode\s*(\d+)\s*$/);
 
-      if(num&&name){
-        /* Has both number AND name */
-        el.innerHTML=
-          '<span class="smtv-ep-num-line">Ep '+num+'</span>'+
-          '<span class="smtv-ep-name-line">'+name+'</span>';
-      } else if(num){
-        /* Number only — just "Ep 1", vertically centered */
-        el.innerHTML='<span class="smtv-ep-num-line">Ep '+num+'</span>';
+      var html;
+      if(mFull){
+        html='<span class="smtv-ep-inline">'+
+               '<span class="smtv-epn">Ep '+mFull[1]+'</span>'+
+               '<span class="smtv-dash"> — </span>'+
+               '<span class="smtv-epname">'+mFull[2].trim()+'</span>'+
+             '</span>';
+      } else if(mNum){
+        html='<span class="smtv-ep-inline"><span class="smtv-epn">Ep '+mNum[1]+'</span></span>';
       } else {
-        /* Fallback: raw text, 1 line */
-        el.innerHTML='<span class="smtv-ep-num-line">'+raw+'</span>';
+        html='<span class="smtv-ep-inline"><span class="smtv-epn">'+raw+'</span></span>';
       }
+      el.innerHTML=html;
 
-      /* Force correct layout via setProperty (beats series.js inline styles) */
+      /* Force layout */
       el.style.setProperty('display','flex','important');
       el.style.setProperty('flex-direction','column','important');
-      el.style.setProperty('padding','6px 7px 8px','important');
-      el.style.setProperty('gap','1px','important');
+      el.style.setProperty('padding','7px 8px 10px','important');
       el.style.setProperty('overflow','hidden','important');
       el.style.setProperty('width','100%','important');
-      el.style.setProperty('min-height','0','important');
       el.style.setProperty('white-space','normal','important');
+      el.style.setProperty('min-height','0','important');
     });
   }
 
-  /* PLAY OVERLAY */
+  /* ── PLAY OVERLAY ── */
   function doPlayOverlay(){
     document.querySelectorAll('.pro-ep-thumb-wrap-pro').forEach(function(wrap){
       if(wrap._pl) return; wrap._pl=true;
@@ -596,7 +719,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
     });
   }
 
-  /* CARD STAGGER ANIMATION */
+  /* ── CARD STAGGER ANIMATION ── */
   function doCardAnim(){
     document.querySelectorAll('.pro-episode-card-pro').forEach(function(card,i){
       if(card._an) return; card._an=true;
@@ -607,29 +730,62 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
     });
   }
 
-  /* EPISODES LABEL */
+  /* ── EPISODES LABEL ──
+     "EPISODES" — italic Cinzel cyan + cyan underline
+  ── */
   function doEpLabel(){
     document.querySelectorAll('.pro-episodes-row-wrap-pro').forEach(function(wrap){
       if(wrap._lbl) return; wrap._lbl=true;
       if(!wrap.querySelector('.smtv-ep-label')){
         var lbl=document.createElement('div');
         lbl.className='smtv-ep-label';
-        lbl.innerHTML='<span class="smtv-ep-label-bar"></span><span class="smtv-ep-label-txt">Episodes</span>';
+        lbl.innerHTML='<span class="smtv-ep-label-txt">Episodes</span>';
         wrap.insertBefore(lbl,wrap.firstChild);
       }
     });
   }
 
-  /* HOW TO WATCH TITLE FIX */
+  /* ── HOW TO WATCH ──
+     Title: cyan bar + italic Cinzel + cyan underline below
+     Process labels: pulsing dot + uppercase cyan
+  ── */
   function doHowTo(){
+    /* Title */
     document.querySelectorAll('.pro-tutorial-title').forEach(function(el){
       if(el._ht) return; el._ht=true;
-      var txt=(el.textContent||'How to Watch Episodes').trim().replace(/^[-–—|▌s]+/,'').trim();
-      el.innerHTML='<span class="smtv-bar"></span>'+txt;
+      var txt=(el.textContent||'How to Watch Episodes').trim().replace(/^[-–—|▌\s]+/,'').trim();
+      el.innerHTML=
+        '<span class="smtv-bar"></span>'+
+        '<span class="smtv-howto-text">'+txt+'</span>';
+    });
+
+    /* Process labels — handle whatever class series.js gives them */
+    document.querySelectorAll('.howto-section').forEach(function(sec){
+      if(sec._hw) return; sec._hw=true;
+
+      /* Walk all leaf text nodes and check for PROCESS labels */
+      var walker=document.createTreeWalker(sec,NodeFilter.SHOW_ELEMENT,null,false);
+      var node;
+      while((node=walker.nextNode())){
+        if(node.children.length>0) continue;
+        if(node._proc) continue;
+        var t=(node.textContent||'').trim().toUpperCase();
+        if(t==='OLD PROCESS'||t==='NEW PROCESS'){
+          node._proc=true;
+          var wrapper=document.createElement('div');
+          wrapper.className='smtv-process-label';
+          wrapper.innerHTML=
+            '<span class="smtv-dot"></span>'+
+            '<span class="smtv-process-label-txt">'+t+'</span>';
+          if(node.parentNode){
+            node.parentNode.replaceChild(wrapper,node);
+          }
+        }
+      }
     });
   }
 
-  /* SCROLL LOCK (prevents page jumping on load) */
+  /* ── SCROLL LOCK ── */
   function doScrollLock(){
     try{window.scrollTo(0,0);}catch(e){}
     var det=document.getElementById('series-details');
@@ -644,11 +800,18 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
     }
   }
 
-  /* RUN ALL */
+  /* ── RUN ALL ── */
   function runAll(){
-    doPosterFX(); doVipCard(); doTabAnim();
-    doThumbs(); doBadge(); doTitle();
-    doPlayOverlay(); doCardAnim(); doEpLabel(); doHowTo();
+    doPosterFX();
+    doVipCard();
+    doTabAnim();
+    doThumbs();
+    doBadge();
+    doTitle();
+    doPlayOverlay();
+    doCardAnim();
+    doEpLabel();
+    doHowTo();
   }
 
   /* Watch for series.js DOM injection */
@@ -656,7 +819,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
   obs.observe(document.body,{childList:true,subtree:true});
   setTimeout(function(){obs.disconnect();},14000);
 
-  /* Also run on DOMContentLoaded */
   if(document.readyState==='loading'){
     document.addEventListener('DOMContentLoaded',runAll);
   } else {
