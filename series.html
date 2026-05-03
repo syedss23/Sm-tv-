@@ -56,7 +56,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
 .pro-series-desc-pro{font-size:.84rem;color:#7090a8;line-height:1.65;max-width:560px;margin:0 auto 14px;}
 
 /* ═══════════════════════════════════════
-   VIP CARD  — compact elegant redesign
+   VIP CARD
 ═══════════════════════════════════════ */
 .smtv-vip-card{
   position:relative;max-width:360px;margin:0 auto 4px;
@@ -67,8 +67,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
 }
 .smtv-vip-inner{
   background:linear-gradient(160deg,#0c1a2e,#080f1d);
-  border-radius:15px;
-  padding:14px 13px 15px;
+  border-radius:15px;padding:14px 13px 15px;
   position:relative;overflow:hidden;
 }
 .smtv-vip-inner::after{
@@ -79,10 +78,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
 }
 
 /* Title */
-.smtv-vip-title{
-  display:flex;align-items:center;gap:8px;
-  margin-bottom:12px;
-}
+.smtv-vip-title{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
 .smtv-vip-crown{font-size:1rem;flex-shrink:0;animation:crownBob 2.2s ease-in-out infinite;display:inline-block;}
 .smtv-vip-title-text{
   font-size:.9rem;font-weight:900;letter-spacing:.01em;
@@ -91,9 +87,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
 
-/* ── FEATURE GRID — compact pill rows ──
-   Each pill: small coloured dot + icon emoji + label
-   Horizontal layout, 2 per row, slim height
+/* ── FEATURE GRID ──
+   2×2 compact pills. Icon + full label — no truncation.
+   Font small enough to always fit on one line.
 ═══════════════════════════════════════ */
 .smtv-vip-feats{
   display:grid;
@@ -104,16 +100,16 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
 .smtv-vip-feat{
   display:flex;
   align-items:center;
-  gap:7px;
-  padding:8px 10px;
+  gap:6px;
+  padding:8px 9px;
   border-radius:9px;
   background:rgba(255,255,255,.04);
   border:1px solid rgba(255,255,255,.08);
+  position:relative;overflow:hidden;
   transition:background .2s,border-color .2s;
-  position:relative;
-  overflow:hidden;
+  /* No min-width — let grid control the width */
 }
-/* Subtle left-border accent per feature */
+/* Coloured left accent bar */
 .smtv-vip-feat::before{
   content:'';
   position:absolute;left:0;top:0;bottom:0;width:2.5px;
@@ -123,21 +119,26 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
 .smtv-vip-feat:nth-child(2)::before{background:#1de8ff;}
 .smtv-vip-feat:nth-child(3)::before{background:#a78bfa;}
 .smtv-vip-feat:nth-child(4)::before{background:#ffd84a;}
-
 .smtv-vip-feat:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.14);}
 
+/* Icon — small, fixed size, no shrink */
 .smtv-vip-feat-icon{
-  font-size:.88rem;
+  font-size:.78rem;   /* smaller so label gets more room */
   flex-shrink:0;
   line-height:1;
+  width:16px;
+  text-align:center;
 }
+/* Label — small font, full text, single line, no truncation */
 .smtv-vip-feat-label{
-  font-size:.74rem;
+  font-size:.68rem;   /* ← key fix: small enough to fit "Fast Download" */
   font-weight:700;
   color:#d0e8ff;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+  white-space:nowrap; /* keep on one line */
+  /* NO overflow:hidden, NO text-overflow:ellipsis */
+  line-height:1.2;
+  min-width:0;        /* allow shrinking inside flex */
+  letter-spacing:-.01em; /* tighten slightly */
 }
 
 /* BECOME VIP */
@@ -273,7 +274,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
     });
   }
 
-  /* ── VIP CARD — compact pill layout ── */
+  /* ── VIP CARD — compact pills, full labels ── */
   function doVipCard(){
     document.querySelectorAll('.premium-channel-message').forEach(function(box){
       if(box._vip)return;box._vip=true;
@@ -326,7 +327,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
     });
   }
 
-  /* ── EPISODE TITLE — raw JSON, auto font size ── */
+  /* ── EPISODE TITLE ── */
   function doTitle(){
     document.querySelectorAll('.pro-ep-title-pro').forEach(function(el){
       if(el._t)return;el._t=true;
@@ -409,7 +410,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
   }
 
   function runAll(){doPosterFX();doVipCard();doTabAnim();doThumbs();doBadge();doTitle();doPlayOverlay();doCardAnim();doEpLabel();doHowTo();}
-
   var obs=new MutationObserver(function(){runAll();});
   obs.observe(document.body,{childList:true,subtree:true});
   setTimeout(function(){obs.disconnect();},14000);
