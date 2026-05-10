@@ -1,10 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Sidebar controls
-  const sbar = document.getElementById('sidebar');
-  document.getElementById('sidebarToggle')?.addEventListener('click', () => sbar.classList.toggle('open'));
-  document.getElementById('sidebarClose')?.addEventListener('click', () => sbar.classList.remove('open'));
 
-  // Utility: move filter bar under New Episodes
+  // ── Utility: move filter bar below New Episodes section ──
   function moveFilterBarBelowNewEpisodes() {
     const filterBar = document.querySelector('.filter-bar');
     const newEpisodesSection = document.querySelector('.new-episodes-section');
@@ -14,32 +10,25 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   moveFilterBarBelowNewEpisodes();
 
-  // âœ… NEW: Build streaming URL for New Episodes "Watch Now" button
+  // ── Build streaming URL for New Episodes "Watch Now" button ──
   function buildEpisodeWatchUrl(ep) {
     const fallback = ep.shortlink || ep.download || '#';
-
     try {
-      const raw = (ep._src || '').replace(/^\/+/, ''); // remove leading slash if any
-      // Matches: episode-data/slug-s1.json  OR  episode-data/slug-s1-en.json  etc.
+      const raw = (ep._src || '').replace(/^\/+/, '');
       const m = raw.match(/^episode-data\/(.+?)-s(\d+)(?:-([a-z]{2,3}|dub))?\.json$/i);
       if (!m) return fallback;
-
       const slug   = m[1];
       const season = m[2];
       const lang   = (m[3] || '').toLowerCase();
-
       const params = new URLSearchParams();
       params.set('series', slug);
       params.set('season', season);
       if (ep.ep != null) params.set('ep', ep.ep);
-
-      // Only pass lang when itâ€™s actually a subtitle/dub marker
       if (lang && lang !== 'dub') {
-        params.set('lang', lang);   // en / hi / ur
+        params.set('lang', lang);
       } else if (lang === 'dub') {
-        params.set('lang', 'dub');  // if youâ€™re using this
+        params.set('lang', 'dub');
       }
-
       return `episode.html?${params.toString()}`;
     } catch (e) {
       console.warn('buildEpisodeWatchUrl error', e);
@@ -47,95 +36,78 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ====== MODERN SCHEDULE BAR (Compact + Countdown + LIVE) ======
+  // ══════════════════════════════════════════════
+  // SCHEDULE BAR — compact cinematic style
+  // ══════════════════════════════════════════════
   const scheduleBar = document.getElementById('schedule-bar');
   if (scheduleBar) {
     fetch('shedule.json')
       .then(r => r.json())
       .then(schedule => {
         if (!Array.isArray(schedule) || !schedule.length) {
-          scheduleBar.innerHTML = `
-            <div style="color:#ffd700;font-size:1em;padding:1em;text-align:center;">
-              No schedule yet.
-            </div>`;
+          scheduleBar.innerHTML = `<div style="color:var(--text-muted);font-size:.9em;padding:.8em 1em;">No upcoming schedule.</div>`;
           return;
         }
 
-        scheduleBar.innerHTML = schedule.map(item => {
-          const title = item.title || '';
-          const poster = item.poster || '';
-          const day = item.day || '';
-          const time = item.time || '';
-          const type = item.type || '';
-          const live = !!item.live;
+        const inner = document.createElement('div');
+        inner.className = 'schedule-inner';
+
+        inner.innerHTML = schedule.map(item => {
+          const title    = item.title    || '';
+          const poster   = item.poster   || '';
+          const day      = item.day      || '';
+          const time     = item.time     || '';
+          const type     = item.type     || '';
+          const live     = !!item.live;
           const countdown = item.countdown || '';
 
           return `
-            <div class="schedule-entry"
-                 title="${title}"
-                 style="display:flex;align-items:center;gap:8px;margin-right:12px;
-                        background:#14141a;padding:6px 10px;border-radius:12px;
-                        box-shadow:0 1px 5px rgba(0,0,0,0.4);min-width:fit-content;">
-              ${poster ? `
-                <img src="${poster}" alt="${title}" loading="lazy" decoding="async"
-                     style="width:30px;height:30px;object-fit:cover;border-radius:6px;">` : ''
-              }
-              <div style="display:flex;flex-direction:column;line-height:1.15;min-width:0;">
-                <!-- Title -->
-                <div style="font-weight:700;font-size:0.92em;color:#23c6ed;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                  <span class="title" style="overflow-wrap:anywhere;">${title}</span>
-                  ${live ? '<span style="background:#ff2d2d;color:#fff;padding:1px 6px;border-radius:6px;font-size:0.7em;">LIVE</span>' : ''}
+            <div class="schedule-entry">
+              ${poster ? `<img src="${poster}" alt="${title}" loading="lazy" decoding="async">` : ''}
+              <div style="display:flex;flex-direction:column;min-width:0;">
+                <div class="sched-title" style="display:flex;align-items:center;gap:6px;">
+                  ${title}
+                  ${live ? `<span style="background:var(--red-live);color:#fff;padding:1px 6px;border-radius:5px;font-size:.65em;font-weight:800;letter-spacing:.06em;">LIVE</span>` : ''}
                 </div>
-
-                <!-- One compact line: day â€¢ time â€¢ type (small, old-style) -->
-                <div class="schedule-row"
-                     style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px;font-size:0.86em;line-height:1.25;">
-                  ${day  ? `<span class="day"  style="color:#ffd267;font-weight:600;">${day}</span>` : ''}
-                  ${(day && time) ? '<span class="dot" style="opacity:.6;">•</span>' : ''}
-                  ${time ? `<span class="time" style="color:#9fd3ff;font-weight:600;">${time}</span>` : ''}
-                  ${type ? `<span class="dot" style="opacity:.6;">•</span><span class="type" style="color:#23c6ed;font-weight:600;">${type}</span>` : ''}
+                <div class="sched-meta">
+                  ${day  ? `<span class="sched-day">${day}</span>` : ''}
+                  ${(day && time) ? '<span style="opacity:.4;">•</span>' : ''}
+                  ${time ? `<span class="sched-time">${time}</span>` : ''}
+                  ${type ? `<span style="opacity:.4;">•</span><span class="sched-type">${type}</span>` : ''}
                 </div>
-
-                <!-- Countdown below, slightly smaller -->
-                ${countdown ? `<div class="countdown"
-                                  data-time="${countdown}"
-                                  style="color:#ffd84d;font-size:0.78em;margin-top:2px;"></div>` : ''}
+                ${countdown ? `<div class="countdown" data-time="${countdown}"></div>` : ''}
               </div>
             </div>
           `;
         }).join('');
 
-        // Countdown updater
-        const countdowns = scheduleBar.querySelectorAll('.countdown');
-        countdowns.forEach(el => {
+        scheduleBar.innerHTML = '';
+        scheduleBar.appendChild(inner);
+
+        // Countdown tickers
+        scheduleBar.querySelectorAll('.countdown').forEach(el => {
           const targetTime = Date.parse(el.dataset.time);
           if (isNaN(targetTime)) { el.textContent = ''; return; }
-
           const tick = () => {
             const diff = targetTime - Date.now();
-            if (diff <= 0) {
-              el.textContent = 'Now Playing';
-              clearInterval(id);
-              return;
-            }
+            if (diff <= 0) { el.textContent = '🔴 Now Playing'; clearInterval(id); return; }
             const hrs  = Math.floor(diff / (1000 * 60 * 60));
             const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const secs = Math.floor((diff % (1000 * 60)) / 1000);
-            el.textContent = `Starts in ${hrs}h ${mins}m ${secs}s`;
+            el.textContent = `⏳ ${hrs}h ${mins}m ${secs}s`;
           };
           tick();
           const id = setInterval(tick, 1000);
         });
       })
       .catch(() => {
-        scheduleBar.innerHTML = `
-          <div style="color:#ffd700;font-size:1em;padding:1em;text-align:center;">
-            Could not load schedule.
-          </div>`;
+        scheduleBar.innerHTML = `<div style="color:var(--text-muted);font-size:.9em;padding:.8em 1em;">Schedule unavailable.</div>`;
       });
   }
 
-  // ===== New Episodes Horizontal Card Grid =====
+  // ══════════════════════════════════════════════
+  // NEW EPISODES — horizontal scroll cards
+  // ══════════════════════════════════════════════
   const newGrid = document.getElementById('new-episodes-grid');
   if (newGrid) {
     fetch('episode-data/index.json')
@@ -154,56 +126,48 @@ document.addEventListener('DOMContentLoaded', () => {
         const latestEps = allEpisodes.slice(0, 5);
 
         if (!latestEps.length) {
-          newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">No new episodes found.</div>`;
+          newGrid.innerHTML = `<div style="color:var(--text-muted);font-size:.9em;padding:1em 1.2em;">No new episodes found.</div>`;
           moveFilterBarBelowNewEpisodes();
           return;
         }
 
-        newGrid.innerHTML = `
-          <div style="display:flex;gap:14px;overflow-x:auto;padding:0 2px 2px 2px;">
-            ${latestEps.map(ep => `
-              <div class="episode-card-pro"
-                   style="flex:0 0 166px;min-width:150px;max-width:172px;
-                          border-radius:13px;background:#182837;
-                          box-shadow:0 4px 18px #0fd1cec7,0 2px 10px #0003;">
-                <img src="${ep.thumb || ep.poster || ''}"
-                     class="episode-img-pro"
-                     alt="${ep.title || ('Episode ' + (ep.ep || ''))}"
-                     loading="lazy" decoding="async"
-                     style="display:block;border-radius:13px 13px 0 0;width:100%;
-                            height:110px;object-fit:cover;">
-                <div class="episode-title-pro"
-                     style="margin:15px 0 4px 0;font-family:'Montserrat',sans-serif;
-                            font-size:1.07em;font-weight:700;color:#fff;text-align:center;">
-                  ${ep.title || 'Episode ' + (ep.ep || '')}
-                  <span class="new-badge-pro"
-                        style="margin-left:7px;background:#ffd700;color:#182734;
-                               font-size:.78em;border-radius:5px;padding:2.3px 9px;">NEW</span>
-                </div>
-                <a href="${buildEpisodeWatchUrl(ep)}"
-                   class="watch-btn-pro"
-                   target="_blank" rel="noopener"
-                   style="margin-bottom:13px;width:86%;display:block;
-                          background:linear-gradient(90deg,#009aff 65%,#ffd700 100%);
-                          color:#fff;font-weight:700;text-decoration:none;text-align:center;
-                          border-radius:5px;padding:8px 0;font-family:'Montserrat',sans-serif;
-                          font-size:1em;box-shadow:0 1px 10px #0087ff14;
-                          margin-left:auto;margin-right:auto;">
-                  Watch Now
-                </a>
-              </div>
-            `).join('')}
+        const inner = document.createElement('div');
+        inner.className = 'new-eps-inner';
+        inner.innerHTML = latestEps.map(ep => `
+          <div class="episode-card-pro">
+            <div class="episode-img-wrapper">
+              <img src="${ep.thumb || ep.poster || ''}"
+                   class="episode-img-pro"
+                   alt="${ep.title || ('Episode ' + (ep.ep || ''))}"
+                   loading="lazy" decoding="async">
+              <div class="episode-img-overlay"></div>
+              <span class="new-badge-pro">NEW</span>
+            </div>
+            <div class="episode-info">
+              ${ep.series ? `<div class="series-title-pro">${ep.series}</div>` : ''}
+              <div class="episode-title-pro">${ep.title || 'Episode ' + (ep.ep || '')}</div>
+            </div>
+            <a href="${buildEpisodeWatchUrl(ep)}"
+               class="watch-btn-pro"
+               target="_blank" rel="noopener">
+              <span>▶ Watch Now</span>
+            </a>
           </div>
-        `;
+        `).join('');
+
+        newGrid.innerHTML = '';
+        newGrid.appendChild(inner);
         moveFilterBarBelowNewEpisodes();
       })
       .catch(() => {
-        newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">Could not load new episodes.</div>`;
+        newGrid.innerHTML = `<div style="color:var(--text-muted);font-size:.9em;padding:1em 1.2em;">Could not load new episodes.</div>`;
         moveFilterBarBelowNewEpisodes();
       });
   }
 
-  // ------------- Series homepage grid: unchanged -------------
+  // ══════════════════════════════════════════════
+  // SERIES GRID
+  // ══════════════════════════════════════════════
   const grid = document.getElementById('series-grid');
   if (grid) {
     const search   = document.getElementById('search');
@@ -220,9 +184,18 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     fetch('series.json')
-      .then(r => { if (!r.ok) throw new Error('Series JSON not found. Check /series.json'); return r.json(); })
-      .then(data => { SERIES = Array.isArray(data) ? data : []; hydrateUI(); render(); })
-      .catch(err => { grid.innerHTML = `<div style="color:#f44;padding:1.2em;">Error: ${err.message}</div>`; });
+      .then(r => { if (!r.ok) throw new Error('series.json not found'); return r.json(); })
+      .then(data => {
+        SERIES = Array.isArray(data) ? data : [];
+        // Remove skeleton
+        document.getElementById('series-skeleton')?.remove();
+        hydrateUI();
+        render();
+      })
+      .catch(err => {
+        document.getElementById('series-skeleton')?.remove();
+        grid.innerHTML = `<div style="color:#e57373;padding:1.2em;grid-column:1/-1;">Error: ${err.message}</div>`;
+      });
 
     function hydrateUI() {
       setPrimary(state.track);
@@ -272,12 +245,18 @@ document.addEventListener('DOMContentLoaded', () => {
         list = list.filter(s => s.track === 'sub' && s.subLang === state.lang);
       }
       if (state.q) list = list.filter(s => (s.title || '').toLowerCase().includes(state.q));
-      grid.innerHTML = list.length ? list.map(s => `
-        <a class="card" href="series.html?series=${s.slug}">
+
+      if (!list.length) {
+        grid.innerHTML = `<div style="color:var(--text-muted);font-size:1em;padding:1.5em;grid-column:1/-1;text-align:center;">No series found.</div>`;
+        return;
+      }
+
+      grid.innerHTML = list.map((s, i) => `
+        <a class="card" href="series.html?series=${s.slug}" style="animation-delay:${i * 0.04}s;">
           <img src="${s.poster}" alt="${s.title}" loading="lazy" decoding="async">
           <div class="title">${s.title}</div>
         </a>
-      `).join('') : `<div style="color:#fff;font-size:1.1em;padding:1.5em;">No series found.</div>`;
+      `).join('');
     }
   }
 });
