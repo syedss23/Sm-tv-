@@ -1,216 +1,249 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Sidebar controls
-  const sbar = document.getElementById('sidebar');
-  document.getElementById('sidebarToggle')?.addEventListener('click', () => sbar.classList.toggle('open'));
-  document.getElementById('sidebarClose')?.addEventListener('click', () => sbar.classList.remove('open'));
 
-  // Utility: move filter bar under New Episodes
-  function moveFilterBarBelowNewEpisodes() {
-    const filterBar = document.querySelector('.filter-bar');
-    const newEpisodesSection = document.querySelector('.new-episodes-section');
-    if (filterBar && newEpisodesSection && newEpisodesSection.parentNode) {
-      newEpisodesSection.parentNode.insertBefore(filterBar, newEpisodesSection.nextSibling);
-    }
-  }
-  moveFilterBarBelowNewEpisodes();
-
-  // âœ… NEW: Build streaming URL for New Episodes "Watch Now" button
-  function buildEpisodeWatchUrl(ep) {
+  /* ══════════════════════════════════════════
+     UTILITY — build episode watch URL
+  ══════════════════════════════════════════ */
+  function buildWatchUrl(ep) {
     const fallback = ep.shortlink || ep.download || '#';
-
     try {
-      const raw = (ep._src || '').replace(/^\/+/, ''); // remove leading slash if any
-      // Matches: episode-data/slug-s1.json  OR  episode-data/slug-s1-en.json  etc.
+      const raw = (ep._src || '').replace(/^\/+/, '');
       const m = raw.match(/^episode-data\/(.+?)-s(\d+)(?:-([a-z]{2,3}|dub))?\.json$/i);
       if (!m) return fallback;
-
-      const slug   = m[1];
-      const season = m[2];
-      const lang   = (m[3] || '').toLowerCase();
-
-      const params = new URLSearchParams();
-      params.set('series', slug);
-      params.set('season', season);
-      if (ep.ep != null) params.set('ep', ep.ep);
-
-      // Only pass lang when itâ€™s actually a subtitle/dub marker
-      if (lang && lang !== 'dub') {
-        params.set('lang', lang);   // en / hi / ur
-      } else if (lang === 'dub') {
-        params.set('lang', 'dub');  // if youâ€™re using this
-      }
-
-      return `episode.html?${params.toString()}`;
-    } catch (e) {
-      console.warn('buildEpisodeWatchUrl error', e);
-      return fallback;
-    }
+      const slug = m[1], season = m[2], lang = (m[3] || '').toLowerCase();
+      const p = new URLSearchParams();
+      p.set('series', slug);
+      p.set('season', season);
+      if (ep.ep != null) p.set('ep', ep.ep);
+      if (lang && lang !== 'dub') p.set('lang', lang);
+      else if (lang === 'dub') p.set('lang', 'dub');
+      return `episode.html?${p.toString()}`;
+    } catch (e) { return fallback; }
   }
 
-  // ====== MODERN SCHEDULE BAR (Compact + Countdown + LIVE) ======
-  const scheduleBar = document.getElementById('schedule-bar');
-  if (scheduleBar) {
+  /* ══════════════════════════════════════════
+     UTILITY — observe element & add .vis
+  ══════════════════════════════════════════ */
+  function animateWhenVisible(elements) {
+    if (!elements.length) return;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('vis');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    elements.forEach(el => obs.observe(el));
+  }
+
+  /* ══════════════════════════════════════════
+     LOAD ALL EPISODE DATA (shared)
+  ══════════════════════════════════════════ */
+  let allEpisodesPromise = fetch('episode-data/index.json')
+    .then(r => r.json())
+    .then(files => Promise.all(
+      files.map(path =>
+        fetch(path)
+          .then(res => res.ok ? res.json() : [])
+          .then(data => (Array.isArray(data) ? data.map(ep => ({ ...ep, _src: path })) : []))
+          .catch(() => [])
+      )
+    ))
+    .then(arrays => {
+      const all = arrays.flat().filter(ep => ep.timestamp);
+      all.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      return all;
+    })
+    .catch(() => []);
+
+  /* ══════════════════════════════════════════
+     HERO — cinematic auto-rotating banner
+  ══════════════════════════════════════════ */
+  const heroInner = document.getElementById('hero-inner');
+  const heroDots  = document.getElementById('h-dots');
+
+  allEpisodesPromise.then(all => {
+    const latest = all.slice(0, 5);
+    if (!latest.length || !heroInner) return;
+
+    heroInner.innerHTML = '';
+
+    // Build slides
+    latest.forEach((ep, i) => {
+      const url  = buildWatchUrl(ep);
+      const bg   = ep.thumb || ep.poster || ep.banner || '';
+      const seriesName = ep.series || '';
+      const epTitle    = ep.title || ('Episode ' + (ep.ep || ''));
+
+      const slide = document.createElement('div');
+      slide.className = 'h-slide' + (i === 0 ? ' on' : '');
+      slide.innerHTML = `
+        <div class="h-bg" style="background-image:url('${bg}')"></div>
+        <div class="h-vig"></div>
+        <div class="h-body">
+          <div class="h-new">● NEW EPISODE</div>
+          ${seriesName ? `<div class="h-title">${seriesName}</div>` : ''}
+          <div class="h-sub">${epTitle}</div>
+          <div class="h-btns">
+            <a href="${url}" class="h-play" data-ep="1">▶ Watch Now</a>
+            ${seriesName ? `<a href="series.html?series=${(ep._src||'').match(/episode-data\/(.+?)-s/)?.[1]||''}" class="h-info">ℹ More Info</a>` : ''}
+          </div>
+          <div id="h-dots"></div>
+        </div>
+      `;
+      heroInner.appendChild(slide);
+    });
+
+    // Build dots (only once, in last slide's placeholder → actually build separately)
+    // Re-grab dots container after DOM update
+    const dotsWrap = heroInner.closest('#hero')?.querySelector('#h-dots') || document.getElementById('h-dots');
+    if (dotsWrap) {
+      dotsWrap.innerHTML = latest.map((_, i) =>
+        `<div class="h-dot${i===0?' on':''}" data-i="${i}"></div>`
+      ).join('');
+    }
+
+    const slides = heroInner.querySelectorAll('.h-slide');
+    const dots   = heroInner.querySelectorAll('.h-dot');
+    let cur = 0, timer;
+
+    function goTo(n) {
+      slides[cur].classList.remove('on');
+      dots[cur]?.classList.remove('on');
+      cur = (n + slides.length) % slides.length;
+      slides[cur].classList.add('on');
+      dots[cur]?.classList.add('on');
+    }
+
+    function startAuto() {
+      clearInterval(timer);
+      timer = setInterval(() => goTo(cur + 1), 5000);
+    }
+
+    dots.forEach(d => d.addEventListener('click', () => { goTo(+d.dataset.i); startAuto(); }));
+    startAuto();
+  });
+
+  /* ══════════════════════════════════════════
+     NEW EPISODES — horizontal scroll row
+  ══════════════════════════════════════════ */
+  const epGrid = document.getElementById('new-episodes-grid');
+
+  allEpisodesPromise.then(all => {
+    const latest = all.slice(0, 5);
+    if (!epGrid) return;
+
+    if (!latest.length) {
+      epGrid.innerHTML = `<div style="color:var(--muted);padding:1em;">No new episodes found.</div>`;
+      return;
+    }
+
+    epGrid.innerHTML = latest.map(ep => {
+      const url   = buildWatchUrl(ep);
+      const thumb = ep.thumb || ep.poster || '';
+      const title = ep.title || ('Episode ' + (ep.ep || ''));
+      const series = ep.series || '';
+      // detect lang label from _src
+      const langM = (ep._src||'').match(/-([a-z]{2,3})\.json$/i);
+      const lang  = langM ? langM[1].toUpperCase() : 'DUB';
+
+      return `
+        <div class="ep-card">
+          <div class="ep-tw">
+            <img src="${thumb}" class="ep-th" alt="${title}" loading="lazy" decoding="async">
+            <div class="ep-tg"></div>
+            <span class="ep-nb">NEW</span>
+            <span class="ep-lb">${lang}</span>
+          </div>
+          <div class="ep-info">
+            ${series ? `<div class="ep-ser">${series}</div>` : ''}
+            <div class="ep-ttl">${title}</div>
+          </div>
+          <a href="${url}" class="ep-btn" target="_blank" rel="noopener">
+            <span>▶ Watch Now</span>
+          </a>
+        </div>
+      `;
+    }).join('');
+
+    // animate cards in
+    animateWhenVisible(Array.from(epGrid.querySelectorAll('.ep-card')));
+  });
+
+  /* ══════════════════════════════════════════
+     SCHEDULE — vertical stacked cards
+  ══════════════════════════════════════════ */
+  const schedList = document.getElementById('sched-list');
+
+  if (schedList) {
     fetch('shedule.json')
       .then(r => r.json())
       .then(schedule => {
         if (!Array.isArray(schedule) || !schedule.length) {
-          scheduleBar.innerHTML = `
-            <div style="color:#ffd700;font-size:1em;padding:1em;text-align:center;">
-              No schedule yet.
-            </div>`;
+          schedList.innerHTML = `<div style="color:var(--muted);font-size:.88rem;padding:.8em 1em;">No upcoming schedule.</div>`;
           return;
         }
 
-        scheduleBar.innerHTML = schedule.map(item => {
-          const title = item.title || '';
-          const poster = item.poster || '';
-          const day = item.day || '';
-          const time = item.time || '';
-          const type = item.type || '';
-          const live = !!item.live;
+        schedList.innerHTML = schedule.map(item => {
+          const title     = item.title    || '';
+          const poster    = item.poster   || '';
+          const day       = item.day      || '';
+          const time      = item.time     || '';
+          const type      = item.type     || '';
+          const live      = !!item.live;
           const countdown = item.countdown || '';
 
           return `
-            <div class="schedule-entry"
-                 title="${title}"
-                 style="display:flex;align-items:center;gap:8px;margin-right:12px;
-                        background:#14141a;padding:6px 10px;border-radius:12px;
-                        box-shadow:0 1px 5px rgba(0,0,0,0.4);min-width:fit-content;">
-              ${poster ? `
-                <img src="${poster}" alt="${title}" loading="lazy" decoding="async"
-                     style="width:30px;height:30px;object-fit:cover;border-radius:6px;">` : ''
-              }
-              <div style="display:flex;flex-direction:column;line-height:1.15;min-width:0;">
-                <!-- Title -->
-                <div style="font-weight:700;font-size:0.92em;color:#23c6ed;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                  <span class="title" style="overflow-wrap:anywhere;">${title}</span>
-                  ${live ? '<span style="background:#ff2d2d;color:#fff;padding:1px 6px;border-radius:6px;font-size:0.7em;">LIVE</span>' : ''}
+            <div class="sc-card${live ? ' live-c' : ''}">
+              ${poster ? `<img src="${poster}" alt="${title}" class="sc-img" loading="lazy" decoding="async">` : ''}
+              <div class="sc-body">
+                <div class="sc-title">${title}</div>
+                <div class="sc-meta">
+                  ${day  ? `<span class="sc-day">${day}</span>` : ''}
+                  ${(day && time) ? `<span class="sc-dot">•</span>` : ''}
+                  ${time ? `<span class="sc-day" style="color:#9fd3ff">${time}</span>` : ''}
+                  ${type ? `<span class="sc-dot">•</span><span class="sc-type">${type}</span>` : ''}
+                  ${live ? `<span class="sc-live">LIVE</span>` : ''}
                 </div>
-
-                <!-- One compact line: day â€¢ time â€¢ type (small, old-style) -->
-                <div class="schedule-row"
-                     style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px;font-size:0.86em;line-height:1.25;">
-                  ${day  ? `<span class="day"  style="color:#ffd267;font-weight:600;">${day}</span>` : ''}
-                  ${(day && time) ? '<span class="dot" style="opacity:.6;">•</span>' : ''}
-                  ${time ? `<span class="time" style="color:#9fd3ff;font-weight:600;">${time}</span>` : ''}
-                  ${type ? `<span class="dot" style="opacity:.6;">•</span><span class="type" style="color:#23c6ed;font-weight:600;">${type}</span>` : ''}
-                </div>
-
-                <!-- Countdown below, slightly smaller -->
-                ${countdown ? `<div class="countdown"
-                                  data-time="${countdown}"
-                                  style="color:#ffd84d;font-size:0.78em;margin-top:2px;"></div>` : ''}
               </div>
+              ${countdown ? `<div class="sc-cd" data-time="${countdown}">...</div>` : ''}
             </div>
           `;
         }).join('');
 
-        // Countdown updater
-        const countdowns = scheduleBar.querySelectorAll('.countdown');
-        countdowns.forEach(el => {
-          const targetTime = Date.parse(el.dataset.time);
-          if (isNaN(targetTime)) { el.textContent = ''; return; }
-
+        // Countdown tickers
+        schedList.querySelectorAll('.sc-cd').forEach(el => {
+          const target = Date.parse(el.dataset.time);
+          if (isNaN(target)) { el.textContent = ''; return; }
           const tick = () => {
-            const diff = targetTime - Date.now();
-            if (diff <= 0) {
-              el.textContent = 'Now Playing';
-              clearInterval(id);
-              return;
-            }
-            const hrs  = Math.floor(diff / (1000 * 60 * 60));
-            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const secs = Math.floor((diff % (1000 * 60)) / 1000);
-            el.textContent = `Starts in ${hrs}h ${mins}m ${secs}s`;
+            const diff = target - Date.now();
+            if (diff <= 0) { el.textContent = '🔴 Now'; clearInterval(id); return; }
+            const h = Math.floor(diff / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
+            el.textContent = `${h}h ${m}m ${s}s`;
           };
           tick();
           const id = setInterval(tick, 1000);
         });
+
+        // Animate in
+        animateWhenVisible(Array.from(schedList.querySelectorAll('.sc-card')));
       })
       .catch(() => {
-        scheduleBar.innerHTML = `
-          <div style="color:#ffd700;font-size:1em;padding:1em;text-align:center;">
-            Could not load schedule.
-          </div>`;
+        schedList.innerHTML = `<div style="color:var(--muted);font-size:.88rem;padding:.8em 1em;">Schedule unavailable.</div>`;
       });
   }
 
-  // ===== New Episodes Horizontal Card Grid =====
-  const newGrid = document.getElementById('new-episodes-grid');
-  if (newGrid) {
-    fetch('episode-data/index.json')
-      .then(r => r.json())
-      .then(files => Promise.all(
-        files.map(path =>
-          fetch(path)
-            .then(res => res.ok ? res.json() : [])
-            .then(data => (Array.isArray(data) ? data.map(ep => ({ ...ep, _src: path })) : []))
-            .catch(() => [])
-        )
-      ))
-      .then(arrays => {
-        const allEpisodes = arrays.flat().filter(ep => ep.timestamp);
-        allEpisodes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        const latestEps = allEpisodes.slice(0, 5);
+  /* ══════════════════════════════════════════
+     SERIES GRID
+  ══════════════════════════════════════════ */
+  const grid    = document.getElementById('series-grid');
+  const pillDub = document.getElementById('pill-dub');
+  const pillSub = document.getElementById('pill-sub');
+  const subLangs = document.getElementById('sub-langs');
 
-        if (!latestEps.length) {
-          newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">No new episodes found.</div>`;
-          moveFilterBarBelowNewEpisodes();
-          return;
-        }
-
-        newGrid.innerHTML = `
-          <div style="display:flex;gap:14px;overflow-x:auto;padding:0 2px 2px 2px;">
-            ${latestEps.map(ep => `
-              <div class="episode-card-pro"
-                   style="flex:0 0 166px;min-width:150px;max-width:172px;
-                          border-radius:13px;background:#182837;
-                          box-shadow:0 4px 18px #0fd1cec7,0 2px 10px #0003;">
-                <img src="${ep.thumb || ep.poster || ''}"
-                     class="episode-img-pro"
-                     alt="${ep.title || ('Episode ' + (ep.ep || ''))}"
-                     loading="lazy" decoding="async"
-                     style="display:block;border-radius:13px 13px 0 0;width:100%;
-                            height:110px;object-fit:cover;">
-                <div class="episode-title-pro"
-                     style="margin:15px 0 4px 0;font-family:'Montserrat',sans-serif;
-                            font-size:1.07em;font-weight:700;color:#fff;text-align:center;">
-                  ${ep.title || 'Episode ' + (ep.ep || '')}
-                  <span class="new-badge-pro"
-                        style="margin-left:7px;background:#ffd700;color:#182734;
-                               font-size:.78em;border-radius:5px;padding:2.3px 9px;">NEW</span>
-                </div>
-                <a href="${buildEpisodeWatchUrl(ep)}"
-                   class="watch-btn-pro"
-                   target="_blank" rel="noopener"
-                   style="margin-bottom:13px;width:86%;display:block;
-                          background:linear-gradient(90deg,#009aff 65%,#ffd700 100%);
-                          color:#fff;font-weight:700;text-decoration:none;text-align:center;
-                          border-radius:5px;padding:8px 0;font-family:'Montserrat',sans-serif;
-                          font-size:1em;box-shadow:0 1px 10px #0087ff14;
-                          margin-left:auto;margin-right:auto;">
-                  Watch Now
-                </a>
-              </div>
-            `).join('')}
-          </div>
-        `;
-        moveFilterBarBelowNewEpisodes();
-      })
-      .catch(() => {
-        newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">Could not load new episodes.</div>`;
-        moveFilterBarBelowNewEpisodes();
-      });
-  }
-
-  // ------------- Series homepage grid: unchanged -------------
-  const grid = document.getElementById('series-grid');
   if (grid) {
-    const search   = document.getElementById('search');
-    const pillDub  = document.getElementById('pill-dub');
-    const pillSub  = document.getElementById('pill-sub');
-    const subLangs = document.getElementById('sub-langs');
-
     let SERIES = [];
     const qs = new URLSearchParams(location.search);
     let state = {
@@ -220,16 +253,26 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     fetch('series.json')
-      .then(r => { if (!r.ok) throw new Error('Series JSON not found. Check /series.json'); return r.json(); })
-      .then(data => { SERIES = Array.isArray(data) ? data : []; hydrateUI(); render(); })
-      .catch(err => { grid.innerHTML = `<div style="color:#f44;padding:1.2em;">Error: ${err.message}</div>`; });
+      .then(r => { if (!r.ok) throw new Error('series.json not found'); return r.json(); })
+      .then(data => {
+        SERIES = Array.isArray(data) ? data : [];
+        // remove skeletons
+        grid.querySelectorAll('.skel').forEach(s => s.remove());
+        hydrateUI();
+        render();
+      })
+      .catch(err => {
+        grid.querySelectorAll('.skel').forEach(s => s.remove());
+        grid.innerHTML = `<div style="color:#f87171;padding:1.2em;grid-column:1/-1;">Could not load series: ${err.message}</div>`;
+      });
 
     function hydrateUI() {
       setPrimary(state.track);
       toggleSubLangs();
       subLangs?.querySelectorAll('.pill').forEach(b => {
-        b.classList.toggle('active', b.dataset.lang === state.lang);
-        b.setAttribute('aria-pressed', String(b.dataset.lang === state.lang));
+        const active = b.dataset.lang === state.lang;
+        b.classList.toggle('active', active);
+        b.setAttribute('aria-pressed', String(active));
       });
     }
 
@@ -243,26 +286,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function toggleSubLangs() {
-      if (!subLangs) return;
-      subLangs.classList.toggle('hidden', state.track !== 'sub');
+      subLangs?.classList.toggle('hidden', state.track !== 'sub');
     }
 
     function setLang(lang) {
       state.lang = lang;
       localStorage.setItem('subLang', lang);
       subLangs?.querySelectorAll('.pill').forEach(b => {
-        b.classList.toggle('active', b.dataset.lang === lang);
-        b.setAttribute('aria-pressed', String(b.dataset.lang === lang));
+        const active = b.dataset.lang === lang;
+        b.classList.toggle('active', active);
+        b.setAttribute('aria-pressed', String(active));
       });
     }
 
     pillDub?.addEventListener('click', () => { setPrimary('dubbed'); toggleSubLangs(); render(); });
-    pillSub?.addEventListener('click', () => { setPrimary('sub'); toggleSubLangs(); render(); });
+    pillSub?.addEventListener('click', () => { setPrimary('sub');    toggleSubLangs(); render(); });
     subLangs?.addEventListener('click', e => {
       const t = e.target;
-      if (t && t.matches('.pill') && t.dataset.lang) { setLang(t.dataset.lang); render(); }
+      if (t?.matches('.pill') && t.dataset.lang) { setLang(t.dataset.lang); render(); }
     });
-    search?.addEventListener('input', e => { state.q = e.target.value.trim().toLowerCase(); render(); });
 
     function render() {
       let list = SERIES;
@@ -271,13 +313,53 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         list = list.filter(s => s.track === 'sub' && s.subLang === state.lang);
       }
-      if (state.q) list = list.filter(s => (s.title || '').toLowerCase().includes(state.q));
-      grid.innerHTML = list.length ? list.map(s => `
+      if (state.q) list = list.filter(s => (s.title||'').toLowerCase().includes(state.q));
+
+      if (!list.length) {
+        grid.innerHTML = `<div style="color:var(--muted);font-size:1em;padding:1.5em;grid-column:1/-1;text-align:center;">No series found.</div>`;
+        return;
+      }
+
+      grid.innerHTML = list.map(s => `
         <a class="card" href="series.html?series=${s.slug}">
           <img src="${s.poster}" alt="${s.title}" loading="lazy" decoding="async">
           <div class="title">${s.title}</div>
         </a>
-      `).join('') : `<div style="color:#fff;font-size:1.1em;padding:1.5em;">No series found.</div>`;
+      `).join('');
+
+      // staggered entrance
+      const cards = Array.from(grid.querySelectorAll('.card'));
+      cards.forEach((c, i) => { c.style.animationDelay = (i * 0.045) + 's'; });
+      animateWhenVisible(cards);
     }
   }
+
+  /* ══════════════════════════════════════════
+     SEARCH OVERLAY — live filter from series.json
+  ══════════════════════════════════════════ */
+  const srchInp  = document.getElementById('srch-inp');
+  const srchGrid = document.getElementById('srch-grid');
+  let SERIES_ALL = [];
+
+  fetch('series.json').then(r => r.json()).then(d => { SERIES_ALL = Array.isArray(d) ? d : []; }).catch(() => {});
+
+  srchInp?.addEventListener('input', () => {
+    const q = srchInp.value.trim().toLowerCase();
+    if (!q) {
+      srchGrid.innerHTML = '<div class="srch-hint">🔍 Start typing to search...</div>';
+      return;
+    }
+    const results = SERIES_ALL.filter(s => (s.title||'').toLowerCase().includes(q));
+    if (!results.length) {
+      srchGrid.innerHTML = `<div class="srch-hint">No results for "<strong>${q}</strong>"</div>`;
+      return;
+    }
+    srchGrid.innerHTML = results.map(s => `
+      <a class="card vis" href="series.html?series=${s.slug}" style="opacity:1;transform:none;">
+        <img src="${s.poster}" alt="${s.title}" loading="lazy" decoding="async">
+        <div class="title">${s.title}</div>
+      </a>
+    `).join('');
+  });
+
 });
