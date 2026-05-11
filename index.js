@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ─────────────────────────────────────────
-     UTILITY: build episode watch URL
+     BUILD WATCH URL from episode _src path
   ───────────────────────────────────────── */
   function buildWatchUrl(ep) {
     const fallback = ep.shortlink || ep.download || '#';
@@ -19,24 +19,29 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch { return fallback; }
   }
 
-  /* FIXED: get proper lang label — "URDU SUB", "ENG SUB", "DUB" etc */
+  /* ─────────────────────────────────────────
+     LANG LABEL — reads _src filename accurately
+     e.g. episode-data/kurulus-orhan-s1-ur.json → "URDU SUB"
+          episode-data/kurulus-orhan-s1.json    → "DUB"
+          episode-data/kurulus-orhan-s1-dub.json→ "DUB"
+  ───────────────────────────────────────── */
   function getLangLabel(ep) {
     const raw = (ep._src || '').toLowerCase();
-    const m = raw.match(/-([a-z]{2,3})\.json$/i);
-    if (!m) return 'DUB'; // no lang code = dubbed
-    const code = m[1];
+    // match the lang code just before .json
+    const m = raw.match(/-s\d+(?:-([a-z]{2,3}))?\.json$/i);
+    if (!m || !m[1] || m[1] === 'dub') return 'DUB';
     const map = { en: 'ENG SUB', ur: 'URDU SUB', hi: 'HINDI SUB', ar: 'ARABIC SUB', sp: 'ESP SUB' };
-    return map[code] || code.toUpperCase() + ' SUB';
+    return map[m[1]] || (m[1].toUpperCase() + ' SUB');
   }
 
-  /* get series slug from _src */
+  /* series slug from _src */
   function getSlug(ep) {
     const m = (ep._src || '').match(/^episode-data\/(.+?)-s\d+/);
     return m ? m[1] : '';
   }
 
   /* ─────────────────────────────────────────
-     UTILITY: animate elements with IntersectionObserver
+     INTERSECTION OBSERVER — add .vis class
   ───────────────────────────────────────── */
   function animateIn(elements) {
     if (!elements || !elements.length) return;
@@ -75,10 +80,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ═════════════════════════════════════════
      HERO — cinematic new episodes banner
-     • auto-rotate every 5s
-     • finger swipe (touch) to navigate
-     • dot indicators — NO arrow buttons
-     • correct lang badge per episode
+     • correct lang label per episode (DUB / URDU SUB / ENG SUB)
+     • NO arrow buttons — finger swipe only
+     • NO Info button — only Watch Now
+     • dots for navigation
   ═════════════════════════════════════════ */
   const heroEl    = document.getElementById('hero');
   const heroInner = document.getElementById('hero-inner');
@@ -92,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     latest.forEach((ep, i) => {
       const url      = buildWatchUrl(ep);
       const slug     = getSlug(ep);
-      const langTxt  = getLangLabel(ep);          // FIXED: real lang label
+      const langTxt  = getLangLabel(ep);
       const bg       = ep.thumb || ep.poster || ep.banner || '';
       const series   = ep.series || '';
       const title    = ep.title || ('Episode ' + (ep.ep || ''));
@@ -102,38 +107,27 @@ document.addEventListener('DOMContentLoaded', () => {
       slide.innerHTML = `
         <div class="h-bg" style="background-image:url('${bg}')"></div>
         <div class="h-vig"></div>
-
-        <!-- top badges -->
         <div class="h-top-label">
           <span class="h-new-badge">NEW EPISODE</span>
           <span class="h-lang-badge">${langTxt}</span>
         </div>
-
-        <!-- bottom content — fully on thumbnail -->
         <div class="h-body">
           ${series ? `<div class="h-series">${series}</div>` : ''}
           <div class="h-title">${title}</div>
-          <div class="h-btns">
-            <a href="${url}" class="h-play">▶ Watch Now</a>
-          </div>
-          <div id="h-dots-${i}" class="h-dots-wrap"></div>
+          <a href="${url}" class="h-watch-btn">▶ Watch Now</a>
+          ${i === 0 ? '<div id="h-dots"></div>' : ''}
         </div>
       `;
       heroInner.appendChild(slide);
     });
 
-    /* build dots — only inside the ACTIVE slide's dots wrap */
-    const dotsWrap = heroInner.querySelector('#h-dots-0');
-    if (dotsWrap) {
-      dotsWrap.id = 'h-dots';
-      dotsWrap.innerHTML = latest.map((_, i) =>
+    /* build dots */
+    const dotsEl = document.getElementById('h-dots');
+    if (dotsEl) {
+      dotsEl.innerHTML = latest.map((_, i) =>
         `<div class="h-dot${i === 0 ? ' on' : ''}" data-i="${i}"></div>`
       ).join('');
     }
-    /* remove extra unused dot wraps from other slides */
-    heroInner.querySelectorAll('[id^="h-dots-"]').forEach(el => {
-      if (el.id !== 'h-dots') el.remove();
-    });
 
     const slides = Array.from(heroInner.querySelectorAll('.h-slide'));
     const dots   = Array.from(heroInner.querySelectorAll('.h-dot'));
@@ -151,9 +145,10 @@ document.addEventListener('DOMContentLoaded', () => {
       autoTimer = setInterval(() => goTo(cur + 1), 5000);
     }
 
+    /* dot click */
     dots.forEach(d => d.addEventListener('click', () => { goTo(+d.dataset.i); startAuto(); }));
 
-    /* touch swipe — finger only, no buttons */
+    /* finger swipe — no arrow buttons */
     let touchX = 0;
     heroEl.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
     heroEl.addEventListener('touchend', e => {
@@ -165,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ═════════════════════════════════════════
-     SCHEDULE — vertical stacked cards
+     SCHEDULE — vertical stacked, above recommended
   ═════════════════════════════════════════ */
   const schedList = document.getElementById('sched-list');
   if (schedList) {
@@ -178,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         schedList.innerHTML = schedule.map(item => `
           <div class="sc-card${item.live ? ' live-c' : ''}">
-            ${item.poster ? `<img src="${item.poster}" alt="${item.title || ''}" class="sc-img" loading="lazy" decoding="async">` : ''}
+            ${item.poster ? `<img src="${item.poster}" alt="${item.title||''}" class="sc-img" loading="lazy" decoding="async">` : ''}
             <div class="sc-body">
               <div class="sc-title">${item.title || ''}</div>
               <div class="sc-meta">
@@ -215,9 +210,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ═════════════════════════════════════════
-     RECOMMENDED — horizontal scroll, 5 series
-     Tries recommended.json first (manual list of slugs).
-     Falls back to first 5 from series.json.
+     RECOMMENDED — portrait cards, horizontal scroll
+     Loads from recommended.json (array of slugs)
+     Falls back to first 5 from series.json
   ═════════════════════════════════════════ */
   const recInner = document.getElementById('rec-inner');
 
@@ -225,22 +220,14 @@ document.addEventListener('DOMContentLoaded', () => {
     seriesReady.then(allSeries => {
       if (!allSeries.length) return;
 
-      // Try to load recommended.json (array of slugs, e.g. ["sultan-mehmet-fatih","alp-arslan"])
       fetch('recommended.json')
         .then(r => r.ok ? r.json() : null)
         .then(slugs => {
           let list;
           if (Array.isArray(slugs) && slugs.length) {
-            // match slugs to series objects, preserve order, take 5
-            list = slugs
-              .map(slug => allSeries.find(s => s.slug === slug))
-              .filter(Boolean)
-              .slice(0, 5);
+            list = slugs.map(slug => allSeries.find(s => s.slug === slug)).filter(Boolean).slice(0, 5);
           }
-          // fallback if recommended.json missing or empty
-          if (!list || !list.length) {
-            list = allSeries.slice(0, 5);
-          }
+          if (!list || !list.length) list = allSeries.slice(0, 5);
           renderRec(list);
         })
         .catch(() => renderRec(allSeries.slice(0, 5)));
@@ -259,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ═════════════════════════════════════════
-     SERIES GRID — filter + search
+     SERIES GRID
   ═════════════════════════════════════════ */
   const grid     = document.getElementById('series-grid');
   const pillDub  = document.getElementById('pill-dub');
@@ -278,8 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
     seriesReady.then(data => {
       SERIES = data;
       grid.querySelectorAll('.skel').forEach(s => s.remove());
-      hydrateUI();
-      render();
+      hydrateUI(); render();
     }).catch(() => {
       grid.querySelectorAll('.skel').forEach(s => s.remove());
       grid.innerHTML = `<div style="color:#f87171;padding:1.2em;grid-column:1/-1;">Could not load series.</div>`;
@@ -299,9 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
       pillDub?.setAttribute('aria-pressed', String(track === 'dubbed'));
       pillSub?.setAttribute('aria-pressed', String(track === 'sub'));
     }
-    function toggleSubLangs() {
-      subLangs?.classList.toggle('hidden', state.track !== 'sub');
-    }
+    function toggleSubLangs() { subLangs?.classList.toggle('hidden', state.track !== 'sub'); }
     function setLang(lang) {
       state.lang = lang; localStorage.setItem('subLang', lang);
       subLangs?.querySelectorAll('.pill').forEach(b => {
@@ -340,8 +324,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ═════════════════════════════════════════
-     SEARCH OVERLAY — live, portrait cards
-     FIXED: shows image + title properly
+     SEARCH OVERLAY
+     Results render as portrait cards (a.srch-card)
+     CSS in HTML uses !important to beat style.css
   ═════════════════════════════════════════ */
   const srchInp  = document.getElementById('srch-inp');
   const srchGrid = document.getElementById('srch-grid');
@@ -359,7 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
           srchGrid.innerHTML = `<div class="srch-hint">No results for "<b>${q}</b>"</div>`;
           return;
         }
-        /* FIXED: portrait cards, image fills 2/3 ratio, title below */
+        /* Use <a> tag so CSS specificity a.srch-card beats style.css .card rules */
         srchGrid.innerHTML = results.map(s => `
           <a class="srch-card" href="series.html?series=${s.slug}">
             <img src="${s.poster}" alt="${s.title}" loading="lazy" decoding="async">
