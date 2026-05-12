@@ -323,51 +323,22 @@
 
     /* ══ SERIES GRID ══ */
     #series-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:4px 14px 16px;}
+    /* Use exact same .card style as style.css but override max-height */
     .card{background:#262838;border-radius:8px;box-shadow:0 1.5px 6px #0003;text-decoration:none;overflow:hidden;display:block;transition:transform .17s,box-shadow .17s,background .17s;opacity:0;transform:translateY(20px);}
     .card.vis{animation:rcIn 0.5s ease forwards;}
     .card:hover{background:#212345;box-shadow:0 4px 18px #0a121c20;transform:translateY(-2px) scale(1.03);}
-    .card-img-wrap{display:block;width:100%;overflow:hidden;border-radius:6px 6px 0 0;line-height:0;}
-    .card-img-wrap img{
-      display:block!important;
-      width:100%!important;
-      height:auto!important;
-      aspect-ratio:6/8!important;
-      max-height:none!important;
-      min-height:unset!important;
-      object-fit:cover!important;
-      object-position:center top!important;
-      border-radius:6px 6px 0 0!important;
-    }
-    /* Extra override in case style.css still wins on img */
-    #series-grid .card img, #series-grid .card-img-wrap img {
-      max-height:none!important;
-      height:auto!important;
-      aspect-ratio:6/8!important;
-    }
+    /* THE KEY FIX: override style.css max-height:180px on .card img */
+    .card img{width:100%!important;aspect-ratio:6/8!important;object-fit:cover!important;object-position:center top!important;display:block!important;max-height:unset!important;min-height:unset!important;height:auto!important;border-radius:6px 6px 0 0!important;}
     .card .title{padding:10px 4px 12px;color:#fff;font-weight:700;font-size:.95em;text-align:center;word-break:break-word;overflow-wrap:anywhere;}
+    /* recommended horizontal scroll */
+    #rec-scroll{overflow-x:auto;scrollbar-width:none;padding:4px 14px 14px;-webkit-overflow-scrolling:touch;}
+    #rec-scroll::-webkit-scrollbar{display:none;}
+    #rec-inner{display:flex;gap:11px;}
+    .rec-card-item{width:130px!important;flex-shrink:0!important;}
+    /* skeleton */
     .skel{border-radius:8px;aspect-ratio:6/8;background:linear-gradient(110deg,var(--card) 30%,var(--card-h) 50%,var(--card) 70%);background-size:200% 100%;animation:skl 1.6s infinite;}
     @keyframes skl{0%{background-position:200% 0}100%{background-position:-200% 0}}
-    /* ══ SEARCH RESULT CARDS ══ */
-    .srch-item{background:#262838;border-radius:8px;box-shadow:0 1.5px 6px #0003;text-decoration:none;overflow:hidden;display:block;transition:transform .17s,box-shadow .17s,background .17s;animation:srchCardIn 0.35s ease both;}
-    .srch-item:hover{background:#212345;box-shadow:0 4px 18px rgba(10,18,28,0.5);transform:translateY(-2px) scale(1.03);}
-    .srch-item-img{
-      display:block!important;
-      width:100%!important;
-      height:auto!important;
-      aspect-ratio:6/8!important;
-      max-height:none!important;
-      min-height:unset!important;
-      object-fit:cover!important;
-      object-position:center top!important;
-      border-radius:6px 6px 0 0!important;
-    }
-    #srch-results .srch-item img {
-      max-height:none!important;
-      height:auto!important;
-      aspect-ratio:6/8!important;
-    }
-    .srch-item-title{display:block!important;padding:10px 8px 12px!important;color:#fff!important;font-weight:700!important;font-size:.9em!important;text-align:center!important;word-break:break-word!important;overflow-wrap:anywhere!important;}
-    @keyframes srchCardIn{from{opacity:0;transform:translateY(12px) scale(0.96);}to{opacity:1;transform:translateY(0) scale(1);}}
+    @keyframes srchCardIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}to{opacity:1;transform:translateY(0) scale(1);}}
 
     ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:var(--void)}::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:4px}
     .fu{opacity:0;transform:translateY(16px);animation:fuA 0.5s ease forwards}@keyframes fuA{to{opacity:1;transform:translateY(0)}}
@@ -496,50 +467,11 @@ srchClear.addEventListener('click',()=>{srchInp.value='';srchInp.focus();srchCle
 </script>
 <script src="js/episodeNotifier.js"></script>
 
-<!-- CRITICAL OVERRIDES - loaded after style.css to win specificity war -->
+<!-- Final override: ensure card img always shows full portrait -->
 <style>
-  /* Series grid images - full portrait, no max-height cutoff */
-  #series-grid .card-img-wrap img,
-  #series-grid a img {
-    max-height: none !important;
-    height: auto !important;
-    aspect-ratio: 6/8 !important;
-    width: 100% !important;
-    display: block !important;
-    object-fit: cover !important;
-    object-position: center top !important;
-  }
-  /* Search result images */
-  #srch-results img {
-    max-height: none !important;
-    height: auto !important;
-    aspect-ratio: 6/8 !important;
-    width: 100% !important;
-    display: block !important;
-    object-fit: cover !important;
-    object-position: center top !important;
-    border-radius: 6px 6px 0 0 !important;
-  }
-  /* Search title must show */
-  #srch-results .srch-item-title,
-  #srch-results span {
-    display: block !important;
-    color: #fff !important;
-    padding: 10px 8px 12px !important;
-    font-weight: 700 !important;
-    font-size: 0.9em !important;
-    text-align: center !important;
-  }
-  /* Recommended images */
-  #rec-inner .rec-img-wrap img {
-    max-height: none !important;
-    height: auto !important;
-    aspect-ratio: 6/8 !important;
-    width: 100% !important;
-    display: block !important;
-    object-fit: cover !important;
-    object-position: center top !important;
-  }
+.card img { max-height: unset !important; height: auto !important; aspect-ratio: 6/8 !important; }
+#srch-results .card img { max-height: unset !important; height: auto !important; aspect-ratio: 6/8 !important; }
+#rec-inner .card img { max-height: unset !important; height: auto !important; aspect-ratio: 6/8 !important; }
 </style>
 </body>
 </html>
