@@ -381,10 +381,47 @@ document.addEventListener('DOMContentLoaded', function() {
         /* Build cards fully inline — zero dependency on style.css */
         srchResults.innerHTML = results.map(function(s, i) {
           return (
-            '<a class="srch-item" href="series.html?series=' + s.slug + '" ' +
-              'style="animation-delay:' + (i * 0.05) + 's;">' +
-              '<img class="srch-item-img" src="' + s.poster + '" alt="' + s.title + '" loading="lazy">' +
-              '<span class="srch-item-title">' + s.title + '</span>' +
+            '<a href="series.html?series=' + s.slug + '" ' +
+              'style="' +
+                'display:flex;flex-direction:column;' +
+                'background:#111e30;' +
+                'border:1px solid rgba(212,168,39,0.2);' +
+                'border-radius:12px;' +
+                'overflow:hidden;' +
+                'text-decoration:none;' +
+                'animation:srchCardIn 0.35s ease both;' +
+                'animation-delay:' + (i * 0.05) + 's;' +
+              '">' +
+              /* Portrait wrapper using padding-bottom — beats any max-height rule */
+              '<div style="' +
+                'position:relative;' +
+                'width:100%;' +
+                'padding-bottom:150%;' +
+                'overflow:hidden;' +
+                'background:#0a1220;' +
+                'flex-shrink:0;' +
+              '">' +
+                '<img src="' + s.poster + '" alt="' + s.title + '" loading="lazy" ' +
+                  'style="' +
+                    'position:absolute;' +
+                    'top:0;left:0;' +
+                    'width:100%;height:100%;' +
+                    'object-fit:cover;' +
+                    'object-position:center top;' +
+                    'max-height:none;' +
+                    'display:block;' +
+                    'border-radius:0;' +
+                  '">' +
+              '</div>' +
+              '<span style="' +
+                'display:block;' +
+                'padding:9px 10px 11px;' +
+                'font-size:0.84rem;' +
+                'font-weight:700;' +
+                'color:#f8f4ee;' +
+                'line-height:1.3;' +
+                'font-family:DM Sans,sans-serif;' +
+              '">' + s.title + '</span>' +
             '</a>'
           );
         }).join('');
