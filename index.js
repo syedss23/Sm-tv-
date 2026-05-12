@@ -247,11 +247,9 @@ document.addEventListener('DOMContentLoaded', function() {
   function renderRec(list) {
     if (!recInner || !list.length) return;
     recInner.innerHTML = list.map(function(s) {
-      return '<a class="rec-card" href="series.html?series=' + s.slug + '">' +
-        '<div class="rec-img-wrap">' +
-          '<img src="' + s.poster + '" alt="' + s.title + '" loading="lazy">' +
-        '</div>' +
-        '<div class="rc-title">' + s.title + '</div>' +
+      return '<a class="card rec-card-item" href="series.html?series=' + s.slug + '">' +
+        '<img src="' + s.poster + '" alt="' + s.title + '" loading="lazy" decoding="async">' +
+        '<div class="title">' + s.title + '</div>' +
       '</a>';
     }).join('');
     animateIn(Array.from(recInner.querySelectorAll('.rec-card')));
@@ -322,9 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
       /* Series cards use padding-bottom trick so style.css max-height is irrelevant */
       grid.innerHTML = list.map(function(s) {
         return '<a class="card" href="series.html?series=' + s.slug + '">' +
-          '<div class="card-img-wrap">' +
-            '<img src="' + s.poster + '" alt="' + s.title + '" loading="lazy">' +
-          '</div>' +
+          '<img src="' + s.poster + '" alt="' + s.title + '" loading="lazy" decoding="async">' +
           '<div class="title">' + s.title + '</div>' +
         '</a>';
       }).join('');
@@ -381,47 +377,10 @@ document.addEventListener('DOMContentLoaded', function() {
         /* Build cards fully inline — zero dependency on style.css */
         srchResults.innerHTML = results.map(function(s, i) {
           return (
-            '<a href="series.html?series=' + s.slug + '" ' +
-              'style="' +
-                'display:flex;flex-direction:column;' +
-                'background:#111e30;' +
-                'border:1px solid rgba(212,168,39,0.2);' +
-                'border-radius:12px;' +
-                'overflow:hidden;' +
-                'text-decoration:none;' +
-                'animation:srchCardIn 0.35s ease both;' +
-                'animation-delay:' + (i * 0.05) + 's;' +
-              '">' +
-              /* Portrait wrapper using padding-bottom — beats any max-height rule */
-              '<div style="' +
-                'position:relative;' +
-                'width:100%;' +
-                'padding-bottom:150%;' +
-                'overflow:hidden;' +
-                'background:#0a1220;' +
-                'flex-shrink:0;' +
-              '">' +
-                '<img src="' + s.poster + '" alt="' + s.title + '" loading="lazy" ' +
-                  'style="' +
-                    'position:absolute;' +
-                    'top:0;left:0;' +
-                    'width:100%;height:100%;' +
-                    'object-fit:cover;' +
-                    'object-position:center top;' +
-                    'max-height:none;' +
-                    'display:block;' +
-                    'border-radius:0;' +
-                  '">' +
-              '</div>' +
-              '<span style="' +
-                'display:block;' +
-                'padding:9px 10px 11px;' +
-                'font-size:0.84rem;' +
-                'font-weight:700;' +
-                'color:#f8f4ee;' +
-                'line-height:1.3;' +
-                'font-family:DM Sans,sans-serif;' +
-              '">' + s.title + '</span>' +
+            '<a class="card" href="series.html?series=' + s.slug + '" ' +
+              'style="animation:srchCardIn 0.35s ease both;animation-delay:' + (i * 0.05) + 's;">' +
+              '<img src="' + s.poster + '" alt="' + s.title + '" loading="lazy" decoding="async">' +
+              '<div class="title">' + s.title + '</div>' +
             '</a>'
           );
         }).join('');
