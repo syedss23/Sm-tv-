@@ -326,14 +326,16 @@
     .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;text-decoration:none;display:flex;flex-direction:column;transition:all 0.38s cubic-bezier(0.34,1.56,0.64,1);position:relative;opacity:0;transform:translateY(20px);}
     .card.vis{animation:rcIn 0.5s ease forwards;}
     .card:hover{border-color:var(--border-hi);transform:translateY(-5px) scale(1.02);box-shadow:0 18px 42px rgba(0,0,0,0.5),0 0 20px var(--gold-glow);z-index:2;}
-    /* OVERRIDE style.css .card img rules */
-    .card img{width:100%!important;aspect-ratio:2/3!important;min-height:0!important;max-height:none!important;object-fit:cover!important;object-position:center top!important;display:block!important;transition:transform 0.5s;}
-    .card:hover img{transform:scale(1.05);}
+    /* Portrait wrapper — padding-bottom trick beats style.css max-height completely */
+    .card-img-wrap{position:relative;width:100%;padding-bottom:150%;overflow:hidden;background:#0a1220;flex-shrink:0;}
+    .card-img-wrap img{position:absolute!important;top:0!important;left:0!important;width:100%!important;height:100%!important;max-height:none!important;min-height:0!important;object-fit:cover!important;object-position:center top!important;display:block!important;border-radius:0!important;transition:transform 0.5s;}
+    .card:hover .card-img-wrap img{transform:scale(1.05);}
     .card .title{padding:10px 11px 13px;font-size:0.85rem;font-weight:700;color:var(--white);line-height:1.35;}
     .card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--cyan));transform:scaleX(0);transform-origin:left;transition:transform 0.35s;}
     .card:hover::after{transform:scaleX(1);}
     .skel{border-radius:var(--r);aspect-ratio:2/3;background:linear-gradient(110deg,var(--card) 30%,var(--card-h) 50%,var(--card) 70%);background-size:200% 100%;animation:skl 1.6s infinite;}
     @keyframes skl{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    @keyframes srchCardIn{from{opacity:0;transform:translateY(12px) scale(0.96);}to{opacity:1;transform:translateY(0) scale(1);}}
 
     ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:var(--void)}::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:4px}
     .fu{opacity:0;transform:translateY(16px);animation:fuA 0.5s ease forwards}@keyframes fuA{to{opacity:1;transform:translateY(0)}}
