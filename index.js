@@ -1,189 +1,67 @@
 document.addEventListener('DOMContentLoaded', () => {
-
-  // ===== SIDEBAR =====
+  // Sidebar controls
   const sbar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebar-overlay');
+  document.getElementById('sidebarToggle')?.addEventListener('click', () => sbar.classList.toggle('open'));
+  document.getElementById('sidebarClose')?.addEventListener('click', () => sbar.classList.remove('open'));
 
-  function openSidebar() {
-    sbar.classList.add('open');
-    overlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeSidebar() {
-    sbar.classList.remove('open');
-    overlay.classList.remove('active');
-    document.body.style.overflow = '';
-  }
-
-  document.getElementById('sidebarToggle')?.addEventListener('click', openSidebar);
-  document.getElementById('sidebarClose')?.addEventListener('click', closeSidebar);
-  overlay?.addEventListener('click', closeSidebar);
-
-  // ===== SEARCH OVERLAY =====
-  const searchOverlay = document.getElementById('search-overlay');
-  const searchInput = document.getElementById('search-overlay-input');
-  const searchResultsGrid = document.getElementById('search-results-grid');
-  const searchResultsLabel = document.getElementById('search-results-label');
-  const searchEmptyEl = document.getElementById('search-empty');
-
-  let ALL_SERIES = []; // will be populated when series.json loads
-
-  function openSearch() {
-    searchOverlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    setTimeout(() => searchInput?.focus(), 80);
-    renderSearchResults('');
-  }
-  function closeSearch() {
-    searchOverlay.classList.remove('active');
-    document.body.style.overflow = '';
-    if (searchInput) searchInput.value = '';
-    renderSearchResults('');
-  }
-
-  document.getElementById('header-search-btn')?.addEventListener('click', openSearch);
-  document.getElementById('search-close-btn')?.addEventListener('click', closeSearch);
-
-  // Close on ESC
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      if (searchOverlay.classList.contains('active')) closeSearch();
-      else closeSidebar();
+  // Utility: move filter bar under New Episodes
+  function moveFilterBarBelowNewEpisodes() {
+    const filterBar = document.querySelector('.filter-bar');
+    const newEpisodesSection = document.querySelector('.new-episodes-section');
+    if (filterBar && newEpisodesSection && newEpisodesSection.parentNode) {
+      newEpisodesSection.parentNode.insertBefore(filterBar, newEpisodesSection.nextSibling);
     }
-  });
-
-  function renderSearchResults(query) {
-    if (!searchResultsGrid) return;
-    const q = query.trim().toLowerCase();
-
-    let list = ALL_SERIES;
-    if (q) {
-      list = ALL_SERIES.filter(s => (s.title || '').toLowerCase().includes(q));
-    }
-
-    // Show label
-    if (searchResultsLabel) {
-      searchResultsLabel.textContent = q
-        ? `${list.length} result${list.length !== 1 ? 's' : ''} for "${query}"`
-        : 'All Series';
-    }
-
-    // Empty state
-    if (searchEmptyEl) {
-      searchEmptyEl.style.display = (q && list.length === 0) ? 'block' : 'none';
-    }
-
-    if (list.length === 0 && q) {
-      searchResultsGrid.innerHTML = '';
-      return;
-    }
-
-    const displayList = q ? list : list.slice(0, 40); // show all if searching, else first 40
-
-    searchResultsGrid.innerHTML = displayList.map((s, i) => `
-      <a class="search-card" href="series.html?series=${s.slug}"
-         style="animation-delay:${Math.min(i * 0.04, 0.5)}s">
-        <img src="${s.poster || ''}" alt="${s.title || ''}" loading="lazy" decoding="async"
-             onerror="this.style.background='#1e2f42';this.style.minHeight='180px'">
-        <div class="search-card-title">${s.title || ''}</div>
-      </a>
-    `).join('');
   }
+  moveFilterBarBelowNewEpisodes();
 
-  searchInput?.addEventListener('input', e => {
-    renderSearchResults(e.target.value);
-  });
-
-  // ===== UTILITY: Build watch URL =====
+  // âœ… NEW: Build streaming URL for New Episodes "Watch Now" button
   function buildEpisodeWatchUrl(ep) {
     const fallback = ep.shortlink || ep.download || '#';
+
     try {
-      const raw = (ep._src || '').replace(/^\/+/, '');
+      const raw = (ep._src || '').replace(/^\/+/, ''); // remove leading slash if any
+      // Matches: episode-data/slug-s1.json  OR  episode-data/slug-s1-en.json  etc.
       const m = raw.match(/^episode-data\/(.+?)-s(\d+)(?:-([a-z]{2,3}|dub))?\.json$/i);
       if (!m) return fallback;
-      const slug = m[1], season = m[2], lang = (m[3] || '').toLowerCase();
+
+      const slug   = m[1];
+      const season = m[2];
+      const lang   = (m[3] || '').toLowerCase();
+
       const params = new URLSearchParams();
       params.set('series', slug);
       params.set('season', season);
       if (ep.ep != null) params.set('ep', ep.ep);
-      if (lang && lang !== 'dub') params.set('lang', lang);
-      else if (lang === 'dub') params.set('lang', 'dub');
+
+      // Only pass lang when itâ€™s actually a subtitle/dub marker
+      if (lang && lang !== 'dub') {
+        params.set('lang', lang);   // en / hi / ur
+      } else if (lang === 'dub') {
+        params.set('lang', 'dub');  // if youâ€™re using this
+      }
+
       return `episode.html?${params.toString()}`;
     } catch (e) {
+      console.warn('buildEpisodeWatchUrl error', e);
       return fallback;
     }
   }
 
-  // ===== NEW EPISODES =====
-  const newEpisodesScroll = document.getElementById('new-episodes-scroll');
-  if (newEpisodesScroll) {
-    fetch('episode-data/index.json')
-      .then(r => r.json())
-      .then(files => Promise.all(
-        files.map(path =>
-          fetch(path)
-            .then(res => res.ok ? res.json() : [])
-            .then(data => Array.isArray(data) ? data.map(ep => ({ ...ep, _src: path })) : [])
-            .catch(() => [])
-        )
-      ))
-      .then(arrays => {
-        const all = arrays.flat().filter(ep => ep.timestamp);
-        all.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        const latest = all.slice(0, 8);
-
-        if (!latest.length) {
-          newEpisodesScroll.innerHTML = `<div style="color:#aaa;padding:20px 16px;font-size:.9rem;">No new episodes found.</div>`;
-          return;
-        }
-
-        newEpisodesScroll.innerHTML = latest.map((ep, i) => {
-          const thumb = ep.thumb || ep.poster || '';
-          const seriesName = ep.series || ep._src?.split('/').pop()?.replace(/-s\d+.*\.json/i, '')?.replace(/-/g, ' ') || '';
-          const epTitle = ep.title || `Bolum ${ep.ep || ''}`;
-          const watchUrl = buildEpisodeWatchUrl(ep);
-
-          return `
-            <div class="episode-card-new" style="animation-delay:${i * 0.06}s">
-              <div class="episode-thumb-wrap">
-                <img src="${thumb}" alt="${epTitle}" loading="lazy" decoding="async"
-                     onerror="this.style.background='#1e2f42'">
-                <span class="new-badge">NEW</span>
-                <div class="play-overlay">
-                  <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="22" cy="22" r="22" fill="rgba(255,255,255,0.15)"/>
-                    <polygon points="18,14 32,22 18,30" fill="white"/>
-                  </svg>
-                </div>
-              </div>
-              <div class="episode-card-info">
-                ${seriesName ? `<div class="episode-series-name">${seriesName}</div>` : ''}
-                <div class="episode-ep-title">${epTitle}</div>
-                <a href="${watchUrl}" class="watch-btn-new watch-btn-pro" target="_blank" rel="noopener">
-                  ▶ Watch Now
-                </a>
-              </div>
-            </div>
-          `;
-        }).join('');
-      })
-      .catch(() => {
-        newEpisodesScroll.innerHTML = `<div style="color:#aaa;padding:20px 16px;font-size:.9rem;">Could not load episodes.</div>`;
-      });
-  }
-
-  // ===== SCHEDULE SECTION =====
-  const scheduleCards = document.getElementById('schedule-cards');
-  if (scheduleCards) {
+  // ====== MODERN SCHEDULE BAR (Compact + Countdown + LIVE) ======
+  const scheduleBar = document.getElementById('schedule-bar');
+  if (scheduleBar) {
     fetch('shedule.json')
       .then(r => r.json())
       .then(schedule => {
         if (!Array.isArray(schedule) || !schedule.length) {
-          document.getElementById('schedule-section')?.style && (document.getElementById('schedule-section').style.display = 'none');
+          scheduleBar.innerHTML = `
+            <div style="color:#ffd700;font-size:1em;padding:1em;text-align:center;">
+              No schedule yet.
+            </div>`;
           return;
         }
 
-        scheduleCards.innerHTML = schedule.map((item, i) => {
+        scheduleBar.innerHTML = schedule.map(item => {
           const title = item.title || '';
           const poster = item.poster || '';
           const day = item.day || '';
@@ -193,84 +71,147 @@ document.addEventListener('DOMContentLoaded', () => {
           const countdown = item.countdown || '';
 
           return `
-            <div class="schedule-card" style="animation-delay:${i * 0.07}s">
-              <div class="schedule-card-top">
-                ${poster ? `<img src="${poster}" alt="${title}" loading="lazy" decoding="async">` : ''}
-                <div class="schedule-card-meta">
-                  <div class="schedule-card-title">${title}</div>
-                  <div style="display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:wrap;">
-                    ${live ? `<span class="live-badge"><span class="live-dot"></span>LIVE</span>` : ''}
-                    ${day ? `<span class="schedule-day-badge">📅 ${day}${time ? ' · ' + time : ''}</span>` : ''}
-                  </div>
+            <div class="schedule-entry"
+                 title="${title}"
+                 style="display:flex;align-items:center;gap:8px;margin-right:12px;
+                        background:#14141a;padding:6px 10px;border-radius:12px;
+                        box-shadow:0 1px 5px rgba(0,0,0,0.4);min-width:fit-content;">
+              ${poster ? `
+                <img src="${poster}" alt="${title}" loading="lazy" decoding="async"
+                     style="width:30px;height:30px;object-fit:cover;border-radius:6px;">` : ''
+              }
+              <div style="display:flex;flex-direction:column;line-height:1.15;min-width:0;">
+                <!-- Title -->
+                <div style="font-weight:700;font-size:0.92em;color:#23c6ed;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                  <span class="title" style="overflow-wrap:anywhere;">${title}</span>
+                  ${live ? '<span style="background:#ff2d2d;color:#fff;padding:1px 6px;border-radius:6px;font-size:0.7em;">LIVE</span>' : ''}
                 </div>
-              </div>
-              <div class="schedule-card-bottom">
-                ${type ? `<span class="schedule-type-pill">💬 ${type}</span>` : '<span></span>'}
-                ${countdown
-                  ? `<span class="schedule-countdown" data-time="${countdown}">Loading...</span>`
-                  : `<span class="schedule-countdown">${time || ''}</span>`
-                }
+
+                <!-- One compact line: day â€¢ time â€¢ type (small, old-style) -->
+                <div class="schedule-row"
+                     style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px;font-size:0.86em;line-height:1.25;">
+                  ${day  ? `<span class="day"  style="color:#ffd267;font-weight:600;">${day}</span>` : ''}
+                  ${(day && time) ? '<span class="dot" style="opacity:.6;">•</span>' : ''}
+                  ${time ? `<span class="time" style="color:#9fd3ff;font-weight:600;">${time}</span>` : ''}
+                  ${type ? `<span class="dot" style="opacity:.6;">•</span><span class="type" style="color:#23c6ed;font-weight:600;">${type}</span>` : ''}
+                </div>
+
+                <!-- Countdown below, slightly smaller -->
+                ${countdown ? `<div class="countdown"
+                                  data-time="${countdown}"
+                                  style="color:#ffd84d;font-size:0.78em;margin-top:2px;"></div>` : ''}
               </div>
             </div>
           `;
         }).join('');
 
-        // Countdown tick
-        scheduleCards.querySelectorAll('.schedule-countdown[data-time]').forEach(el => {
-          const target = Date.parse(el.dataset.time);
-          if (isNaN(target)) { el.textContent = ''; return; }
+        // Countdown updater
+        const countdowns = scheduleBar.querySelectorAll('.countdown');
+        countdowns.forEach(el => {
+          const targetTime = Date.parse(el.dataset.time);
+          if (isNaN(targetTime)) { el.textContent = ''; return; }
+
           const tick = () => {
-            const diff = target - Date.now();
-            if (diff <= 0) { el.textContent = '🔴 Now Playing'; clearInterval(tid); return; }
-            const h = Math.floor(diff / 3600000);
-            const m = Math.floor((diff % 3600000) / 60000);
-            const s = Math.floor((diff % 60000) / 1000);
-            el.textContent = `${h}h ${m}m ${s}s`;
+            const diff = targetTime - Date.now();
+            if (diff <= 0) {
+              el.textContent = 'Now Playing';
+              clearInterval(id);
+              return;
+            }
+            const hrs  = Math.floor(diff / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((diff % (1000 * 60)) / 1000);
+            el.textContent = `Starts in ${hrs}h ${mins}m ${secs}s`;
           };
           tick();
-          const tid = setInterval(tick, 1000);
+          const id = setInterval(tick, 1000);
         });
       })
       .catch(() => {
-        const sec = document.getElementById('schedule-section');
-        if (sec) sec.style.display = 'none';
+        scheduleBar.innerHTML = `
+          <div style="color:#ffd700;font-size:1em;padding:1em;text-align:center;">
+            Could not load schedule.
+          </div>`;
       });
   }
 
-  // ===== RECOMMENDED SECTION =====
-  const recGrid = document.getElementById('recommended-grid');
-  if (recGrid) {
-    fetch('recommended.json')
+  // ===== New Episodes Horizontal Card Grid =====
+  const newGrid = document.getElementById('new-episodes-grid');
+  if (newGrid) {
+    fetch('episode-data/index.json')
       .then(r => r.json())
-      .then(items => {
-        if (!Array.isArray(items) || !items.length) {
-          document.getElementById('recommended-section').style.display = 'none';
+      .then(files => Promise.all(
+        files.map(path =>
+          fetch(path)
+            .then(res => res.ok ? res.json() : [])
+            .then(data => (Array.isArray(data) ? data.map(ep => ({ ...ep, _src: path })) : []))
+            .catch(() => [])
+        )
+      ))
+      .then(arrays => {
+        const allEpisodes = arrays.flat().filter(ep => ep.timestamp);
+        allEpisodes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        const latestEps = allEpisodes.slice(0, 5);
+
+        if (!latestEps.length) {
+          newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">No new episodes found.</div>`;
+          moveFilterBarBelowNewEpisodes();
           return;
         }
-        recGrid.innerHTML = items.map((s, i) => `
-          <a class="rec-card" href="series.html?series=${s.slug || ''}" style="animation-delay:${i * 0.05}s">
-            ${s.badge ? `<span class="rec-card-badge">${s.badge}</span>` : ''}
-            <img src="${s.poster || ''}" alt="${s.title || ''}" loading="lazy" decoding="async"
-                 onerror="this.style.background='#1e2f42';this.style.minHeight='200px'">
-            <div class="rec-card-body">
-              <div class="rec-card-title">${s.title || ''}</div>
-            </div>
-          </a>
-        `).join('');
+
+        newGrid.innerHTML = `
+          <div style="display:flex;gap:14px;overflow-x:auto;padding:0 2px 2px 2px;">
+            ${latestEps.map(ep => `
+              <div class="episode-card-pro"
+                   style="flex:0 0 166px;min-width:150px;max-width:172px;
+                          border-radius:13px;background:#182837;
+                          box-shadow:0 4px 18px #0fd1cec7,0 2px 10px #0003;">
+                <img src="${ep.thumb || ep.poster || ''}"
+                     class="episode-img-pro"
+                     alt="${ep.title || ('Episode ' + (ep.ep || ''))}"
+                     loading="lazy" decoding="async"
+                     style="display:block;border-radius:13px 13px 0 0;width:100%;
+                            height:110px;object-fit:cover;">
+                <div class="episode-title-pro"
+                     style="margin:15px 0 4px 0;font-family:'Montserrat',sans-serif;
+                            font-size:1.07em;font-weight:700;color:#fff;text-align:center;">
+                  ${ep.title || 'Episode ' + (ep.ep || '')}
+                  <span class="new-badge-pro"
+                        style="margin-left:7px;background:#ffd700;color:#182734;
+                               font-size:.78em;border-radius:5px;padding:2.3px 9px;">NEW</span>
+                </div>
+                <a href="${buildEpisodeWatchUrl(ep)}"
+                   class="watch-btn-pro"
+                   target="_blank" rel="noopener"
+                   style="margin-bottom:13px;width:86%;display:block;
+                          background:linear-gradient(90deg,#009aff 65%,#ffd700 100%);
+                          color:#fff;font-weight:700;text-decoration:none;text-align:center;
+                          border-radius:5px;padding:8px 0;font-family:'Montserrat',sans-serif;
+                          font-size:1em;box-shadow:0 1px 10px #0087ff14;
+                          margin-left:auto;margin-right:auto;">
+                  Watch Now
+                </a>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        moveFilterBarBelowNewEpisodes();
       })
       .catch(() => {
-        const sec = document.getElementById('recommended-section');
-        if (sec) sec.style.display = 'none';
+        newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">Could not load new episodes.</div>`;
+        moveFilterBarBelowNewEpisodes();
       });
   }
 
-  // ===== SERIES GRID =====
+  // ------------- Series homepage grid: unchanged -------------
   const grid = document.getElementById('series-grid');
   if (grid) {
+    const search   = document.getElementById('search');
     const pillDub  = document.getElementById('pill-dub');
     const pillSub  = document.getElementById('pill-sub');
     const subLangs = document.getElementById('sub-langs');
 
+    let SERIES = [];
     const qs = new URLSearchParams(location.search);
     let state = {
       track: qs.get('track') || localStorage.getItem('track')   || 'dubbed',
@@ -279,15 +220,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     fetch('series.json')
-      .then(r => { if (!r.ok) throw new Error('series.json not found'); return r.json(); })
-      .then(data => {
-        ALL_SERIES = Array.isArray(data) ? data : [];
-        hydrateUI();
-        render();
-      })
-      .catch(err => {
-        grid.innerHTML = `<div style="color:#f55;padding:1.2em;font-size:.9rem;">Error: ${err.message}</div>`;
-      });
+      .then(r => { if (!r.ok) throw new Error('Series JSON not found. Check /series.json'); return r.json(); })
+      .then(data => { SERIES = Array.isArray(data) ? data : []; hydrateUI(); render(); })
+      .catch(err => { grid.innerHTML = `<div style="color:#f44;padding:1.2em;">Error: ${err.message}</div>`; });
 
     function hydrateUI() {
       setPrimary(state.track);
@@ -324,42 +259,25 @@ document.addEventListener('DOMContentLoaded', () => {
     pillDub?.addEventListener('click', () => { setPrimary('dubbed'); toggleSubLangs(); render(); });
     pillSub?.addEventListener('click', () => { setPrimary('sub'); toggleSubLangs(); render(); });
     subLangs?.addEventListener('click', e => {
-      const t = e.target.closest('.pill');
-      if (t?.dataset.lang) { setLang(t.dataset.lang); render(); }
+      const t = e.target;
+      if (t && t.matches('.pill') && t.dataset.lang) { setLang(t.dataset.lang); render(); }
     });
+    search?.addEventListener('input', e => { state.q = e.target.value.trim().toLowerCase(); render(); });
 
     function render() {
-      let list = ALL_SERIES;
+      let list = SERIES;
       if (state.track === 'dubbed') {
         list = list.filter(s => s.track === 'dubbed');
       } else {
         list = list.filter(s => s.track === 'sub' && s.subLang === state.lang);
       }
       if (state.q) list = list.filter(s => (s.title || '').toLowerCase().includes(state.q));
-
-      if (!list.length) {
-        grid.innerHTML = `<div style="color:#aaa;font-size:.95rem;padding:1.5em;grid-column:1/-1;">No series found.</div>`;
-        return;
-      }
-
-      grid.innerHTML = list.map((s, i) => `
-        <a class="card" href="series.html?series=${s.slug}" style="animation-delay:${Math.min(i * 0.03, 0.6)}s">
-          <img src="${s.poster}" alt="${s.title}" loading="lazy" decoding="async"
-               onerror="this.style.background='#1e2f42'">
+      grid.innerHTML = list.length ? list.map(s => `
+        <a class="card" href="series.html?series=${s.slug}">
+          <img src="${s.poster}" alt="${s.title}" loading="lazy" decoding="async">
           <div class="title">${s.title}</div>
         </a>
-      `).join('');
+      `).join('') : `<div style="color:#fff;font-size:1.1em;padding:1.5em;">No series found.</div>`;
     }
   }
-
-  // ===== MOVE FILTER BAR (keep in correct DOM position) =====
-  function moveFilterBarBelowRecommended() {
-    const filterBar = document.querySelector('.filter-bar');
-    const recSection = document.getElementById('recommended-section');
-    if (filterBar && recSection && recSection.parentNode) {
-      recSection.parentNode.insertBefore(filterBar, recSection.nextSibling);
-    }
-  }
-  moveFilterBarBelowRecommended();
-
 });
