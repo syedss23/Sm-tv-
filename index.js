@@ -1,11 +1,18 @@
 /* ============================================================
    SmTv Urdu — index.js  (vanilla JS, no frameworks)
+   ALL FIXES:
+   - Schedule: robust JSON parsing, works with time:false
+   - Hero: fully visible thumb, no crop, shortlink redirect
+   - Series/Search/Rec: small portrait 2/3 cards
+   - Filter pills: blue primary, gold secondary
+   - Shortlink: properly intercepts h-watch-btn
    ============================================================ */
-
 'use strict';
 
-/* ── Shared data promises (loaded once) ── */
-const seriesReady   = fetch('series.json').then(r => r.ok ? r.json() : []).catch(() => []);
+/* ── Shared promises ── */
+const seriesReady = fetch('series.json')
+  .then(r => r.ok ? r.json() : []).catch(() => []);
+
 const episodesReady = fetch('episode-data/index.json')
   .then(r => r.ok ? r.json() : [])
   .then(files => Promise.all(
@@ -16,36 +23,35 @@ const episodesReady = fetch('episode-data/index.json')
         .catch(() => [])
     )
   ))
-  .then(arrays => arrays.flat())
+  .then(arrs => arrs.flat())
   .catch(() => []);
 
-/* ── Config promise ── */
 const configReady = fetch('/config.json', { cache: 'no-cache' })
-  .then(r => r.ok ? r.json() : null)
-  .catch(() => null);
+  .then(r => r.ok ? r.json() : null).catch(() => null);
 
 /* ============================================================
-   UTILITY
+   UTILITIES
    ============================================================ */
 
-/** Detect lang from episode-data filename */
+/** Detect lang code from episode-data filename */
 function detectLang(src = '') {
-  const file  = src.split('/').pop().replace('.json', '');
-  const parts = file.split('-');
   const LANGS = ['en', 'ur', 'hi', 'ar', 'sp'];
-  // Remove season token (sN)
-  const filtered = parts.filter(p => !/^s\d+$/i.test(p));
-  for (const p of filtered) {
+  const file  = src.split('/').pop().replace(/\.json$/i, '');
+  const parts = file.split('-');
+  // Drop the last part if it's the season token (s1, s2 …)
+  const withoutSeason = parts.filter(p => !/^s\d+$/i.test(p));
+  for (const p of withoutSeason) {
     if (LANGS.includes(p.toLowerCase())) return p.toLowerCase();
   }
   return null; // dubbed
 }
 
-/** Build episode watch URL */
+/** Build episode watch URL from episode object */
 function buildEpisodeUrl(ep) {
   try {
     const raw = (ep._src || '').replace(/^\/+/, '');
-    // episode-data/slug[-lang]-sN.json  or  episode-data/slug[-lang-sub]-sN.json
+    // Strip lang tokens before season to get clean slug
+    // e.g.  episode-data/kurulus-orhan-en-s1.json  -> slug=kurulus-orhan, season=1, lang=en
     const m = raw.match(/^episode-data\/(.+?)-s(\d+)(?:\.json)?$/i);
     if (!m) return ep.shortlink || ep.download || '#';
 
@@ -65,11 +71,13 @@ function buildEpisodeUrl(ep) {
   }
 }
 
-/** Intersection observer factory for slide-in / fade-up */
-function observeReveal(selector, className = 'visible') {
+/** Reveal cards with IntersectionObserver */
+function observeReveal(selector) {
   const io = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add(className); io.unobserve(e.target); } });
-  }, { threshold: 0.12 });
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
   document.querySelectorAll(selector).forEach(el => io.observe(el));
 }
 
@@ -77,13 +85,13 @@ function observeReveal(selector, className = 'visible') {
    SIDEBAR
    ============================================================ */
 function initSidebar() {
-  const sidebar   = document.getElementById('sidebar');
-  const backdrop  = document.getElementById('sb-backdrop');
-  const openBtn   = document.getElementById('hdr-hamburger');
-  const closeBtn  = document.getElementById('sb-close');
+  const sidebar  = document.getElementById('sidebar');
+  const backdrop = document.getElementById('sb-backdrop');
+  const openBtn  = document.getElementById('hdr-hamburger');
+  const closeBtn = document.getElementById('sb-close');
 
-  function open()  { sidebar.classList.add('open');  backdrop.classList.add('open');  document.body.style.overflow = 'hidden'; }
-  function close() { sidebar.classList.remove('open'); backdrop.classList.remove('open'); document.body.style.overflow = ''; }
+  const open  = () => { sidebar.classList.add('open');  backdrop.classList.add('open');  document.body.style.overflow = 'hidden'; };
+  const close = () => { sidebar.classList.remove('open'); backdrop.classList.remove('open'); document.body.style.overflow = ''; };
 
   openBtn?.addEventListener('click', open);
   closeBtn?.addEventListener('click', close);
@@ -95,9 +103,8 @@ function initSidebar() {
    ============================================================ */
 async function initSponsorBanner() {
   const config = await configReady;
-  if (!config) return;
+  if (!config?.redirectionFeatures) return;
   const rf = config.redirectionFeatures;
-  if (!rf) return;
   if (rf.shortlink === true && rf.sponsorPopup === false) {
     const banner = document.getElementById('sponsor-banner');
     if (!banner) return;
@@ -108,122 +115,121 @@ async function initSponsorBanner() {
         <span class="spn-name">Reach Thousands Daily</span>
       </div>
       <a href="https://t.me/Itz_me_zain1" target="_blank" rel="noopener" class="spn-btn"
-         onclick="gtag('event','ad_inquiry_click',{location:'homepage_banner'});">
-        Contact 💬
-      </a>`;
+         onclick="gtag('event','ad_inquiry_click',{location:'homepage_banner'});">Contact 💬</a>`;
   }
 }
 
 /* ============================================================
-   HERO — CINEMA BANNER (touch swipe, no arrows, 5 s auto)
+   HERO — cinema banner, swipe only, 5 s auto-rotate
    ============================================================ */
 async function initHero() {
-  const episodes = await episodesReady;
-  const heroWrap = document.getElementById('hero');
-  const dotsWrap = document.getElementById('hero-dots');
-  if (!heroWrap || !dotsWrap) return;
+  const heroEl   = document.getElementById('hero');
+  const slidesEl = document.getElementById('hero-slides');
+  const dotsEl   = document.getElementById('hero-dots');
+  if (!heroEl || !slidesEl || !dotsEl) return;
 
-  const timed = episodes.filter(ep => ep.timestamp);
+  const episodes = await episodesReady;
+  const timed    = episodes.filter(ep => ep.timestamp);
   timed.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
   const latest = timed.slice(0, 5);
 
-  if (!latest.length) { heroWrap.style.display = 'none'; dotsWrap.style.display = 'none'; return; }
+  if (!latest.length) {
+    heroEl.style.display = 'none';
+    dotsEl.style.display = 'none';
+    return;
+  }
 
-  const slidesEl = document.getElementById('hero-slides');
-
-  // Build slides
   slidesEl.innerHTML = latest.map((ep, i) => {
-    const bg     = ep.poster || ep.thumb || '';
-    const thumb  = ep.thumb  || ep.poster || '';
-    const series = ep.series || '';
-    const title  = ep.title  || `Episode ${ep.ep || ''}`;
-    const url    = buildEpisodeUrl(ep);
+    const bg    = ep.poster || ep.thumb || '';
+    const thumb = ep.thumb  || ep.poster || '';
+    const url   = buildEpisodeUrl(ep);
     return `
       <div class="hero-slide${i === 0 ? ' active' : ''}" data-index="${i}">
         <div class="hero-bg" style="background-image:url('${bg}')"></div>
         <div class="hero-vignette"></div>
         <div class="hero-new-badge">NEW EPISODE</div>
-        ${thumb ? `<img class="hero-thumb" src="${thumb}" alt="${title}" loading="${i === 0 ? 'eager' : 'lazy'}">` : ''}
+        ${thumb ? `<img class="hero-thumb" src="${thumb}" alt="${ep.title||''}" loading="${i===0?'eager':'lazy'}">` : ''}
         <div class="hero-content">
-          ${series ? `<div class="hero-series-name">${series}</div>` : ''}
-          <div class="hero-ep-title">${title}</div>
-          <a href="${url}" class="hero-watch-btn h-watch-btn">▶ Watch Now</a>
+          ${ep.series ? `<div class="hero-series-name">${ep.series}</div>` : ''}
+          <div class="hero-ep-title">${ep.title || 'Episode ' + (ep.ep||'')}</div>
+          <a href="${url}" class="hero-watch-btn h-watch-btn" data-src="${ep._src||''}" data-ep="${ep.ep||''}">▶ Watch Now</a>
         </div>
       </div>`;
   }).join('');
 
-  // Build dots
-  dotsWrap.innerHTML = latest.map((_, i) =>
-    `<button class="hero-dot${i === 0 ? ' active' : ''}" data-i="${i}" aria-label="Slide ${i + 1}"></button>`
+  dotsEl.innerHTML = latest.map((_, i) =>
+    `<button class="hero-dot${i===0?' active':''}" data-i="${i}" aria-label="Slide ${i+1}"></button>`
   ).join('');
 
-  // State
-  let current  = 0;
-  let autoTimer = null;
   const slides = slidesEl.querySelectorAll('.hero-slide');
-  const dots   = dotsWrap.querySelectorAll('.hero-dot');
+  const dots   = dotsEl.querySelectorAll('.hero-dot');
+  let cur = 0, autoT = null;
 
-  function goTo(idx) {
-    slides[current].classList.remove('active');
-    dots[current].classList.remove('active');
-    current = (idx + slides.length) % slides.length;
-    slides[current].classList.add('active');
-    dots[current].classList.add('active');
-  }
+  const goTo = idx => {
+    slides[cur].classList.remove('active');
+    dots[cur].classList.remove('active');
+    cur = (idx + slides.length) % slides.length;
+    slides[cur].classList.add('active');
+    dots[cur].classList.add('active');
+  };
 
-  function startAuto() {
-    stopAuto();
-    autoTimer = setInterval(() => goTo(current + 1), 5000);
-  }
-  function stopAuto() { clearInterval(autoTimer); }
+  const startAuto = () => { clearInterval(autoT); autoT = setInterval(() => goTo(cur + 1), 5000); };
+  const stopAuto  = () => clearInterval(autoT);
 
   dots.forEach(d => d.addEventListener('click', () => { goTo(+d.dataset.i); startAuto(); }));
 
-  // Touch swipe
-  let touchStartX = 0;
-  heroWrap.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; stopAuto(); }, { passive: true });
-  heroWrap.addEventListener('touchend', e => {
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(dx) > 40) goTo(dx < 0 ? current + 1 : current - 1);
+  let tx = 0;
+  heroEl.addEventListener('touchstart', e => { tx = e.touches[0].clientX; stopAuto(); }, { passive: true });
+  heroEl.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) goTo(dx < 0 ? cur + 1 : cur - 1);
     startAuto();
   }, { passive: true });
 
   startAuto();
 
-  // Shortlink handler
+  // Shortlink interception for hero watch buttons
   const config = await configReady;
   const rf = config?.redirectionFeatures;
+
   slidesEl.addEventListener('click', async e => {
     const btn = e.target.closest('.h-watch-btn');
     if (!btn) return;
-    if (!rf?.shortlink || rf?.sponsorPopup) return;
+    if (!rf?.shortlink || rf?.sponsorPopup) return; // let normal navigation work
     e.preventDefault();
-    const href = btn.getAttribute('href');
-    try {
-      const params = new URLSearchParams(href.split('?')[1] || '');
-      const series = params.get('series');
-      const season = params.get('season');
-      const lang   = params.get('lang');
-      const epNum  = params.get('ep');
-      let jsonFile = `episode-data/${series}-s${season}`;
-      if (lang) jsonFile += `-${lang}`;
-      jsonFile += '.json';
-      const res = await fetch(jsonFile);
-      if (!res.ok) { location.href = href; return; }
-      const eps = await res.json();
-      const found = eps.find(ep => String(ep.ep) === String(epNum));
-      if (found?.shortlink) {
-        if (typeof gtag !== 'undefined') gtag('event', 'shortlink_redirect', { url: found.shortlink });
-        location.href = found.shortlink;
-      } else {
-        location.href = href;
-      }
-    } catch { location.href = href; }
+    await handleShortlink(btn.getAttribute('href'));
   });
 }
 
 /* ============================================================
-   SCHEDULE
+   SHORTLINK HANDLER (shared logic)
+   ============================================================ */
+async function handleShortlink(href) {
+  try {
+    const params = new URLSearchParams((href || '').split('?')[1] || '');
+    const series = params.get('series');
+    const season = params.get('season');
+    const lang   = params.get('lang');
+    const epNum  = params.get('ep');
+    let jsonFile = `episode-data/${series}-s${season}`;
+    if (lang) jsonFile += `-${lang}`;
+    jsonFile += '.json';
+
+    const res = await fetch(jsonFile);
+    if (!res.ok) { location.href = href; return; }
+    const eps   = await res.json();
+    const found = (Array.isArray(eps) ? eps : []).find(ep => String(ep.ep) === String(epNum));
+    if (found?.shortlink) {
+      if (typeof gtag !== 'undefined') gtag('event', 'shortlink_redirect', { url: found.shortlink });
+      location.href = found.shortlink;
+    } else {
+      location.href = href;
+    }
+  } catch { location.href = href; }
+}
+
+/* ============================================================
+   SCHEDULE — vertical stacked cards
    ============================================================ */
 async function initSchedule() {
   const wrap = document.getElementById('schedule-wrap');
@@ -232,7 +238,7 @@ async function initSchedule() {
   let schedule = [];
   try {
     const r = await fetch('shedule.json');
-    schedule = r.ok ? await r.json() : [];
+    if (r.ok) schedule = await r.json();
   } catch {}
 
   if (!Array.isArray(schedule) || !schedule.length) {
@@ -240,27 +246,34 @@ async function initSchedule() {
     return;
   }
 
-  wrap.innerHTML = schedule.map(item => `
-    <div class="sched-card${item.live ? ' is-live' : ''}">
-      ${item.poster ? `<img class="sched-thumb" src="${item.poster}" alt="${item.title || ''}" loading="lazy">` : ''}
-      <div class="sched-info">
-        <div class="sched-title">${item.title || ''}</div>
-        <div class="sched-meta">
-          ${item.day  ? `<span class="sched-day">${item.day}</span>` : ''}
-          ${item.day && (item.time || item.type) ? '<span class="sched-dot">•</span>' : ''}
-          ${item.time ? `<span class="sched-day" style="color:var(--cyan)">${item.time}</span>` : ''}
-          ${item.type ? `<span class="sched-dot">•</span><span class="sched-type">${item.type}</span>` : ''}
-          ${item.live ? `<span class="sched-live">● LIVE</span>` : ''}
+  wrap.innerHTML = schedule.map(item => {
+    const live      = !!item.live;
+    const hasDay    = item.day  && item.day  !== 'false';
+    const hasTime   = item.time && item.time !== 'false';
+    const hasType   = item.type && item.type !== 'false';
+    const hasCount  = item.countdown && item.countdown !== 'false';
+
+    return `
+      <div class="sched-card${live ? ' is-live' : ''}">
+        ${item.poster ? `<img class="sched-thumb" src="${item.poster}" alt="${item.title||''}" loading="lazy">` : ''}
+        <div class="sched-info">
+          <div class="sched-title">${item.title||''}</div>
+          <div class="sched-meta">
+            ${hasDay  ? `<span class="sched-day">${item.day}</span>` : ''}
+            ${hasDay && (hasTime || hasType) ? '<span class="sched-dot">•</span>' : ''}
+            ${hasTime ? `<span class="sched-day" style="color:var(--blue-lt)">${item.time}</span>` : ''}
+            ${hasType ? `${hasTime?'<span class="sched-dot">•</span>':''}<span class="sched-type">${item.type}</span>` : ''}
+            ${live ? `<span class="sched-live">● LIVE</span>` : ''}
+          </div>
+          ${hasCount ? `<div class="sched-countdown" data-target="${item.countdown}"></div>` : ''}
         </div>
-        ${item.countdown ? `<div class="sched-countdown" data-target="${item.countdown}"></div>` : ''}
-      </div>
-    </div>
-  `).join('');
+      </div>`;
+  }).join('');
 
   // Countdown tickers
   wrap.querySelectorAll('.sched-countdown[data-target]').forEach(el => {
     const target = Date.parse(el.dataset.target);
-    if (isNaN(target)) return;
+    if (isNaN(target)) { el.textContent = ''; return; }
     const tick = () => {
       const diff = target - Date.now();
       if (diff <= 0) { el.textContent = '🔴 Now Playing'; clearInterval(id); return; }
@@ -273,23 +286,21 @@ async function initSchedule() {
     const id = setInterval(tick, 1000);
   });
 
-  // Reveal animation
-  setTimeout(() => observeReveal('.sched-card'), 100);
+  setTimeout(() => observeReveal('.sched-card'), 80);
 }
 
 /* ============================================================
-   RECOMMENDED
+   RECOMMENDED — horizontal scroll, portrait cards
    ============================================================ */
 async function initRecommended() {
   const scroll = document.getElementById('rec-scroll');
   if (!scroll) return;
 
   const series = await seriesReady;
-
   let slugs = [];
   try {
     const r = await fetch('recommended.json');
-    slugs = r.ok ? await r.json() : [];
+    if (r.ok) slugs = await r.json();
   } catch {}
 
   let picks = [];
@@ -301,14 +312,14 @@ async function initRecommended() {
   }
   if (!picks.length) picks = series.slice(0, 5);
 
-  scroll.innerHTML = picks.map(s => `
-    <a class="card" href="series.html?series=${s.slug}" style="flex:0 0 130px;width:130px;">
-      <img src="${s.poster}" alt="${s.title}" loading="lazy">
+  scroll.innerHTML = picks.map((s, i) => `
+    <a class="card" href="series.html?series=${s.slug}"
+       style="flex:0 0 110px;width:110px;min-width:110px;transition-delay:${i*60}ms">
+      <img src="${s.poster}" alt="${s.title}" loading="lazy" decoding="async">
       <div class="title">${s.title}</div>
-    </a>
-  `).join('');
+    </a>`).join('');
 
-  setTimeout(() => observeReveal('#rec-scroll .card'), 100);
+  setTimeout(() => observeReveal('#rec-scroll .card'), 80);
 }
 
 /* ============================================================
@@ -321,12 +332,11 @@ async function initSeriesGrid() {
   const subLangs = document.getElementById('sub-langs');
   if (!grid) return;
 
-  // Skeleton loaders
-  grid.innerHTML = Array(8).fill('<div class="skeleton"></div>').join('');
+  // Show skeletons
+  grid.innerHTML = Array(10).fill('<div class="skeleton"></div>').join('');
 
   const SERIES = await seriesReady;
 
-  // Parse URL params then localStorage
   const qs = new URLSearchParams(location.search);
   const state = {
     track: qs.get('track') || localStorage.getItem('track')   || 'dubbed',
@@ -337,20 +347,20 @@ async function initSeriesGrid() {
   function setPrimary(track) {
     state.track = track;
     localStorage.setItem('track', track);
-    pillDub?.classList.toggle('active', track === 'dubbed');
-    pillSub?.classList.toggle('active', track === 'sub');
-    pillDub?.setAttribute('aria-pressed', String(track === 'dubbed'));
-    pillSub?.setAttribute('aria-pressed', String(track === 'sub'));
-    if (subLangs) subLangs.classList.toggle('visible', track === 'sub');
+    [pillDub, pillSub].forEach(p => { if (!p) return; p.classList.remove('active'); p.setAttribute('aria-pressed','false'); });
+    const active = track === 'dubbed' ? pillDub : pillSub;
+    active?.classList.add('active');
+    active?.setAttribute('aria-pressed','true');
+    subLangs?.classList.toggle('visible', track === 'sub');
   }
 
   function setLang(lang) {
     state.lang = lang;
     localStorage.setItem('subLang', lang);
     subLangs?.querySelectorAll('.pill').forEach(b => {
-      const active = b.dataset.lang === lang;
-      b.classList.toggle('active', active);
-      b.setAttribute('aria-pressed', String(active));
+      const on = b.dataset.lang === lang;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-pressed', String(on));
     });
   }
 
@@ -361,26 +371,21 @@ async function initSeriesGrid() {
     } else {
       list = list.filter(s => s.track === 'sub' && s.subLang === state.lang);
     }
-    if (state.q) {
-      list = list.filter(s => (s.title || '').toLowerCase().includes(state.q));
-    }
+    if (state.q) list = list.filter(s => (s.title||'').toLowerCase().includes(state.q));
 
     if (!list.length) {
       grid.innerHTML = `<p style="color:var(--muted);padding:16px 4px;grid-column:1/-1;">No series found.</p>`;
       return;
     }
-
     grid.innerHTML = list.map((s, i) => `
-      <a class="card" href="series.html?series=${s.slug}" style="transition-delay:${Math.min(i * 40, 400)}ms">
+      <a class="card" href="series.html?series=${s.slug}" style="transition-delay:${Math.min(i*40,400)}ms">
         <img src="${s.poster}" alt="${s.title}" loading="lazy" decoding="async">
         <div class="title">${s.title}</div>
-      </a>
-    `).join('');
+      </a>`).join('');
 
     setTimeout(() => observeReveal('#series-grid .card'), 50);
   }
 
-  // Hydrate UI
   setPrimary(state.track);
   setLang(state.lang);
   render();
@@ -397,32 +402,31 @@ async function initSeriesGrid() {
    SEARCH OVERLAY
    ============================================================ */
 async function initSearch() {
-  const overlay   = document.getElementById('search-overlay');
-  const openBtn   = document.getElementById('hdr-search');
-  const cancelBtn = document.getElementById('srch-cancel');
-  const input     = document.getElementById('srch-input');
-  const clearBtn  = document.getElementById('srch-clear');
-  const results   = document.getElementById('srch-results');
-  const status    = document.getElementById('srch-status');
+  const overlay  = document.getElementById('search-overlay');
+  const openBtn  = document.getElementById('hdr-search');
+  const cancelBtn= document.getElementById('srch-cancel');
+  const input    = document.getElementById('srch-input');
+  const clearBtn = document.getElementById('srch-clear');
+  const results  = document.getElementById('srch-results');
+  const status   = document.getElementById('srch-status');
   if (!overlay || !input) return;
 
   const SERIES = await seriesReady;
 
-  function openOverlay() {
+  const openOverlay = () => {
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
     setTimeout(() => input.focus(), 350);
     renderResults('');
-  }
-
-  function closeOverlay() {
+  };
+  const closeOverlay = () => {
     overlay.classList.remove('open');
     document.body.style.overflow = '';
     input.value = '';
     clearBtn.classList.remove('visible');
     results.innerHTML = '';
     status.textContent = '';
-  }
+  };
 
   function renderResults(q) {
     const query = q.trim().toLowerCase();
@@ -431,14 +435,13 @@ async function initSearch() {
       results.innerHTML = `
         <div class="srch-empty">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <p>Type to search series</p>
+          <p>Type to search series…</p>
         </div>`;
       return;
     }
-
-    const list = SERIES.filter(s => (s.title || '').toLowerCase().includes(query));
+    const list = SERIES.filter(s => (s.title||'').toLowerCase().includes(query));
     status.textContent = list.length
-      ? `Found ${list.length} result${list.length !== 1 ? 's' : ''} for "${q.trim()}"`
+      ? `Found ${list.length} result${list.length!==1?'s':''} for "${q.trim()}"`
       : '';
 
     if (!list.length) {
@@ -450,47 +453,27 @@ async function initSearch() {
       return;
     }
 
+    // Small portrait cards, same as grid
     results.innerHTML = list.map((s, i) => `
       <a class="card visible" href="series.html?series=${s.slug}"
-         style="animation:srchCardIn 0.35s ${Math.min(i * 40, 300)}ms both ease;">
+         style="animation:srchCardIn .3s ${Math.min(i*40,280)}ms both ease;opacity:1;translate:none">
         <img src="${s.poster}" alt="${s.title}" loading="lazy" decoding="async">
         <div class="title">${s.title}</div>
-      </a>
-    `).join('');
+      </a>`).join('');
   }
 
   openBtn?.addEventListener('click', openOverlay);
   cancelBtn?.addEventListener('click', closeOverlay);
-
-  clearBtn?.addEventListener('click', () => {
-    input.value = '';
-    clearBtn.classList.remove('visible');
-    input.focus();
-    renderResults('');
-  });
-
+  clearBtn?.addEventListener('click', () => { input.value=''; clearBtn.classList.remove('visible'); input.focus(); renderResults(''); });
   input?.addEventListener('input', e => {
-    const q = e.target.value;
-    clearBtn.classList.toggle('visible', q.length > 0);
-    renderResults(q);
+    clearBtn.classList.toggle('visible', e.target.value.length > 0);
+    renderResults(e.target.value);
   });
-
-  // Close on Escape
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && overlay.classList.contains('open')) closeOverlay();
-  });
-
-  // Inject search card animation keyframe once
-  if (!document.getElementById('srch-anim-style')) {
-    const st = document.createElement('style');
-    st.id = 'srch-anim-style';
-    st.textContent = `@keyframes srchCardIn { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }`;
-    document.head.appendChild(st);
-  }
+  document.addEventListener('keydown', e => { if (e.key==='Escape' && overlay.classList.contains('open')) closeOverlay(); });
 }
 
 /* ============================================================
-   SHORTLINK HANDLER for .h-watch-btn outside hero
+   GLOBAL SHORTLINK HANDLER for .h-watch-btn outside hero
    ============================================================ */
 async function initShortlinkHandler() {
   const config = await configReady;
@@ -500,31 +483,9 @@ async function initShortlinkHandler() {
   document.body.addEventListener('click', async e => {
     const btn = e.target.closest('.h-watch-btn');
     if (!btn) return;
-    // Hero handles its own; skip if already inside #hero
-    if (btn.closest('#hero')) return;
-
+    if (btn.closest('#hero-slides')) return; // hero handles its own
     e.preventDefault();
-    const href = btn.getAttribute('href') || '';
-    try {
-      const params  = new URLSearchParams(href.split('?')[1] || '');
-      const series  = params.get('series');
-      const season  = params.get('season');
-      const lang    = params.get('lang');
-      const epNum   = params.get('ep');
-      let jsonFile  = `episode-data/${series}-s${season}`;
-      if (lang) jsonFile += `-${lang}`;
-      jsonFile += '.json';
-      const res = await fetch(jsonFile);
-      if (!res.ok) { location.href = href; return; }
-      const eps  = await res.json();
-      const found = eps.find(ep => String(ep.ep) === String(epNum));
-      if (found?.shortlink) {
-        if (typeof gtag !== 'undefined') gtag('event', 'shortlink_redirect', { url: found.shortlink });
-        location.href = found.shortlink;
-      } else {
-        location.href = href;
-      }
-    } catch { location.href = href; }
+    await handleShortlink(btn.getAttribute('href'));
   });
 }
 
