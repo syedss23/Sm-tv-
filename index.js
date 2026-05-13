@@ -1,283 +1,543 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // Sidebar controls
-  const sbar = document.getElementById('sidebar');
-  document.getElementById('sidebarToggle')?.addEventListener('click', () => sbar.classList.toggle('open'));
-  document.getElementById('sidebarClose')?.addEventListener('click', () => sbar.classList.remove('open'));
+/* ============================================================
+   SmTv Urdu — index.js  (vanilla JS, no frameworks)
+   ============================================================ */
 
-  // Utility: move filter bar under New Episodes
-  function moveFilterBarBelowNewEpisodes() {
-    const filterBar = document.querySelector('.filter-bar');
-    const newEpisodesSection = document.querySelector('.new-episodes-section');
-    if (filterBar && newEpisodesSection && newEpisodesSection.parentNode) {
-      newEpisodesSection.parentNode.insertBefore(filterBar, newEpisodesSection.nextSibling);
-    }
+'use strict';
+
+/* ── Shared data promises (loaded once) ── */
+const seriesReady   = fetch('series.json').then(r => r.ok ? r.json() : []).catch(() => []);
+const episodesReady = fetch('episode-data/index.json')
+  .then(r => r.ok ? r.json() : [])
+  .then(files => Promise.all(
+    files.map(path =>
+      fetch(path)
+        .then(r => r.ok ? r.json() : [])
+        .then(data => (Array.isArray(data) ? data : []).map(ep => ({ ...ep, _src: path })))
+        .catch(() => [])
+    )
+  ))
+  .then(arrays => arrays.flat())
+  .catch(() => []);
+
+/* ── Config promise ── */
+const configReady = fetch('/config.json', { cache: 'no-cache' })
+  .then(r => r.ok ? r.json() : null)
+  .catch(() => null);
+
+/* ============================================================
+   UTILITY
+   ============================================================ */
+
+/** Detect lang from episode-data filename */
+function detectLang(src = '') {
+  const file  = src.split('/').pop().replace('.json', '');
+  const parts = file.split('-');
+  const LANGS = ['en', 'ur', 'hi', 'ar', 'sp'];
+  // Remove season token (sN)
+  const filtered = parts.filter(p => !/^s\d+$/i.test(p));
+  for (const p of filtered) {
+    if (LANGS.includes(p.toLowerCase())) return p.toLowerCase();
   }
-  moveFilterBarBelowNewEpisodes();
+  return null; // dubbed
+}
 
-  // âœ… NEW: Build streaming URL for New Episodes "Watch Now" button
-  function buildEpisodeWatchUrl(ep) {
-    const fallback = ep.shortlink || ep.download || '#';
+/** Build episode watch URL */
+function buildEpisodeUrl(ep) {
+  try {
+    const raw = (ep._src || '').replace(/^\/+/, '');
+    // episode-data/slug[-lang]-sN.json  or  episode-data/slug[-lang-sub]-sN.json
+    const m = raw.match(/^episode-data\/(.+?)-s(\d+)(?:\.json)?$/i);
+    if (!m) return ep.shortlink || ep.download || '#';
 
+    const slug   = m[1];
+    const season = m[2];
+    const lang   = detectLang(raw);
+
+    const p = new URLSearchParams();
+    p.set('series', slug);
+    p.set('season', season);
+    if (ep.ep != null) p.set('ep', ep.ep);
+    if (lang) p.set('lang', lang);
+
+    return `episode.html?${p.toString()}`;
+  } catch {
+    return ep.shortlink || ep.download || '#';
+  }
+}
+
+/** Intersection observer factory for slide-in / fade-up */
+function observeReveal(selector, className = 'visible') {
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add(className); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll(selector).forEach(el => io.observe(el));
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+function initSidebar() {
+  const sidebar   = document.getElementById('sidebar');
+  const backdrop  = document.getElementById('sb-backdrop');
+  const openBtn   = document.getElementById('hdr-hamburger');
+  const closeBtn  = document.getElementById('sb-close');
+
+  function open()  { sidebar.classList.add('open');  backdrop.classList.add('open');  document.body.style.overflow = 'hidden'; }
+  function close() { sidebar.classList.remove('open'); backdrop.classList.remove('open'); document.body.style.overflow = ''; }
+
+  openBtn?.addEventListener('click', open);
+  closeBtn?.addEventListener('click', close);
+  backdrop?.addEventListener('click', close);
+}
+
+/* ============================================================
+   SPONSOR BANNER
+   ============================================================ */
+async function initSponsorBanner() {
+  const config = await configReady;
+  if (!config) return;
+  const rf = config.redirectionFeatures;
+  if (!rf) return;
+  if (rf.shortlink === true && rf.sponsorPopup === false) {
+    const banner = document.getElementById('sponsor-banner');
+    if (!banner) return;
+    banner.innerHTML = `
+      <span class="spn-icon">📢</span>
+      <div class="spn-info">
+        <span class="spn-label">Ad Space Available</span>
+        <span class="spn-name">Reach Thousands Daily</span>
+      </div>
+      <a href="https://t.me/Itz_me_zain1" target="_blank" rel="noopener" class="spn-btn"
+         onclick="gtag('event','ad_inquiry_click',{location:'homepage_banner'});">
+        Contact 💬
+      </a>`;
+  }
+}
+
+/* ============================================================
+   HERO — CINEMA BANNER (touch swipe, no arrows, 5 s auto)
+   ============================================================ */
+async function initHero() {
+  const episodes = await episodesReady;
+  const heroWrap = document.getElementById('hero');
+  const dotsWrap = document.getElementById('hero-dots');
+  if (!heroWrap || !dotsWrap) return;
+
+  const timed = episodes.filter(ep => ep.timestamp);
+  timed.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  const latest = timed.slice(0, 5);
+
+  if (!latest.length) { heroWrap.style.display = 'none'; dotsWrap.style.display = 'none'; return; }
+
+  const slidesEl = document.getElementById('hero-slides');
+
+  // Build slides
+  slidesEl.innerHTML = latest.map((ep, i) => {
+    const bg     = ep.poster || ep.thumb || '';
+    const thumb  = ep.thumb  || ep.poster || '';
+    const series = ep.series || '';
+    const title  = ep.title  || `Episode ${ep.ep || ''}`;
+    const url    = buildEpisodeUrl(ep);
+    return `
+      <div class="hero-slide${i === 0 ? ' active' : ''}" data-index="${i}">
+        <div class="hero-bg" style="background-image:url('${bg}')"></div>
+        <div class="hero-vignette"></div>
+        <div class="hero-new-badge">NEW EPISODE</div>
+        ${thumb ? `<img class="hero-thumb" src="${thumb}" alt="${title}" loading="${i === 0 ? 'eager' : 'lazy'}">` : ''}
+        <div class="hero-content">
+          ${series ? `<div class="hero-series-name">${series}</div>` : ''}
+          <div class="hero-ep-title">${title}</div>
+          <a href="${url}" class="hero-watch-btn h-watch-btn">▶ Watch Now</a>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Build dots
+  dotsWrap.innerHTML = latest.map((_, i) =>
+    `<button class="hero-dot${i === 0 ? ' active' : ''}" data-i="${i}" aria-label="Slide ${i + 1}"></button>`
+  ).join('');
+
+  // State
+  let current  = 0;
+  let autoTimer = null;
+  const slides = slidesEl.querySelectorAll('.hero-slide');
+  const dots   = dotsWrap.querySelectorAll('.hero-dot');
+
+  function goTo(idx) {
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = (idx + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+  }
+
+  function startAuto() {
+    stopAuto();
+    autoTimer = setInterval(() => goTo(current + 1), 5000);
+  }
+  function stopAuto() { clearInterval(autoTimer); }
+
+  dots.forEach(d => d.addEventListener('click', () => { goTo(+d.dataset.i); startAuto(); }));
+
+  // Touch swipe
+  let touchStartX = 0;
+  heroWrap.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; stopAuto(); }, { passive: true });
+  heroWrap.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 40) goTo(dx < 0 ? current + 1 : current - 1);
+    startAuto();
+  }, { passive: true });
+
+  startAuto();
+
+  // Shortlink handler
+  const config = await configReady;
+  const rf = config?.redirectionFeatures;
+  slidesEl.addEventListener('click', async e => {
+    const btn = e.target.closest('.h-watch-btn');
+    if (!btn) return;
+    if (!rf?.shortlink || rf?.sponsorPopup) return;
+    e.preventDefault();
+    const href = btn.getAttribute('href');
     try {
-      const raw = (ep._src || '').replace(/^\/+/, ''); // remove leading slash if any
-      // Matches: episode-data/slug-s1.json  OR  episode-data/slug-s1-en.json  etc.
-      const m = raw.match(/^episode-data\/(.+?)-s(\d+)(?:-([a-z]{2,3}|dub))?\.json$/i);
-      if (!m) return fallback;
-
-      const slug   = m[1];
-      const season = m[2];
-      const lang   = (m[3] || '').toLowerCase();
-
-      const params = new URLSearchParams();
-      params.set('series', slug);
-      params.set('season', season);
-      if (ep.ep != null) params.set('ep', ep.ep);
-
-      // Only pass lang when itâ€™s actually a subtitle/dub marker
-      if (lang && lang !== 'dub') {
-        params.set('lang', lang);   // en / hi / ur
-      } else if (lang === 'dub') {
-        params.set('lang', 'dub');  // if youâ€™re using this
-      }
-
-      return `episode.html?${params.toString()}`;
-    } catch (e) {
-      console.warn('buildEpisodeWatchUrl error', e);
-      return fallback;
-    }
-  }
-
-  // ====== MODERN SCHEDULE BAR (Compact + Countdown + LIVE) ======
-  const scheduleBar = document.getElementById('schedule-bar');
-  if (scheduleBar) {
-    fetch('shedule.json')
-      .then(r => r.json())
-      .then(schedule => {
-        if (!Array.isArray(schedule) || !schedule.length) {
-          scheduleBar.innerHTML = `
-            <div style="color:#ffd700;font-size:1em;padding:1em;text-align:center;">
-              No schedule yet.
-            </div>`;
-          return;
-        }
-
-        scheduleBar.innerHTML = schedule.map(item => {
-          const title = item.title || '';
-          const poster = item.poster || '';
-          const day = item.day || '';
-          const time = item.time || '';
-          const type = item.type || '';
-          const live = !!item.live;
-          const countdown = item.countdown || '';
-
-          return `
-            <div class="schedule-entry"
-                 title="${title}"
-                 style="display:flex;align-items:center;gap:8px;margin-right:12px;
-                        background:#14141a;padding:6px 10px;border-radius:12px;
-                        box-shadow:0 1px 5px rgba(0,0,0,0.4);min-width:fit-content;">
-              ${poster ? `
-                <img src="${poster}" alt="${title}" loading="lazy" decoding="async"
-                     style="width:30px;height:30px;object-fit:cover;border-radius:6px;">` : ''
-              }
-              <div style="display:flex;flex-direction:column;line-height:1.15;min-width:0;">
-                <!-- Title -->
-                <div style="font-weight:700;font-size:0.92em;color:#23c6ed;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                  <span class="title" style="overflow-wrap:anywhere;">${title}</span>
-                  ${live ? '<span style="background:#ff2d2d;color:#fff;padding:1px 6px;border-radius:6px;font-size:0.7em;">LIVE</span>' : ''}
-                </div>
-
-                <!-- One compact line: day â€¢ time â€¢ type (small, old-style) -->
-                <div class="schedule-row"
-                     style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px;font-size:0.86em;line-height:1.25;">
-                  ${day  ? `<span class="day"  style="color:#ffd267;font-weight:600;">${day}</span>` : ''}
-                  ${(day && time) ? '<span class="dot" style="opacity:.6;">•</span>' : ''}
-                  ${time ? `<span class="time" style="color:#9fd3ff;font-weight:600;">${time}</span>` : ''}
-                  ${type ? `<span class="dot" style="opacity:.6;">•</span><span class="type" style="color:#23c6ed;font-weight:600;">${type}</span>` : ''}
-                </div>
-
-                <!-- Countdown below, slightly smaller -->
-                ${countdown ? `<div class="countdown"
-                                  data-time="${countdown}"
-                                  style="color:#ffd84d;font-size:0.78em;margin-top:2px;"></div>` : ''}
-              </div>
-            </div>
-          `;
-        }).join('');
-
-        // Countdown updater
-        const countdowns = scheduleBar.querySelectorAll('.countdown');
-        countdowns.forEach(el => {
-          const targetTime = Date.parse(el.dataset.time);
-          if (isNaN(targetTime)) { el.textContent = ''; return; }
-
-          const tick = () => {
-            const diff = targetTime - Date.now();
-            if (diff <= 0) {
-              el.textContent = 'Now Playing';
-              clearInterval(id);
-              return;
-            }
-            const hrs  = Math.floor(diff / (1000 * 60 * 60));
-            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const secs = Math.floor((diff % (1000 * 60)) / 1000);
-            el.textContent = `Starts in ${hrs}h ${mins}m ${secs}s`;
-          };
-          tick();
-          const id = setInterval(tick, 1000);
-        });
-      })
-      .catch(() => {
-        scheduleBar.innerHTML = `
-          <div style="color:#ffd700;font-size:1em;padding:1em;text-align:center;">
-            Could not load schedule.
-          </div>`;
-      });
-  }
-
-  // ===== New Episodes Horizontal Card Grid =====
-  const newGrid = document.getElementById('new-episodes-grid');
-  if (newGrid) {
-    fetch('episode-data/index.json')
-      .then(r => r.json())
-      .then(files => Promise.all(
-        files.map(path =>
-          fetch(path)
-            .then(res => res.ok ? res.json() : [])
-            .then(data => (Array.isArray(data) ? data.map(ep => ({ ...ep, _src: path })) : []))
-            .catch(() => [])
-        )
-      ))
-      .then(arrays => {
-        const allEpisodes = arrays.flat().filter(ep => ep.timestamp);
-        allEpisodes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        const latestEps = allEpisodes.slice(0, 5);
-
-        if (!latestEps.length) {
-          newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">No new episodes found.</div>`;
-          moveFilterBarBelowNewEpisodes();
-          return;
-        }
-
-        newGrid.innerHTML = `
-          <div style="display:flex;gap:14px;overflow-x:auto;padding:0 2px 2px 2px;">
-            ${latestEps.map(ep => `
-              <div class="episode-card-pro"
-                   style="flex:0 0 166px;min-width:150px;max-width:172px;
-                          border-radius:13px;background:#182837;
-                          box-shadow:0 4px 18px #0fd1cec7,0 2px 10px #0003;">
-                <img src="${ep.thumb || ep.poster || ''}"
-                     class="episode-img-pro"
-                     alt="${ep.title || ('Episode ' + (ep.ep || ''))}"
-                     loading="lazy" decoding="async"
-                     style="display:block;border-radius:13px 13px 0 0;width:100%;
-                            height:110px;object-fit:cover;">
-                <div class="episode-title-pro"
-                     style="margin:15px 0 4px 0;font-family:'Montserrat',sans-serif;
-                            font-size:1.07em;font-weight:700;color:#fff;text-align:center;">
-                  ${ep.title || 'Episode ' + (ep.ep || '')}
-                  <span class="new-badge-pro"
-                        style="margin-left:7px;background:#ffd700;color:#182734;
-                               font-size:.78em;border-radius:5px;padding:2.3px 9px;">NEW</span>
-                </div>
-                <a href="${buildEpisodeWatchUrl(ep)}"
-                   class="watch-btn-pro"
-                   target="_blank" rel="noopener"
-                   style="margin-bottom:13px;width:86%;display:block;
-                          background:linear-gradient(90deg,#009aff 65%,#ffd700 100%);
-                          color:#fff;font-weight:700;text-decoration:none;text-align:center;
-                          border-radius:5px;padding:8px 0;font-family:'Montserrat',sans-serif;
-                          font-size:1em;box-shadow:0 1px 10px #0087ff14;
-                          margin-left:auto;margin-right:auto;">
-                  Watch Now
-                </a>
-              </div>
-            `).join('')}
-          </div>
-        `;
-        moveFilterBarBelowNewEpisodes();
-      })
-      .catch(() => {
-        newGrid.innerHTML = `<div style="color:#fff;font-size:1em;padding:1.2em;text-align:center;">Could not load new episodes.</div>`;
-        moveFilterBarBelowNewEpisodes();
-      });
-  }
-
-  // ------------- Series homepage grid: unchanged -------------
-  const grid = document.getElementById('series-grid');
-  if (grid) {
-    const search   = document.getElementById('search');
-    const pillDub  = document.getElementById('pill-dub');
-    const pillSub  = document.getElementById('pill-sub');
-    const subLangs = document.getElementById('sub-langs');
-
-    let SERIES = [];
-    const qs = new URLSearchParams(location.search);
-    let state = {
-      track: qs.get('track') || localStorage.getItem('track')   || 'dubbed',
-      lang:  qs.get('lang')  || localStorage.getItem('subLang') || 'en',
-      q: ''
-    };
-
-    fetch('series.json')
-      .then(r => { if (!r.ok) throw new Error('Series JSON not found. Check /series.json'); return r.json(); })
-      .then(data => { SERIES = Array.isArray(data) ? data : []; hydrateUI(); render(); })
-      .catch(err => { grid.innerHTML = `<div style="color:#f44;padding:1.2em;">Error: ${err.message}</div>`; });
-
-    function hydrateUI() {
-      setPrimary(state.track);
-      toggleSubLangs();
-      subLangs?.querySelectorAll('.pill').forEach(b => {
-        b.classList.toggle('active', b.dataset.lang === state.lang);
-        b.setAttribute('aria-pressed', String(b.dataset.lang === state.lang));
-      });
-    }
-
-    function setPrimary(track) {
-      state.track = track;
-      localStorage.setItem('track', track);
-      pillDub?.classList.toggle('active', track === 'dubbed');
-      pillSub?.classList.toggle('active', track === 'sub');
-      pillDub?.setAttribute('aria-pressed', String(track === 'dubbed'));
-      pillSub?.setAttribute('aria-pressed', String(track === 'sub'));
-    }
-
-    function toggleSubLangs() {
-      if (!subLangs) return;
-      subLangs.classList.toggle('hidden', state.track !== 'sub');
-    }
-
-    function setLang(lang) {
-      state.lang = lang;
-      localStorage.setItem('subLang', lang);
-      subLangs?.querySelectorAll('.pill').forEach(b => {
-        b.classList.toggle('active', b.dataset.lang === lang);
-        b.setAttribute('aria-pressed', String(b.dataset.lang === lang));
-      });
-    }
-
-    pillDub?.addEventListener('click', () => { setPrimary('dubbed'); toggleSubLangs(); render(); });
-    pillSub?.addEventListener('click', () => { setPrimary('sub'); toggleSubLangs(); render(); });
-    subLangs?.addEventListener('click', e => {
-      const t = e.target;
-      if (t && t.matches('.pill') && t.dataset.lang) { setLang(t.dataset.lang); render(); }
-    });
-    search?.addEventListener('input', e => { state.q = e.target.value.trim().toLowerCase(); render(); });
-
-    function render() {
-      let list = SERIES;
-      if (state.track === 'dubbed') {
-        list = list.filter(s => s.track === 'dubbed');
+      const params = new URLSearchParams(href.split('?')[1] || '');
+      const series = params.get('series');
+      const season = params.get('season');
+      const lang   = params.get('lang');
+      const epNum  = params.get('ep');
+      let jsonFile = `episode-data/${series}-s${season}`;
+      if (lang) jsonFile += `-${lang}`;
+      jsonFile += '.json';
+      const res = await fetch(jsonFile);
+      if (!res.ok) { location.href = href; return; }
+      const eps = await res.json();
+      const found = eps.find(ep => String(ep.ep) === String(epNum));
+      if (found?.shortlink) {
+        if (typeof gtag !== 'undefined') gtag('event', 'shortlink_redirect', { url: found.shortlink });
+        location.href = found.shortlink;
       } else {
-        list = list.filter(s => s.track === 'sub' && s.subLang === state.lang);
+        location.href = href;
       }
-      if (state.q) list = list.filter(s => (s.title || '').toLowerCase().includes(state.q));
-      grid.innerHTML = list.length ? list.map(s => `
-        <a class="card" href="series.html?series=${s.slug}">
-          <img src="${s.poster}" alt="${s.title}" loading="lazy" decoding="async">
-          <div class="title">${s.title}</div>
-        </a>
-      `).join('') : `<div style="color:#fff;font-size:1.1em;padding:1.5em;">No series found.</div>`;
-    }
+    } catch { location.href = href; }
+  });
+}
+
+/* ============================================================
+   SCHEDULE
+   ============================================================ */
+async function initSchedule() {
+  const wrap = document.getElementById('schedule-wrap');
+  if (!wrap) return;
+
+  let schedule = [];
+  try {
+    const r = await fetch('shedule.json');
+    schedule = r.ok ? await r.json() : [];
+  } catch {}
+
+  if (!Array.isArray(schedule) || !schedule.length) {
+    wrap.innerHTML = `<p style="color:var(--muted);padding:12px 4px;font-size:.9rem;">No schedule available.</p>`;
+    return;
   }
+
+  wrap.innerHTML = schedule.map(item => `
+    <div class="sched-card${item.live ? ' is-live' : ''}">
+      ${item.poster ? `<img class="sched-thumb" src="${item.poster}" alt="${item.title || ''}" loading="lazy">` : ''}
+      <div class="sched-info">
+        <div class="sched-title">${item.title || ''}</div>
+        <div class="sched-meta">
+          ${item.day  ? `<span class="sched-day">${item.day}</span>` : ''}
+          ${item.day && (item.time || item.type) ? '<span class="sched-dot">•</span>' : ''}
+          ${item.time ? `<span class="sched-day" style="color:var(--cyan)">${item.time}</span>` : ''}
+          ${item.type ? `<span class="sched-dot">•</span><span class="sched-type">${item.type}</span>` : ''}
+          ${item.live ? `<span class="sched-live">● LIVE</span>` : ''}
+        </div>
+        ${item.countdown ? `<div class="sched-countdown" data-target="${item.countdown}"></div>` : ''}
+      </div>
+    </div>
+  `).join('');
+
+  // Countdown tickers
+  wrap.querySelectorAll('.sched-countdown[data-target]').forEach(el => {
+    const target = Date.parse(el.dataset.target);
+    if (isNaN(target)) return;
+    const tick = () => {
+      const diff = target - Date.now();
+      if (diff <= 0) { el.textContent = '🔴 Now Playing'; clearInterval(id); return; }
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      el.textContent = `Starts in ${h}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+  });
+
+  // Reveal animation
+  setTimeout(() => observeReveal('.sched-card'), 100);
+}
+
+/* ============================================================
+   RECOMMENDED
+   ============================================================ */
+async function initRecommended() {
+  const scroll = document.getElementById('rec-scroll');
+  if (!scroll) return;
+
+  const series = await seriesReady;
+
+  let slugs = [];
+  try {
+    const r = await fetch('recommended.json');
+    slugs = r.ok ? await r.json() : [];
+  } catch {}
+
+  let picks = [];
+  if (Array.isArray(slugs) && slugs.length) {
+    slugs.slice(0, 5).forEach(slug => {
+      const s = series.find(x => x.slug === slug);
+      if (s) picks.push(s);
+    });
+  }
+  if (!picks.length) picks = series.slice(0, 5);
+
+  scroll.innerHTML = picks.map(s => `
+    <a class="card" href="series.html?series=${s.slug}" style="flex:0 0 130px;width:130px;">
+      <img src="${s.poster}" alt="${s.title}" loading="lazy">
+      <div class="title">${s.title}</div>
+    </a>
+  `).join('');
+
+  setTimeout(() => observeReveal('#rec-scroll .card'), 100);
+}
+
+/* ============================================================
+   FILTER BAR + SERIES GRID
+   ============================================================ */
+async function initSeriesGrid() {
+  const grid     = document.getElementById('series-grid');
+  const pillDub  = document.getElementById('pill-dub');
+  const pillSub  = document.getElementById('pill-sub');
+  const subLangs = document.getElementById('sub-langs');
+  if (!grid) return;
+
+  // Skeleton loaders
+  grid.innerHTML = Array(8).fill('<div class="skeleton"></div>').join('');
+
+  const SERIES = await seriesReady;
+
+  // Parse URL params then localStorage
+  const qs = new URLSearchParams(location.search);
+  const state = {
+    track: qs.get('track') || localStorage.getItem('track')   || 'dubbed',
+    lang:  qs.get('lang')  || localStorage.getItem('subLang') || 'en',
+    q: ''
+  };
+
+  function setPrimary(track) {
+    state.track = track;
+    localStorage.setItem('track', track);
+    pillDub?.classList.toggle('active', track === 'dubbed');
+    pillSub?.classList.toggle('active', track === 'sub');
+    pillDub?.setAttribute('aria-pressed', String(track === 'dubbed'));
+    pillSub?.setAttribute('aria-pressed', String(track === 'sub'));
+    if (subLangs) subLangs.classList.toggle('visible', track === 'sub');
+  }
+
+  function setLang(lang) {
+    state.lang = lang;
+    localStorage.setItem('subLang', lang);
+    subLangs?.querySelectorAll('.pill').forEach(b => {
+      const active = b.dataset.lang === lang;
+      b.classList.toggle('active', active);
+      b.setAttribute('aria-pressed', String(active));
+    });
+  }
+
+  function render() {
+    let list = SERIES;
+    if (state.track === 'dubbed') {
+      list = list.filter(s => s.track === 'dubbed');
+    } else {
+      list = list.filter(s => s.track === 'sub' && s.subLang === state.lang);
+    }
+    if (state.q) {
+      list = list.filter(s => (s.title || '').toLowerCase().includes(state.q));
+    }
+
+    if (!list.length) {
+      grid.innerHTML = `<p style="color:var(--muted);padding:16px 4px;grid-column:1/-1;">No series found.</p>`;
+      return;
+    }
+
+    grid.innerHTML = list.map((s, i) => `
+      <a class="card" href="series.html?series=${s.slug}" style="transition-delay:${Math.min(i * 40, 400)}ms">
+        <img src="${s.poster}" alt="${s.title}" loading="lazy" decoding="async">
+        <div class="title">${s.title}</div>
+      </a>
+    `).join('');
+
+    setTimeout(() => observeReveal('#series-grid .card'), 50);
+  }
+
+  // Hydrate UI
+  setPrimary(state.track);
+  setLang(state.lang);
+  render();
+
+  pillDub?.addEventListener('click', () => { setPrimary('dubbed'); render(); });
+  pillSub?.addEventListener('click', () => { setPrimary('sub');    render(); });
+  subLangs?.addEventListener('click', e => {
+    const t = e.target.closest('.pill');
+    if (t?.dataset.lang) { setLang(t.dataset.lang); render(); }
+  });
+}
+
+/* ============================================================
+   SEARCH OVERLAY
+   ============================================================ */
+async function initSearch() {
+  const overlay   = document.getElementById('search-overlay');
+  const openBtn   = document.getElementById('hdr-search');
+  const cancelBtn = document.getElementById('srch-cancel');
+  const input     = document.getElementById('srch-input');
+  const clearBtn  = document.getElementById('srch-clear');
+  const results   = document.getElementById('srch-results');
+  const status    = document.getElementById('srch-status');
+  if (!overlay || !input) return;
+
+  const SERIES = await seriesReady;
+
+  function openOverlay() {
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => input.focus(), 350);
+    renderResults('');
+  }
+
+  function closeOverlay() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    input.value = '';
+    clearBtn.classList.remove('visible');
+    results.innerHTML = '';
+    status.textContent = '';
+  }
+
+  function renderResults(q) {
+    const query = q.trim().toLowerCase();
+    if (!query) {
+      status.textContent = '';
+      results.innerHTML = `
+        <div class="srch-empty">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <p>Type to search series</p>
+        </div>`;
+      return;
+    }
+
+    const list = SERIES.filter(s => (s.title || '').toLowerCase().includes(query));
+    status.textContent = list.length
+      ? `Found ${list.length} result${list.length !== 1 ? 's' : ''} for "${q.trim()}"`
+      : '';
+
+    if (!list.length) {
+      results.innerHTML = `
+        <div class="srch-empty">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <p>No results for "<strong>${q.trim()}</strong>"</p>
+        </div>`;
+      return;
+    }
+
+    results.innerHTML = list.map((s, i) => `
+      <a class="card visible" href="series.html?series=${s.slug}"
+         style="animation:srchCardIn 0.35s ${Math.min(i * 40, 300)}ms both ease;">
+        <img src="${s.poster}" alt="${s.title}" loading="lazy" decoding="async">
+        <div class="title">${s.title}</div>
+      </a>
+    `).join('');
+  }
+
+  openBtn?.addEventListener('click', openOverlay);
+  cancelBtn?.addEventListener('click', closeOverlay);
+
+  clearBtn?.addEventListener('click', () => {
+    input.value = '';
+    clearBtn.classList.remove('visible');
+    input.focus();
+    renderResults('');
+  });
+
+  input?.addEventListener('input', e => {
+    const q = e.target.value;
+    clearBtn.classList.toggle('visible', q.length > 0);
+    renderResults(q);
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && overlay.classList.contains('open')) closeOverlay();
+  });
+
+  // Inject search card animation keyframe once
+  if (!document.getElementById('srch-anim-style')) {
+    const st = document.createElement('style');
+    st.id = 'srch-anim-style';
+    st.textContent = `@keyframes srchCardIn { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }`;
+    document.head.appendChild(st);
+  }
+}
+
+/* ============================================================
+   SHORTLINK HANDLER for .h-watch-btn outside hero
+   ============================================================ */
+async function initShortlinkHandler() {
+  const config = await configReady;
+  const rf = config?.redirectionFeatures;
+  if (!rf?.shortlink || rf?.sponsorPopup) return;
+
+  document.body.addEventListener('click', async e => {
+    const btn = e.target.closest('.h-watch-btn');
+    if (!btn) return;
+    // Hero handles its own; skip if already inside #hero
+    if (btn.closest('#hero')) return;
+
+    e.preventDefault();
+    const href = btn.getAttribute('href') || '';
+    try {
+      const params  = new URLSearchParams(href.split('?')[1] || '');
+      const series  = params.get('series');
+      const season  = params.get('season');
+      const lang    = params.get('lang');
+      const epNum   = params.get('ep');
+      let jsonFile  = `episode-data/${series}-s${season}`;
+      if (lang) jsonFile += `-${lang}`;
+      jsonFile += '.json';
+      const res = await fetch(jsonFile);
+      if (!res.ok) { location.href = href; return; }
+      const eps  = await res.json();
+      const found = eps.find(ep => String(ep.ep) === String(epNum));
+      if (found?.shortlink) {
+        if (typeof gtag !== 'undefined') gtag('event', 'shortlink_redirect', { url: found.shortlink });
+        location.href = found.shortlink;
+      } else {
+        location.href = href;
+      }
+    } catch { location.href = href; }
+  });
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  initSidebar();
+  initSponsorBanner();
+  initHero();
+  initSchedule();
+  initRecommended();
+  initSeriesGrid();
+  initSearch();
+  initShortlinkHandler();
 });
