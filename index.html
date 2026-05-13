@@ -5,188 +5,297 @@
   <meta charset="UTF-8">
   <title>SmTv Urdu - Watch Turkish Series in Urdu | SMTV Urdu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="SmTv Urdu: Watch Turkish historical series, Islamic serials, and new releases in Urdu language.">
-  <meta name="theme-color" content="#0a1520">
+  <meta name="description" content="SmTv Urdu: Watch Turkish historical series, Islamic serials, and new releases (like Salahuddin Ayyubi Season 2 and Mehmet Fatih Season 2) in Urdu language.">
+  <meta name="theme-color" content="#0d171f">
+  <!-- Open Graph -->
   <meta property="og:title" content="SmTv Urdu">
   <meta property="og:site_name" content="SmTv Urdu">
-  <meta property="og:description" content="Watch Urdu dubbed Turkish Series, Islamic serials & new Turkish drama releases.">
+  <meta property="og:description" content="Watch Urdu dubbed Turkish Series, Islamic serials & new Turkish drama releases. Join SmTv Urdu for all episodes with Urdu subtitles.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://smtvurdu.site/assets/posters/smtv_promo.jpg">
   <meta property="og:url" content="https://smtvurdu.site">
   <link rel="icon" href="/favicon.png" type="image/png">
   <link rel="manifest" href="/manifest.json">
   <link rel="canonical" href="https://smtvurdu.site/">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"SmTv Urdu","url":"https://smtvurdu.site","potentialAction":{"@type":"SearchAction","target":"https://smtvurdu.site/?s={search_term_string}","query-input":"required name=search_term_string"}}</script>
+  <!-- JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "SmTv Urdu",
+    "url": "https://smtvurdu.site",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://smtvurdu.site/?s={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "SmTv Urdu",
+    "url": "https://smtvurdu.site",
+    "logo": "https://smtvurdu.site/assets/logo.png"
+  }
+  </script>
+  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-WM3KEDD127"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-WM3KEDD127');</script>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-WM3KEDD127');
+  </script>
+  <!-- Fonts & Styles -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-  <script>window.OneSignalDeferred=window.OneSignalDeferred||[];OneSignalDeferred.push(async function(O){await O.init({appId:"ad485861-8839-49e2-bd21-f21c688668f6"});});</script>
-  <script defer src="index.js"></script>
-
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    body { font-family: 'Montserrat', sans-serif; background: #0a1520; color: #e8edf2; min-height: 100vh; overflow-x: hidden; }
-    :root {
-      --gold: #ffd700; --gold2: #ffb347; --cyan: #23c6ed;
-      --dark3: #131f2d; --card-radius: 12px;
-      --glow-gold: 0 0 18px rgba(255,215,0,0.2);
-      --glow-cyan: 0 0 18px rgba(35,198,237,0.18);
+
+    /* 🔥 Sponsor Banner Styles */
+    .home-sponsor-banner {
+      margin: 16px 16px 20px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, 
+        rgba(255, 212, 0, 0.15) 0%, 
+        rgba(255, 179, 87, 0.10) 100%);
+      border: 2px solid rgba(255, 212, 0, 0.35);
+      backdrop-filter: blur(10px);
+      box-shadow: 
+        0 4px 20px rgba(255, 212, 0, 0.2),
+        0 2px 10px rgba(0, 0, 0, 0.3);
+      animation: subtleGlow 3s ease-in-out infinite;
+      transition: all 0.3s ease;
     }
 
-    /* SIDEBAR */
-    .sidebar { position:fixed;top:0;left:-280px;width:280px;height:100vh;background:linear-gradient(180deg,#0d1c2b,#0a1520);border-right:1px solid rgba(35,198,237,0.12);z-index:9999;transition:left 0.32s cubic-bezier(.4,0,.2,1);box-shadow:4px 0 40px rgba(0,0,0,0.7);display:flex;flex-direction:column; }
-    .sidebar.open { left:0; }
-    .sidebar-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:9998;backdrop-filter:blur(4px); }
-    .sidebar-overlay.active { display:block; }
-    .sidebar-header-pro { display:flex;align-items:center;justify-content:space-between;padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,0.07); }
-    .sidebar-logo-pro { font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.45rem;background:linear-gradient(90deg,var(--cyan),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
-    .sidebar-close-btn { background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);color:#fff;width:34px;height:34px;border-radius:8px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s; }
-    .sidebar-close-btn:hover { background:rgba(255,255,255,0.15); }
-    .sidebar-menu-pro { display:flex;flex-direction:column;gap:6px;padding:18px 14px;flex:1; }
-    .sidebar-btn-pro { display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:10px;color:#c8d8e8;text-decoration:none;font-weight:600;font-size:0.93rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);transition:all 0.2s; }
-    .sidebar-btn-pro:hover { background:rgba(35,198,237,0.1);border-color:rgba(35,198,237,0.25);color:#fff;transform:translateX(3px); }
-    .telegram-pro { color:#29b6f6; } .whatsapp-pro { color:#25d366; }
-    .sidebar-footer { padding:14px 18px;border-top:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.28);font-size:0.7rem;text-align:center; }
+    .home-sponsor-banner:hover {
+      border-color: rgba(255, 212, 0, 0.5);
+      box-shadow: 
+        0 6px 30px rgba(255, 212, 0, 0.35),
+        0 3px 15px rgba(0, 0, 0, 0.4);
+    }
 
-    /* HEADER: [☰] [SmTv Urdu — flex:1 left] [🔍] [⭐PREMIUM] */
-    #site-header { position:sticky;top:0;z-index:900;display:flex;align-items:center;gap:9px;padding:0 11px;height:54px;background:rgba(10,21,32,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.07);box-shadow:0 2px 16px rgba(0,0,0,0.4); }
-    #sidebarToggle { background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#fff;width:38px;height:38px;border-radius:9px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.2s; }
-    #sidebarToggle:hover { background:rgba(255,255,255,0.13); }
-    .header-brand { font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.28rem;background:linear-gradient(90deg,var(--gold) 0%,#fff 55%,var(--cyan) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
-    #header-search-btn { background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:#b8d4e8;width:40px;height:38px;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s; }
-    #header-search-btn:hover { background:rgba(35,198,237,0.15);border-color:rgba(35,198,237,0.35);color:var(--cyan); }
-    .premium-cta { background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1400;font-weight:800;font-size:0.73rem;padding:7px 12px;border-radius:20px;text-decoration:none;letter-spacing:0.04em;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 10px rgba(255,215,0,0.28);transition:all 0.2s;display:flex;align-items:center;gap:4px; }
-    .premium-cta:hover { transform:translateY(-1px);box-shadow:0 4px 18px rgba(255,215,0,0.45); }
+    @keyframes subtleGlow {
+      0%, 100% { 
+        border-color: rgba(255, 212, 0, 0.35);
+        box-shadow: 
+          0 4px 20px rgba(255, 212, 0, 0.2),
+          0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+      50% { 
+        border-color: rgba(255, 212, 0, 0.6);
+        box-shadow: 
+          0 6px 30px rgba(255, 212, 0, 0.4),
+          0 3px 15px rgba(0, 0, 0, 0.4);
+      }
+    }
 
-    /* SEARCH OVERLAY */
-    #search-overlay { display:none;position:fixed;inset:0;z-index:8500;background:rgba(5,12,22,0.98);backdrop-filter:blur(24px);flex-direction:column; }
-    #search-overlay.active { display:flex;animation:fadeIn 0.18s ease; }
-    @keyframes fadeIn { from{opacity:0}to{opacity:1} }
-    .search-overlay-header { display:flex;align-items:center;gap:10px;padding:13px 13px 11px;border-bottom:1px solid rgba(255,255,255,0.08); }
-    .search-input-wrap { flex:1;position:relative;display:flex;align-items:center; }
-    .search-input-wrap svg { position:absolute;left:13px;color:var(--cyan);pointer-events:none; }
-    #search-overlay-input { width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(35,198,237,0.2);border-radius:11px;color:#fff;font-size:0.96rem;font-family:'Montserrat',sans-serif;padding:12px 14px 12px 42px;outline:none;transition:border-color 0.2s; }
-    #search-overlay-input:focus { border-color:var(--cyan);box-shadow:0 0 0 3px rgba(35,198,237,0.1); }
-    #search-overlay-input::placeholder { color:rgba(200,220,240,0.3); }
-    #search-close-btn { background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);color:#fff;width:40px;height:40px;border-radius:9px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.2s; }
-    #search-close-btn:hover { background:rgba(255,255,255,0.18); }
-    .search-results-container { flex:1;overflow-y:auto;padding:13px; }
-    .search-results-label { color:rgba(200,220,240,0.4);font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:11px; }
-    /* Square grid — 3 columns, equal size */
-    .search-results-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:9px; }
-    @media(min-width:500px){ .search-results-grid { grid-template-columns:repeat(4,1fr); } }
-    .search-card { background:var(--dark3);border-radius:10px;overflow:hidden;text-decoration:none;color:inherit;border:1px solid rgba(255,255,255,0.07);transition:all 0.2s;display:block;animation:cardEnter 0.28s ease both; }
-    .search-card:hover { transform:translateY(-2px);border-color:var(--cyan);box-shadow:var(--glow-cyan); }
-    .search-card-img { width:100%;aspect-ratio:1/1;overflow:hidden;background:#0f1e2e; }
-    .search-card-img img { width:100%;height:100%;object-fit:cover;object-position:top center;display:block;transition:transform 0.3s; }
-    .search-card:hover .search-card-img img { transform:scale(1.06); }
-    .search-card-title { padding:5px 7px 7px;font-size:0.68rem;font-weight:700;color:#d8e8f5;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden; }
-    .search-empty { text-align:center;color:rgba(200,220,240,0.32);padding:55px 20px;font-size:0.88rem; }
-    .search-empty svg { display:block;margin:0 auto 11px;opacity:0.22; }
+    .sponsor-banner-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-    /* SPONSOR BANNER — compact */
-    .home-sponsor-banner { margin:10px 12px 0;padding:9px 12px;border-radius:11px;background:rgba(255,212,0,0.07);border:1.5px solid rgba(255,212,0,0.26);animation:bannerGlow 3s ease-in-out infinite; }
-    @keyframes bannerGlow { 0%,100%{border-color:rgba(255,212,0,0.26)}50%{border-color:rgba(255,212,0,0.48);box-shadow:0 0 16px rgba(255,212,0,0.13)} }
-    .sponsor-banner-content { display:flex;align-items:center;gap:9px; }
-    .sponsor-icon { font-size:19px;flex-shrink:0;animation:bounce 2.2s ease-in-out infinite; }
-    @keyframes bounce { 0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)} }
-    .sponsor-info { flex:1;min-width:0; }
-    .sponsor-label { display:block;font-size:8px;color:var(--gold);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1px; }
-    .sponsor-name { color:#fff;font-size:12.5px;font-weight:800;display:flex;align-items:center;gap:6px; }
-    .sponsor-mini-logo { width:20px;height:20px;border-radius:5px;object-fit:cover;border:1px solid rgba(255,212,0,0.3); }
-    .sponsor-join-btn { padding:6px 12px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1400;font-size:11px;font-weight:800;border-radius:18px;text-decoration:none;white-space:nowrap;transition:all 0.2s;box-shadow:0 2px 8px rgba(255,212,0,0.28);flex-shrink:0; }
-    .sponsor-join-btn:hover { transform:translateY(-1px);box-shadow:0 4px 15px rgba(255,212,0,0.42); }
+    .sponsor-icon {
+      font-size: 26px;
+      flex-shrink: 0;
+      animation: bounce 2s ease-in-out infinite;
+    }
 
-    /* SECTION HEADER */
-    .section-header { display:flex;align-items:center;gap:9px;padding:0 14px;margin-bottom:12px; }
-    .section-header h2 { font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.05rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase; }
-    .section-accent { flex:1;height:1px;background:linear-gradient(90deg,rgba(255,215,0,0.32),transparent); }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
 
-    /* NEW EPISODES — 2-col grid matching screenshot */
-    .new-episodes-section { margin:18px 0 0; }
-    .new-episodes-grid-2col { display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 12px 4px; }
-    .ep-card { background:var(--dark3);border-radius:var(--card-radius);overflow:hidden;border:1.5px solid rgba(35,198,237,0.16);box-shadow:0 3px 14px rgba(0,0,0,0.32);display:flex;flex-direction:column;animation:cardEnter 0.35s ease both;transition:transform 0.22s,box-shadow 0.22s; }
-    .ep-card:hover { transform:translateY(-3px);box-shadow:var(--glow-cyan),0 6px 22px rgba(0,0,0,0.45); }
-    .ep-card-thumb { width:100%;aspect-ratio:16/10;overflow:hidden;background:#0f1e2e; }
-    .ep-card-thumb img { width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s; }
-    .ep-card:hover .ep-card-thumb img { transform:scale(1.04); }
-    .ep-card-body { padding:9px 10px 11px;display:flex;flex-direction:column;gap:7px; }
-    .ep-card-title-row { display:flex;align-items:center;gap:6px;flex-wrap:wrap; }
-    .ep-card-title { font-size:0.85rem;font-weight:800;color:#fff;flex:1;line-height:1.2; }
-    .new-badge { background:var(--gold);color:#1a1400;font-size:0.58rem;font-weight:800;padding:2px 7px;border-radius:5px;white-space:nowrap;letter-spacing:0.04em; }
-    .ep-watch-btn { display:block;text-align:center;text-decoration:none;background:linear-gradient(90deg,#009aff 55%,#00ccff 100%);color:#fff;font-size:0.8rem;font-weight:700;border-radius:7px;padding:9px 0;box-shadow:0 2px 10px rgba(0,154,255,0.2);transition:all 0.2s; }
-    .ep-watch-btn:hover { background:linear-gradient(90deg,var(--gold),var(--gold2));color:#1a1400;box-shadow:0 3px 14px rgba(255,215,0,0.36); }
+    .sponsor-info {
+      flex: 1;
+      min-width: 0;
+    }
 
-    /* SCHEDULE — vertical list like screenshot */
-    #schedule-section { margin:20px 0 0; }
-    .schedule-list { display:flex;flex-direction:column;gap:8px;padding:0 12px; }
-    .schedule-row-card { display:flex;align-items:center;gap:12px;background:var(--dark3);border-radius:11px;padding:11px 13px 11px 11px;border:1px solid rgba(255,255,255,0.08);box-shadow:0 2px 12px rgba(0,0,0,0.26);transition:all 0.2s;animation:cardEnter 0.35s ease both; }
-    .schedule-row-card:hover { border-color:rgba(255,215,0,0.28);box-shadow:var(--glow-gold); }
-    .schedule-row-card img { width:52px;height:52px;border-radius:9px;object-fit:cover;border:2px solid rgba(255,215,0,0.14);flex-shrink:0; }
-    .schedule-row-meta { flex:1;min-width:0; }
-    .schedule-row-title { font-size:0.84rem;font-weight:700;color:var(--cyan);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px; }
-    .schedule-row-sub { display:flex;align-items:center;gap:7px;font-size:0.74rem;flex-wrap:nowrap; }
-    .schedule-day { color:var(--gold);font-weight:700; }
-    .schedule-dot { color:rgba(255,255,255,0.25); }
-    .schedule-type { color:var(--cyan);font-weight:600; }
-    .schedule-countdown-val { margin-left:auto;color:#ffd84d;font-size:0.73rem;font-weight:700;white-space:nowrap;flex-shrink:0; }
-    .live-badge { display:inline-flex;align-items:center;gap:4px;background:rgba(255,45,45,0.13);border:1px solid rgba(255,45,45,0.28);color:#ff5555;font-size:0.6rem;font-weight:800;padding:2px 7px;border-radius:20px; }
-    .live-dot { width:5px;height:5px;border-radius:50%;background:#ff4444;animation:livePulse 1s infinite; }
-    @keyframes livePulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(0.6)} }
+    .sponsor-label {
+      font-size: 10px;
+      color: rgba(255, 212, 0, 0.95);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+      display: block;
+      font-family: 'Montserrat', sans-serif;
+    }
 
-    /* RECOMMENDED — horizontal scroll, portrait cards, smaller */
-    #recommended-section { margin:20px 0 0; }
-    .rec-scroll { display:flex;gap:9px;overflow-x:auto;padding:4px 12px 14px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none; }
-    .rec-scroll::-webkit-scrollbar { display:none; }
-    .rec-card { flex:0 0 115px;scroll-snap-align:start;background:var(--dark3);border-radius:var(--card-radius);overflow:hidden;text-decoration:none;color:inherit;border:1px solid rgba(255,255,255,0.07);box-shadow:0 3px 12px rgba(0,0,0,0.28);transition:all 0.22s;display:block;animation:cardEnter 0.35s ease both; }
-    .rec-card:hover { transform:translateY(-3px);border-color:var(--gold);box-shadow:var(--glow-gold); }
-    .rec-card-poster { width:100%;aspect-ratio:2/3;overflow:hidden;background:#0f1e2e; }
-    .rec-card-poster img { width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s; }
-    .rec-card:hover .rec-card-poster img { transform:scale(1.05); }
-    .rec-card-title { padding:6px 7px 8px;font-size:0.68rem;font-weight:700;color:#d8e8f5;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden; }
+    .sponsor-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 800;
+      font-family: 'Montserrat', sans-serif;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
 
-    /* FILTER BAR */
-    .filter-bar { margin:20px 0 0;padding:0 12px 4px; }
-    .filter-bar .primary { display:flex;gap:9px;margin-bottom:9px; }
-    .filter-bar .secondary { display:flex;gap:7px;flex-wrap:wrap;padding-bottom:4px; }
-    .filter-bar .secondary.hidden { display:none; }
-    .pill { padding:8px 16px;border-radius:24px;border:1.5px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);color:rgba(200,220,240,0.65);font-size:0.8rem;font-weight:700;font-family:'Montserrat',sans-serif;cursor:pointer;transition:all 0.2s;white-space:nowrap;display:flex;align-items:center;gap:6px; }
-    .pill.active { background:linear-gradient(135deg,#1a8aff,#0060cc);border-color:transparent;color:#fff;box-shadow:0 2px 12px rgba(25,143,255,0.28); }
-    .pill:hover:not(.active) { border-color:rgba(35,198,237,0.38);color:var(--cyan); }
-    .pill .flag { font-size:0.95rem;line-height:1; }
+    .sponsor-mini-logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      object-fit: cover;
+      border: 2px solid rgba(255, 212, 0, 0.4);
+      box-shadow: 0 2px 10px rgba(255, 212, 0, 0.3);
+    }
 
-    /* SERIES GRID */
-    .series-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px;padding:14px 12px; }
-    .card { background:var(--dark3);border-radius:var(--card-radius);overflow:hidden;text-decoration:none;color:inherit;border:1px solid rgba(255,255,255,0.07);box-shadow:0 3px 12px rgba(0,0,0,0.28);transition:all 0.22s;display:block;animation:cardEnter 0.35s ease both; }
-    .card:hover { transform:translateY(-3px);border-color:rgba(35,198,237,0.32);box-shadow:var(--glow-cyan); }
-    .card img { width:100%;aspect-ratio:2/3;object-fit:cover;display:block;transition:transform 0.3s; }
-    .card:hover img { transform:scale(1.04); }
-    .card .title { padding:7px 9px 9px;font-size:0.78rem;font-weight:700;color:#d8e8f5;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden; }
+    .sponsor-join-btn {
+      padding: 9px 18px;
+      background: linear-gradient(135deg, #ffd400 0%, #ffb347 100%);
+      color: #1a232b;
+      font-size: 13px;
+      font-weight: 800;
+      border-radius: 20px;
+      text-decoration: none;
+      white-space: nowrap;
+      box-shadow: 
+        0 4px 12px rgba(255, 212, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      transition: all 0.2s ease;
+      font-family: 'Montserrat', sans-serif;
+      display: inline-block;
+    }
 
-    @keyframes cardEnter { from{opacity:0;transform:translateY(10px) scale(0.97)}to{opacity:1;transform:none} }
-    ::-webkit-scrollbar { width:3px;height:3px; }
-    ::-webkit-scrollbar-track { background:transparent; }
-    ::-webkit-scrollbar-thumb { background:rgba(35,198,237,0.2);border-radius:3px; }
+    .sponsor-join-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 6px 20px rgba(255, 212, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      background: linear-gradient(135deg, #ffdb1a 0%, #ffc062 100%);
+    }
 
-    @media(max-width:380px){
-      .new-episodes-grid-2col{gap:8px;padding:0 10px 4px}
-      .series-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;padding:12px 10px}
-      .rec-card{flex:0 0 100px}
+    .sponsor-join-btn:active {
+      transform: translateY(0);
+      box-shadow: 
+        0 2px 8px rgba(255, 212, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    /* Mobile responsive for sponsor banner */
+    @media (max-width: 600px) {
+      .home-sponsor-banner {
+        margin: 12px 10px 16px;
+        padding: 11px 12px;
+      }
+      
+      .sponsor-banner-content {
+        gap: 10px;
+      }
+
+      .sponsor-icon {
+        font-size: 22px;
+      }
+      
+      .sponsor-label {
+        font-size: 9px;
+      }
+
+      .sponsor-name {
+        font-size: 14px;
+      }
+
+      .sponsor-mini-logo {
+        width: 24px;
+        height: 24px;
+      }
+      
+      .sponsor-join-btn {
+        padding: 7px 14px;
+        font-size: 11px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .sponsor-name {
+        font-size: 13px;
+      }
+
+      .sponsor-join-btn {
+        padding: 6px 12px;
+        font-size: 10px;
+      }
+    }
+    /* End Sponsor Banner Styles */
+
+    .schedule-bar {
+      display: flex; align-items: center; overflow-x: auto; gap: 16px;
+      background: #232f3e; border-radius: 9px; box-shadow: 0 1px 8px #0003;
+      padding: 7px 12px; margin: 13px 16px 6px 16px; min-height: 42px;
+    }
+    .schedule-entry {
+      display: flex; align-items: center; gap: 8px;
+      background: #101a24; border-radius: 7px; box-shadow: 0 1px 6px #0003;
+      padding: 4px 11px 4px 6px; font-family: 'Montserrat',sans-serif;
+      font-weight: 500; font-size: 0.96em; color: #ffd700; white-space: nowrap;
+      line-height: 1.25;
+    }
+    .schedule-entry img {
+      width: 27px; height: 27px; object-fit: cover; border-radius: 5px; margin-right: 4px;
+      box-shadow: 0 1px 8px #ffd70026; border: 1.2px solid #ffd70025;
+    }
+    .schedule-entry .title { color:#23c6ed;font-weight:700;margin-right:4px; }
+    .schedule-entry .days { color:#ffe493; margin-left:4px; font-size:0.92em; }
+    .schedule-entry .time { color:#ffd700; font-size:0.97em; margin-left:3px; }
+
+    .new-episodes-section {
+      background: radial-gradient(circle at 34% 36%, #232f3e 74%, #101a24 100%);
+      margin: 28px 0 16px 0; border-radius: 16px;
+      box-shadow: 0 5px 22px #0007, 0 2px 10px #ffd70033; padding: 28px 0 13px 0;
+    }
+    .new-episodes-section h2 {
+      font-family:'Montserrat',sans-serif; font-weight:700; font-size:1.17em;
+      margin:0 0 18px 26px; color:#ffd700; letter-spacing:.07em;
+      text-shadow:0 2px 8px #ffe49344, 0 1px 6px #1930407a; display:flex; align-items:center;
+    }
+    .new-episodes-grid { display:flex; flex-wrap:wrap; gap:18px; justify-content:flex-start; padding:0 24px 14px 24px; min-height:120px; }
+    .episode-card-pro {
+      background: linear-gradient(135deg,#1a232b 85%,#ffd7001b 100%);
+      border-radius:12px; box-shadow:0 3px 18px #0005, 0 1px 7px #ffd70030;
+      width:165px; min-width:110px; max-width:184px; overflow:hidden; display:flex; flex-direction:column; align-items:center; position:relative; transition:box-shadow .2s;
+    }
+    .episode-card-pro:hover { box-shadow:0 8px 32px #ffd70048, 0 4px 26px #212f4055; }
+    .episode-img-pro { width:100%; height:92px; object-fit:cover; border-radius:11px 11px 0 0; box-shadow:0 2px 10px #ffd70016; }
+    .series-title-pro { font-family:'Montserrat',sans-serif; font-weight:600; color:#23c6ed; text-align:center; font-size:1.12em; margin:10px 0 0; letter-spacing:.02em; }
+    .episode-title-pro { color:#ffd700; font-family:'Montserrat',sans-serif; font-weight:800; font-size:1.02em; text-align:center; margin:5px 0 0; letter-spacing:.01em; text-shadow:0 1px 6px #1a232b42; }
+    .new-badge-pro { background:#ffd700; color:#232f3e; font-family:'Montserrat',sans-serif; font-weight:700; font-size:.8em; border-radius:7px; padding:2px 11px; margin-left:8px; box-shadow:0 0 14px #ffd70038; }
+    .watch-btn-pro { margin:14px 0; color:#fff; background:linear-gradient(90deg,#198fff 70%, #ffd700 100%); border-radius:8px; padding:10px 30px; text-decoration:none; font-family:'Montserrat',sans-serif; font-weight:600; font-size:1em; box-shadow:0 1px 9px #198fff22; border:none; transition:background .2s; cursor:pointer; }
+    .watch-btn-pro:hover { background:linear-gradient(90deg,#ffd700 28%,#198fff 100%); color:#1a232b; box-shadow:0 3px 24px #ffd70042; }
+    @media (max-width:600px){
+      .schedule-bar{ margin:7px 4px 5px 4px; padding:6px 3px; gap:7px; min-height:32px; }
+      .schedule-entry{ padding:2px 5px 2px 2px; gap:4px; font-size:0.9em; }
+      .schedule-entry img{ width:17px;height:17px; }
+      .new-episodes-grid{ gap:7px; padding:0 6px 12px 6px; }
+      .episode-card-pro{ width:44vw; min-width:90px; }
+      .episode-img-pro{ height:60px; }
+      .new-episodes-section h2{ margin:7px 0 9px 8px; font-size:1em; }
     }
   </style>
+  <!-- OneSignal Push Notifications -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "ad485861-8839-49e2-bd21-f21c688668f6",
+    });
+  });
+</script>
+
+<script defer src="index.js"></script>
 </head>
 <body>
-
-  <div id="sidebar-overlay" class="sidebar-overlay"></div>
-
-  <!-- SIDEBAR -->
+  <!-- Sidebar -->
   <div id="sidebar" class="sidebar">
     <div class="sidebar-header-pro">
       <span class="sidebar-logo-pro">SmTv Urdu</span>
-      <button id="sidebarClose" class="sidebar-close-btn" aria-label="Close">✕</button>
+      <button id="sidebarClose" class="sidebar-close-btn" aria-label="Close menu">&times;</button>
     </div>
     <nav class="sidebar-menu-pro">
       <a href="/" class="sidebar-btn-pro">🏠 Home</a>
@@ -195,174 +304,278 @@
       <a href="https://t.me/smtv_official1" target="_blank" class="sidebar-btn-pro telegram-pro">📢 Telegram Channel</a>
       <a href="https://whatsapp.com/channel/0029Va9zAvvAYlUNRuzWqh0k" target="_blank" class="sidebar-btn-pro whatsapp-pro">💬 WhatsApp Channel</a>
     </nav>
-    <div class="sidebar-footer">SmTv Urdu © 2025 · All rights reserved</div>
-  </div>
-
-  <!-- SEARCH OVERLAY -->
-  <div id="search-overlay" role="dialog" aria-label="Search">
-    <div class="search-overlay-header">
-      <div class="search-input-wrap">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="search-overlay-input" placeholder="Search series..." autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Search">
-      </div>
-      <button id="search-close-btn" aria-label="Close">✕</button>
-    </div>
-    <div class="search-results-container">
-      <div id="search-results-label" class="search-results-label"></div>
-      <div id="search-results-grid" class="search-results-grid"></div>
-      <div id="search-empty" class="search-empty" style="display:none;">
-        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <p>No results found</p>
-      </div>
-    </div>
   </div>
 
   <div id="main-content">
-
-    <!-- HEADER -->
+    <!-- Single header (with Premium button) -->
     <header id="site-header">
-      <button id="sidebarToggle" aria-label="Open menu">☰</button>
-      <div class="header-brand">SmTv Urdu</div>
-      <button id="header-search-btn" aria-label="Search">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      </button>
-      <a class="premium-cta" href="/premium" rel="noopener">⭐ PREMIUM</a>
+      <button id="sidebarToggle" aria-label="Open menu">&#9776;</button>
+      <h1 id="mainTitle" style="display:inline-block; font-family:'Montserrat',sans-serif; font-weight:700; color:#fff; margin:0;">SmTv Urdu</h1>
+      <a class="premium-cta" href="/premium" rel="noopener">Premium</a>
     </header>
 
-    <!-- SPONSOR BANNER -->
+    <!-- Search -->
+    <div class="searchbar-container">
+      <span class="search-icon">&#128269;</span>
+      <input type="text" id="search" placeholder="Search SmTv Urdu..." autocomplete="off" aria-label="Search series">
+    </div>
+
+    <!-- 🔥 DYNAMIC Sponsor Banner -->
     <div class="home-sponsor-banner" id="homeSponsorBanner">
       <div class="sponsor-banner-content">
         <div class="sponsor-icon">📢</div>
         <div class="sponsor-info">
           <span class="sponsor-label">BROUGHT TO YOU BY</span>
           <div class="sponsor-name">
-            <img src="sponsor.png" alt="Sponsor" class="sponsor-mini-logo">
+            <img src="sponsor.png" alt="Sponsor Logo" class="sponsor-mini-logo">
             FX Reall Academy
           </div>
         </div>
-        <a href="https://t.me/+OKnw3z4Uq28wYzRk" target="_blank" class="sponsor-join-btn"
-           onclick="gtag('event','sponsor_click',{'location':'homepage_banner','sponsor':'fx_academy'});">
+        <a href="https://t.me/+OKnw3z4Uq28wYzRk" 
+           target="_blank" 
+           class="sponsor-join-btn"
+           onclick="gtag('event', 'sponsor_click', {'location': 'homepage_banner', 'sponsor': 'fx_academy'});">
           Start Earning 💰
         </a>
       </div>
     </div>
 
-    <!-- NEW EPISODES -->
-    <section class="new-episodes-section" aria-label="New Episodes">
-      <div class="section-header" style="margin-top:18px;">
-        <span>✨</span>
-        <h2>New Episodes</h2>
-        <div class="section-accent"></div>
-      </div>
-      <div id="new-episodes-grid" class="new-episodes-grid-2col" aria-live="polite"></div>
-    </section>
-
-    <!-- SCHEDULE -->
-    <section id="schedule-section" aria-label="Schedule">
-      <div class="section-header" style="margin-top:20px;">
-        <span>📅</span>
-        <h2>Schedule</h2>
-        <div class="section-accent"></div>
-      </div>
-      <div id="schedule-list" class="schedule-list"></div>
-    </section>
-
-    <!-- RECOMMENDED -->
-    <section id="recommended-section" aria-label="Recommended">
-      <div class="section-header" style="margin-top:20px;">
-        <span>⭐</span>
-        <h2>Recommended</h2>
-        <div class="section-accent"></div>
-      </div>
-      <div id="recommended-scroll" class="rec-scroll"></div>
-    </section>
-
-    <!-- FILTER BAR -->
+    <!-- Filter bar -->
     <div class="filter-bar" id="dubbed">
       <div class="primary">
-        <button id="pill-dub" class="pill active" aria-pressed="true">🌐 Dubbed</button>
-        <button id="pill-sub" class="pill" aria-pressed="false">📝 Subtitles</button>
+        <button id="pill-dub" class="pill active" aria-pressed="true">Dubbed</button>
+        <button id="pill-sub" class="pill" aria-pressed="false">Subtitles</button>
       </div>
-      <div id="sub-langs" class="secondary hidden" aria-label="Subtitle languages">
-        <button class="pill active" data-lang="en" aria-pressed="true"><span class="flag">🇬🇧</span> English</button>
-        <button class="pill" data-lang="hi" aria-pressed="false"><span class="flag">🇮🇳</span> Hindi</button>
-        <button class="pill" data-lang="ur" aria-pressed="false"><span class="flag">🇵🇰</span> Urdu</button>
-        <button class="pill" data-lang="ar" aria-pressed="false"><span class="flag">🇸🇦</span> Arabic</button>
-        <button class="pill" data-lang="sp" aria-pressed="false"><span class="flag">🇪🇸</span> Spanish</button>
+      <div id="sub-langs" class="secondary" aria-label="Subtitle languages">
+        <button class="pill" data-lang="en" aria-pressed="true">English</button>
+        <button class="pill" data-lang="hi" aria-pressed="false">Hindi</button>
+        <button class="pill" data-lang="ur" aria-pressed="false">Urdu</button>
+        <button class="pill" data-lang="ar" aria-pressed="false">Arabic</button>
+        <button class="pill" data-lang="sp" aria-pressed="false">Sapnish</button>
       </div>
     </div>
 
-    <!-- SERIES GRID -->
-    <div id="series-grid" class="series-grid" aria-live="polite"></div>
+    <!-- Schedule -->
+    <div id="schedule-bar"></div>
 
+    <!-- New Episodes -->
+    <section class="new-episodes-section" aria-label="New Episodes">
+      <h2><span style="margin-right:10px;">✨</span> New Episodes</h2>
+      <div id="new-episodes-grid" class="new-episodes-grid" aria-live="polite"></div>
+    </section>
+
+    <!-- Series grid -->
+    <div id="series-grid" class="series-grid" aria-live="polite"></div>
   </div>
 
-  <!-- Dynamic Sponsor Banner -->
+  <!-- 🔥 Dynamic Sponsor Banner Script -->
   <script>
-  (async function(){
-    try{
-      const r=await fetch('/config.json',{cache:'no-cache'});if(!r.ok)return;
-      const c=await r.json();const f=c.redirectionFeatures;
-      const b=document.getElementById('homeSponsorBanner');if(!b)return;
-      if(f.shortlink&&!f.sponsorPopup){
-        b.innerHTML=`<div class="sponsor-banner-content"><div class="sponsor-icon">📢</div><div class="sponsor-info"><span class="sponsor-label">AD SPACE AVAILABLE</span><div class="sponsor-name">Reach Thousands Daily!</div></div><a href="https://t.me/Itz_me_zain1" target="_blank" class="sponsor-join-btn" onclick="gtag('event','ad_inquiry_click',{'location':'homepage_banner'});">Contact 💬</a></div>`;
+  (async function updateSponsorBanner() {
+    try {
+      const response = await fetch('/config.json', { cache: 'no-cache' });
+      if (!response.ok) return;
+      
+      const config = await response.json();
+      const featureConfig = config.redirectionFeatures;
+      
+      const banner = document.getElementById('homeSponsorBanner');
+      if (!banner) return;
+
+      // When shortlink is ON - Show ad space available
+      if (featureConfig.shortlink && !featureConfig.sponsorPopup) {
+        banner.innerHTML = `
+          <div class="sponsor-banner-content">
+            <div class="sponsor-icon">📢</div>
+            <div class="sponsor-info">
+              <span class="sponsor-label">AD SPACE AVAILABLE</span>
+              <div class="sponsor-name">
+                Reach Thousands Daily!
+              </div>
+            </div>
+            <a href="https://t.me/Itz_me_zain1" 
+               target="_blank" 
+               class="sponsor-join-btn"
+               onclick="gtag('event', 'ad_inquiry_click', {'location': 'homepage_banner'});">
+              Contact Us 💬
+            </a>
+          </div>
+        `;
       }
-    }catch(e){}
+      // When sponsor popup is ON - Keep FX Reall Academy (already in HTML)
+      
+    } catch (error) {
+      console.warn('Banner update error:', error);
+    }
   })();
   </script>
 
-  <!-- Watch Now Shortlink Handler -->
+  <!-- 🔥 Watch Now Button Shortlink Handler -->
   <script>
-  (function(){
-    let fc=null;
-    fetch('/config.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(c=>{if(c)fc=c.redirectionFeatures;}).catch(()=>{});
-    const t=setInterval(()=>{
-      const btns=document.querySelectorAll('.ep-watch-btn');
-      if(!btns.length)return;clearInterval(t);
-      btns.forEach(btn=>{
-        const orig=btn.getAttribute('href');
-        btn.addEventListener('click',async function(e){
-          if(!fc||!fc.shortlink||fc.sponsorPopup)return;
-          e.preventDefault();
-          try{
-            const u=new URL(orig,window.location.origin);const p=new URLSearchParams(u.search);
-            let jf=`episode-data/${p.get('series')}-s${p.get('season')}`;
-            const lg=p.get('lang');if(lg&&lg!=='dub')jf+=`-${lg}`;jf+='.json';
-            const res=await fetch(jf);if(!res.ok){location.href=orig;return;}
-            const eps=await res.json();
-            const ep=eps.find(x=>String(x.ep)===String(p.get('ep')));
-            location.href=(ep&&ep.shortlink)?ep.shortlink:orig;
-          }catch(err){location.href=orig;}
+  (function setupWatchNowHandlers() {
+    let featureConfig = null;
+    
+    // Load config
+    fetch('/config.json', { cache: 'no-cache' })
+      .then(r => r.ok ? r.json() : null)
+      .then(config => {
+        if (config) featureConfig = config.redirectionFeatures;
+      })
+      .catch(() => {});
+
+    // Wait for episodes to load, then attach handlers
+    const checkInterval = setInterval(() => {
+      const watchButtons = document.querySelectorAll('.watch-btn-pro');
+      
+      if (watchButtons.length > 0) {
+        clearInterval(checkInterval);
+        
+        watchButtons.forEach(btn => {
+          // Store original href
+          const originalHref = btn.getAttribute('href');
+          
+          btn.addEventListener('click', async function(e) {
+            // Only intercept if shortlink mode is enabled
+            if (!featureConfig || !featureConfig.shortlink || featureConfig.sponsorPopup) {
+              return; // Let normal link work
+            }
+
+            e.preventDefault();
+            
+            // Extract episode data from URL params
+            try {
+              const url = new URL(originalHref, window.location.origin);
+              const params = new URLSearchParams(url.search);
+              const series = params.get('series');
+              const season = params.get('season');
+              const ep = params.get('ep');
+              const lang = params.get('lang');
+              
+              // Build episode JSON filename
+              let jsonFile = `episode-data/${series}-s${season}`;
+              if (lang && lang !== 'dub') {
+                jsonFile += `-${lang}`;
+              }
+              jsonFile += '.json';
+              
+              console.log('Fetching episode JSON:', jsonFile);
+              
+              // Fetch episode JSON to check for shortlink
+              const response = await fetch(jsonFile);
+              if (!response.ok) {
+                console.log('Episode JSON not found, using default URL');
+                window.location.href = originalHref;
+                return;
+              }
+              
+              const episodes = await response.json();
+              const episode = episodes.find(e => String(e.ep) === String(ep));
+              
+              if (episode && episode.shortlink) {
+                console.log('✅ Shortlink found:', episode.shortlink);
+                
+                if (typeof gtag !== 'undefined') {
+                  gtag('event', 'shortlink_redirect_home', {
+                    'episode': episode.title || 'Episode ' + episode.ep,
+                    'shortlink_url': episode.shortlink
+                  });
+                }
+                
+                window.location.href = episode.shortlink;
+              } else {
+                console.log('No shortlink found, going to episode page');
+                window.location.href = originalHref;
+              }
+              
+            } catch (error) {
+              console.warn('Shortlink check error:', error);
+              window.location.href = originalHref;
+            }
+          });
         });
-      });
-    },100);
-    setTimeout(()=>clearInterval(t),5000);
+      }
+    }, 100); // Check every 100ms
+    
+    // Stop checking after 5 seconds
+    setTimeout(() => clearInterval(checkInterval), 5000);
   })();
   </script>
 
   <script>
-    document.getElementById('sidebarDubbed')?.addEventListener('click',function(e){e.preventDefault();document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('active');document.body.style.overflow='';document.getElementById('pill-dub').click();});
-    document.getElementById('sidebarSubtitles')?.addEventListener('click',function(e){e.preventDefault();document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('active');document.body.style.overflow='';document.getElementById('pill-sub').click();});
+    // Sidebar filter activation logic
+    document.getElementById('sidebarDubbed').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('pill-dub').click();
+    });
+    document.getElementById('sidebarSubtitles').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('pill-sub').click();
+    });
   </script>
+  
+  <!-- Footer Include -->
+<div id="footer-placeholder"></div>
+<script>
+(async function loadFooterAndInit(){
+  // wait until page load completes (helps avoid conflicts)
+  if (document.readyState !== 'complete') {
+    await new Promise(resolve => window.addEventListener('load', resolve, { once: true }));
+  }
+  try {
+    const res = await fetch('/includes/footer.html');
+    if (!res.ok) throw new Error('Footer not found: ' + res.status);
+    const html = await res.text();
+    const ph = document.getElementById('footer-placeholder');
+    ph.innerHTML = html;
 
-  <div id="footer-placeholder"></div>
-  <script>
-  (async function(){
-    if(document.readyState!=='complete')await new Promise(r=>window.addEventListener('load',r,{once:true}));
-    try{
-      const res=await fetch('/includes/footer.html');if(!res.ok)throw 0;
-      document.getElementById('footer-placeholder').innerHTML=await res.text();
-      const nav=document.getElementById('smtv-bottom-nav');if(!nav)return;
-      const items=Array.from(nav.querySelectorAll('.nav-item'));
-      const path=window.location.pathname.toLowerCase();
-      let m=items.find(a=>{const n=(a.dataset.name||'').toLowerCase();if(n==='home'&&(path==='/'||path.includes('index')))return true;return n&&path.includes(n);});
-      if(!m){const l=localStorage.getItem('smtv_last_nav');if(l)m=items.find(a=>a.dataset.name===l);}
-      if(m)m.classList.add('active');
-      items.forEach(a=>{a.addEventListener('click',function(){items.forEach(i=>i.classList.remove('active'));this.classList.add('active');try{localStorage.setItem('smtv_last_nav',this.dataset.name);}catch(e){}const href=this.getAttribute('href');setTimeout(()=>{if(location.pathname.toLowerCase()!==new URL(href,location.origin).pathname.toLowerCase())location.href=href;},200);},{passive:true});});
-      try{const p=parseInt(getComputedStyle(document.body).paddingBottom)||0;if(p<96)document.body.style.paddingBottom='calc(96px + env(safe-area-inset-bottom))';}catch(e){}
-    }catch(e){}
-  })();
-  </script>
+    // initialize active logic and click handlers
+    const nav = document.getElementById('smtv-bottom-nav');
+    if(!nav) return;
+    const items = Array.from(nav.querySelectorAll('.nav-item'));
+    function clearActive(){ items.forEach(i=>i.classList.remove('active')); }
+
+    // match by pathname
+    const path = window.location.pathname.toLowerCase();
+    let matched = items.find(a => {
+      const name = (a.dataset.name||'').toLowerCase();
+      if (name === 'home' && (path === '/' || path.includes('index'))) return true;
+      return name && path.includes(name);
+    });
+
+    // fallback to last clicked
+    if(!matched){
+      const last = localStorage.getItem('smtv_last_nav');
+      if(last) matched = items.find(a => a.dataset.name === last);
+    }
+    if(matched) matched.classList.add('active');
+
+    // click handlers: immediate feedback + fallback navigation
+    items.forEach(a => {
+      a.addEventListener('click', function(e){
+        clearActive();
+        this.classList.add('active');
+        try { localStorage.setItem('smtv_last_nav', this.dataset.name); } catch(e){}
+        const href = this.getAttribute('href');
+        setTimeout(()=> {
+          if (location.pathname.toLowerCase() !== new URL(href, location.origin).pathname.toLowerCase()) {
+            location.href = href;
+          }
+        }, 200);
+      }, { passive: true });
+    });
+
+    // ensure body has enough bottom padding so content not hidden
+    try {
+      const curPad = parseInt(getComputedStyle(document.body).paddingBottom)||0;
+      if(curPad < 96) document.body.style.paddingBottom = 'calc(96px + env(safe-area-inset-bottom))';
+    } catch(e){}
+
+  } catch(err) {
+    console.warn('Footer load/init error:', err);
+  }
+})();
+</script>
   <script src="js/episodeNotifier.js"></script>
 </body>
 </html>
