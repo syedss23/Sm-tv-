@@ -220,7 +220,7 @@
     /* ══ HERO — full-width cinema banner ══ */
     #hero {
       position: relative; width: 100%;
-      height: 56vw; min-height: 240px; max-height: 420px;
+      height: 62vw; min-height: 260px; max-height: 460px;
       overflow: hidden; background: #050d18;
       touch-action: pan-y;
     }
@@ -236,16 +236,17 @@
     }
     @keyframes kenBurns { from{transform:scale(1.08)} to{transform:scale(1.2) translateY(-3%)} }
 
-    /* THE FIX: cover image fills 100% width AND height, no small centered box */
+    /* Hero cover — full image visible, no cropping, dark bg fills gaps */
     .hero-cover {
       position: absolute;
       top: 0; left: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      object-position: center top;
+      object-fit: contain;
+      object-position: center center;
       display: block;
       z-index: 1;
+      background: transparent;
     }
 
     /* Gradient overlay on top of image */
