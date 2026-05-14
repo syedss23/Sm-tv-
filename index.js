@@ -392,19 +392,19 @@ async function initSearch() {
 
   const SERIES = await seriesReady;
 
-  const openOverlay = () => {
+  let _scrollY = 0;
+const openOverlay = () => {
+  _scrollY = window.scrollY;
+  document.documentElement.style.setProperty('--scroll-y', `-${_scrollY}px`);
+  document.body.classList.add('search-open');
   overlay.classList.add('open');
-  document.body.style.overflow = 'hidden';
-  document.body.style.position = 'fixed';
-  document.body.style.width = '100%';
   setTimeout(() => input.focus(), 350);
   renderResults('');
 };
-  const closeOverlay = () => {
+const closeOverlay = () => {
   overlay.classList.remove('open');
-  document.body.style.overflow = '';
-  document.body.style.position = '';
-  document.body.style.width = '';
+  document.body.classList.remove('search-open');
+  window.scrollTo(0, _scrollY);
   input.value = '';
   clearBtn.classList.remove('visible');
   results.innerHTML = '';
