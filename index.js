@@ -428,7 +428,7 @@ const closeOverlay = () => {
       <a class="card" href="series.html?series=${s.slug}"
          style="animation:srchCardIn .3s ${Math.min(i*40,280)}ms both ease;opacity:1;">
         <img src="${s.poster || s.thumb || ''}" alt="${s.title}" loading="lazy" decoding="async"
-             onerror="this.style.height='110px';this.style.background='var(--card)'">
+             onerror="this.style.height='110px';this.style.aspectRatio='unset';this.style.background='var(--card)'">
         <div class="title">${s.title}</div>
       </a>`).join('');
   }
