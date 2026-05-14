@@ -393,14 +393,23 @@ async function initSearch() {
   const SERIES = await seriesReady;
 
   const openOverlay = () => {
-    overlay.classList.add('open'); document.body.style.overflow = 'hidden';
-    setTimeout(() => input.focus(), 350); renderResults('');
-  };
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.body.style.position = 'fixed';
+  document.body.style.width = '100%';
+  setTimeout(() => input.focus(), 350);
+  renderResults('');
+};
   const closeOverlay = () => {
-    overlay.classList.remove('open'); document.body.style.overflow = '';
-    input.value = ''; clearBtn.classList.remove('visible');
-    results.innerHTML = ''; status.textContent = '';
-  };
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+  document.body.style.position = '';
+  document.body.style.width = '';
+  input.value = '';
+  clearBtn.classList.remove('visible');
+  results.innerHTML = '';
+  status.textContent = '';
+};
 
   function renderResults(q) {
     const query = q.trim().toLowerCase();
