@@ -425,10 +425,10 @@ const closeOverlay = () => {
       return;
     }
     results.innerHTML = list.map((s, i) => `
-      <a class="card" href="series.html?series=${s.slug}"
-         style="animation:srchCardIn .3s ${Math.min(i*40,280)}ms both ease;opacity:1;">
+      <a class="card" href="series.html?series=${s.slug}">
         <img src="${s.poster || s.thumb || ''}" alt="${s.title}" loading="lazy" decoding="async"
-             onerror="this.style.height='110px';this.style.aspectRatio='unset';this.style.background='var(--card)'">
+             style="height:110px;min-height:110px;max-height:110px;aspect-ratio:unset;object-fit:cover;width:100%;"
+             onerror="this.style.background='var(--card)'">
         <div class="title">${s.title}</div>
       </a>`).join('');
   }
