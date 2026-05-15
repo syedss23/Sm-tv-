@@ -438,13 +438,6 @@ object-position: center center !important;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-    #search-overlay {
-  position: fixed; inset: 0; z-index: 1100;
-  background: rgba(3,7,18,.97); backdrop-filter: blur(22px);
-  display: flex; flex-direction: column;
-  transform: translateY(-100%); transition: transform .36s cubic-bezier(.22,1,.36,1);
-  position: relative; /* ADD THIS */
-    }
     .srch-empty { grid-column:1/-1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:60px 20px; color:var(--muted); }
     .srch-empty svg { opacity:.28; }
     .srch-empty p { font-size:.92rem; text-align:center; }
