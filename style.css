@@ -182,6 +182,7 @@ header{padding:14px 10px 8px 10px;border-bottom:1px solid #292a2f;position:relat
 .card{background:#262838;border-radius:8px;box-shadow:0 1.5px 6px #0003;display:block;text-decoration:none;overflow:hidden;transition:transform .17s,box-shadow .17s,background .17s;max-width:100%}
 .card:hover{background:#212345;box-shadow:0 4px 18px #0a121c20;transform:translateY(-2px) scale(1.03)}
 .card img{width:100%;aspect-ratio:6/8;min-height:108px;max-height:180px;object-fit:cover;display:block;background:#191a23;border-radius:6px 6px 0 0}
+#srch-results .card img{aspect-ratio:4/3 !important;min-height:unset !important;max-height:unset !important;height:auto !important;object-position:center center !important;border-radius:8px 8px 0 0 !important;}
 .card .title{padding:10px 4px 12px;color:#fff;font-weight:700;font-size:.95em;text-align:center;word-break:break-word;overflow-wrap:anywhere}
 @media (max-width:450px){.series-grid{grid-template-columns:repeat(2,1fr)}.card img{min-height:80px;max-height:110px}}
 
