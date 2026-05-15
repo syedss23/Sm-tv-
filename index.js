@@ -415,11 +415,14 @@ async function initSearch() {
       results.innerHTML = `<div class="srch-empty"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><p>No results for "<strong>${q.trim()}</strong>"</p></div>`;
       return;
     }
-    results.innerHTML = list.map((s, i) => `
-      <a class="card" href="series.html?series=${s.slug}"
-         style="animation:srchCardIn .3s ${Math.min(i*40,280)}ms both ease;opacity:1;">
-        <img src="${s.poster}" alt="${s.title}" loading="lazy" decoding="async">
-        <div class="title">${s.title}</div>
+    /* WITH */
+results.innerHTML = list.map((s, i) => `
+      <a class="srch-card" href="series.html?series=${s.slug}"
+         style="animation:srchCardIn .3s ${Math.min(i*40,280)}ms both ease;">
+        <div class="srch-card-img-wrap">
+          <img src="${s.poster}" alt="${s.title}" loading="lazy" decoding="async">
+        </div>
+        <div class="srch-card-title">${s.title}</div>
       </a>`).join('');
   }
 
