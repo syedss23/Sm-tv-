@@ -392,24 +392,15 @@ async function initSearch() {
 
   const SERIES = await seriesReady;
 
-  let _scrollY = 0;
-const openOverlay = () => {
-  _scrollY = window.scrollY;
-  document.documentElement.style.setProperty('--scroll-y', `-${_scrollY}px`);
-  document.body.classList.add('search-open');
-  overlay.classList.add('open');
-  setTimeout(() => input.focus(), 350);
-  renderResults('');
-};
-const closeOverlay = () => {
-  overlay.classList.remove('open');
-  document.body.classList.remove('search-open');
-  window.scrollTo(0, _scrollY);
-  input.value = '';
-  clearBtn.classList.remove('visible');
-  results.innerHTML = '';
-  status.textContent = '';
-};
+  const openOverlay = () => {
+    overlay.classList.add('open'); document.body.style.overflow = 'hidden';
+    setTimeout(() => input.focus(), 350); renderResults('');
+  };
+  const closeOverlay = () => {
+    overlay.classList.remove('open'); document.body.style.overflow = '';
+    input.value = ''; clearBtn.classList.remove('visible');
+    results.innerHTML = ''; status.textContent = '';
+  };
 
   function renderResults(q) {
     const query = q.trim().toLowerCase();
@@ -425,10 +416,9 @@ const closeOverlay = () => {
       return;
     }
     results.innerHTML = list.map((s, i) => `
-      <a class="card" href="series.html?series=${s.slug}">
-        <img src="${s.poster || s.thumb || ''}" alt="${s.title}" loading="lazy" decoding="async"
-             style="height:110px;min-height:110px;max-height:110px;aspect-ratio:unset;object-fit:cover;width:100%;"
-             onerror="this.style.background='var(--card)'">
+      <a class="card" href="series.html?series=${s.slug}"
+         style="animation:srchCardIn .3s ${Math.min(i*40,280)}ms both ease;opacity:1;">
+        <img src="${s.poster}" alt="${s.title}" loading="lazy" decoding="async">
         <div class="title">${s.title}</div>
       </a>`).join('');
   }
