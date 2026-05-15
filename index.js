@@ -167,14 +167,6 @@ async function initHero() {
 
   startAuto();
 
-  // Reset all watch buttons when user navigates back (browser back/bfcache)
-  window.addEventListener('pageshow', () => {
-    slidesEl.querySelectorAll('[data-href]').forEach(b => {
-      b.textContent = '▶ Watch Now';
-      b.style.pointerEvents = '';
-    });
-  });
-
   /*
    * SHORTLINK HANDLER — mirrors the old working code exactly.
    * Steps:
@@ -194,14 +186,8 @@ async function initHero() {
     const epNum       = btn.getAttribute('data-ep')   || '';
 
     // Show loading state
-    const origText = '▶ Watch Now';
+    const origText = btn.textContent;
     btn.textContent = '⏳ Loading...';
-    btn.style.pointerEvents = 'none';
-
-    const restoreBtn = () => {
-      btn.textContent = origText;
-      btn.style.pointerEvents = '';
-    };
 
     try {
       if (jsonSrc) {
@@ -216,7 +202,6 @@ async function initHero() {
                 shortlink_url: found.shortlink
               });
             }
-            restoreBtn(); // restore before leaving so back-nav shows correct state
             window.location.href = found.shortlink;
             return;
           }
@@ -226,8 +211,8 @@ async function initHero() {
       console.warn('Shortlink fetch error:', err);
     }
 
-    // No shortlink found — restore button then navigate
-    restoreBtn();
+    btn.textContent = origText;
+    // No shortlink — go to episode page
     window.location.href = episodeHref;
   });
 }
