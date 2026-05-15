@@ -244,18 +244,17 @@
   font-weight: 500;
   letter-spacing: .3px;
   color: currentColor;
-  transition: color .25s ease, opacity .25s ease, transform .3s var(--ease-spring);
+  transition: color .25s ease, opacity .25s ease;
   opacity: .7;
-  transform: translateY(2px);
 }
 
 /* ─── HOVER (non-active) ─────────────────────────── */
 .nav-item:not(.active):hover {
   color: var(--c-label);
-  transform: translateY(-2px);
+  transform: none;
 }
 .nav-item:not(.active):hover .icon-shell {
-  transform: scale(1.08);
+  transform: scale(1.1);
 }
 .nav-item:not(.active):hover .nav-label {
   opacity: 1;
@@ -264,12 +263,12 @@
 /* ─── ACTIVE state ───────────────────────────────── */
 .nav-item.active {
   color: var(--c-white);
-  transform: translateY(-5px);
+  transform: none;        /* stays inside the bar — pill does the work */
   pointer-events: none;
 }
 .nav-item.active .nav-label {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
   font-weight: 600;
   color: var(--c-white);
 }
@@ -280,7 +279,7 @@
 
 /* ─── Tap animation ──────────────────────────────── */
 .nav-item.tapping {
-  transform: scale(0.9) translateY(-2px);
+  transform: scale(0.92);
 }
 .nav-item.tapping .ripple-ring {
   border-color: rgba(34,211,238,.5);
