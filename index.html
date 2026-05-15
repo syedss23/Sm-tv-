@@ -73,7 +73,7 @@
   width: 100% !important;
   height: auto !important;
   max-height: none !important;
-  aspect-ratio: 16/9 !important;
+  aspect-ratio: 4/3 !important;
   object-fit: cover !important;
   object-position: center top !important;
 }
@@ -325,7 +325,7 @@
     /* ══ RECOMMENDED ══ */
     #rec-scroll { display:flex; gap:10px; padding:2px 12px 12px; overflow-x:auto; scrollbar-width:none; }
     #rec-scroll::-webkit-scrollbar { display:none; }
-    #rec-scroll .card { flex:0 0 110px; width:110px; min-width:110px; }
+    #rec-scroll .card { flex:0 0 150px; width:150px; min-width:150px; }
 
     /* ══ FILTER BAR ══ */
     .filter-bar { padding:4px 12px 0; }
@@ -361,10 +361,10 @@
     .filter-bar .secondary .pill:not(.active):hover { background:rgba(212,168,39,.14); border-color:rgba(212,168,39,.44); color:var(--white); }
 
     /* ══ SERIES GRID ══ */
-    /* NEW */
+    /* WITH */
 #series-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px; padding: 4px 12px 24px;
 }
     .skeleton { border-radius:10px; aspect-ratio:2/3; background:linear-gradient(90deg,var(--card) 25%,#1a2d45 50%,var(--card) 75%); background-size:300%; animation:skelShim 1.6s ease-in-out infinite; }
@@ -472,7 +472,6 @@
     </div>
   </div>
 
-  <div class="section-label">🎬 Series</div>
   <div id="series-grid"></div>
 
   <!-- SEARCH OVERLAY -->
