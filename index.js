@@ -185,9 +185,8 @@ async function initHero() {
     const jsonSrc     = btn.getAttribute('data-src')  || '';  // e.g. episode-data/slug-ur-s1.json
     const epNum       = btn.getAttribute('data-ep')   || '';
 
-    // Show loading state
-    const origText = btn.textContent;
-    btn.textContent = '⏳ Loading...';
+    btn.style.transform = 'scale(0.95)';
+btn.style.opacity = '0.8';
 
     try {
       if (jsonSrc) {
@@ -211,7 +210,8 @@ async function initHero() {
       console.warn('Shortlink fetch error:', err);
     }
 
-    btn.textContent = origText;
+    btn.style.transform = '';
+btn.style.opacity = '';
     // No shortlink — go to episode page
     window.location.href = episodeHref;
   });
