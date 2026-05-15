@@ -293,7 +293,7 @@ async function initRecommended() {
   if (!picks.length) picks = series.slice(0, 5);
 
   scroll.innerHTML = picks.map((s, i) => `
-    <a class="card card-anim" href="series.html?series=${s.slug}" style="flex:0 0 110px;width:110px;min-width:110px;transition-delay:${i*60}ms">
+    <a class="card card-anim" href="series.html?series=${s.slug}" style="flex:0 0 48%;width:48%;min-width:48%;transition-delay:${i*60}ms">
       <img src="${s.poster}" alt="${s.title}" loading="lazy" decoding="async">
       <div class="title">${s.title}</div>
     </a>`).join('');
