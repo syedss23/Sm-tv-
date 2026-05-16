@@ -13,1005 +13,190 @@
   <meta charset="UTF-8" />
   <title>SM-TV – Streaming</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
-  <style>
-    /* ═══════════════════════════════════════════════
-       EPISODE PAGE — CINEMATIC DARK THEME
-    ═══════════════════════════════════════════════ */
-    :root {
-      --c-bg:         #0a0d14;
-      --c-surface:    #111520;
-      --c-card:       #161b2e;
-      --c-border:     rgba(255,255,255,0.07);
-      --c-cyan:       #00d4ff;
-      --c-cyan-dim:   rgba(0,212,255,0.18);
-      --c-gold:       #ffc84a;
-      --c-gold-dim:   rgba(255,200,74,0.18);
-      --c-green:      #00e5a0;
-      --c-red:        #ff4545;
-      --c-blue:       #3d8bff;
-      --c-text:       #e8eeff;
-      --c-muted:      rgba(200,210,255,0.55);
-      --r-card:       18px;
-      --r-btn:        12px;
-      --shadow-glow:  0 0 40px rgba(0,212,255,0.12);
-    }
-
-    *, *::before, *::after { box-sizing: border-box; }
-
-    html, body {
-      margin: 0; padding: 0;
-      background: var(--c-bg);
-      color: var(--c-text);
-      font-family: 'Nunito', sans-serif;
-      overflow-x: hidden;
-      min-height: 100vh;
-    }
-
-    /* Animated background particles */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 700px 400px at 20% 10%, rgba(0,180,255,0.06) 0%, transparent 70%),
-        radial-gradient(ellipse 500px 300px at 80% 80%, rgba(255,180,60,0.05) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    #episode-view { position: relative; z-index: 1; min-height: 100vh; }
-
-    /* ── PAGE WRAPPER ── */
-    .ep-page {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 16px 14px 120px;
-      animation: pageFadeIn 0.5s ease both;
-    }
-    @keyframes pageFadeIn {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── HEADER BAR ── */
-    .ep-header {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 18px;
-      animation: slideDown 0.45s cubic-bezier(.22,.68,0,1.2) both;
-    }
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-18px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .ep-back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 9px 18px 9px 12px;
-      background: var(--c-card);
-      border: 1.5px solid rgba(0,212,255,0.35);
-      border-radius: 999px;
-      color: var(--c-cyan);
-      font-weight: 800;
-      font-size: 0.92em;
-      text-decoration: none;
-      white-space: nowrap;
-      flex-shrink: 0;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 16px rgba(0,212,255,0.08);
-    }
-    .ep-back-btn:hover {
-      background: rgba(0,212,255,0.1);
-      border-color: var(--c-cyan);
-      transform: translateX(-2px);
-      box-shadow: 0 6px 22px rgba(0,212,255,0.2);
-    }
-    .ep-back-btn svg { flex-shrink: 0; }
-
-    .ep-titles { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 0; }
-
-    .ep-series-name {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 1.55em;
-      font-weight: 700;
-      color: var(--c-cyan);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      line-height: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      text-shadow: 0 0 30px rgba(0,212,255,0.4);
-    }
-
-    .ep-episode-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.9em;
-      font-weight: 700;
-      color: var(--c-gold);
-      background: rgba(255,200,74,0.1);
-      border: 1px solid rgba(255,200,74,0.25);
-      border-radius: 999px;
-      padding: 4px 14px;
-      width: fit-content;
-    }
-
-    /* ── SPONSOR / PREMIUM BANNER ── */
-    .ep-banner {
-      border-radius: var(--r-card);
-      margin-bottom: 18px;
-      overflow: hidden;
-      animation: fadeUp 0.5s 0.1s ease both;
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Premium (shortlink) banner */
-    .ep-banner--premium {
-      background: linear-gradient(135deg, #0d2a1f 0%, #0a2030 100%);
-      border: 1.5px solid rgba(0,229,160,0.3);
-      padding: 20px 18px;
-      text-align: center;
-    }
-    .ep-banner--premium .banner-icon { font-size: 2em; margin-bottom: 8px; }
-    .ep-banner--premium .banner-title {
-      font-size: 1.15em; font-weight: 900;
-      color: var(--c-green);
-      margin: 0 0 10px;
-    }
-    .ep-banner--premium .banner-body {
-      font-size: 0.88em; color: rgba(200,240,230,0.85);
-      line-height: 1.6; margin: 0 0 14px;
-    }
-    .ep-banner--premium .banner-body b { color: #fff; }
-    .ep-banner--premium .banner-note {
-      font-size: 0.82em;
-      color: rgba(180,220,210,0.7);
-      margin-bottom: 14px;
-    }
-
-    /* Sponsor banner */
-    .ep-banner--sponsor {
-      background: linear-gradient(135deg, #111e35 0%, #0c1628 100%);
-      border: 1.5px solid rgba(0,212,255,0.3);
-      padding: 18px 16px;
-      text-align: center;
-    }
-    .sponsor-top {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
-    .sponsor-logo {
-      width: 52px; height: 52px;
-      border-radius: 14px;
-      object-fit: cover;
-      border: 2px solid rgba(255,200,74,0.6);
-      box-shadow: 0 0 20px rgba(255,200,74,0.4);
-      flex-shrink: 0;
-    }
-    .sponsor-name-block { text-align: left; }
-    .sponsor-label { font-size: 0.75em; color: var(--c-muted); font-weight: 600; }
-    .sponsor-name {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 1.4em; font-weight: 700;
-      color: var(--c-gold);
-      text-shadow: 0 0 20px rgba(255,200,74,0.6);
-    }
-    .ep-banner--sponsor .banner-body {
-      font-size: 0.87em;
-      color: rgba(220,235,255,0.85);
-      line-height: 1.65;
-      margin: 0 0 4px;
-    }
-    .ep-banner--sponsor .banner-body b { color: #fff; }
-    .ep-banner--sponsor .disclaimer {
-      font-size: 0.76em;
-      color: rgba(255,160,160,0.7);
-      margin-top: 10px;
-      padding: 8px 10px;
-      background: rgba(255,60,60,0.06);
-      border-radius: 8px;
-      border: 1px solid rgba(255,60,60,0.12);
-    }
-
-    /* ── SHARED BUTTON ── */
-    .banner-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 28px;
-      border-radius: 999px;
-      font-weight: 800;
-      font-size: 0.95em;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      letter-spacing: 0.04em;
-      transition: all 0.2s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    .banner-btn::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(255,255,255,0);
-      transition: background 0.2s;
-    }
-    .banner-btn:hover::after { background: rgba(255,255,255,0.08); }
-    .banner-btn:active { transform: scale(0.97); }
-
-    .banner-btn--green {
-      background: linear-gradient(135deg, #00b87c, #00e5a0);
-      color: #001a12;
-      box-shadow: 0 8px 24px rgba(0,229,160,0.35);
-    }
-    .banner-btn--gold {
-      background: linear-gradient(135deg, #ffb820, #ffd94a);
-      color: #1a0d00;
-      box-shadow: 0 8px 24px rgba(255,200,74,0.4);
-    }
-    .banner-btn--gold:hover { box-shadow: 0 12px 32px rgba(255,200,74,0.55); }
-
-    /* ── VIDEO EMBED BLOCKS ── */
-    .ep-player-section {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-bottom: 18px;
-      animation: fadeUp 0.5s 0.15s ease both;
-    }
-
-    .ep-player-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.78em;
-      font-weight: 800;
-      color: var(--c-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 6px;
-    }
-    .ep-player-label .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--c-cyan);
-      box-shadow: 0 0 8px var(--c-cyan);
-      animation: blink 1.8s infinite;
-    }
-    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-    .ep-embed-wrap {
-      width: 100%;
-      background: #000;
-      border-radius: var(--r-card);
-      overflow: hidden;
-      border: 1px solid var(--c-border);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5), var(--shadow-glow);
-      aspect-ratio: 16/9;
-      position: relative;
-    }
-    .ep-embed-wrap iframe {
-      width: 100% !important;
-      height: 100% !important;
-      border: none;
-      display: block;
-      background: #000;
-    }
-    .ep-embed-placeholder {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      min-height: 180px;
-      color: var(--c-muted);
-      font-size: 0.9em;
-      font-weight: 600;
-    }
-
-    /* ── ACTION BUTTONS GRID ── */
-    .ep-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 12px;
-      animation: fadeUp 0.5s 0.2s ease both;
-    }
-    .ep-actions .full-width { grid-column: 1 / -1; }
-
-    .ep-action-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-      padding: 13px 10px;
-      border-radius: var(--r-btn);
-      font-weight: 800;
-      font-size: 0.9em;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      letter-spacing: 0.02em;
-      transition: all 0.22s ease;
-      position: relative;
-      overflow: hidden;
-      text-align: center;
-      width: 100%;
-    }
-    .ep-action-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      transition: opacity 0.2s;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.15), transparent 70%);
-    }
-    .ep-action-btn:hover::before { opacity: 1; }
-    .ep-action-btn:hover { transform: translateY(-2px); }
-    .ep-action-btn:active { transform: translateY(0) scale(0.98); }
-
-    .ep-action-btn--watch3 {
-      background: linear-gradient(135deg, #c0392b, #ff4545);
-      color: #fff;
-      box-shadow: 0 6px 20px rgba(255,69,69,0.3);
-    }
-    .ep-action-btn--watch3:hover { box-shadow: 0 10px 28px rgba(255,69,69,0.45); }
-
-    .ep-action-btn--dl1 {
-      background: linear-gradient(135deg, #1a78d4, #3d8bff);
-      color: #fff;
-      box-shadow: 0 6px 20px rgba(61,139,255,0.3);
-    }
-    .ep-action-btn--dl1:hover { box-shadow: 0 10px 28px rgba(61,139,255,0.45); }
-
-    .ep-action-btn--dl2 {
-      background: linear-gradient(135deg, #00994a, var(--c-green));
-      color: #001a10;
-      box-shadow: 0 6px 20px rgba(0,229,160,0.25);
-    }
-    .ep-action-btn--dl2:hover { box-shadow: 0 10px 28px rgba(0,229,160,0.4); }
-
-    .ep-action-btn--tutorial {
-      background: linear-gradient(135deg, #1a3550, #234a63);
-      color: #8fd3ff;
-      border: 1px solid rgba(143,211,255,0.2);
-      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
-    }
-    .ep-action-btn--tutorial:hover { background: linear-gradient(135deg, #1f3d5c, #2b587a); }
-
-    .ep-action-btn--premium {
-      background: linear-gradient(135deg, #07725a, #099c7d);
-      color: #fff;
-      box-shadow: 0 6px 22px rgba(9,156,125,0.35);
-      font-size: 1em;
-      padding: 15px 10px;
-    }
-    .ep-action-btn--premium:hover { box-shadow: 0 10px 30px rgba(9,156,125,0.5); }
-
-    .ep-action-btn--disabled {
-      opacity: 0.4;
-      pointer-events: none;
-      cursor: not-allowed;
-    }
-
-    .ep-action-btn .btn-icon { font-size: 1.1em; flex-shrink: 0; }
-
-    /* ── WATCH 3 MODAL ── */
-    #watch3Modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.88);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 16px;
-      backdrop-filter: blur(6px);
-      animation: modalBgIn 0.2s ease both;
-    }
-    @keyframes modalBgIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-    #watch3Box {
-      width: 100%;
-      max-width: 900px;
-      aspect-ratio: 16/9;
-      background: #000;
-      border-radius: 16px;
-      overflow: hidden;
-      position: relative;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.8);
-      animation: modalIn 0.3s cubic-bezier(.22,.68,0,1.15) both;
-    }
-    @keyframes modalIn {
-      from { transform: scale(0.92); opacity: 0; }
-      to   { transform: scale(1);    opacity: 1; }
-    }
-    #watch3Close {
-      position: absolute;
-      top: 10px; right: 10px;
-      background: rgba(0,0,0,0.7);
-      color: #fff;
-      border: 1.5px solid rgba(255,255,255,0.2);
-      border-radius: 8px;
-      padding: 7px 12px;
-      cursor: pointer;
-      font-size: 1em;
-      font-weight: 700;
-      z-index: 3;
-      transition: background 0.15s;
-    }
-    #watch3Close:hover { background: rgba(255,60,60,0.6); }
-    #watch3Content { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #999; }
-    #watch3Content iframe { width: 100%; height: 100%; border: none; display: block; }
-
-    /* ══════════════════════════════════════════════
-       UNLOCK POPUP — REDESIGNED
-    ══════════════════════════════════════════════ */
-    #unlockPopup {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 99999;
-      padding: 16px;
-      background: rgba(5,8,15,0.75);
-      backdrop-filter: blur(10px) saturate(140%);
-      -webkit-backdrop-filter: blur(10px) saturate(140%);
-      overflow-y: auto;
-    }
-
-    .popup-container {
-      min-height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .popup-card {
-      max-width: 440px;
-      width: 100%;
-      border-radius: 24px;
-      padding: 28px 22px 22px;
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(160deg, #131a2e 0%, #0d1220 100%);
-      border: 1px solid rgba(0,212,255,0.2);
-      box-shadow: 0 30px 70px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
-      animation: popupIn 0.35s cubic-bezier(.22,.68,0,1.15) both;
-    }
-    .popup-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(0,212,255,0.6), rgba(255,200,74,0.6), transparent);
-    }
-
-    @keyframes popupIn {
-      from { opacity: 0; transform: translateY(20px) scale(0.95); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .popup-glow {
-      position: absolute;
-      top: -60px; left: 50%;
-      transform: translateX(-50%);
-      width: 300px; height: 200px;
-      border-radius: 50%;
-      background: radial-gradient(ellipse, rgba(0,212,255,0.12) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    /* Header */
-    .popup-header {
-      text-align: center;
-      margin-bottom: 22px;
-      position: relative;
-      z-index: 1;
-    }
-    .popup-lock-icon {
-      font-size: 28px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 56px; height: 56px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(0,180,255,0.05));
-      border: 1.5px solid rgba(0,212,255,0.35);
-      box-shadow: 0 0 30px rgba(0,212,255,0.25);
-      margin-bottom: 12px;
-      transition: all 0.4s ease;
-    }
-    .popup-header h2 {
-      color: #f4f8ff;
-      font-size: 1.45em;
-      margin: 0 0 5px;
-      font-weight: 900;
-      letter-spacing: 0.02em;
-    }
-    .popup-header p {
-      color: var(--c-muted);
-      font-size: 0.88em;
-      margin: 0;
-      font-weight: 600;
-    }
-
-    /* Sponsor section */
-    .popup-sponsor-section {
-      position: relative;
-      z-index: 1;
-      border-radius: 16px;
-      padding: 16px 14px;
-      margin-bottom: 14px;
-      background: rgba(0,212,255,0.04);
-      border: 1px solid rgba(0,212,255,0.14);
-    }
-    .popup-sponsor-section h3 {
-      color: var(--c-cyan);
-      font-size: 0.75em;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-weight: 800;
-      margin: 0 0 12px;
-      text-align: center;
-    }
-
-    .popup-sponsor-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-    .popup-sponsor-logo {
-      width: 44px; height: 44px;
-      border-radius: 12px;
-      object-fit: cover;
-      border: 2px solid rgba(255,200,74,0.5);
-      box-shadow: 0 0 16px rgba(255,200,74,0.3);
-    }
-    .popup-sponsor-name {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 1.35em;
-      font-weight: 700;
-      color: var(--c-gold);
-      text-shadow: 0 0 20px rgba(255,200,74,0.6);
-    }
-
-    .popup-unlock-msg {
-      color: rgba(220,235,255,0.85);
-      text-align: center;
-      font-size: 0.85em;
-      line-height: 1.6;
-      margin: 0 0 14px;
-      font-weight: 600;
-    }
-
-    /* Unlock button */
-    .popup-unlock-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 15px 22px;
-      width: 100%;
-      border-radius: 999px;
-      border: none;
-      text-decoration: none;
-      cursor: pointer;
-      font-weight: 800;
-      font-size: 0.9em;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 45%, #f093fb 100%);
-      color: #fff;
-      box-shadow: 0 10px 28px rgba(118,75,162,0.55), 0 0 20px rgba(240,147,251,0.3);
-      text-shadow: 0 1px 5px rgba(0,0,0,0.4);
-      transition: all 0.25s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    .popup-unlock-btn::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 100%);
-    }
-    .popup-unlock-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 36px rgba(118,75,162,0.7), 0 0 28px rgba(240,147,251,0.5);
-    }
-    .popup-unlock-btn:active { transform: translateY(0); }
-
-    /* How-to row */
-    .popup-howto-row {
-      display: flex;
-      justify-content: center;
-      margin-top: 10px;
-    }
-    .popup-howto-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      background: none;
-      border: 1px solid rgba(0,212,255,0.18);
-      color: #8fd3ff;
-      padding: 8px 16px;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: 0.82em;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.18s ease;
-    }
-    .popup-howto-btn:hover {
-      background: rgba(0,212,255,0.07);
-      border-color: rgba(0,212,255,0.35);
-      transform: translateY(-1px);
-    }
-
-    /* Inline video block */
-    .howto-video-block {
-      display: none;
-      margin-top: 12px;
-      border-radius: 12px;
-      overflow: hidden;
-      background: #0a0e1a;
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-    .howto-video-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-    .howto-video-title { color: #8fd3ff; font-weight: 800; font-size: 0.88em; }
-    .howto-video-close {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #fff;
-      padding: 5px 10px;
-      border-radius: 7px;
-      cursor: pointer;
-      font-size: 0.82em;
-      font-weight: 700;
-      transition: background 0.15s;
-    }
-    .howto-video-close:hover { background: rgba(255,60,60,0.3); }
-    .howto-video-caption {
-      padding: 8px 12px;
-      color: rgba(210,225,255,0.8);
-      font-size: 0.82em;
-      line-height: 1.45;
-    }
-    .howto-video-wrap {
-      position: relative;
-      width: 100%;
-      height: min(72vh, 680px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #000;
-    }
-    .howto-video-wrap iframe {
-      width: auto;
-      height: 100%;
-      max-width: 380px;
-      border: none;
-      display: block;
-      margin: 0 auto;
-    }
-    @media (min-width: 900px) {
-      .howto-video-wrap {
-        padding-bottom: 56.25%;
-        height: auto;
-      }
-      .howto-video-wrap iframe {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%;
-        height: 100%;
-        max-width: none;
-      }
-    }
-
-    /* Contact section */
-    .popup-contact-section {
-      position: relative;
-      z-index: 1;
-      margin-top: 12px;
-      border-radius: 16px;
-      padding: 14px 14px;
-      background: rgba(255,200,74,0.04);
-      border: 1px solid rgba(255,200,74,0.18);
-      text-align: center;
-    }
-    .popup-contact-section h3 {
-      color: var(--c-gold);
-      font-size: 1em;
-      margin: 0 0 4px;
-      font-weight: 900;
-    }
-    .popup-contact-section p {
-      color: rgba(230,240,255,0.8);
-      font-size: 0.82em;
-      line-height: 1.55;
-      margin: 0 0 10px;
-    }
-    .popup-contact-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 9px 22px;
-      background: linear-gradient(135deg, rgba(255,200,74,0.95), rgba(255,165,50,0.98));
-      color: #1a0d00;
-      font-weight: 800;
-      font-size: 0.85em;
-      border-radius: 999px;
-      text-decoration: none;
-      box-shadow: 0 8px 22px rgba(255,200,74,0.35);
-      transition: all 0.18s ease;
-    }
-    .popup-contact-btn:hover { transform: translateY(-1px); box-shadow: 0 12px 30px rgba(255,200,74,0.5); }
-
-    /* Loading skeleton */
-    .ep-skeleton {
-      background: linear-gradient(90deg, var(--c-card) 25%, rgba(255,255,255,0.04) 50%, var(--c-card) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: 12px;
-      height: 200px;
-    }
-    @keyframes shimmer {
-      from { background-position: 200% 0; }
-      to   { background-position: -200% 0; }
-    }
-
-    /* Responsive */
-    @media (max-width: 520px) {
-      .ep-page { padding: 12px 10px 110px; }
-      .ep-header { gap: 10px; }
-      .ep-series-name { font-size: 1.25em; }
-      .ep-actions { grid-template-columns: 1fr; }
-      .ep-actions .full-width { grid-column: 1; }
-      #unlockPopup { padding: 10px; }
-      .popup-card { padding: 22px 14px 18px; border-radius: 20px; }
-    }
-  </style>
 
   <script defer src="episode.js"></script>
 </head>
 <body>
+
+  <!-- Episode Player renders here -->
   <div id="episode-view"></div>
 
-  <!-- ══════════════ UNLOCK POPUP ══════════════ -->
-  <div id="unlockPopup" role="dialog" aria-modal="true" aria-label="Unlock Episode Popup">
-    <div class="popup-container">
+  <!-- ═══════════════════════════
+       UNLOCK POPUP
+  ════════════════════════════ -->
+  <div id="unlockPopup" role="dialog" aria-modal="true" aria-label="Unlock Episode">
+    <div class="popup-wrap">
       <div class="popup-card">
-        <div class="popup-glow"></div>
 
-        <div class="popup-header">
-          <div class="popup-lock-icon" id="lockIcon">🔒</div>
+        <!-- shine bar -->
+        <div class="popup-shine"></div>
+
+        <!-- Header -->
+        <div class="popup-head">
+          <div class="popup-lock-ring" id="lockIcon">🔒</div>
           <h2 id="popupTitle">Unlock Episode</h2>
           <p id="popupSubtitle">Episode <span id="episodeNumber">1</span></p>
         </div>
 
-        <div class="popup-sponsor-section" id="sponsorSection">
-          <h3>Episode Sponsored By</h3>
+        <!-- Sponsor box -->
+        <div class="popup-sponsor-box">
+          <div class="popup-sponsor-label">Episode Sponsored By</div>
           <div class="popup-sponsor-row">
-            <img src="sponsor.png" alt="Sponsor Logo" class="popup-sponsor-logo" />
+            <img src="sponsor.png" alt="Sponsor Logo" class="popup-sponsor-img" />
             <div class="popup-sponsor-name">FX Reall Accadmy</div>
           </div>
-          <p class="popup-unlock-msg" id="unlockMessage">
+          <p class="popup-msg" id="unlockMessage">
             Join our sponsor channel to unlock 3 episodes for 24 hours
           </p>
-
-          <a href="https://t.me/+OKnw3z4Uq28wYzRk"
-             target="_blank"
-             rel="noopener noreferrer"
-             class="popup-unlock-btn"
-             id="unlockBtn">
+          <a href="https://t.me/+OKnw3z4Uq28wYzRk" target="_blank" rel="noopener"
+             class="popup-unlock-btn" id="unlockBtn">
             <i class="fas fa-paper-plane"></i>
             <span id="btnText">Join Channel &amp; Unlock</span>
           </a>
-
-          <div class="popup-howto-row" id="howtoRow">
-            <button class="popup-howto-btn" id="openHowtoInlineBtn" type="button">
+          <div class="popup-howto-row">
+            <button class="popup-howto-btn" id="openHowtoBtn" type="button">
               <i class="fas fa-play-circle"></i> How to Unlock? (Watch Video)
             </button>
           </div>
 
-          <div class="howto-video-block" id="howtoVideoBlock" aria-hidden="true">
-            <div class="howto-video-header">
-              <div class="howto-video-title">Process of how to Unlock</div>
-              <div style="display:flex;gap:8px;align-items:center;">
-                <button class="howto-video-close" id="closeHowtoInlineBtn">✕ Close</button>
-              </div>
+          <!-- Inline how-to video -->
+          <div class="howto-block" id="howtoBlock" aria-hidden="true">
+            <div class="howto-head">
+              <span class="howto-title">How to Unlock — Quick Guide</span>
+              <button class="howto-close" id="closeHowtoBtn">✕ Close</button>
             </div>
-            <div class="howto-video-caption">
-              Ya Video dekho — Unlock kaisa karna — then tap <strong>Join Channel &amp; Unlock</strong> below.
-            </div>
+            <p class="howto-caption">Watch video, then tap <b>Join Channel &amp; Unlock</b> below.</p>
             <div class="howto-video-wrap" id="howtoVideoWrap"></div>
           </div>
         </div>
 
-        <div class="popup-contact-section">
+        <!-- Contact -->
+        <div class="popup-contact">
           <h3>⭐ Become a Sponsor</h3>
-          <p>Advertise your brand here and reach thousands of active viewers every day.</p>
-          <a href="https://t.me/itz_me_zain1" target="_blank" class="popup-contact-btn" rel="noopener noreferrer">
-            <i class="fas fa-envelope"></i>
-            Contact Us
+          <p>Advertise your brand and reach thousands of viewers daily.</p>
+          <a href="https://t.me/itz_me_zain1" target="_blank" rel="noopener" class="popup-contact-btn">
+            <i class="fas fa-envelope"></i> Contact Us
           </a>
         </div>
+
       </div>
     </div>
   </div>
 
-  <!-- ══════════════ POPUP LOGIC ══════════════ -->
+  <!-- ═══════════════════════════
+       POPUP LOGIC
+  ════════════════════════════ -->
   <script>
-  (function() {
-    const popup         = document.getElementById('unlockPopup');
-    const unlockBtn     = document.getElementById('unlockBtn');
-    const btnText       = document.getElementById('btnText');
-    const popupTitle    = document.getElementById('popupTitle');
-    const popupSubtitle = document.getElementById('popupSubtitle');
-    const episodeNumber = document.getElementById('episodeNumber');
-    const unlockMessage = document.getElementById('unlockMessage');
-    const lockIcon      = document.getElementById('lockIcon');
+  (function () {
+    const popup        = document.getElementById('unlockPopup');
+    const unlockBtn    = document.getElementById('unlockBtn');
+    const btnText      = document.getElementById('btnText');
+    const popupTitle   = document.getElementById('popupTitle');
+    const popupSub     = document.getElementById('popupSubtitle');
+    const epNumEl      = document.getElementById('episodeNumber');
+    const msgEl        = document.getElementById('unlockMessage');
+    const lockIcon     = document.getElementById('lockIcon');
+    const openHowtoBtn = document.getElementById('openHowtoBtn');
+    const howtoBlock   = document.getElementById('howtoBlock');
+    const howtoWrap    = document.getElementById('howtoVideoWrap');
+    const closeHowto   = document.getElementById('closeHowtoBtn');
 
-    const openHowtoInlineBtn  = document.getElementById('openHowtoInlineBtn');
-    const howtoVideoBlock     = document.getElementById('howtoVideoBlock');
-    const howtoVideoWrap      = document.getElementById('howtoVideoWrap');
-    const closeHowtoInlineBtn = document.getElementById('closeHowtoInlineBtn');
-
-    const rumbleEmbedUrl = 'https://rumble.com/embed/v703dzq/?pub=4ni0h4';
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const slug   = urlParams.get('series');
-    const season = urlParams.get('season');
-    const ep     = urlParams.get('ep');
-
-    if (ep) episodeNumber.textContent = ep;
-    const currentEp = parseInt(ep) || 1;
+    const RUMBLE = 'https://rumble.com/embed/v703dzq/?pub=4ni0h4';
+    const p = new URLSearchParams(window.location.search);
+    const slug = p.get('series'), season = p.get('season'), ep = p.get('ep');
+    const curEp = parseInt(ep) || 1;
+    if (ep) epNumEl.textContent = ep;
 
     let featureConfig = null;
 
-    async function loadConfig() {
+    async function loadCfg() {
       try {
-        const res = await fetch('/config.json', { cache: 'no-cache' });
-        if (res.ok) {
-          const cfg = await res.json();
-          featureConfig = cfg.redirectionFeatures;
-        } else {
-          featureConfig = { shortlink: false, sponsorPopup: true };
-        }
-      } catch {
-        featureConfig = { shortlink: false, sponsorPopup: true };
-      }
+        const r = await fetch('/config.json', { cache: 'no-cache' });
+        featureConfig = r.ok ? (await r.json()).redirectionFeatures : { shortlink: false, sponsorPopup: true };
+      } catch { featureConfig = { shortlink: false, sponsorPopup: true }; }
     }
 
-    function isEpisodeAccessible(epNum) {
+    function isAccessible(n) {
       for (let i = 0; i < 3; i++) {
-        const checkEp = epNum - i;
-        if (checkEp < 1) continue;
-        const key  = 'unlocked_' + slug + '_s' + season + '_e' + checkEp;
-        const tKey = key + '_time';
-        const t    = localStorage.getItem(tKey);
+        const c = n - i; if (c < 1) continue;
+        const k = `unlocked_${slug}_s${season}_e${c}`;
+        const t = localStorage.getItem(k + '_time');
         if (!t) continue;
         const hrs = (Date.now() - parseInt(t)) / 3600000;
-        if (hrs < 24 && localStorage.getItem(key) === 'true') return true;
-        if (hrs >= 24) { localStorage.removeItem(key); localStorage.removeItem(tKey); }
+        if (hrs < 24 && localStorage.getItem(k) === 'true') return true;
+        if (hrs >= 24) { localStorage.removeItem(k); localStorage.removeItem(k + '_time'); }
       }
       return false;
     }
 
-    async function init() {
-      await loadConfig();
-      if (featureConfig && featureConfig.sponsorPopup && !featureConfig.shortlink) {
-        if (!isEpisodeAccessible(currentEp)) {
-          setTimeout(() => { popup.style.display = 'block'; }, 500);
-        }
+    (async function init() {
+      await loadCfg();
+      if (featureConfig?.sponsorPopup && !featureConfig?.shortlink && !isAccessible(curEp)) {
+        setTimeout(() => { popup.style.display = 'block'; }, 500);
       }
-    }
-    init();
+    })();
 
-    let isProcessing = false;
-    let hasUnlocked  = false;
+    let processing = false, unlocked = false;
 
-    if (unlockBtn) {
-      unlockBtn.addEventListener('click', function(e) {
-        if (!featureConfig || !featureConfig.sponsorPopup) return;
-
-        if (hasUnlocked) {
-          e.preventDefault();
-          const key  = 'unlocked_' + slug + '_s' + season + '_e' + currentEp;
-          const tKey = key + '_time';
-          localStorage.setItem(key, 'true');
-          localStorage.setItem(tKey, Date.now().toString());
-          popup.style.display = 'none';
-          return;
-        }
-        if (isProcessing) { e.preventDefault(); return; }
-
-        isProcessing = true;
-        unlockBtn.style.opacity = '0.6';
-        unlockBtn.style.pointerEvents = 'none';
-        btnText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
-        popupTitle.textContent = 'Verifying Membership...';
-        lockIcon.textContent = '⏳';
-
-        setTimeout(() => {
-          isProcessing = false;
-          hasUnlocked  = true;
-          const ep1 = currentEp, ep2 = currentEp+1, ep3 = currentEp+2;
-
-          unlockBtn.style.opacity = '1';
-          unlockBtn.style.pointerEvents = 'auto';
-          unlockBtn.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
-          unlockBtn.style.boxShadow  = '0 10px 28px rgba(17,153,142,0.6), 0 0 28px rgba(56,239,125,0.5)';
-
-          btnText.innerHTML    = '<i class="fas fa-check-circle"></i> Unlocked! Tap to Watch';
-          popupTitle.textContent  = 'Successfully Unlocked!';
-          popupSubtitle.textContent = `Episodes ${ep1}–${ep3} available for 24h`;
-          lockIcon.textContent    = '✅';
-          unlockMessage.textContent = `🎉 Episodes ${ep1}, ${ep2}, and ${ep3} are now free for 24 hours!`;
-        }, 15000);
-      });
-    }
-
-    function openHowtoInline() {
-      if (!howtoVideoWrap.querySelector('iframe')) {
-        const iframe = document.createElement('iframe');
-        iframe.src = rumbleEmbedUrl;
-        iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
-        iframe.setAttribute('allowfullscreen', '');
-        iframe.setAttribute('referrerpolicy', 'no-referrer');
-        iframe.setAttribute('title', 'How to Unlock — quick guide');
-        howtoVideoWrap.appendChild(iframe);
+    unlockBtn?.addEventListener('click', function (e) {
+      if (!featureConfig?.sponsorPopup) return;
+      if (unlocked) {
+        e.preventDefault();
+        const k = `unlocked_${slug}_s${season}_e${curEp}`;
+        localStorage.setItem(k, 'true');
+        localStorage.setItem(k + '_time', Date.now().toString());
+        popup.style.display = 'none';
+        return;
       }
-      howtoVideoBlock.style.display = 'block';
-      howtoVideoBlock.setAttribute('aria-hidden', 'false');
+      if (processing) { e.preventDefault(); return; }
+      processing = true;
+      unlockBtn.style.opacity = '0.6';
+      unlockBtn.style.pointerEvents = 'none';
+      btnText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+      popupTitle.textContent = 'Verifying Membership...';
+      lockIcon.textContent = '⏳';
+
       setTimeout(() => {
-        document.querySelector('.popup-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 120);
-    }
+        processing = false; unlocked = true;
+        const e1 = curEp, e2 = curEp + 1, e3 = curEp + 2;
+        unlockBtn.style.cssText = 'opacity:1;pointer-events:auto;background:linear-gradient(135deg,#11998e,#38ef7d);box-shadow:0 10px 28px rgba(17,153,142,0.6);';
+        btnText.innerHTML = '<i class="fas fa-check-circle"></i> Unlocked! Tap to Watch';
+        popupTitle.textContent = 'Successfully Unlocked!';
+        popupSub.textContent = `Episodes ${e1}–${e3} available for 24h`;
+        lockIcon.textContent = '✅';
+        msgEl.textContent = `🎉 Episodes ${e1}, ${e2}, and ${e3} are now free for 24 hours!`;
+      }, 15000);
+    });
 
-    function closeHowtoInline() {
-      try {
-        if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
-        else if (document.webkitFullscreenElement) document.webkitExitFullscreen();
-      } catch {}
-      howtoVideoWrap.innerHTML = '';
-      howtoVideoBlock.style.display = 'none';
-      howtoVideoBlock.setAttribute('aria-hidden', 'true');
-    }
+    openHowtoBtn?.addEventListener('click', () => {
+      if (!howtoWrap.querySelector('iframe')) {
+        const f = document.createElement('iframe');
+        f.src = RUMBLE;
+        f.setAttribute('allow', 'autoplay; fullscreen');
+        f.setAttribute('allowfullscreen', '');
+        howtoWrap.appendChild(f);
+      }
+      howtoBlock.style.display = 'block';
+      howtoBlock.setAttribute('aria-hidden', 'false');
+    });
 
-    if (openHowtoInlineBtn)  openHowtoInlineBtn.addEventListener('click', openHowtoInline);
-    if (closeHowtoInlineBtn) closeHowtoInlineBtn.addEventListener('click', closeHowtoInline);
+    closeHowto?.addEventListener('click', () => {
+      howtoWrap.innerHTML = '';
+      howtoBlock.style.display = 'none';
+      howtoBlock.setAttribute('aria-hidden', 'true');
+    });
 
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && howtoVideoBlock.style.display === 'block') closeHowtoInline();
+      if (e.key === 'Escape' && howtoBlock.style.display === 'block') closeHowto.click();
     });
   })();
   </script>
+
 </body>
 </html>
