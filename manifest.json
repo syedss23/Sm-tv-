@@ -2,6 +2,7 @@
   "name": "SmTv Urdu",
   "short_name": "SmTv Urdu",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#030712",
   "theme_color": "#030712",
