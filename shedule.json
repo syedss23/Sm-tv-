@@ -14,7 +14,7 @@
     "day": "Thursday",
     "time": false,
     "type": "💬 Subtitled",
-    "live": false,
+    "live": true,
     "countdown": "2026-06-04T23:30:00"
   }
 ]
