@@ -456,14 +456,25 @@
   <script>
     const VPA = 'dubbedseriespremiu@ybl';
 
+    // Plan catalog — keep in sync with /premium page pricing
+    const PLANS = {
+      'monthly':            { amount: 99,   name: 'Premium · Monthly (1 month)',    tier: 'Premium'  },
+      'quarterly':          { amount: 249,  name: 'Premium · Quarterly (3 months)', tier: 'Premium'  },
+      'yearly':             { amount: 849,  name: 'Premium · Yearly (12 months)',   tier: 'Premium'  },
+      'premium+ monthly':   { amount: 169,  name: 'Premium+ · Monthly (1 month)',    tier: 'Premium+' },
+      'premium+ quarterly': { amount: 449,  name: 'Premium+ · Quarterly (3 months)', tier: 'Premium+' },
+      'premium+ yearly':    { amount: 1449, name: 'Premium+ · Yearly (12 months)',   tier: 'Premium+' }
+    };
+
     // Plan detection
     const params = new URLSearchParams(location.search);
-    const label = (params.get('label') || 'Monthly').trim();
-    const isQuarterly = label.toLowerCase().includes('quart');
-    const amount = isQuarterly ? '₹249' : '₹99';
-    const planName = isQuarterly ? 'Quarterly (3 months)' : 'Monthly (1 month)';
+    const rawLabel = (params.get('label') || 'Monthly').trim();
+    const key = rawLabel.toLowerCase();
+    const plan = PLANS[key] || PLANS['monthly'];
+    const amount = '₹' + plan.amount;
+    const planName = plan.name;
 
-    document.getElementById('headerBadge').textContent = label;
+    document.getElementById('headerBadge').textContent = plan.tier;
     document.getElementById('planName').textContent = planName;
     document.getElementById('planAmount').textContent = amount;
     document.getElementById('qrAmount').textContent = amount;
