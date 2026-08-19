@@ -279,6 +279,36 @@
     .plan-note { font-size: .74em; color: var(--txt-muted); text-align: center; margin-top: 10px; line-height: 1.5; }
     .plan-note a { color: var(--cyan); }
 
+    /* ★ TIER GROUPS (Premium+ / Premium) ★ */
+    .tier-block { margin-bottom: 26px; }
+    .tier-head { margin-bottom: 14px; }
+    .tier-title { display:flex; align-items:center; gap:9px; font-family:'Playfair Display',serif; font-size:1.18em; font-weight:700; color:#fff; }
+    .tier-flag { background:linear-gradient(135deg,var(--gold),var(--gold-lt)); color:#1a0800; font-size:.6em; font-weight:800; letter-spacing:.05em; text-transform:uppercase; padding:3px 9px; border-radius:5px; }
+    .tier-desc { font-size:.85em; color:var(--txt-muted); margin-top:6px; max-width:480px; }
+    .pricing-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+    @media (max-width:760px) { .pricing-grid-3 { grid-template-columns: 1fr 1fr; } }
+    @media (max-width:540px) { .pricing-grid-3 { grid-template-columns: 1fr; } }
+
+    .price-strike { font-size:.83em; color:var(--txt-muted); margin-top:4px; display:flex; align-items:center; gap:8px; }
+    .price-strike s { color: var(--txt-muted); opacity:.7; }
+    .price-save { background:rgba(0,217,139,.1); border:1px solid rgba(0,217,139,.28); color:var(--green); font-weight:700; font-size:.86em; padding:2px 8px; border-radius:5px; }
+
+    .plus-tag { display:inline-block; background:rgba(232,168,0,.14); border:1px solid rgba(232,168,0,.32); color:var(--gold); font-size:.6em; font-weight:800; letter-spacing:.04em; text-transform:uppercase; padding:2px 7px; border-radius:5px; vertical-align:middle; margin-left:6px; }
+    .feat-highlight { border-color: rgba(232,168,0,.32); animation: glow-gold 3.4s ease-in-out infinite; }
+
+    .tier-switch { display: inline-flex; gap: 6px; background: var(--bg3); border: 1px solid var(--border-hi); border-radius: 12px; padding: 5px; margin-bottom: 24px; }
+    .tier-switch-btn {
+      border: none; background: transparent; color: var(--txt-muted);
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: .88em;
+      padding: 9px 20px; border-radius: 8px; cursor: pointer;
+      transition: background .2s, color .2s, box-shadow .2s;
+    }
+    .tier-switch-btn.active { background: linear-gradient(135deg,var(--gold),var(--gold-lt)); color: #1a0800; box-shadow: 0 3px 14px var(--gold-glow); }
+    .tier-switch-btn:not(.active):hover { color: var(--txt); }
+    @media (max-width:420px) { .tier-switch { width: 100%; } .tier-switch-btn { flex: 1; padding: 9px 8px; } }
+
+    .price-permonth { font-size: 12px; font-weight: 600; color: var(--txt-muted); vertical-align: middle; margin-left: 6px; }
+
     /* ★ NON-REFUNDABLE NOTICE ★ */
     .policy-box {
       border-left: 3px solid var(--gold);
@@ -438,9 +468,9 @@
         SmTv Urdu Premium Membership
       </div>
       <h1>Watch More.<br><em>Enjoy Better.</em></h1>
-      <p class="hero-sub">Ad-free streaming, early episode access, and fast downloads — all in one simple membership starting at ₹99.</p>
+      <p class="hero-sub">Ad-free streaming and early episode access starting at ₹99 — or go Premium+ for fast, priority download links.</p>
       <div class="hero-cta">
-        <a class="btn-primary" href="/pay.html?label=Monthly">🚀 Get Premium Now</a>
+        <a class="btn-primary" href="/pay.html?label=Premium%2B%20Quarterly">🚀 Get Premium+ Now</a>
         <a class="btn-ghost" href="#plans">View Plans ↓</a>
       </div>
     </section>
@@ -460,10 +490,10 @@
           <h4>Early Episodes</h4>
           <p>Get new episodes before they go public. Be first — never wait again.</p>
         </div>
-        <div class="feat-card">
+        <div class="feat-card feat-highlight">
           <span class="feat-icon">📥</span>
-          <h4>Fast Downloads</h4>
-          <p>High-speed download links available to all premium members. No slow mirrors.</p>
+          <h4>Fast Downloads<span class="plus-tag">Premium+</span></h4>
+          <p>Unlock high-speed, priority download links with unlimited downloads — exclusive to Premium+ members.</p>
         </div>
         <div class="feat-card">
           <span class="feat-icon">💬</span>
@@ -479,41 +509,135 @@
     <section id="plans" class="reveal">
       <div class="sec-tag">Pricing</div>
       <div class="sec-heading">Choose Your Plan</div>
-      <div class="pricing-grid">
 
-        <!-- Quarterly -->
-        <div class="price-card featured">
-          <div class="best-badge">⭐ Best Value</div>
-          <div class="price-plan">Quarterly</div>
-          <div class="price-amount">₹249</div>
-          <div class="price-tenure">for 3 months — saves ₹48</div>
-          <ul class="price-perks">
-            <li><span class="perk-tick">✓</span> 3 months full access</li>
-            <li><span class="perk-tick">✓</span> Ad-free streaming</li>
-            <li><span class="perk-tick">✓</span> Early episode access</li>
-            <li><span class="perk-tick">✓</span> Fast downloads</li>
-            <li><span class="perk-tick">✓</span> Telegram support</li>
-          </ul>
-          <a class="btn-plan-gold" href="/pay.html?label=Quarterly">Get Quarterly Plan</a>
-          <div class="plan-note">Pay → Screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Telegram</a> → Instant access</div>
+      <!-- Tier switch -->
+      <div class="tier-switch" role="tablist">
+        <button class="tier-switch-btn active" data-tier="plus" type="button">⚡ Premium+</button>
+        <button class="tier-switch-btn" data-tier="premium" type="button">Premium</button>
+      </div>
+
+      <!-- Premium+ Tier -->
+      <div class="tier-block" id="tier-plus">
+        <div class="tier-head">
+          <div class="tier-title">⚡ Premium+ <span class="tier-flag">Recommended</span></div>
+          <p class="tier-desc">Everything in Premium — plus fast, priority download links and unlimited downloads.</p>
         </div>
+        <div class="pricing-grid pricing-grid-3">
 
-        <!-- Monthly -->
-        <div class="price-card">
-          <div class="price-plan">Monthly</div>
-          <div class="price-amount">₹99</div>
-          <div class="price-tenure">per month</div>
-          <ul class="price-perks">
-            <li><span class="perk-tick">✓</span> 1 month full access</li>
-            <li><span class="perk-tick">✓</span> Ad-free streaming</li>
-            <li><span class="perk-tick">✓</span> Early episode access</li>
-            <li><span class="perk-tick">✓</span> Fast downloads</li>
-            <li><span class="perk-tick">✓</span> Telegram support</li>
-          </ul>
-          <a class="btn-plan-outline" href="/pay.html?label=Monthly">Get Monthly Plan</a>
-          <div class="plan-note">Pay → Screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Telegram</a> → Instant access</div>
+          <!-- Premium+ Monthly -->
+          <div class="price-card">
+            <div class="price-plan">Monthly</div>
+            <div class="price-amount">₹169</div>
+            <div class="price-tenure">per month</div>
+            <ul class="price-perks">
+              <li><span class="perk-tick">✓</span> 1 month full access</li>
+              <li><span class="perk-tick">✓</span> Ad-free streaming</li>
+              <li><span class="perk-tick">✓</span> Early episode access</li>
+              <li><span class="perk-tick">✓</span> ⚡ Fast priority downloads</li>
+              <li><span class="perk-tick">✓</span> Unlimited downloads</li>
+              <li><span class="perk-tick">✓</span> Telegram support</li>
+            </ul>
+            <a class="btn-plan-outline" href="/pay.html?label=Premium%2B%20Monthly">Get Premium+ Monthly</a>
+            <div class="plan-note">Pay → Screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Telegram</a> → Instant access</div>
+          </div>
+
+          <!-- Premium+ Quarterly -->
+          <div class="price-card featured">
+            <div class="best-badge">⭐ Best Value</div>
+            <div class="price-plan">Quarterly</div>
+            <div class="price-amount">₹449</div>
+            <div class="price-strike"><s>₹507</s> <span class="price-save">Save ₹58</span></div>
+            <div class="price-tenure">for 3 months</div>
+            <ul class="price-perks">
+              <li><span class="perk-tick">✓</span> 3 months full access</li>
+              <li><span class="perk-tick">✓</span> Ad-free streaming</li>
+              <li><span class="perk-tick">✓</span> Early episode access</li>
+              <li><span class="perk-tick">✓</span> ⚡ Fast priority downloads</li>
+              <li><span class="perk-tick">✓</span> Unlimited downloads</li>
+              <li><span class="perk-tick">✓</span> Telegram support</li>
+            </ul>
+            <a class="btn-plan-gold" href="/pay.html?label=Premium%2B%20Quarterly">Get Premium+ Quarterly</a>
+            <div class="plan-note">Pay → Screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Telegram</a> → Instant access</div>
+          </div>
+
+          <!-- Premium+ Yearly -->
+          <div class="price-card featured">
+            <div class="best-badge">🔥 Max Savings</div>
+            <div class="price-plan">Yearly</div>
+            <div class="price-amount">₹1449 <span class="price-permonth">≈ ₹121/mo</span></div>
+            <div class="price-strike"><s>₹2028</s> <span class="price-save">Save ₹579</span></div>
+            <div class="price-tenure">for 12 months</div>
+            <ul class="price-perks">
+              <li><span class="perk-tick">✓</span> 12 months full access</li>
+              <li><span class="perk-tick">✓</span> Ad-free streaming</li>
+              <li><span class="perk-tick">✓</span> Early episode access</li>
+              <li><span class="perk-tick">✓</span> ⚡ Fast priority downloads</li>
+              <li><span class="perk-tick">✓</span> Unlimited downloads</li>
+              <li><span class="perk-tick">✓</span> Telegram support</li>
+            </ul>
+            <a class="btn-plan-gold" href="/pay.html?label=Premium%2B%20Yearly">Get Premium+ Yearly</a>
+            <div class="plan-note">Pay → Screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Telegram</a> → Instant access</div>
+          </div>
+
         </div>
+      </div>
 
+      <!-- Premium Tier -->
+      <div class="tier-block" id="tier-premium" style="display:none;">
+        <div class="tier-head">
+          <div class="tier-title">Premium</div>
+          <p class="tier-desc">Ad-free streaming and early access, at our lowest price. Upgrade to Premium+ anytime for fast downloads.</p>
+        </div>
+        <div class="pricing-grid pricing-grid-3">
+
+          <!-- Premium Monthly -->
+          <div class="price-card">
+            <div class="price-plan">Monthly</div>
+            <div class="price-amount">₹99</div>
+            <div class="price-tenure">per month</div>
+            <ul class="price-perks">
+              <li><span class="perk-tick">✓</span> 1 month full access</li>
+              <li><span class="perk-tick">✓</span> Ad-free streaming</li>
+              <li><span class="perk-tick">✓</span> Early episode access</li>
+              <li><span class="perk-tick">✓</span> Telegram support</li>
+            </ul>
+            <a class="btn-plan-outline" href="/pay.html?label=Monthly">Get Monthly Plan</a>
+            <div class="plan-note">Pay → Screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Telegram</a> → Instant access</div>
+          </div>
+
+          <!-- Premium Quarterly -->
+          <div class="price-card">
+            <div class="price-plan">Quarterly</div>
+            <div class="price-amount">₹249</div>
+            <div class="price-strike"><s>₹297</s> <span class="price-save">Save ₹48</span></div>
+            <div class="price-tenure">for 3 months</div>
+            <ul class="price-perks">
+              <li><span class="perk-tick">✓</span> 3 months full access</li>
+              <li><span class="perk-tick">✓</span> Ad-free streaming</li>
+              <li><span class="perk-tick">✓</span> Early episode access</li>
+              <li><span class="perk-tick">✓</span> Telegram support</li>
+            </ul>
+            <a class="btn-plan-outline" href="/pay.html?label=Quarterly">Get Quarterly Plan</a>
+            <div class="plan-note">Pay → Screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Telegram</a> → Instant access</div>
+          </div>
+
+          <!-- Premium Yearly -->
+          <div class="price-card">
+            <div class="price-plan">Yearly</div>
+            <div class="price-amount">₹849 <span class="price-permonth">≈ ₹71/mo</span></div>
+            <div class="price-strike"><s>₹1188</s> <span class="price-save">Save ₹339</span></div>
+            <div class="price-tenure">for 12 months</div>
+            <ul class="price-perks">
+              <li><span class="perk-tick">✓</span> 12 months full access</li>
+              <li><span class="perk-tick">✓</span> Ad-free streaming</li>
+              <li><span class="perk-tick">✓</span> Early episode access</li>
+              <li><span class="perk-tick">✓</span> Telegram support</li>
+            </ul>
+            <a class="btn-plan-outline" href="/pay.html?label=Yearly">Get Yearly Plan</a>
+            <div class="plan-note">Pay → Screenshot on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Telegram</a> → Instant access</div>
+          </div>
+
+        </div>
       </div>
 
       <!-- ★ NON-REFUNDABLE NOTICE ★ -->
@@ -549,7 +673,7 @@
           <div class="step-badge">1</div>
           <div class="step-body">
             <h4>Choose a Plan</h4>
-            <p>Pick Monthly or Quarterly above and tap the button to open the payment page.</p>
+            <p>Tap Premium or Premium+ above, pick a duration, and tap the button to open the payment page.</p>
           </div>
         </div>
         <div class="step-row">
@@ -622,7 +746,11 @@
         </details>
         <details>
           <summary>What do I get with Premium?</summary>
-          <p>Ad-free streaming, early episode access before public release, fast download links, and dedicated Telegram support for the full duration of your plan.</p>
+          <p>Ad-free streaming, early episode access before public release, and dedicated Telegram support for the full duration of your plan.</p>
+        </details>
+        <details>
+          <summary>What's the difference between Premium and Premium+?</summary>
+          <p>Premium+ includes everything in Premium, plus fast priority download links and unlimited downloads. If you download episodes often, Premium+ is the better value.</p>
         </details>
         <details>
           <summary>How do I pay?</summary>
@@ -647,7 +775,7 @@
     <div class="bottom-cta reveal">
       <h2>Ready to Go Premium? 🎬</h2>
       <p>Join viewers across the world enjoying ad-free, early-access streaming. Takes less than 2 minutes.</p>
-      <a class="btn-primary" href="/pay.html?label=Quarterly">⭐ Get Best Value — ₹249 for 3 Months</a>
+      <a class="btn-primary" href="/pay.html?label=Premium%2B%20Quarterly">⭐ Get Premium+ — ₹449 for 3 Months (Save ₹58)</a>
       <br>
       <a class="btn-intl" href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">
         🌍 Outside India? Message us for payment options
@@ -679,6 +807,20 @@
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
     }, { threshold: 0.07 });
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    // Premium / Premium+ tier switch
+    const tierBtns = document.querySelectorAll('.tier-switch-btn');
+    const tierPlus = document.getElementById('tier-plus');
+    const tierPremium = document.getElementById('tier-premium');
+    tierBtns.forEach(btn => {
+      btn.addEventListener('click', function () {
+        tierBtns.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const isPlus = this.dataset.tier === 'plus';
+        tierPlus.style.display = isPlus ? '' : 'none';
+        tierPremium.style.display = isPlus ? 'none' : '';
+      });
+    });
   </script>
 
   <div id="footer-placeholder"></div>
