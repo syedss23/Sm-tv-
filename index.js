@@ -86,7 +86,10 @@ async function initSponsorBanner() {
   const b = document.getElementById('sponsor-banner');
   if (!b) return;
   b.innerHTML = `
-    <span class="spn-icon">🕌</span>
+    <div class="spn-logo-wrap">
+      <div class="spn-logo-ring"></div>
+      <img class="spn-logo" src="/assets/sponsor-logo.png" alt="Sponsor logo">
+    </div>
     <div class="spn-info">
       <span class="spn-label">Sponsored</span>
       <span class="spn-name">Muslim Marriage Bureau – Find Your Halal Life Partner</span>
