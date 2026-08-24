@@ -83,7 +83,6 @@ function initSidebar() {
    SPONSOR BANNER
    ============================================================ */
 async function initSponsorBanner() {
-async function initSponsorBanner() {
   const b = document.getElementById('sponsor-banner');
   if (!b) return;
   b.innerHTML = `
