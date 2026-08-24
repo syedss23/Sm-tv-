@@ -83,21 +83,17 @@ function initSidebar() {
    SPONSOR BANNER
    ============================================================ */
 async function initSponsorBanner() {
-  const config = await configReady;
-  if (!config?.redirectionFeatures) return;
-  const rf = config.redirectionFeatures;
-  if (rf.shortlink === true && rf.sponsorPopup === false) {
-    const b = document.getElementById('sponsor-banner');
-    if (!b) return;
-    b.innerHTML = `
-      <span class="spn-icon">📢</span>
-      <div class="spn-info">
-        <span class="spn-label">Ad Space Available</span>
-        <span class="spn-name">Reach Thousands Daily</span>
-      </div>
-      <a href="https://t.me/Itz_me_zain1" target="_blank" rel="noopener" class="spn-btn"
-         onclick="gtag('event','ad_inquiry_click',{location:'homepage_banner'});">Contact 💬</a>`;
-  }
+async function initSponsorBanner() {
+  const b = document.getElementById('sponsor-banner');
+  if (!b) return;
+  b.innerHTML = `
+    <span class="spn-icon">🕌</span>
+    <div class="spn-info">
+      <span class="spn-label">Sponsored</span>
+      <span class="spn-name">Muslim Marriage Bureau – Find Your Halal Life Partner</span>
+    </div>
+    <a href="https://wa.me/919285411627" target="_blank" rel="noopener" class="spn-btn"
+       onclick="gtag('event','sponsor_click',{location:'homepage_banner',sponsor:'muslim_marriage_bureau'});">Register Now</a>`;
 }
 
 /* ============================================================
