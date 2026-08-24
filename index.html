@@ -71,14 +71,20 @@
     .hdr-search-btn:hover{background:rgba(26,143,255,.2);box-shadow:0 0 18px rgba(26,143,255,.4);transform:scale(1.08)}
     .hdr-premium{display:flex;align-items:center;gap:4px;padding:5px 11px;background:linear-gradient(90deg,var(--gold),var(--gold-lt));color:#0a0d14;font-size:.74rem;font-weight:700;border-radius:20px;text-decoration:none;white-space:nowrap;flex-shrink:0;animation:premPulse 2.5s ease-in-out infinite}
     @keyframes premPulse{0%,100%{box-shadow:0 0 8px rgba(212,168,39,.4)}50%{box-shadow:0 0 24px rgba(212,168,39,.82),0 0 44px rgba(212,168,39,.2)}}
-    #sponsor-banner{margin:10px 12px;padding:10px 13px;border-radius:12px;background:linear-gradient(135deg,rgba(212,168,39,.08),rgba(240,200,74,.04));border:1px solid rgba(212,168,39,.35);display:flex;align-items:center;gap:10px;position:relative;overflow:hidden}
-    #sponsor-banner::after{content:'';position:absolute;top:0;left:-130%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(212,168,39,.1),transparent);animation:spnShim 3s ease-in-out infinite}
-    @keyframes spnShim{0%{left:-130%}100%{left:210%}}
-    .spn-icon{font-size:1.2rem;flex-shrink:0}.spn-info{flex:1;min-width:0}
-    .spn-label{font-size:.64rem;font-weight:700;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;display:block}
-    .spn-name{font-size:.9rem;font-weight:700;color:var(--white)}
-    .spn-btn{padding:6px 13px;background:linear-gradient(90deg,var(--gold),var(--gold-lt));color:#0a0d14;font-size:.78rem;font-weight:800;border-radius:20px;text-decoration:none;white-space:nowrap;flex-shrink:0;position:relative;z-index:1;transition:box-shadow .2s,transform .2s}
-    .spn-btn:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(212,168,39,.5)}
+    #sponsor-banner{margin:10px 12px;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,rgba(212,168,39,.1),rgba(240,200,74,.05));border:1px solid rgba(212,168,39,.4);display:flex;align-items:center;gap:12px;position:relative;overflow:hidden;animation:snBannerIn .6s cubic-bezier(.22,1,.36,1) both}
+@keyframes snBannerIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+#sponsor-banner::after{content:'';position:absolute;top:0;left:-130%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(212,168,39,.15),transparent);animation:spnShim 3s ease-in-out infinite}
+@keyframes spnShim{0%{left:-130%}100%{left:210%}}
+.spn-logo-wrap{position:relative;width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.spn-logo-ring{position:absolute;inset:-4px;border-radius:50%;border:1.5px dashed rgba(212,168,39,.5);animation:spnSpin 8s linear infinite}
+@keyframes spnSpin{to{transform:rotate(360deg)}}
+.spn-logo{width:44px;height:44px;border-radius:50%;object-fit:cover;box-shadow:0 0 14px rgba(212,168,39,.5);position:relative;z-index:1}
+.spn-info{flex:1;min-width:0}
+.spn-label{font-size:.64rem;font-weight:700;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;display:block}
+.spn-name{font-size:.9rem;font-weight:700;color:var(--white);line-height:1.3}
+.spn-btn{padding:7px 15px;background:linear-gradient(90deg,var(--gold),var(--gold-lt));color:#0a0d14;font-size:.78rem;font-weight:800;border-radius:20px;text-decoration:none;white-space:nowrap;flex-shrink:0;position:relative;z-index:1;transition:box-shadow .2s,transform .2s;animation:spnBtnPulse 2.4s ease-in-out infinite}
+@keyframes spnBtnPulse{0%,100%{box-shadow:0 0 6px rgba(212,168,39,.35)}50%{box-shadow:0 0 18px rgba(212,168,39,.75)}}
+.spn-btn:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(212,168,39,.6)}
     #hero{position:relative;width:100%;height:56vw;min-height:240px;max-height:420px;overflow:hidden;background:#050d18;touch-action:pan-y}
     .hero-slide{position:absolute;inset:0;opacity:0;transition:opacity .85s ease;pointer-events:none}
     .hero-slide.active{opacity:1;pointer-events:all}
@@ -359,7 +365,10 @@
   </header>
 
   <div id="sponsor-banner">
-    <span class="spn-icon">🕌</span>
+    <div class="spn-logo-wrap">
+      <div class="spn-logo-ring"></div>
+      <img class="spn-logo" src="/assets/sponsor-logo.png" alt="Sponsor logo">
+    </div>
     <div class="spn-info">
       <span class="spn-label">Sponsored</span>
       <span class="spn-name">Muslim Marriage Bureau – Find Your Halal Life Partner</span>
