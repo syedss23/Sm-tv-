@@ -1,19 +1,28 @@
-// episode.js — SM-TV (Complete Clean Rewrite)
+// episode.js — SM-TV (Complete Clean Rewrite, now with movie support)
 
 const params    = new URLSearchParams(window.location.search);
 const slug      = params.get('series');
 const season    = params.get('season');
 const epNum     = params.get('ep');
 const source    = params.get('source');
+const movieSlug = params.get('movie');
+const isMovie   = !!movieSlug;
 const container = document.getElementById('episode-view') || document.body;
 
-if (!slug || !epNum) {
+if (!isMovie && (!slug || !epNum)) {
   container.innerHTML = `<div style="color:#fff;padding:40px;text-align:center;">⚠️ Episode not found.</div>`;
+  throw new Error('Missing required param');
+}
+if (isMovie && !movieSlug) {
+  container.innerHTML = `<div style="color:#fff;padding:40px;text-align:center;">⚠️ Movie not found.</div>`;
   throw new Error('Missing required param');
 }
 
 let jsonFile, backUrl;
-if (season) {
+if (isMovie) {
+  jsonFile = `movie-data/${movieSlug}.json`;
+  backUrl  = `movie.html?movie=${movieSlug}`;
+} else if (season) {
   const isBarbarossaS1S2 = slug === 'barbarossa' && season === '1' && source === '2';
   jsonFile = isBarbarossaS1S2
     ? `episode-data/${slug}-s${season}-source2.json`
@@ -50,9 +59,9 @@ function getBannerHTML() {
         <div class="smtv-banner-icon">🌟</div>
         <div class="smtv-banner-title">Want Ad-Free Direct Access?</div>
         <div class="smtv-banner-body">
-          For <b>direct episodes</b> with <b>ad-free downloads</b>, join our <b>Premium Channel!</b><br>
-          Get instant access to all episodes without any ads or shortlinks.<br><br>
-          <b>Note:</b> Some episodes' <b>Download Server 2</b> links have expired.
+          For <b>direct ${isMovie ? 'movies' : 'episodes'}</b> with <b>ad-free downloads</b>, join our <b>Premium Channel!</b><br>
+          Get instant access to all ${isMovie ? 'movies' : 'episodes'} without any ads or shortlinks.<br><br>
+          <b>Note:</b> Some ${isMovie ? 'movies\'' : 'episodes\''} <b>Download Server 2</b> links have expired.
           Please use <b>Download Server 1</b> for reliable downloads.
         </div>
         <a href="${PREMIUM_CHANNEL_URL}" target="_blank" rel="noopener" class="smtv-banner-btn smtv-btn-green">
@@ -68,7 +77,7 @@ function getBannerHTML() {
         <div class="smtv-sponsor-top">
           <img src="sponsor.png" alt="Sponsor Logo" class="smtv-sponsor-img" />
           <div class="smtv-sponsor-info">
-            <div class="smtv-sponsor-label">Episode Sponsored By</div>
+            <div class="smtv-sponsor-label">${isMovie ? 'Movie' : 'Episode'} Sponsored By</div>
             <div class="smtv-sponsor-name">FX Reall Accadmy</div>
           </div>
         </div>
@@ -123,12 +132,16 @@ function patchIframes(html) {
 
   try {
     const [seriesList, episodes] = await Promise.all([
-      fetch('series.json').then(r => r.ok ? r.json() : []),
+      fetch(isMovie ? 'movies.json' : 'series.json').then(r => r.ok ? r.json() : []),
       fetch(jsonFile).then(r => r.ok ? r.json() : [])
     ]);
 
-    const meta = Array.isArray(seriesList) ? seriesList.find(s => s.slug === slug) : null;
-    const ep   = Array.isArray(episodes)   ? episodes.find(e => String(e.ep) === String(epNum)) : null;
+    const meta = Array.isArray(seriesList)
+      ? seriesList.find(s => s.slug === (isMovie ? movieSlug : slug))
+      : null;
+    const ep = Array.isArray(episodes)
+      ? (isMovie ? episodes[0] : episodes.find(e => String(e.ep) === String(epNum)))
+      : null;
 
     if (!ep) {
       container.innerHTML = `
@@ -140,16 +153,17 @@ function patchIframes(html) {
             </svg>Back
           </a>
           <div style="text-align:center;padding:60px 20px;color:rgba(200,210,255,0.6);">
-            🔍 Episode ${epNum} not found in data.
+            🔍 ${isMovie ? 'Movie' : `Episode ${epNum}`} not found in data.
           </div>
         </div>`;
       return;
     }
 
+    const rawSlug = isMovie ? movieSlug : slug;
     const seriesTitle = meta
       ? meta.title
-      : slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-    const epTitle   = ep.title || `Episode ${ep.ep}`;
+      : rawSlug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    const epTitle   = isMovie ? 'Movie' : (ep.title || `Episode ${ep.ep}`);
     const hasS3     = !!(ep.embed3 || ep.watch3);
     const banner    = getBannerHTML();
     const embed1    = patchIframes(ep.embed);
@@ -296,8 +310,8 @@ function patchIframes(html) {
     });
 
     if (typeof gtag !== 'undefined') {
-      gtag('event', 'episode_view', {
-        episode: `${slug}_s${season || '0'}e${epNum}`,
+      gtag('event', isMovie ? 'movie_view' : 'episode_view', {
+        [isMovie ? 'movie' : 'episode']: isMovie ? movieSlug : `${slug}_s${season || '0'}e${epNum}`,
         config: featureConfig?.shortlink ? 'shortlink' : 'sponsor'
       });
     }
