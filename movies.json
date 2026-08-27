@@ -1,20 +1,20 @@
 [
   {
-    "slug": "example-movie-en-sub",
-    "movieId": "example-movie",
-    "title": "Example Movie (English Subtitles)",
-    "poster": "example-movie-poster.jpg",
-    "desc": "A short one or two sentence description of the movie goes here.",
+    "slug": "saruhan-en-sub",
+    "movieId": "saruhan",
+    "title": "Saruhan (English Subtitles)",
+    "poster": "https://i.ibb.co/v4QGFvzg/saruhan.webp",
+    "desc": "Saruhan is a historical detective thriller directed by Emre Konuk. The story centers on themes of justice, political conspiracy, and administrative corruption in the early 17th-century Ottoman Empire.",
     "track": "sub",
     "subLang": "en",
     "shortlink": "https://your-shortlink-service.com/xxxxx"
   },
   {
-    "slug": "example-movie-hi-dub",
-    "movieId": "example-movie",
-    "title": "Example Movie (Hindi Dubbed)",
-    "poster": "example-movie-poster.jpg",
-    "desc": "A short one or two sentence description of the movie goes here.",
+    "slug": "saruhan-hi-dub",
+    "movieId": "saruhan",
+    "title": "Saruhan (Hindi Dubbed)",
+    "poster": "https://i.ibb.co/v4QGFvzg/saruhan.webp",
+    "desc": "Saruhan is a historical detective thriller directed by Emre Konuk. The story centers on themes of justice, political conspiracy, and administrative corruption in the early 17th-century Ottoman Empire.",
     "track": "dubbed",
     "subLang": "hi",
     "shortlink": "https://your-shortlink-service.com/yyyyy"
