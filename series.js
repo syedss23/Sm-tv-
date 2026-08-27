@@ -268,10 +268,26 @@
           </div>
         </section>
 
+        <div class="new-here-card">
+          <div class="new-here-left">
+            <span class="new-here-badge">🆕 NEW HERE?</span>
+            <p class="new-here-title">How to Watch Free Episodes</p>
+          </div>
+          <button type="button" class="watch-guide-btn" id="watchGuideBtn">▶ WATCH GUIDE</button>
+        </div>
+
         <nav class="pro-seasons-tabs-pro" id="pro-seasons-tabs"></nav>
         <div id="source-selector-container" style="display:none;"></div>
         <section class="pro-episodes-row-wrap-pro" id="pro-episodes-row-wrap"></section>
       `;
+
+      const watchGuideBtn = document.getElementById('watchGuideBtn');
+      if (watchGuideBtn) {
+        watchGuideBtn.addEventListener('click', function () {
+          const target = document.getElementById('how-to-watch');
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
 
       let seasons = [];
       if (typeof meta.seasons === 'number') {
@@ -402,11 +418,13 @@ return `
           }).join('');
 
           const tutorialBlock = `
-            <div class="pro-tutorial-title">How to Watch Episodes</div>
-            <div class="pro-video-frame-wrap">${HOWTO_PROCESS_1}</div>
-            <div style="height:14px"></div>
-            <div class="pro-tutorial-title" style="margin-top:12px;">How to Watch (Old Process)</div>
-            <div class="pro-video-frame-wrap">${HOWTO_PROCESS_2}</div>
+            <div class="howto-section" id="how-to-watch">
+              <div class="pro-tutorial-title">How to Watch Episodes</div>
+              <div class="pro-video-frame-wrap">${HOWTO_PROCESS_1}</div>
+              <div style="height:14px"></div>
+              <div class="pro-tutorial-title" style="margin-top:12px;">How to Watch (Old Process)</div>
+              <div class="pro-video-frame-wrap">${HOWTO_PROCESS_2}</div>
+            </div>
           `;
 
           wrap.innerHTML = `<div class="pro-episodes-row-pro" role="list">${cardsHtml}</div>` + tutorialBlock;
