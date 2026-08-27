@@ -13,7 +13,7 @@
 
   const HOWTO_PROCESS_1 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v6yg45g/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
   const HOWTO_PROCESS_2 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v6yg466/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
-
+  const HOWTO_ADBLOCK = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v7cji0k/?pub=4qdqa6" frameborder="0" allowfullscreen></iframe>`;
   // LOAD CONFIG.JSON AT START
   async function loadFeatureConfig() {
     try {
@@ -421,13 +421,34 @@ return `
             <div class="howto-section" id="how-to-watch">
               <div class="pro-tutorial-title">How to Watch Episodes</div>
               <div class="pro-video-frame-wrap">${HOWTO_PROCESS_1}</div>
+
+              <button type="button" class="adblock-guide-btn" id="adblockGuideBtn">
+                🛡️ Ads Not Skipping? Watch Adblocker Fix
+              </button>
+              <div class="pro-video-frame-wrap adblock-frame-wrap" id="adblockFrameWrap" style="display:none;">
+                ${HOWTO_ADBLOCK}
+              </div>
+
               <div style="height:14px"></div>
               <div class="pro-tutorial-title" style="margin-top:12px;">How to Watch (Old Process)</div>
               <div class="pro-video-frame-wrap">${HOWTO_PROCESS_2}</div>
             </div>
           `;
-
           wrap.innerHTML = `<div class="pro-episodes-row-pro" role="list">${cardsHtml}</div>` + tutorialBlock;
+
+          // ADBLOCKER VIDEO TOGGLE
+          const adblockBtn = wrap.querySelector('#adblockGuideBtn');
+          const adblockFrame = wrap.querySelector('#adblockFrameWrap');
+          if (adblockBtn && adblockFrame) {
+            adblockBtn.addEventListener('click', function () {
+              const isOpen = adblockFrame.style.display !== 'none';
+              adblockFrame.style.display = isOpen ? 'none' : 'block';
+              adblockBtn.classList.toggle('active', !isOpen);
+              if (!isOpen) {
+                adblockFrame.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              }
+            });
+          }
 
           // ADD CLICK HANDLERS TO EPISODE CARDS
           const episodeCards = wrap.querySelectorAll('.pro-episode-card-pro');
