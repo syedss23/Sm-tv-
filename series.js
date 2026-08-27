@@ -273,7 +273,7 @@
             <span class="new-here-badge">🆕 NEW HERE?</span>
             <p class="new-here-title">How to Watch Free Episodes</p>
           </div>
-          <button type="button" class="watch-guide-btn" id="watchGuideBtn">▶ WATCH GUIDE</button>
+          <button type="button" class="watch-guide-btn" id="watchGuideBtn">▶ WATCH FREE</button>
         </div>
 
         <nav class="pro-seasons-tabs-pro" id="pro-seasons-tabs"></nav>
