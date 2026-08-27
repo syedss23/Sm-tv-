@@ -26,13 +26,13 @@
     <span class="dot"></span>
   </a>
 
-  <a href="/clips.html" class="nav-item" data-name="clips" aria-label="Clips">
+  <a href="/movies.html" class="nav-item" data-name="movies" aria-label="Movies">
     <span class="icon-wrap">
       <span class="icon-bg"></span>
-      <i class="fa-solid fa-circle-play"></i>
+      <i class="fa-solid fa-clapperboard"></i>
       <span class="burst"></span>
     </span>
-    <span class="label">Clips</span>
+    <span class="label">Movies</span>
     <span class="dot"></span>
   </a>
 
@@ -273,7 +273,52 @@
 .nav-item[data-name="premium"].active .icon-wrap::after {
   background: rgba(255,208,48,0.30);
 }
+/* ─── MOVIES overrides ─── */
+.nav-item[data-name="movies"] i { color: #c084fc; }
+.nav-item[data-name="movies"] .icon-bg {
+  background: linear-gradient(135deg, #d946ef, #7c3aed);
+}
+.nav-item[data-name="movies"].active i { color: #1a0522; }
+.nav-item[data-name="movies"] .dot {
+  background: linear-gradient(135deg, #d946ef, #7c3aed);
+  box-shadow: 0 0 8px rgba(217,70,239,0.7);
+}
+.nav-item[data-name="movies"].active .icon-wrap::after {
+  background: rgba(217,70,239,0.30);
+}
+.nav-item[data-name="movies"] .burst::before,
+.nav-item[data-name="movies"] .burst::after {
+  background: rgba(217,70,239,0.30);
+}
 
+/* Spinning film-reel ring while active */
+.nav-item[data-name="movies"].active .icon-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(217,70,239,0.55);
+  animation: reelSpin 3.2s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes reelSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Clapperboard snap on tap */
+.nav-item[data-name="movies"].clap-play i {
+  animation: clapSnap 0.42s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+@keyframes clapSnap {
+  0%   { transform: rotate(0deg); }
+  30%  { transform: rotate(-22deg); }
+  55%  { transform: rotate(8deg); }
+  75%  { transform: rotate(-4deg); }
+  100% { transform: rotate(0deg); }
+}
 /* ─── Burst particles ─── */
 .burst {
   position: absolute;
@@ -373,8 +418,8 @@
     '/index.html':      'home',
     '/seriesbar.html':  'series',
     '/series':          'series',
-    '/clips.html':      'clips',
-    '/clips':           'clips',
+    '/movies.html':     'movies',
+    '/movies':           'movies',
     '/premium.html':    'premium',
     '/premium':         'premium',
     '/more.html':       'more',
@@ -392,6 +437,13 @@
         void item.offsetWidth; // force reflow
         item.classList.add('burst-play');
         setTimeout(() => item.classList.remove('burst-play'), 600);
+
+        if (name === 'movies') {
+          item.classList.remove('clap-play');
+          void item.offsetWidth;
+          item.classList.add('clap-play');
+          setTimeout(() => item.classList.remove('clap-play'), 450);
+        }
       }
     });
   }
