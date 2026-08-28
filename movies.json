@@ -6,8 +6,7 @@
     "poster": "https://i.ibb.co/v4QGFvzg/saruhan.webp",
     "desc": "Saruhan is a historical detective thriller directed by Emre Konuk. The story centers on themes of justice, political conspiracy, and administrative corruption in the early 17th-century Ottoman Empire.",
     "track": "sub",
-    "subLang": "en",
-    "shortlink": "https://your-shortlink-service.com/xxxxx"
+    "subLang": "en"
   },
   {
     "slug": "saruhan-hi-dub",
@@ -16,7 +15,6 @@
     "poster": "https://i.ibb.co/v4QGFvzg/saruhan.webp",
     "desc": "Saruhan is a historical detective thriller directed by Emre Konuk. The story centers on themes of justice, political conspiracy, and administrative corruption in the early 17th-century Ottoman Empire.",
     "track": "dubbed",
-    "subLang": "hi",
-    "shortlink": "https://your-shortlink-service.com/yyyyy"
+    "subLang": "hi"
   }
 ]
