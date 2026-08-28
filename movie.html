@@ -136,6 +136,16 @@
       return;
     }
 
+    let movieShortlink = null;
+    try {
+      const dr = await fetch(`/movie-data/${movieSlug}.json`, { cache:'no-cache' });
+      if (dr.ok) {
+        const data = await dr.json();
+        const entry = Array.isArray(data) ? data[0] : null;
+        if (entry && entry.shortlink) movieShortlink = entry.shortlink;
+      }
+    } catch (e) { /* no playback data yet — Watch Now will fall through to episode.html */ }
+
     document.title = `${movie.title} – SmTv Urdu`;
 
     detailsEl.innerHTML = `
@@ -201,8 +211,8 @@
         if (typeof gtag !== 'undefined') {
           gtag('event', 'movie_watch_click', { 'movie': movieSlug });
         }
-        if (featureConfig && featureConfig.shortlink && !featureConfig.sponsorPopup && movie.shortlink) {
-          window.location.href = movie.shortlink;
+        if (featureConfig && featureConfig.shortlink && !featureConfig.sponsorPopup && movieShortlink) {
+          window.location.href = movieShortlink;
         } else {
           window.location.href = `episode.html?movie=${encodeURIComponent(movieSlug)}`;
         }
