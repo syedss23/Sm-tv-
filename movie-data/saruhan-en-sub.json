@@ -7,6 +7,6 @@
     "watch3": "https://your-server-3-external-player-link.com",
     "download": "https://t.me/yourchannel/123",
     "download2": "https://your-download-server-2-link.com",
-    "shortlink": "https://your-shortlink-service.com/xxxxx"
+    "shortlink": false
   }
 ]
