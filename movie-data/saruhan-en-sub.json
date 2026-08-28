@@ -1,0 +1,12 @@
+[
+  {
+    "ep": 1,
+    "title": "Saruhan (English Subtitles)",
+    "embed": "<iframe src=\"YOUR_SERVER_1_EMBED_URL\" allowfullscreen></iframe>",
+    "embed2": "<iframe src=\"YOUR_SERVER_2_EMBED_URL\" allowfullscreen></iframe>",
+    "watch3": "https://your-server-3-external-player-link.com",
+    "download": "https://t.me/yourchannel/123",
+    "download2": "https://your-download-server-2-link.com",
+    "shortlink": "https://your-shortlink-service.com/xxxxx"
+  }
+]
