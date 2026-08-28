@@ -274,23 +274,33 @@
   background: rgba(255,208,48,0.30);
 }
 /* ─── MOVIES overrides ─── */
-.nav-item[data-name="movies"] i { color: #c084fc; }
+.nav-item[data-name="movies"] i { color: #6366f1; }
 .nav-item[data-name="movies"] .icon-bg {
-  background: linear-gradient(135deg, #d946ef, #7c3aed);
+  background: linear-gradient(135deg, #3730e6, #4f46e5);
 }
-.nav-item[data-name="movies"].active i { color: #1a0522; }
+.nav-item[data-name="movies"].active i { color: #eef0ff; }
 .nav-item[data-name="movies"] .dot {
-  background: linear-gradient(135deg, #d946ef, #7c3aed);
-  box-shadow: 0 0 8px rgba(217,70,239,0.7);
+  background: linear-gradient(135deg, #3730e6, #4f46e5);
+  box-shadow: 0 0 8px rgba(79,70,229,0.7);
 }
 .nav-item[data-name="movies"].active .icon-wrap::after {
-  background: rgba(217,70,239,0.30);
+  background: rgba(79,70,229,0.30);
 }
 .nav-item[data-name="movies"] .burst::before,
 .nav-item[data-name="movies"] .burst::after {
-  background: rgba(217,70,239,0.30);
+  background: rgba(79,70,229,0.30);
 }
 
+/* Spinning film-reel ring while active */
+.nav-item[data-name="movies"].active .icon-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(79,70,229,0.55);
+  animation: reelSpin 3.2s linear infinite;
+  pointer-events: none;
+}
 /* Spinning film-reel ring while active */
 .nav-item[data-name="movies"].active .icon-wrap::before {
   content: '';
