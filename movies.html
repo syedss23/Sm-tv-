@@ -14,16 +14,17 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:       #07090d;
-      --surface:  #0d1018;
-      --surface2: #131a24;
+      --bg:       #0a0714;
+      --surface:  #130f22;
+      --surface2: #1b1533;
       --border:   rgba(255,255,255,0.07);
-      --border2:  rgba(255,255,255,0.13);
-      --text:     #f0f4f8;
-      --muted:    #4e5e70;
-      --accent:   #00c2ff;
-      --gold:     #facc15;
-      --gold2:    #fbbf24;
+      --border2:  rgba(255,255,255,0.14);
+      --text:     #f2eff9;
+      --muted:    #5c5478;
+      --accent:   #6d63f2;
+      --accent2:  #a78bfa;
+      --gold:     #fbbf24;
+      --gold2:    #fde68a;
       --radius:   13px;
     }
 
@@ -38,13 +39,14 @@
       padding-bottom: calc(110px + env(safe-area-inset-bottom));
     }
 
+    /* ══ BACKGROUND ══ */
     .bg-layer { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
     .orb { position:absolute; border-radius:50%; filter:blur(110px); }
-    .orb-1 { width:480px; height:480px; background:#0066ee; opacity:0.09; top:-160px; left:-140px;
+    .orb-1 { width:480px; height:480px; background:#4f46e5; opacity:0.13; top:-160px; left:-140px;
               animation: driftA 13s ease-in-out infinite; }
-    .orb-2 { width:360px; height:360px; background:#6d28d9; opacity:0.08; bottom:-60px; right:-80px;
+    .orb-2 { width:360px; height:360px; background:#c026d3; opacity:0.08; bottom:-60px; right:-80px;
               animation: driftB 15s ease-in-out infinite; }
-    .orb-3 { width:240px; height:240px; background:#facc15; opacity:0.04; top:38%; left:48%;
+    .orb-3 { width:240px; height:240px; background:#fbbf24; opacity:0.035; top:38%; left:48%;
               animation: driftC 17s ease-in-out infinite; }
 
     @keyframes driftA {
@@ -75,27 +77,29 @@
       to   { background-position: 50px 50px; }
     }
 
+    /* ══ PAGE ══ */
     .page {
       position:relative; z-index:1;
       max-width:1100px; margin:0 auto;
       padding: 26px 14px 16px;
     }
 
+    /* ══ HEADER ══ */
     .page-header {
-      text-align:center; margin-bottom:24px;
+      text-align:center; margin-bottom:14px;
       opacity:0;
       animation: slideDown 0.7s 0.05s cubic-bezier(0.22,1,0.36,1) forwards;
     }
 
     .header-pill {
       display:inline-flex; align-items:center; gap:7px;
-      background:rgba(0,194,255,0.07);
-      border:1px solid rgba(0,194,255,0.18);
+      background:rgba(109,99,242,0.10);
+      border:1px solid rgba(109,99,242,0.28);
       border-radius:100px;
       padding:4px 14px 4px 10px;
       font-size:11px; font-weight:600;
       letter-spacing:2px; text-transform:uppercase;
-      color:var(--accent); margin-bottom:12px;
+      color:var(--accent2); margin-bottom:12px;
     }
     .live-dot {
       width:6px; height:6px; border-radius:50%;
@@ -108,7 +112,7 @@
       font-size: clamp(34px, 9vw, 54px);
       letter-spacing:4px; line-height:1;
       margin-bottom:6px;
-      background: linear-gradient(90deg, #a16207, var(--gold), #fef9c3, var(--gold2), #a16207);
+      background: linear-gradient(90deg, #f59e0b, var(--gold), var(--gold2), var(--gold), #f59e0b);
       background-size:260% auto;
       -webkit-background-clip:text;
       -webkit-text-fill-color:transparent;
@@ -119,6 +123,25 @@
       font-size:13px; color:var(--muted); font-weight:400; letter-spacing:0.2px;
     }
 
+    /* Filmstrip divider — cinematic touch */
+    .filmstrip {
+      display:flex; justify-content:center; gap:6px;
+      margin:16px auto 20px; max-width:280px;
+      opacity:0;
+      animation: fadeUp 0.6s 0.12s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+    .filmstrip::before, .filmstrip::after {
+      content:'';
+      flex:1; height:1px; align-self:center;
+      background:linear-gradient(90deg, transparent, rgba(109,99,242,0.4), transparent);
+    }
+    .filmstrip-holes { display:flex; gap:5px; }
+    .filmstrip-holes span {
+      width:5px; height:5px; border-radius:1.5px;
+      background:rgba(109,99,242,0.5);
+    }
+
+    /* ══ SEARCH BAR ══ */
     .search-wrap {
       margin-bottom:20px;
       opacity:0;
@@ -152,12 +175,12 @@
     }
     .search-input::placeholder { color:var(--muted); }
     .search-input:focus {
-      border-color:rgba(0,194,255,0.4);
+      border-color:rgba(109,99,242,0.5);
       background:var(--surface2);
-      box-shadow:0 0 0 3px rgba(0,194,255,0.08);
+      box-shadow:0 0 0 3px rgba(109,99,242,0.12);
     }
-    .search-input:focus + svg.s-icon { stroke:var(--accent); }
-    .search-box:focus-within svg.s-icon { stroke:var(--accent); }
+    .search-input:focus + svg.s-icon { stroke:var(--accent2); }
+    .search-box:focus-within svg.s-icon { stroke:var(--accent2); }
 
     .search-clear {
       position:absolute; right:14px; top:50%; transform:translateY(-50%);
@@ -169,9 +192,10 @@
     .search-clear:hover { color:var(--text); }
     .search-clear.visible { display:block; }
 
+    /* ══ FILTER CONTROLS ══ */
     .controls-wrap {
       display:flex; flex-direction:column; align-items:center;
-      gap:10px; margin-bottom:22px;
+      gap:12px; margin-bottom:22px;
       opacity:0;
       animation: fadeUp 0.6s 0.28s cubic-bezier(0.22,1,0.36,1) forwards;
     }
@@ -199,39 +223,39 @@
     }
     .filter-btn:hover { color:var(--text); }
     .filter-btn.active {
-      background:linear-gradient(135deg,#0077c8,#00c2ff);
+      background:linear-gradient(135deg,#4338ca,#6d63f2);
       color:#fff;
       font-weight:700;
-      box-shadow:0 3px 16px rgba(0,194,255,0.38);
+      box-shadow:0 3px 16px rgba(109,99,242,0.42);
     }
 
-    .sub-lang-bar {
+    /* Language chips — now shown for both Dubbed & Subtitles */
+    .lang-bar {
       display:flex; gap:7px; flex-wrap:wrap; justify-content:center;
-      max-height:0; overflow:hidden; opacity:0;
-      transition:max-height 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease;
+      max-width:420px;
     }
-    .sub-lang-bar.active { max-height:80px; opacity:1; }
 
-    .sub-btn {
+    .lang-btn {
       border:1px solid var(--border2);
       border-radius:100px;
-      padding:7px 16px;
+      padding:8px 17px;
       font-family:'Outfit', sans-serif;
-      font-size:12px; font-weight:600;
+      font-size:12.5px; font-weight:600;
       cursor:pointer;
       background:var(--surface);
       color:var(--muted);
       transition:all 0.2s ease;
       letter-spacing:0.3px;
     }
-    .sub-btn:hover { color:var(--text); border-color:rgba(255,255,255,0.22); }
-    .sub-btn.active {
-      background:linear-gradient(135deg,#a16207,var(--gold));
-      border-color:transparent; color:#000;
+    .lang-btn:hover { color:var(--text); border-color:rgba(255,255,255,0.24); }
+    .lang-btn.active {
+      background:linear-gradient(135deg,#d97706,var(--gold));
+      border-color:transparent; color:#1a0f00;
       font-weight:700;
-      box-shadow:0 3px 14px rgba(250,204,21,0.35);
+      box-shadow:0 3px 14px rgba(251,191,36,0.38);
     }
 
+    /* ══ MOVIE GRID ══ */
     .series-grid {
       display:grid;
       grid-template-columns:repeat(2,1fr);
@@ -241,6 +265,7 @@
     @media(min-width:820px)  { .series-grid{grid-template-columns:repeat(4,1fr);} }
     @media(min-width:1060px) { .series-grid{grid-template-columns:repeat(5,1fr);} }
 
+    /* ══ MOVIE CARD ══ */
     .series-card {
       display:block; text-decoration:none;
       border-radius:var(--radius); overflow:hidden;
@@ -259,11 +284,12 @@
     }
     .series-card:hover {
       transform:translateY(-8px) scale(1.03);
-      box-shadow:0 22px 55px rgba(0,0,0,0.75), 0 0 0 1px rgba(0,194,255,0.22);
-      border-color:rgba(0,194,255,0.28);
+      box-shadow:0 22px 55px rgba(0,0,0,0.75), 0 0 0 1px rgba(109,99,242,0.32);
+      border-color:rgba(109,99,242,0.35);
     }
     .series-card:active { transform:scale(0.96); transition-duration:0.1s; }
 
+    /* Thumbnail */
     .series-thumb {
       width:100%; height:0; padding-bottom:56%;
       position:relative; background:var(--surface2); overflow:hidden;
@@ -277,7 +303,7 @@
 
     .series-thumb::after {
       content:''; position:absolute; inset:0;
-      background:linear-gradient(to bottom, transparent 45%, rgba(0,0,0,0.82) 100%);
+      background:linear-gradient(to bottom, transparent 45%, rgba(10,7,20,0.86) 100%);
       z-index:1;
     }
 
@@ -285,11 +311,12 @@
       content:''; position:absolute; inset:0; z-index:2;
       border-radius:var(--radius) var(--radius) 0 0;
       opacity:0;
-      background:radial-gradient(ellipse at 50% 0%, rgba(0,194,255,0.18) 0%, transparent 70%);
+      background:radial-gradient(ellipse at 50% 0%, rgba(109,99,242,0.22) 0%, transparent 70%);
       transition:opacity 0.3s ease;
     }
     .series-card:hover .series-thumb::before { opacity:1; }
 
+    /* Play button */
     .play-btn {
       position:absolute; inset:0; z-index:3;
       display:flex; align-items:center; justify-content:center;
@@ -307,18 +334,21 @@
     }
     .play-btn-inner svg { width:18px; height:18px; fill:#fff; margin-left:2px; }
     .series-card:hover .play-btn { opacity:1; }
-    .series-card:hover .play-btn-inner { transform:scale(1.12); background:rgba(0,194,255,0.3); }
+    .series-card:hover .play-btn-inner { transform:scale(1.12); background:rgba(109,99,242,0.35); }
 
+    /* Ticket-stub language badge */
     .lang-badge {
       position:absolute; top:8px; left:8px; z-index:4;
       font-size:10px; font-weight:700;
-      letter-spacing:1px; text-transform:uppercase;
-      padding:3px 8px; border-radius:6px;
-      background:rgba(250,204,21,0.88);
-      color:#000;
+      letter-spacing:0.5px; text-transform:uppercase;
+      padding:3px 9px; border-radius:6px;
+      background:rgba(10,7,20,0.78);
+      border:1px dashed rgba(251,191,36,0.6);
+      color:var(--gold);
       backdrop-filter:blur(4px);
     }
 
+    /* Title */
     .series-title {
       padding:9px 11px 10px;
       font-size:13px; font-weight:600;
@@ -326,6 +356,7 @@
       color:var(--text); letter-spacing:0.1px;
     }
 
+    /* ══ SKELETON ══ */
     .skeleton-grid {
       display:grid;
       grid-template-columns:repeat(2,1fr);
@@ -353,6 +384,7 @@
       animation:shimmerLoad 1.5s ease infinite;
     }
 
+    /* ══ EMPTY / NO RESULTS ══ */
     .state-box {
       text-align:center; padding:60px 20px;
       display:none;
@@ -366,6 +398,7 @@
     }
     .state-desc { font-size:13px; color:var(--muted); }
 
+    /* ══ KEYFRAMES ══ */
     @keyframes slideDown {
       from { opacity:0; transform:translateY(-18px); }
       to   { opacity:1; transform:translateY(0); }
@@ -410,6 +443,7 @@
 
   <div class="page">
 
+    <!-- Header -->
     <div class="page-header">
       <div class="header-pill">
         <span class="live-dot"></span>
@@ -419,6 +453,11 @@
       <p class="page-tagline">Blockbuster movies, fully dubbed &amp; subtitled — watch free</p>
     </div>
 
+    <div class="filmstrip">
+      <div class="filmstrip-holes"><span></span><span></span><span></span></div>
+    </div>
+
+    <!-- Search -->
     <div class="search-wrap">
       <div class="search-box">
         <input
@@ -436,20 +475,22 @@
       </div>
     </div>
 
+    <!-- Filters -->
     <div class="controls-wrap">
       <div class="toggle-pill">
         <button class="filter-btn active" id="dubbedBtn">🎙 Dubbed</button>
         <button class="filter-btn" id="subBtn">📝 Subtitles</button>
       </div>
-      <div class="sub-lang-bar" id="subLangBar">
-        <button class="sub-btn" data-lang="en">🇬🇧 English</button>
-        <button class="sub-btn" data-lang="hi">🇮🇳 Hindi</button>
-        <button class="sub-btn" data-lang="ur">🇵🇰 Urdu</button>
-        <button class="sub-btn" data-lang="ar">🇸🇦 Arabic</button>
-        <button class="sub-btn" data-lang="sp">🇪🇸 Spanish</button>
+      <!-- Language chips — always visible, applies to whichever type is active -->
+      <div class="lang-bar" id="langBar">
+        <button class="lang-btn" data-lang="en">🇬🇧 English</button>
+        <button class="lang-btn" data-lang="hiur">🇮🇳🇵🇰 Hindi/Urdu</button>
+        <button class="lang-btn" data-lang="ar">🇸🇦 Arabic</button>
+        <button class="lang-btn" data-lang="sp">🇪🇸 Spanish</button>
       </div>
     </div>
 
+    <!-- Skeletons while loading -->
     <div class="skeleton-grid" id="skeleton">
       <div class="sk-card"><div class="sk-thumb"></div><div class="sk-label"></div></div>
       <div class="sk-card"><div class="sk-thumb"></div><div class="sk-label"></div></div>
@@ -459,10 +500,12 @@
       <div class="sk-card"><div class="sk-thumb"></div><div class="sk-label"></div></div>
     </div>
 
+    <!-- Grid -->
     <div id="movies-list" class="series-grid" style="display:none;"></div>
 
+    <!-- Empty state -->
     <div class="state-box" id="movies-empty">
-      <div class="state-emoji">🔍</div>
+      <div class="state-emoji">🎬</div>
       <div class="state-title">Nothing Found</div>
       <div class="state-desc">Try a different search or filter.</div>
     </div>
@@ -478,14 +521,18 @@
     const empty      = document.getElementById('movies-empty');
     const dubbedBtn  = document.getElementById('dubbedBtn');
     const subBtn     = document.getElementById('subBtn');
-    const subLangBar = document.getElementById('subLangBar');
-    const subBtns    = subLangBar.querySelectorAll('.sub-btn');
+    const langBar    = document.getElementById('langBar');
+    const langBtns   = langBar.querySelectorAll('.lang-btn');
     const searchInput= document.getElementById('searchInput');
     const searchClear= document.getElementById('searchClear');
 
     let allMovies    = [];
-    let currentFilter= { type:'dubbed' };
+    let currentType  = 'dubbed';
+    let currentLang  = localStorage.getItem('smtv_movie_lang') || 'en';
     let searchQuery  = '';
+
+    // mark saved/default language chip active on load
+    langBtns.forEach(b => b.classList.toggle('active', b.dataset.lang === currentLang));
 
     try {
       const res = await fetch('movies.json');
@@ -503,17 +550,23 @@
     skeleton.style.display = 'none';
     grid.style.display = 'grid';
 
+    function langMatches(subLang, lang) {
+      if (lang === 'hiur') return subLang === 'hi' || subLang === 'ur';
+      return subLang === lang;
+    }
+
+    function langLabel(lang) {
+      if (lang === 'hiur') return 'HI/UR';
+      return (lang || '').toUpperCase();
+    }
+
     function render() {
       const q = searchQuery.trim().toLowerCase();
 
       const filtered = allMovies.filter(m => {
-        let typeMatch = false;
-        if (currentFilter.type === 'dubbed') typeMatch = m.track === 'dubbed';
-        else if (currentFilter.type === 'sub') {
-          typeMatch = m.track === 'sub';
-          if (currentFilter.lang) typeMatch = typeMatch && m.subLang === currentFilter.lang;
-        }
+        const typeMatch = m.track === currentType;
         if (!typeMatch) return false;
+        if (!langMatches(m.subLang, currentLang)) return false;
         if (q) return (m.title || '').toLowerCase().includes(q);
         return true;
       });
@@ -528,12 +581,8 @@
       empty.classList.remove('visible');
       grid.style.display = 'grid';
 
-      const showBadge = currentFilter.type === 'sub';
-
       grid.innerHTML = filtered.map((m, i) => {
-        const badge = showBadge
-          ? `<span class="lang-badge">${(currentFilter.lang || 'sub').toUpperCase()}</span>`
-          : '';
+        const badge = `<span class="lang-badge">${langLabel(m.subLang)}</span>`;
         return `
         <a class="series-card"
            href="movie.html?movie=${encodeURIComponent(m.slug)}"
@@ -567,32 +616,25 @@
     render();
 
     dubbedBtn.onclick = () => {
-      currentFilter = { type:'dubbed' };
+      currentType = 'dubbed';
       dubbedBtn.classList.add('active');
       subBtn.classList.remove('active');
-      subLangBar.classList.remove('active');
       render();
     };
 
     subBtn.onclick = () => {
-      currentFilter = { type:'sub' };
+      currentType = 'sub';
       subBtn.classList.add('active');
       dubbedBtn.classList.remove('active');
-      subLangBar.classList.add('active');
-      subBtns.forEach(b => b.classList.remove('active'));
-      const saved = localStorage.getItem('smtv_movie_sub_lang') || 'en';
-      const btn = [...subBtns].find(b => b.dataset.lang === saved) || subBtns[0];
-      btn.classList.add('active');
-      currentFilter.lang = btn.dataset.lang;
       render();
     };
 
-    subBtns.forEach(b => {
+    langBtns.forEach(b => {
       b.onclick = () => {
-        subBtns.forEach(x => x.classList.remove('active'));
+        langBtns.forEach(x => x.classList.remove('active'));
         b.classList.add('active');
-        currentFilter = { type:'sub', lang:b.dataset.lang };
-        localStorage.setItem('smtv_movie_sub_lang', b.dataset.lang);
+        currentLang = b.dataset.lang;
+        localStorage.setItem('smtv_movie_lang', currentLang);
         render();
       };
     });
