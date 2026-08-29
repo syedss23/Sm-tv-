@@ -4,6 +4,7 @@
 const seriesReady = fetch('series.json').then(r => r.ok ? r.json() : []).catch(() => []);
 
 const episodesReady = fetch('episode-data/index.json')
+  const moviesReady = fetch('movies.json').then(r => r.ok ? r.json() : []).catch(() => []);
   .then(r => r.ok ? r.json() : [])
   .then(files => Promise.all(
     files.map(path =>
@@ -25,6 +26,9 @@ const configReady = fetch('/config.json', { cache: 'no-cache' })
    Same regex as old code that was proven to work
    ============================================================ */
 function buildEpisodeUrl(ep) {
+  if (ep.isMovie && ep.movieSlug) {
+    return `episode.html?movie=${encodeURIComponent(ep.movieSlug)}`;
+  }
   const fallback = ep.shortlink || ep.download || '#';
   try {
     const raw = (ep._src || '').replace(/^\/+/, '');
@@ -109,12 +113,24 @@ async function initHero() {
   const dotsEl   = document.getElementById('hero-dots');
   if (!heroEl || !slidesEl || !dotsEl) return;
 
-  const episodes = await episodesReady;
+  const [episodes, movies] = await Promise.all([episodesReady, moviesReady]);
   const timed = episodes.filter(ep => ep.timestamp);
   timed.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
   const latest = timed.slice(0, 5);
 
   if (!latest.length) { heroEl.style.display = 'none'; dotsEl.style.display = 'none'; return; }
+
+  // Fill in poster/title for movie entries from movies.json
+  latest.forEach(ep => {
+    if (ep.isMovie && ep.movieSlug) {
+      const m = Array.isArray(movies) ? movies.find(x => x.slug === ep.movieSlug) : null;
+      if (m) {
+        ep.poster = ep.poster || m.poster;
+        ep.thumb  = ep.thumb  || m.poster;
+        ep.title  = ep.title  || m.title;
+      }
+    }
+  });
 
   // Build slides — store _src and ep directly on the anchor element
   slidesEl.innerHTML = latest.map((ep, i) => {
@@ -124,14 +140,15 @@ async function initHero() {
     // Escape src for safe use in data attribute
     const src   = (ep._src || '').replace(/'/g, '');
     const epNum = String(ep.ep ?? '');
+    const badgeText = ep.isMovie ? 'NEW MOVIE' : 'NEW EPISODE';
     return `<div class="hero-slide${i === 0 ? ' active' : ''}">
       <div class="hero-bg" style="background-image:url('${bg}')"></div>
       <div class="hero-vignette"></div>
       ${thumb ? `<img class="hero-cover" src="${thumb}" alt="" loading="${i === 0 ? 'eager' : 'lazy'}">` : ''}
-      <div class="hero-new-badge">NEW EPISODE</div>
+      <div class="hero-new-badge">${badgeText}</div>
       <div class="hero-content">
-        ${ep.series ? `<div class="hero-series-name">${ep.series}</div>` : ''}
-        <div class="hero-ep-title">${ep.title || 'Episode ' + epNum}</div>
+        ${(!ep.isMovie && ep.series) ? `<div class="hero-series-name">${ep.series}</div>` : ''}
+        <div class="hero-ep-title">${ep.title || (ep.isMovie ? 'Movie' : 'Episode ' + epNum)}</div>
         <a class="hero-watch-btn" data-href="${url}" data-src="${src}" data-ep="${epNum}">▶ Watch Now</a>
       </div>
     </div>`;
