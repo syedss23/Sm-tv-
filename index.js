@@ -2,9 +2,9 @@
 
 /* ── Shared data promises ── */
 const seriesReady = fetch('series.json').then(r => r.ok ? r.json() : []).catch(() => []);
+const moviesReady = fetch('movies.json').then(r => r.ok ? r.json() : []).catch(() => []);
 
 const episodesReady = fetch('episode-data/index.json')
-  const moviesReady = fetch('movies.json').then(r => r.ok ? r.json() : []).catch(() => []);
   .then(r => r.ok ? r.json() : [])
   .then(files => Promise.all(
     files.map(path =>
@@ -16,6 +16,7 @@ const episodesReady = fetch('episode-data/index.json')
   ))
   .then(arrs => arrs.flat())
   .catch(() => []);
+    
 
 /* ── Config (used for sponsor banner only) ── */
 const configReady = fetch('/config.json', { cache: 'no-cache' })
