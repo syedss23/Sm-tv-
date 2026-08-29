@@ -1,4 +1,4 @@
-// episode.js — SM-TV (Complete Clean Rewrite, now with movie support)
+// episode.js — SM-TV (Complete Clean Rewrite, movie support + inline tutorial + internal premium links)
 
 const params    = new URLSearchParams(window.location.search);
 const slug      = params.get('series');
@@ -33,8 +33,8 @@ if (isMovie) {
   backUrl  = `series.html?series=${slug}`;
 }
 
-const HOW_TO_DOWNLOAD_URL = 'https://t.me/howtodownloadd1/10';
-const PREMIUM_CHANNEL_URL = 'https://t.me/itzmezain1/2905';
+const HOW_TO_DOWNLOAD_EMBED = 'https://rumble.com/embed/v7cmmn4/?pub=4qdqa6';
+const PREMIUM_PAGE_URL      = '/premium.html';
 
 let featureConfig = null;
 
@@ -55,16 +55,14 @@ function getBannerHTML() {
   // Premium / shortlink mode
   if (featureConfig.shortlink && !featureConfig.sponsorPopup) {
     return `
-      <div class="smtv-banner smtv-banner-premium">
-        <div class="smtv-banner-icon">🌟</div>
-        <div class="smtv-banner-title">Want Ad-Free Direct Access?</div>
-        <div class="smtv-banner-body">
-          For <b>direct ${isMovie ? 'movies' : 'episodes'}</b> with <b>ad-free downloads</b>, join our <b>Premium Channel!</b><br>
-          Get instant access to all ${isMovie ? 'movies' : 'episodes'} without any ads or shortlinks.<br><br>
-          <b>Note:</b> Some ${isMovie ? 'movies\'' : 'episodes\''} <b>Download Server 2</b> links have expired.
-          Please use <b>Download Server 1</b> for reliable downloads.
+      <div class="smtv-banner smtv-banner-premium" style="padding:12px 14px;">
+        <div class="smtv-banner-icon" style="font-size:20px;margin-bottom:4px;">🌟</div>
+        <div class="smtv-banner-title" style="font-size:14px;margin-bottom:6px;">Want Ad-Free Direct Access?</div>
+        <div class="smtv-banner-body" style="font-size:11.5px;line-height:1.5;margin-bottom:10px;">
+          Join our <b>Premium Membership</b> for direct ${isMovie ? 'movies' : 'episodes'} with ad-free downloads.
+          <b>Note:</b> if Download Server 2 fails, use Server 1.
         </div>
-        <a href="${PREMIUM_CHANNEL_URL}" target="_blank" rel="noopener" class="smtv-banner-btn smtv-btn-green">
+        <a href="${PREMIUM_PAGE_URL}" class="smtv-banner-btn smtv-btn-green" style="padding:9px 14px;font-size:13px;">
           🚀 Join Premium Now
         </a>
       </div>`;
@@ -236,18 +234,20 @@ function patchIframes(html) {
             </button>
           </div>
 
-          <!-- Tutorial -->
-          <a href="${HOW_TO_DOWNLOAD_URL}" target="_blank" rel="noopener"
-             class="smtv-btn smtv-how">
+          <!-- Tutorial — toggles inline video -->
+          <button type="button" id="howToDownloadBtn" class="smtv-btn smtv-how">
             <span class="smtv-ic">📘</span>
             How to Download (Tutorial)
-          </a>
+          </button>
+          <div id="howToDownloadWrap" style="display:none;margin-top:10px;position:relative;width:100%;height:0;padding-bottom:56.25%;border-radius:13px;overflow:hidden;background:#000;">
+            <iframe id="howToDownloadFrame" style="position:absolute;inset:0;width:100%;height:100%;border:0;" src="" allowfullscreen loading="lazy"></iframe>
+          </div>
 
           <!-- Premium -->
-          <a href="${PREMIUM_CHANNEL_URL}" target="_blank" rel="noopener"
+          <a href="${PREMIUM_PAGE_URL}"
              class="smtv-btn smtv-prem">
             <span class="smtv-ic smtv-star">🌟</span>
-            Join Premium Channel
+            Become VIP Member
           </a>
 
         </div>
@@ -275,6 +275,25 @@ function patchIframes(html) {
     const dl2 = document.getElementById('dl2Btn');
     if (dl2 && ep.download2) {
       dl2.addEventListener('click', () => { window.location.href = ep.download2; });
+    }
+
+    // How to Download — toggle inline video
+    const howToBtn   = document.getElementById('howToDownloadBtn');
+    const howToWrap  = document.getElementById('howToDownloadWrap');
+    const howToFrame = document.getElementById('howToDownloadFrame');
+
+    if (howToBtn && howToWrap && howToFrame) {
+      howToBtn.addEventListener('click', () => {
+        const isOpen = howToWrap.style.display !== 'none';
+        if (isOpen) {
+          howToWrap.style.display = 'none';
+          howToFrame.src = '';
+        } else {
+          howToFrame.src = HOW_TO_DOWNLOAD_EMBED;
+          howToWrap.style.display = 'block';
+          howToWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      });
     }
 
     // Watch 3 modal
