@@ -7,6 +7,9 @@
     "watch3": "https://your-server-3-external-player-link.com",
     "download": "https://t.me/yourchannel/123",
     "download2": "https://your-download-server-2-link.com",
+    "isMovie": true,
+    "movieSlug": "saruhan-en-sub",
+    "timestamp": "2026-08-29T10:00:00Z",
     "shortlink": false
   }
 ]
