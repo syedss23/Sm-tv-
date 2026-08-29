@@ -59,7 +59,7 @@ function getBannerHTML() {
         <div class="smtv-banner-icon" style="font-size:20px;margin-bottom:4px;">🌟</div>
         <div class="smtv-banner-title" style="font-size:14px;margin-bottom:6px;">Want Ad-Free Direct Access?</div>
         <div class="smtv-banner-body" style="font-size:11.5px;line-height:1.5;margin-bottom:10px;">
-          Join our <b>Premium Membership</b> for direct ${isMovie ? 'movies' : 'episodes'} with ad-free downloads.
+          Join our <b>Premium Membership</b> for direct ${isMovie ? 'movies, Series' : 'episodes'} with ad-free downloads.
           <b>Note:</b> if Download Server 2 fails, use Server 1.
         </div>
         <a href="${PREMIUM_PAGE_URL}" class="smtv-banner-btn smtv-btn-green" style="padding:9px 14px;font-size:13px;">
