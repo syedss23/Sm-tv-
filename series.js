@@ -11,7 +11,7 @@
   let featureConfig = null; // Store loaded config
   let currentEpisodesData = []; // Store episode data for shortlink checking
 
-  const HOWTO_PROCESS_1 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v6yg45g/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
+  const HOWTO_PROCESS_1 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v7co1jk/?pub=4qdqa6" frameborder="0" allowfullscreen></iframe>`;
   const HOWTO_PROCESS_2 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v6yg466/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
   const HOWTO_ADBLOCK = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v7cji0k/?pub=4qdqa6" frameborder="0" allowfullscreen></iframe>`;
   // LOAD CONFIG.JSON AT START
