@@ -16,5 +16,41 @@
     "desc": "Saruhan is a historical detective thriller directed by Emre Konuk. The story centers on themes of justice, political conspiracy, and administrative corruption in the early 17th-century Ottoman Empire.",
     "track": "dubbed",
     "subLang": "hi"
+  },
+  {
+    "slug": "saruhan-en-dub",
+    "movieId": "saruhan",
+    "title": "Saruhan (English Dubbed)",
+    "poster": "https://i.ibb.co/Z6G1hzRk/Copy-of-Episode-38-20260902-153358-0000.jpg",
+    "desc": "Saruhan is a historical detective thriller directed by Emre Konuk. The story centers on themes of justice, political conspiracy, and administrative corruption in the early 17th-century Ottoman Empire.",
+    "track": "dubbed",
+    "subLang": "en"
+  },
+  {
+    "slug": "saruhan-ur-sub",
+    "movieId": "saruhan",
+    "title": "Saruhan (Urdu Subtitles)",
+    "poster": "https://i.ibb.co/v4QGFvzg/saruhan.webp",
+    "desc": "Saruhan is a historical detective thriller directed by Emre Konuk. The story centers on themes of justice, political conspiracy, and administrative corruption in the early 17th-century Ottoman Empire.",
+    "track": "sub",
+    "subLang": "ur"
+  },
+  {
+    "slug": "saruhan-ar-sub",
+    "movieId": "saruhan",
+    "title": "Saruhan (Arabic Subtitles)",
+    "poster": "https://i.ibb.co/v4QGFvzg/saruhan.webp",
+    "desc": "Saruhan is a historical detective thriller directed by Emre Konuk. The story centers on themes of justice, political conspiracy, and administrative corruption in the early 17th-century Ottoman Empire.",
+    "track": "sub",
+    "subLang": "ar"
+  },
+  {
+    "slug": "saruhan-sp-sub",
+    "movieId": "saruhan",
+    "title": "Saruhan (Spanish Subtitles)",
+    "poster": "https://i.ibb.co/v4QGFvzg/saruhan.webp",
+    "desc": "Saruhan is a historical detective thriller directed by Emre Konuk. The story centers on themes of justice, political conspiracy, and administrative corruption in the early 17th-century Ottoman Empire.",
+    "track": "sub",
+    "subLang": "sp"
   }
 ]
