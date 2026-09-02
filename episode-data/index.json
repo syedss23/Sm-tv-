@@ -39,5 +39,9 @@
   "episode-data/young-ibn-sina-s3.json",
   "episode-data/history-ur-s1.json",
   "movie-data/saruhan-en-sub.json",
-  "movie-data/saruhan-hi-dub.json"
+  "movie-data/saruhan-hi-dub.json",
+  "movie-data/saruhan-en-dub.json",
+  "movie-data/saruhan-ur-sub.json",
+  "movie-data/saruhan-sp-sub.json",
+  "movie-data/saruhan-ar-sub.json"
 ]
