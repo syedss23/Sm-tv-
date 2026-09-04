@@ -412,5 +412,35 @@
     "seasons": 1,
     "track": "sub",
     "subLang": "sp"
+  },
+  {
+    "id": 312,
+    "title": "AskveTaht (Urdu Subtitles)",
+    "slug": "askvetaht-ur",
+    "poster": "https://i.ibb.co/zhvP2TXD/Screenshot-2026-09-04-16-30-47-68-1c337646f29875672b5a61192b9010f9.jpg",
+    "desc": { "en": "AskveTaht Suktan Allauddin Kaikubad with Urdu subtitles." },
+    "seasons": 1,
+    "track": "sub",
+    "subLang": "ur"
+  },
+  {
+    "id": 313,
+    "title": "AskveTaht (English Subtitles)",
+    "slug": "askvetaht-en",
+    "poster": "https://i.ibb.co/zhvP2TXD/Screenshot-2026-09-04-16-30-47-68-1c337646f29875672b5a61192b9010f9.jpg",
+    "desc": { "en": "AskveTaht Suktan Allauddin Kaikubad with English subtitles." },
+    "seasons": 1,
+    "track": "sub",
+    "subLang": "en"
+  },
+  {
+    "id": 314,
+    "title": "AskveTaht (Hindi Subtitles)",
+    "slug": "askvetaht-hi",
+    "poster": "https://i.ibb.co/zhvP2TXD/Screenshot-2026-09-04-16-30-47-68-1c337646f29875672b5a61192b9010f9.jpg",
+    "desc": { "en": "AskveTaht Suktan Allauddin Kaikubad with Hindi subtitles." },
+    "seasons": 1,
+    "track": "sub",
+    "subLang": "hi"
   }
 ]
