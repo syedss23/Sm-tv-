@@ -43,5 +43,8 @@
   "movie-data/saruhan-en-dub.json",
   "movie-data/saruhan-ur-sub.json",
   "movie-data/saruhan-sp-sub.json",
-  "movie-data/saruhan-ar-sub.json"
+  "movie-data/saruhan-ar-sub.json",
+  "episode-data/askvetaht-ur-s1.json",
+  "episode-data/askvetaht-en-s1.json",
+  "episode-data/askvetaht-hi-s1.json"
 ]
