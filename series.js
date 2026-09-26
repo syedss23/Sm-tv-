@@ -1,4 +1,4 @@
-// series.js - WITH FEATURE TOGGLE SYSTEM AND SHORTLINK REDIRECTION
+// series.js - WITH FEATURE TOGGLE SYSTEM (ownShortlink / shortlink / direct)
 (function () {
   'use strict';
 
@@ -14,6 +14,7 @@
   const HOWTO_PROCESS_1 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v7co1jk/?pub=4qdqa6" frameborder="0" allowfullscreen></iframe>`;
   const HOWTO_PROCESS_2 = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v6yg466/?pub=4ni0h4" frameborder="0" allowfullscreen></iframe>`;
   const HOWTO_ADBLOCK = `<iframe class="rumble" width="640" height="360" src="https://rumble.com/embed/v7cji0k/?pub=4qdqa6" frameborder="0" allowfullscreen></iframe>`;
+
   // LOAD CONFIG.JSON AT START
   async function loadFeatureConfig() {
     try {
@@ -23,19 +24,19 @@
         featureConfig = config.redirectionFeatures;
         console.log('Feature config loaded:', featureConfig);
       } else {
-        console.warn('config.json not found, defaulting to sponsor popup');
-        featureConfig = { shortlink: false, sponsorPopup: true };
+        console.warn('config.json not found, defaulting to direct episode page');
+        featureConfig = { shortlink: false, ownShortlink: false, sponsorPopup: false };
       }
     } catch (error) {
       console.warn('Error loading config.json:', error);
-      featureConfig = { shortlink: false, sponsorPopup: true };
+      featureConfig = { shortlink: false, ownShortlink: false, sponsorPopup: false };
     }
   }
 
-  // HANDLE EPISODE CLICK WITH FEATURE TOGGLE AND SHORTLINK CHECK
+  // HANDLE EPISODE CLICK WITH FEATURE TOGGLE
   function handleEpisodeClick(event, episodeData) {
     event.preventDefault();
-    
+
     if (!featureConfig) {
       console.error('Config not loaded yet');
       return;
@@ -43,50 +44,63 @@
 
     const { seriesSlug, season, episode, lang, source } = episodeData;
 
-    // Check which feature is enabled
-    if (featureConfig.shortlink && !featureConfig.sponsorPopup) {
-      // SHORTLINK MODE: Check if episode has shortlink in JSON
-      const episodeObj = currentEpisodesData.find(ep => String(ep.ep) === String(episode));
-      
-      if (episodeObj && episodeObj.shortlink) {
-        // Episode has shortlink - redirect to it
-        console.log('Redirecting to shortlink:', episodeObj.shortlink);
-        
-        // Track with Google Analytics
-        if (typeof gtag !== 'undefined') {
-          gtag('event', 'shortlink_redirect', {
-            'episode': seriesSlug + '_s' + season + 'e' + episode,
-            'shortlink_url': episodeObj.shortlink
-          });
-        }
-        
-        window.location.href = episodeObj.shortlink;
-        return;
-      } else {
-        // No shortlink found - open episode.html directly
-        console.log('No shortlink found, opening episode page directly');
+    // 1) OWN SHORTLINK MODE (your ad + scroll + Get Link interstitial page)
+    if (featureConfig.ownShortlink) {
+      let getlinkUrl = `getlink.html?series=${encodeURIComponent(seriesSlug)}&season=${encodeURIComponent(season)}&ep=${encodeURIComponent(episode)}`;
+
+      if (lang) getlinkUrl += '&lang=' + encodeURIComponent(lang);
+      if (source) getlinkUrl += '&source=' + encodeURIComponent(source);
+
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'own_shortlink_redirect', {
+          episode: seriesSlug + '_s' + season + 'e' + episode
+        });
       }
+
+      console.log('Redirecting to own shortlink page:', getlinkUrl);
+      window.location.href = getlinkUrl;
+      return;
     }
 
-    // DEFAULT: SPONSOR POPUP MODE or NO SHORTLINK - Go to episode.html
+    // 2) OLD THIRD-PARTY SHORTLINK MODE (kept for backward compatibility)
+    if (featureConfig.shortlink) {
+      const episodeObj = currentEpisodesData.find(ep => String(ep.ep) === String(episode));
+
+      if (episodeObj && episodeObj.shortlink) {
+        console.log('Redirecting to old third-party shortlink:', episodeObj.shortlink);
+
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'shortlink_redirect', {
+            episode: seriesSlug + '_s' + season + 'e' + episode,
+            shortlink_url: episodeObj.shortlink
+          });
+        }
+
+        window.location.href = episodeObj.shortlink;
+        return;
+      }
+      // No shortlink found for this episode - fall through to direct open
+      console.log('No old shortlink found for this episode, opening episode page directly');
+    }
+
+    // 3) DEFAULT: Go straight to episode.html
     let episodeUrl = `episode.html?series=${encodeURIComponent(seriesSlug)}&season=${encodeURIComponent(season)}&ep=${encodeURIComponent(episode)}`;
-    
+
     if (lang) {
       episodeUrl += '&lang=' + encodeURIComponent(lang);
     }
-    
+
     if (source) {
       episodeUrl += '&source=' + encodeURIComponent(source);
     }
-    
-    // Track with Google Analytics
+
     if (typeof gtag !== 'undefined') {
       gtag('event', 'episode_page_visit', {
-        'episode': seriesSlug + '_s' + season + 'e' + episode,
-        'access_type': featureConfig.sponsorPopup ? 'sponsor_popup' : 'direct'
+        episode: seriesSlug + '_s' + season + 'e' + episode,
+        access_type: 'direct'
       });
     }
-    
+
     console.log('Opening episode page:', episodeUrl);
     window.location.href = episodeUrl;
   }
@@ -114,10 +128,10 @@
     .reveal-item { opacity: 0; transform: translateY(10px); }
     .reveal-item.show { opacity: 1; transform: translateY(0); }
   `;
-  try { 
-    const s = document.createElement('style'); 
-    s.textContent = injectedStyles; 
-    document.head.appendChild(s); 
+  try {
+    const s = document.createElement('style');
+    s.textContent = injectedStyles;
+    document.head.appendChild(s);
   } catch(e){}
 
   function escapeHtml(s) {
@@ -164,19 +178,19 @@
   }
 
   async function fetchBarbarossaEpisodes(season, source) {
-    const fileName = source === 2 
+    const fileName = source === 2
       ? `episode-data/${slug}-s${season}-source2.json`
       : `episode-data/${slug}-s${season}.json`;
-    
+
     try {
       const path = fileName.startsWith('/') ? fileName : '/' + fileName;
       const url = bust(path);
       const resp = await fetch(url, { cache: 'no-cache' });
-      
+
       if (!resp.ok) {
         throw new Error('HTTP ' + resp.status);
       }
-      
+
       const text = await resp.text();
       const parsed = JSON.parse(text);
       return { episodes: parsed, tried: [{ path: fileName, ok: true, status: resp.status }] };
@@ -298,7 +312,7 @@
 
       const tabsEl = document.getElementById('pro-seasons-tabs');
       tabsEl.innerHTML = seasons.map(s => `<button data-season="${s}" class="pro-season-tab-pro${s === seasonQuery ? ' active' : ''}">Season ${s}</button>`).join('');
-      
+
       tabsEl.querySelectorAll('.pro-season-tab-pro').forEach(btn => {
         btn.addEventListener('click', () => {
           tabsEl.querySelectorAll('.pro-season-tab-pro').forEach(b => b.classList.remove('active'));
@@ -314,7 +328,7 @@
         if (!container) return;
 
         const showSelector = slug === 'barbarossa' && season === '1';
-        
+
         if (showSelector) {
           container.style.display = 'block';
           container.innerHTML = `
@@ -323,7 +337,7 @@
               <button class="source-btn" data-source="2">Source 2</button>
             </div>
           `;
-          
+
           container.querySelectorAll('.source-btn').forEach(btn => {
             btn.addEventListener('click', function() {
               currentSource = parseInt(this.dataset.source);
@@ -360,8 +374,8 @@
 
         try {
           const isBarbarossaSpecial = slug === 'barbarossa' && season === '1';
-          
-          const result = isBarbarossaSpecial 
+
+          const result = isBarbarossaSpecial
             ? await fetchBarbarossaEpisodes(season, currentSource)
             : await fetchEpisodesWithCandidates(season);
 
@@ -381,27 +395,27 @@
             const epNum = escapeHtml(String(ep.ep || ''));
             const epTitle = escapeHtml(ep.title || ('Episode ' + epNum));
             const thumb = escapeHtml(ep.thumb || 'default-thumb.jpg');
-            
+
             // Determine source parameter
 const isBarbarossaS1Source2 = slug === 'barbarossa' && season === '1' && currentSource === 2;
 const sourceParam = isBarbarossaS1Source2 ? currentSource : null;
 
 return `
-  <a class="pro-episode-card-pro reveal-item" 
-     href="#" 
+  <a class="pro-episode-card-pro reveal-item"
+     href="#"
      data-series="${escapeHtml(slug)}"
      data-season="${escapeHtml(season)}"
      data-episode="${epNum}"
      data-lang="${escapeHtml(lang)}"
      data-source="${sourceParam || ''}"
-     tabindex="-1" 
+     tabindex="-1"
      aria-label="${epTitle}">
-    
+
     <div class="pro-ep-thumb-wrap-pro" style="position:relative;width:100%;height:94px;overflow:hidden;display:block;background: transparent;">
-      
-      <img 
+
+      <img
   class="pro-ep-thumb-pro"
-  src="${thumb}" 
+  src="${thumb}"
   alt="${epTitle}"
   loading="lazy"
   decoding="async"
@@ -409,7 +423,7 @@ return `
 />
 
       <span class="pro-ep-num-pro">Ep ${epNum}</span>
-      
+
     </div>
 
     <div class="pro-ep-title-pro">${epTitle}</div>
@@ -482,7 +496,7 @@ return `
         } catch (err) {
           let errorMsg = 'No episodes found';
           let details = '';
-          
+
           if (err && err.tried && err.tried.length > 0) {
             const lastTried = err.tried[err.tried.length - 1];
             if (lastTried.err && lastTried.err.includes('json-parse')) {
@@ -493,14 +507,14 @@ return `
               details = 'Looking for: ' + lastTried.path;
             }
           }
-          
+
           wrap.innerHTML = `
             <div style="background:#1a1f2e;color:#fff;padding:18px;border-radius:12px;border:1px solid #ff6b6b;">
               <div style="font-size:16px;font-weight:700;color:#ff6b6b;margin-bottom:8px;">⚠️ ${errorMsg}</div>
               ${details ? `<div style="font-size:13px;color:#aaa;font-family:monospace;">${details}</div>` : ''}
             </div>
           `;
-          
+
           console.error('Episode load error:', err);
           wrap.classList.remove('is-loading');
           wrap.style.minHeight = prevMin;
