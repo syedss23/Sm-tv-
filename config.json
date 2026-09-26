@@ -1,6 +1,7 @@
 {
   "redirectionFeatures": {
-    "shortlink": true,
+    "shortlink": false,
+    "ownShortlink": true,
     "sponsorPopup": false
   }
 }
