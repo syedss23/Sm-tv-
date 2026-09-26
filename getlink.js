@@ -1,7 +1,7 @@
 // getlink.js - Own shortlink interstitial page
-// Stage 1: mandatory ad-gate popup (must click ad + return to this tab)
-// Stage 2: 10 second timer (not clickable)
-// Stage 3: scroll down to reveal the real Get Link button -> episode.html
+// Stage 1: mandatory ad-gate popup (must leave tab via the ad + return)
+// Stage 2: 10 second timer shown on the fixed bottom bar
+// Stage 3: bottom bar becomes the real Get Link button -> episode.html
 
 (function () {
   'use strict';
@@ -13,10 +13,8 @@
   var lang   = qs.get('lang');
   var source = qs.get('source');
 
-  var adGate      = document.getElementById('adGate');
-  var timerBtn    = document.getElementById('timerBtn');
-  var countdownEl = document.getElementById('countdown');
-  var getLinkBtn  = document.getElementById('getLinkBtn');
+  var adGate    = document.getElementById('adGate');
+  var bottomBar = document.getElementById('bottomBar');
 
   // Build the final destination URL up front
   var finalUrl = null;
@@ -31,17 +29,15 @@
     // Broken/incomplete link - don't lock the user behind a gate for nothing
     if (adGate) adGate.classList.add('gl-hidden');
     document.body.classList.remove('gl-locked');
-    if (timerBtn) timerBtn.textContent = '⚠️ Invalid Link';
+    if (bottomBar) bottomBar.textContent = '⚠️ Invalid Link';
     return;
   }
 
   var timerDone = false;
 
   // ── STAGE 1: AD GATE ─────────────────────────────
-  // The ad widget itself is the click target (its tiles open in a new tab).
-  // We can't see which link inside the widget was clicked, so we detect the
-  // generic "tab was left, then came back" pattern instead - this is the
-  // same approach virtually all sites like this use.
+  // The ad widget itself is the click target (its tile opens in a new tab).
+  // We detect the generic "tab was left, then came back" pattern.
   var pageReadyAt = Date.now();
   var hasLeft = false;
   var gateResolved = false;
@@ -62,7 +58,6 @@
   }
 
   function markLeft() {
-    // Small grace period so the page's own load/render doesn't false-trigger this
     if (!gateResolved && (Date.now() - pageReadyAt) > 800) {
       hasLeft = true;
     }
@@ -84,36 +79,30 @@
     }
   });
 
-  // ── STAGE 2: 10 SECOND TIMER ─────────────────────
+  // ── STAGE 2: 10 SECOND TIMER (on the fixed bottom bar) ──
   function startTimer() {
     var seconds = 10;
-    if (countdownEl) countdownEl.textContent = seconds;
+    if (bottomBar) bottomBar.textContent = '⏳ Please wait ' + seconds + ' seconds...';
 
     var interval = setInterval(function () {
       seconds--;
       if (seconds <= 0) {
         clearInterval(interval);
         timerDone = true;
-        if (timerBtn) {
-          timerBtn.innerHTML = '👇 Now scroll down to get your link';
-          timerBtn.classList.add('gl-scroll-mode');
+        if (bottomBar) {
+          bottomBar.textContent = '🔓 Get Link';
+          bottomBar.classList.add('gl-ready');
+          bottomBar.href = finalUrl;
         }
-        revealFinalButton();
-      } else if (countdownEl) {
-        countdownEl.textContent = seconds;
+      } else if (bottomBar) {
+        bottomBar.textContent = '⏳ Please wait ' + seconds + ' seconds...';
       }
     }, 1000);
   }
 
-  // ── STAGE 3: REVEAL REAL GET LINK BUTTON ─────────
-  function revealFinalButton() {
-    if (!getLinkBtn) return;
-    getLinkBtn.href = finalUrl;
-    getLinkBtn.classList.remove('gl-hidden');
-  }
-
-  if (getLinkBtn) {
-    getLinkBtn.addEventListener('click', function (e) {
+  // ── STAGE 3: CLICK HANDLING ──────────────────────
+  if (bottomBar) {
+    bottomBar.addEventListener('click', function (e) {
       if (!timerDone) {
         e.preventDefault();
         return;
