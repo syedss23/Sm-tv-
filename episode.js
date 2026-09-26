@@ -1,4 +1,4 @@
-// episode.js — SM-TV (Complete Clean Rewrite, movie support + inline tutorial + internal premium links)
+// episode.js — SM-TV (sponsor popup removed, movie support + inline tutorial + internal premium links)
 
 const params    = new URLSearchParams(window.location.search);
 const slug      = params.get('series');
@@ -43,60 +43,26 @@ async function loadConfig() {
     const r = await fetch('/config.json', { cache: 'no-cache' });
     featureConfig = r.ok
       ? (await r.json()).redirectionFeatures
-      : { shortlink: false, sponsorPopup: true };
+      : { shortlink: false, ownShortlink: false, sponsorPopup: false };
   } catch {
-    featureConfig = { shortlink: false, sponsorPopup: true };
+    featureConfig = { shortlink: false, ownShortlink: false, sponsorPopup: false };
   }
 }
 
+// Sponsor popup mode removed — always show the premium/ad-free upsell banner.
 function getBannerHTML() {
-  if (!featureConfig) return '';
-
-  // Premium / shortlink mode
-  if (featureConfig.shortlink && !featureConfig.sponsorPopup) {
-    return `
-      <div class="smtv-banner smtv-banner-premium" style="padding:12px 14px;">
-        <div class="smtv-banner-icon" style="font-size:20px;margin-bottom:4px;">🌟</div>
-        <div class="smtv-banner-title" style="font-size:14px;margin-bottom:6px;">Want Ad-Free Direct Access?</div>
-        <div class="smtv-banner-body" style="font-size:11.5px;line-height:1.5;margin-bottom:10px;">
-          Join our <b>Premium Membership</b> for direct ${isMovie ? 'movies, Series' : 'episodes'} with ad-free downloads.
-          <b>Note:</b> if Download Server 2 fails, use Server 1.
-        </div>
-        <a href="${PREMIUM_PAGE_URL}" class="smtv-banner-btn smtv-btn-green" style="padding:9px 14px;font-size:13px;">
-          🚀 Join Premium Now
-        </a>
-      </div>`;
-  }
-
-  // Sponsor popup mode
-  if (!featureConfig.shortlink && featureConfig.sponsorPopup) {
-    return `
-      <div class="smtv-banner smtv-banner-sponsor">
-        <div class="smtv-sponsor-top">
-          <img src="sponsor.png" alt="Sponsor Logo" class="smtv-sponsor-img" />
-          <div class="smtv-sponsor-info">
-            <div class="smtv-sponsor-label">${isMovie ? 'Movie' : 'Episode'} Sponsored By</div>
-            <div class="smtv-sponsor-name">FX Reall Accadmy</div>
-          </div>
-        </div>
-        <div class="smtv-banner-body">
-          Rozana <b>Forex &amp; Gold (XAUUSD)</b> trading signals ke saath clear
-          <b>Entry · SL · TP</b>, risk-managed setups &amp; live updates paayein.<br><br>
-          Chahe beginner ho ya pro — smart signals follow karke
-          <b>aasani se earning start kar sakte ho</b> 🚀
-        </div>
-        <a href="https://t.me/+OKnw3z4Uq28wYzRk" target="_blank" rel="noopener"
-           class="smtv-banner-btn smtv-btn-gold">
-          🚀 Start Earning Now
-        </a>
-        <div class="smtv-disclaimer">
-          ⚠️ Forex &amp; Gold trading high-risk hoti hai. Profit guaranteed nahi hota.
-          Hamesha apni research aur sahi risk management ke saath trade karein.
-        </div>
-      </div>`;
-  }
-
-  return '';
+  return `
+    <div class="smtv-banner smtv-banner-premium" style="padding:12px 14px;">
+      <div class="smtv-banner-icon" style="font-size:20px;margin-bottom:4px;">🌟</div>
+      <div class="smtv-banner-title" style="font-size:14px;margin-bottom:6px;">Want Ad-Free Direct Access?</div>
+      <div class="smtv-banner-body" style="font-size:11.5px;line-height:1.5;margin-bottom:10px;">
+        Join our <b>Premium Membership</b> for direct ${isMovie ? 'movies, Series' : 'episodes'} with ad-free downloads.
+        <b>Note:</b> if Download Server 2 fails, use Server 1.
+      </div>
+      <a href="${PREMIUM_PAGE_URL}" class="smtv-banner-btn smtv-btn-green" style="padding:9px 14px;font-size:13px;">
+        🚀 Join Premium Now
+      </a>
+    </div>`;
 }
 
 function patchIframes(html) {
@@ -331,7 +297,7 @@ function patchIframes(html) {
     if (typeof gtag !== 'undefined') {
       gtag('event', isMovie ? 'movie_view' : 'episode_view', {
         [isMovie ? 'movie' : 'episode']: isMovie ? movieSlug : `${slug}_s${season || '0'}e${epNum}`,
-        config: featureConfig?.shortlink ? 'shortlink' : 'sponsor'
+        config: featureConfig?.ownShortlink ? 'own_shortlink' : (featureConfig?.shortlink ? 'shortlink' : 'direct')
       });
     }
 
