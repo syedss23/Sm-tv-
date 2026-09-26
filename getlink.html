@@ -20,7 +20,9 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{background:#07090f;color:#e2ecf8;font-family:'Inter','Segoe UI',system-ui,sans-serif;min-height:100dvh;-webkit-font-smoothing:antialiased;}
-.gl-wrap{max-width:640px;margin:0 auto;padding:16px 16px 70px;}
+body.gl-locked{overflow:hidden;height:100vh;}
+
+.gl-wrap{max-width:640px;margin:0 auto;padding:16px 16px 90px;}
 .gl-head{text-align:center;padding:22px 10px 10px;}
 .gl-head h1{font-family:'Cinzel',serif;font-size:1.25rem;font-weight:800;color:#1de8ff;margin-bottom:10px;text-shadow:0 0 18px rgba(0,205,235,.35);}
 .gl-head p{font-size:.85rem;color:#8fa8c4;line-height:1.65;max-width:480px;margin:0 auto;}
@@ -30,56 +32,140 @@ body{background:#07090f;color:#e2ecf8;font-family:'Inter','Segoe UI',system-ui,s
 .gl-steps{background:#0d1220;border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:18px 18px 20px;margin:18px 0;box-shadow:0 10px 26px rgba(0,0,0,.4);}
 .gl-steps h2{font-size:.95rem;color:#fff;margin-bottom:10px;font-weight:800;}
 .gl-steps ol{padding-left:18px;color:#a0bcd8;font-size:.83rem;line-height:1.95;}
-.gl-steps li{margin-bottom:2px;}
+
+/* ── TIMER BOX ── */
+.gl-timer-box{text-align:center;margin:8px 0;}
+.gl-timer-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;max-width:420px;padding:16px 20px;border-radius:13px;
+  font-size:.95rem;font-weight:900;letter-spacing:.02em;
+  background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.12);
+  color:#8fa8c4;cursor:not-allowed;opacity:.85;
+}
+.gl-timer-btn.gl-scroll-mode{
+  color:#1de8ff;border-color:rgba(0,205,235,.4);background:rgba(0,205,235,.08);
+  animation:glPulse 1.4s ease-in-out infinite;
+}
+@keyframes glPulse{0%,100%{box-shadow:0 0 0 rgba(0,205,235,0)}50%{box-shadow:0 0 22px rgba(0,205,235,.35)}}
 
 .gl-progress{text-align:center;font-size:.7rem;color:#607890;letter-spacing:.08em;text-transform:uppercase;margin:26px 0 6px;}
 
 .gl-btn-wrap{margin-top:20px;text-align:center;}
-.gl-btn{display:inline-flex;align-items:center;gap:9px;padding:16px 34px;border-radius:13px;font-size:1.02rem;font-weight:900;letter-spacing:.03em;color:#021820;text-decoration:none;background:linear-gradient(135deg,#1de8ff,#ffde70,#00a8d0);background-size:200% auto;box-shadow:0 10px 28px rgba(0,205,235,.35);transition:transform .2s,box-shadow .2s;}
+.gl-btn{
+  display:inline-flex;align-items:center;gap:9px;padding:16px 34px;border-radius:13px;
+  font-size:1.02rem;font-weight:900;letter-spacing:.03em;color:#021820;text-decoration:none;
+  background:linear-gradient(135deg,#1de8ff,#ffde70,#00a8d0);background-size:200% auto;
+  box-shadow:0 10px 28px rgba(0,205,235,.35);transition:transform .2s,box-shadow .2s,opacity .3s;
+}
+.gl-btn.gl-hidden{display:none;}
 .gl-btn:active{transform:scale(.96);}
 .gl-note{margin-top:14px;font-size:.72rem;color:#607890;text-align:center;line-height:1.6;}
+
+/* ── AD-GATE POPUP ── */
+#adGate{
+  position:fixed;inset:0;z-index:99999;
+  background:rgba(3,5,10,.86);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  display:flex;align-items:center;justify-content:center;padding:18px;
+}
+#adGate.gl-hidden{display:none;}
+.gl-gate-card{
+  width:100%;max-width:360px;background:#fff;color:#111;border-radius:18px;
+  padding:26px 22px 24px;text-align:center;box-shadow:0 30px 70px rgba(0,0,0,.55);
+}
+.gl-gate-title{font-size:1.5rem;font-weight:900;line-height:1.15;margin-bottom:16px;text-transform:uppercase;}
+.gl-gate-icon{font-size:2.6rem;margin:6px 0 18px;}
+.gl-gate-adslot{min-height:90px;margin-bottom:18px;background:#f2f4f7;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.gl-gate-btn{
+  display:flex;align-items:center;justify-content:center;gap:9px;width:100%;
+  padding:15px 18px;border-radius:11px;background:#1a0000;color:#fff;
+  font-size:1.1rem;font-weight:900;letter-spacing:.02em;text-decoration:none;
+  border:2px solid #ff3b3b;box-shadow:0 0 22px rgba(255,59,59,.55),inset 0 0 10px rgba(255,59,59,.2);
+  animation:glGateGlow 1.5s ease-in-out infinite;
+}
+@keyframes glGateGlow{0%,100%{box-shadow:0 0 14px rgba(255,59,59,.4)}50%{box-shadow:0 0 30px rgba(255,59,59,.7)}}
+.gl-gate-hint{margin-top:14px;font-size:.78rem;color:#666;font-weight:700;}
+.gl-gate-step{margin-top:12px;font-size:.78rem;color:#777;}
 </style>
 </head>
-<body>
+<body class="gl-locked">
 
+<!-- ═══════════════════════════════════════
+     MANDATORY AD GATE POPUP
+═══════════════════════════════════════ -->
+<div id="adGate">
+  <div class="gl-gate-card">
+    <div class="gl-gate-title">Access Content</div>
+    <div class="gl-gate-icon">🔗</div>
+
+    <div class="gl-gate-adslot" id="gateAdSlot">
+      <div data-type="_mgwidget" data-widget-id="2087588"></div>
+      <script>(function(w,q){w[q]=w[q]||[];w[q].push(["_mgc.load"])})(window,"_mgq");</script>
+    </div>
+
+    <div class="gl-gate-hint">👆 Tap the ad above, then come back here</div>
+    <div class="gl-gate-step">You are currently on step 1/2</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MAIN PAGE
+═══════════════════════════════════════ -->
 <div class="gl-wrap">
 
   <div class="gl-head">
     <h1>🔗 Preparing Your Episode Link</h1>
-    <p>Scroll down to reveal your streaming link. Ads on this page keep SmTv Urdu free for everyone — thanks for your support!</p>
+    <p>Once verified, wait for the timer, then scroll down to reveal your streaming link.</p>
   </div>
 
   <div class="gl-adslot" id="adslot1">
-    <div data-type="_mgwidget" data-widget-id="2087390"></div>
-    <script>(function(w,q){w[q]=w[q]||[];w[q].push(["_mgc.load"])})(window,"_mgq");</script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/c91a82435d260630918ecc80c95125ac/invoke.js"></script>
   </div>
 
   <div class="gl-steps">
     <h2>📌 Why this page?</h2>
     <ol>
-      <li>No sign-up, no waiting timer — just scroll and get your link.</li>
-      <li>Ads here support the site so episodes stay free.</li>
-      <li>Your link is ready as soon as you reach the button below.</li>
+      <li>Ads on this page keep SmTv Urdu free for everyone.</li>
+      <li>No sign-up — just verify once and wait for the timer.</li>
+      <li>Your link unlocks automatically once the timer finishes.</li>
     </ol>
   </div>
 
-  <div class="gl-adslot" id="adslot2" style="min-height:250px;">
-    <script type="text/javascript" src="//www.highperformanceformat.com/c91a82435d260630918ecc80c95125ac/invoke.js"></script>
+  <!-- Ad ABOVE timer -->
+  <style>div[data-widget-id="2087591"]{min-height:300px;}</style>
+  <div class="gl-adslot" id="adAboveTimer" style="min-height:300px;">
+    <div data-type="_mgwidget" data-widget-id="2087591"></div>
+    <script>(function(w,q){w[q]=w[q]||[];w[q].push(["_mgc.load"])})(window,"_mgq");</script>
+  </div>
+
+  <!-- TIMER / SCROLL PROMPT -->
+  <div class="gl-timer-box">
+    <button id="timerBtn" class="gl-timer-btn" disabled>⏳ Please wait <span id="countdown">10</span> seconds...</button>
+  </div>
+
+  <!-- Ad BELOW timer -->
+  <div class="gl-adslot" id="adBelowTimer" style="min-height:250px;">
+    <div data-type="_mgwidget" data-widget-id="2087592"></div>
+    <script>(function(w,q){w[q]=w[q]||[];w[q].push(["_mgc.load"])})(window,"_mgq");</script>
   </div>
 
   <div class="gl-steps">
     <h2>🎬 What happens next?</h2>
     <ol>
-      <li>Tap the <b>Get Link</b> button below.</li>
-      <li>You'll be taken straight to the episode streaming page.</li>
-      <li>Enjoy watching in HD!</li>
+      <li>Wait for the timer above to finish.</li>
+      <li>Keep scrolling down this page.</li>
+      <li>Your real <b>Get Link</b> button appears at the bottom.</li>
     </ol>
+  </div>
+
+  <div class="gl-adslot" id="adslot2" style="min-height:200px;">
+    <div data-type="_mgwidget" data-widget-id="2087390"></div>
+    <script>(function(w,q){w[q]=w[q]||[];w[q].push(["_mgc.load"])})(window,"_mgq");</script>
   </div>
 
   <div class="gl-progress">Your link is below 👇</div>
 
   <div class="gl-btn-wrap">
-    <a href="#" id="getLinkBtn" class="gl-btn">🔓 Get Link</a>
+    <a href="#" id="getLinkBtn" class="gl-btn gl-hidden">🔓 Get Link</a>
     <div class="gl-note">If the button doesn't open the episode, please refresh this page and try again.</div>
   </div>
 
