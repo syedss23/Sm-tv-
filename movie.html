@@ -102,9 +102,11 @@
   async function loadFeatureConfig() {
     try {
       const r = await fetch('/config.json', { cache: 'no-cache' });
-      featureConfig = r.ok ? (await r.json()).redirectionFeatures : { shortlink:false, sponsorPopup:true };
+      featureConfig = r.ok
+        ? (await r.json()).redirectionFeatures
+        : { shortlink: false, ownShortlink: false, sponsorPopup: false };
     } catch (e) {
-      featureConfig = { shortlink:false, sponsorPopup:true };
+      featureConfig = { shortlink: false, ownShortlink: false, sponsorPopup: false };
     }
   }
 
@@ -211,11 +213,27 @@
         if (typeof gtag !== 'undefined') {
           gtag('event', 'movie_watch_click', { 'movie': movieSlug });
         }
-        if (featureConfig && featureConfig.shortlink && !featureConfig.sponsorPopup && movieShortlink) {
-          window.location.href = movieShortlink;
-        } else {
-          window.location.href = `episode.html?movie=${encodeURIComponent(movieSlug)}`;
+
+        // 1) OWN SHORTLINK MODE (ads + timer interstitial)
+        if (featureConfig && featureConfig.ownShortlink) {
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'own_shortlink_redirect_movie', { movie: movieSlug });
+          }
+          window.location.href = `getlink.html?movie=${encodeURIComponent(movieSlug)}`;
+          return;
         }
+
+        // 2) OLD THIRD-PARTY SHORTLINK MODE
+        if (featureConfig && featureConfig.shortlink && movieShortlink) {
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'shortlink_redirect_movie', { movie: movieSlug, shortlink_url: movieShortlink });
+          }
+          window.location.href = movieShortlink;
+          return;
+        }
+
+        // 3) DEFAULT: go straight to episode.html
+        window.location.href = `episode.html?movie=${encodeURIComponent(movieSlug)}`;
       });
     }
   })();
