@@ -18,7 +18,7 @@ const episodesReady = fetch('episode-data/index.json')
   .catch(() => []);
     
 
-/* ── Config (used for sponsor banner only) ── */
+/* ── Config (used for sponsor banner + redirection mode) ── */
 const configReady = fetch('/config.json', { cache: 'no-cache' })
   .then(r => r.ok ? r.json() : null).catch(() => null);
 
@@ -85,28 +85,24 @@ function initSidebar() {
 }
 
 /* ============================================================
-   SPONSOR BANNER
+   AD SPACE BANNER (replaces the old sponsor banner)
    ============================================================ */
 async function initSponsorBanner() {
   const b = document.getElementById('sponsor-banner');
   if (!b) return;
   b.innerHTML = `
-    <div class="spn-logo-wrap">
-      <div class="spn-logo-ring"></div>
-      <img class="spn-logo" src="/assets/sponsor-logo.png" alt="Sponsor logo">
-    </div>
     <div class="spn-info">
-      <span class="spn-label">Sponsored</span>
-      <span class="spn-name">Muslim Marriage Bureau – Find Your Halal Life Partner</span>
+      <span class="spn-label">Ad Space Available</span>
+      <span class="spn-name">Advertise here — reach thousands of daily viewers</span>
     </div>
-    <a href="https://wa.me/919285411627" target="_blank" rel="noopener" class="spn-btn"
-       onclick="gtag('event','sponsor_click',{location:'homepage_banner',sponsor:'muslim_marriage_bureau'});">Register Now</a>`;
+    <a id="spn-btn" href="mailto:hsga9782@gmail.com" class="spn-btn"
+       onclick="gtag('event','ad_space_click',{location:'homepage_banner'});">Contact Us</a>`;
 }
 
 /* ============================================================
    HERO — full-width cinematic banner
    The image fills 100% width × 100% height via object-fit:cover
-   Shortlink: DIRECTLY fetch episode JSON (same as old working code)
+   Redirection priority: ownShortlink -> old shortlink -> direct
    ============================================================ */
 async function initHero() {
   const heroEl   = document.getElementById('hero');
@@ -184,13 +180,10 @@ async function initHero() {
   startAuto();
 
   /*
-   * SHORTLINK HANDLER — mirrors the old working code exactly.
-   * Steps:
-   *   1. Get the episode JSON file path (data-src = e.g. episode-data/slug-ur-s1.json)
-   *   2. Fetch it directly
-   *   3. Find the episode by ep number
-   *   4. If episode.shortlink exists → redirect there
-   *   5. Otherwise → redirect to episode.html URL
+   * REDIRECTION HANDLER — mirrors series.js priority order:
+   *   1. ownShortlink true  -> getlink.html (ads + timer) -> episode.html
+   *   2. shortlink true     -> old third-party shortlink from episode JSON, if present
+   *   3. otherwise          -> straight to episode.html
    */
   slidesEl.addEventListener('click', async e => {
     const btn = e.target.closest('[data-href]');
@@ -202,33 +195,55 @@ async function initHero() {
     const epNum       = btn.getAttribute('data-ep')   || '';
 
     btn.style.transform = 'scale(0.95)';
-btn.style.opacity = '0.8';
+    btn.style.opacity = '0.8';
 
-    try {
-      if (jsonSrc) {
-        const res = await fetch(jsonSrc);
-        if (res.ok) {
-          const eps   = await res.json();
-          const found = (Array.isArray(eps) ? eps : []).find(ep => String(ep.ep) === String(epNum));
-          if (found && found.shortlink) {
-            if (typeof gtag !== 'undefined') {
-              gtag('event', 'shortlink_redirect_home', {
-                episode: found.title || 'Episode ' + epNum,
-                shortlink_url: found.shortlink
-              });
+    const configObj = await configReady;
+    const featureConfig = (configObj && configObj.redirectionFeatures) ||
+      { shortlink: false, ownShortlink: false, sponsorPopup: false };
+
+    // 1) OWN SHORTLINK MODE (ads + timer interstitial)
+    if (featureConfig.ownShortlink) {
+      const queryStr = episodeHref.split('?')[1] || '';
+      const getlinkUrl = 'getlink.html' + (queryStr ? ('?' + queryStr) : '');
+
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'own_shortlink_redirect_home', {
+          episode: 'Episode ' + epNum
+        });
+      }
+
+      window.location.href = getlinkUrl;
+      return;
+    }
+
+    // 2) OLD THIRD-PARTY SHORTLINK MODE
+    if (featureConfig.shortlink) {
+      try {
+        if (jsonSrc) {
+          const res = await fetch(jsonSrc);
+          if (res.ok) {
+            const eps   = await res.json();
+            const found = (Array.isArray(eps) ? eps : []).find(ep => String(ep.ep) === String(epNum));
+            if (found && found.shortlink) {
+              if (typeof gtag !== 'undefined') {
+                gtag('event', 'shortlink_redirect_home', {
+                  episode: found.title || 'Episode ' + epNum,
+                  shortlink_url: found.shortlink
+                });
+              }
+              window.location.href = found.shortlink;
+              return;
             }
-            window.location.href = found.shortlink;
-            return;
           }
         }
+      } catch (err) {
+        console.warn('Shortlink fetch error:', err);
       }
-    } catch (err) {
-      console.warn('Shortlink fetch error:', err);
     }
 
     btn.style.transform = '';
-btn.style.opacity = '';
-    // No shortlink — go to episode page
+    btn.style.opacity = '';
+    // 3) DEFAULT: go to episode page
     window.location.href = episodeHref;
   });
 }
