@@ -7,11 +7,12 @@
   'use strict';
 
   var qs = new URLSearchParams(window.location.search);
-  var series = qs.get('series');
-  var season = qs.get('season');
-  var ep     = qs.get('ep');
-  var lang   = qs.get('lang');
-  var source = qs.get('source');
+  var series    = qs.get('series');
+  var season    = qs.get('season');
+  var ep        = qs.get('ep');
+  var lang      = qs.get('lang');
+  var source    = qs.get('source');
+  var movieSlug = qs.get('movie');
 
   var adGate       = document.getElementById('adGate');
   var timerWidget  = document.getElementById('timerWidget');
@@ -19,7 +20,9 @@
 
   // Build the final destination URL up front
   var finalUrl = null;
-  if (series && ep) {
+  if (movieSlug) {
+    finalUrl = 'episode.html?movie=' + encodeURIComponent(movieSlug);
+  } else if (series && ep) {
     finalUrl = 'episode.html?series=' + encodeURIComponent(series) + '&ep=' + encodeURIComponent(ep);
     if (season) finalUrl += '&season=' + encodeURIComponent(season);
     if (lang)   finalUrl += '&lang=' + encodeURIComponent(lang);
@@ -33,6 +36,8 @@
     if (timerWidget) timerWidget.textContent = '⚠️ Invalid Link';
     return;
   }
+
+  var trackLabel = movieSlug ? ('movie_' + movieSlug) : (series + '_s' + (season || '0') + 'e' + ep);
 
   var timerDone = false;
 
@@ -51,7 +56,7 @@
 
     if (typeof gtag !== 'undefined') {
       gtag('event', 'getlink_gate_verified', {
-        episode: series + '_s' + (season || '0') + 'e' + ep
+        episode: trackLabel
       });
     }
 
@@ -117,7 +122,7 @@
       }
       if (typeof gtag !== 'undefined') {
         gtag('event', 'getlink_click', {
-          episode: series + '_s' + (season || '0') + 'e' + ep
+          episode: trackLabel
         });
       }
     });
