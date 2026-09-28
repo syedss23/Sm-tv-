@@ -1,5 +1,5 @@
 // getlink.js - Own shortlink interstitial page
-// Stage 1: mandatory ad-gate popup (must leave tab via the ad + return)
+// Stage 1: mandatory ad-gate popup (must CLICK the ad, leave the tab, and return)
 // Stage 2: 10 second timer shown in a widget near the top of the page
 // Stage 3: real Get Link button at the bottom of the page unlocks -> episode.html
 
@@ -42,9 +42,12 @@
   var timerDone = false;
 
   // ── STAGE 1: AD GATE ─────────────────────────────
-  // The ad widget itself is the click target (its tile opens in a new tab).
-  // We detect the generic "tab was left, then came back" pattern.
-  var pageReadyAt = Date.now();
+  // The popup only unlocks when BOTH are true:
+  //   1) the user actually clicked the ad inside the popup, AND
+  //   2) they then left this tab and came back.
+  // Just minimizing/reopening the browser does NOT unlock it.
+  var gateSlot = document.getElementById('gateAdSlot');
+  var adClicked = false;
   var hasLeft = false;
   var gateResolved = false;
 
@@ -63,27 +66,52 @@
     startTimer();
   }
 
+  function markAdClicked() {
+    if (gateResolved) return;
+    adClicked = true;
+  }
+
+  // Works for our own <a> link/image AND for third-party ad widgets
+  // (capture phase, so it fires even if the widget stops propagation).
+  if (gateSlot) {
+    gateSlot.addEventListener('click', markAdClicked, true);
+    gateSlot.addEventListener('touchend', markAdClicked, true);
+  }
+
   function markLeft() {
-    if (!gateResolved && (Date.now() - pageReadyAt) > 800) {
+    // Only counts as "leaving via the ad" if the ad was clicked first
+    if (!gateResolved && adClicked) {
       hasLeft = true;
+    }
+  }
+
+  function tryResolve() {
+    if (!gateResolved && adClicked && hasLeft) {
+      closeAdGate();
     }
   }
 
   document.addEventListener('visibilitychange', function () {
     if (document.visibilityState === 'hidden') {
       markLeft();
-    } else if (document.visibilityState === 'visible' && hasLeft && !gateResolved) {
-      closeAdGate();
+    } else {
+      tryResolve();
     }
   });
 
-  window.addEventListener('blur', markLeft);
-
-  window.addEventListener('focus', function () {
-    if (hasLeft && !gateResolved) {
-      closeAdGate();
-    }
+  window.addEventListener('blur', function () {
+    // Ad widgets rendered in an <iframe> swallow the click event, but the
+    // window blurs and the iframe becomes the active element. Treat that as a click.
+    try {
+      var ae = document.activeElement;
+      if (gateSlot && ae && ae.tagName === 'IFRAME' && gateSlot.contains(ae)) {
+        markAdClicked();
+      }
+    } catch (e) {}
+    markLeft();
   });
+
+  window.addEventListener('focus', tryResolve);
 
   // ── STAGE 2: 10 SECOND TIMER (top widget) ────────
   function startTimer() {
