@@ -16,3 +16,4 @@ sharethrough.com, a6a34444, RESELLER, d53b998a7bd4ecd2
 onetag.com, 7cd9d7c7c13ff36, RESELLER
 inmobi.com, c2391dc8a51e420480044992fe6dc4d7, RESELLER, 83e75a7ae333ca9d
 gamoshi.io, 267-b6491, DIRECT, 20e30b2ae1f670f2
+pubmatic.com, 168313, RESELLER, 5d62403b186f2ace
