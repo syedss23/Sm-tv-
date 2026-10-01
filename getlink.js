@@ -41,6 +41,26 @@
 
   var timerDone = false;
 
+  // ── POPUP AD ALTERNATION ──────────────────────────
+  // Odd visits show ad network 1, even visits show ad network 2, so the
+  // same user doesn't see the same popup ad every single episode.
+  (function alternatePopupAd() {
+    var KEY = 'gl_popup_ad_count';
+    var count = 1;
+    try {
+      count = parseInt(localStorage.getItem(KEY) || '0', 10) + 1;
+      localStorage.setItem(KEY, String(count));
+    } catch (e) {}
+
+    var opt1 = document.getElementById('gateAdOption1');
+    var opt2 = document.getElementById('gateAdOption2');
+    if (!opt1 || !opt2) return;
+
+    var showFirst = (count % 2 === 1);
+    opt1.style.display = showFirst ? 'block' : 'none';
+    opt2.style.display = showFirst ? 'none' : 'block';
+  })();
+
   // ── STAGE 1: AD GATE ─────────────────────────────
   // The popup only unlocks when BOTH are true:
   //   1) the user actually clicked the ad inside the popup, AND
