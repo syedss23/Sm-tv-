@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <!-- MGID loader - only once per page -->
-<script src="https://jsc.mgid.com/site/1113132.js" async></script>
+<script src="https://jsc.mgid.com/site/1114071.js" async></script>
 
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -107,17 +107,25 @@ a{color:#1a73e8;text-decoration:underline;}
     <div class="gl-gate-card">
       <div class="gl-gate-adslot" id="gateAdSlot">
 
-        <!-- ═══ TEMPORARY: image + smartlink (while MGID isn't serving ads) ═══ -->
+        <!-- ═══ Alternating direct-link ads — JS in getlink.js shows one
+             at a time, flipping between the two on every episode click ═══ -->
         <a href="https://www.profitableratecpmnetwork.com/xz00sz75jz?key=4696a15a64a0b6e65f84c1bd7512bf0e"
-           target="_blank" rel="noopener" style="display:block;">
+           target="_blank" rel="noopener" id="gateAdOption1" style="display:block;">
           <img src="https://i.ibb.co/39LN7qL8/IMG-20260928-110900.png"
                alt="Verify and Continue"
                style="width:100%;height:auto;display:block;border-radius:10px;">
         </a>
-        <!-- ═══ END TEMPORARY ═══ -->
+        <a href="https://omg10.com/4/11914764"
+           target="_blank" rel="noopener" id="gateAdOption2" style="display:none;">
+          <img src="https://i.ibb.co/39LN7qL8/IMG-20260928-110900.png"
+               alt="Verify and Continue"
+               style="width:100%;height:auto;display:block;border-radius:10px;">
+        </a>
+        <!-- ═══ END alternating ads ═══ -->
 
-        <!-- ═══ WHEN MGID IS FIXED: delete the temporary block above and
-             uncomment this MGID widget instead ═══
+        <!-- ═══ WHEN MGID IS AVAILABLE AGAIN: delete the two <a> blocks above and
+             uncomment this MGID widget instead (loads from site 1113132) ═══
+        <script src="https://jsc.mgid.com/site/1113132.js" async></script>
         <div data-type="_mgwidget" data-widget-id="2087675"></div>
         <script>(function(w,q){w[q]=w[q]||[];w[q].push(["_mgc.load"])})(window,"_mgq");</script>
         -->
@@ -150,9 +158,9 @@ a{color:#1a73e8;text-decoration:underline;}
     <h2>2. Take Breaks Between Intense Episodes</h2>
     <p>Heavy dramas with betrayal, war, and political intrigue can be emotionally exhausting if you watch too many episodes back to back. Many longtime fans recommend pacing yourself — a short break between episodes helps you actually absorb what happened instead of blurring one episode into the next.</p>
 
-    <!-- AD SLOT (in-article) -->
+    <!-- AD SLOT (in-article - Smart widget) -->
     <div class="gl-adslot" style="min-height:300px;">
-      <div data-type="_mgwidget" data-widget-id="2087591"></div>
+      <div data-type="_mgwidget" data-widget-id="2089857"></div>
       <script>(function(w,q){w[q]=w[q]||[];w[q].push(["_mgc.load"])})(window,"_mgq");</script>
     </div>
 
@@ -162,9 +170,9 @@ a{color:#1a73e8;text-decoration:underline;}
     <h2>4. Use Subtitles Even If You Understand the Dialogue</h2>
     <p>Even fluent speakers often turn subtitles on for period dramas, since older or formal dialects used in historical settings can be tricky to follow by ear alone. It's a small habit that makes a noticeable difference in how much of the dialogue actually sticks with you.</p>
 
-    <!-- AD SLOT (in-article, second) -->
+    <!-- AD SLOT (in-article, second - Swipe Up widget) -->
     <div class="gl-adslot" style="min-height:250px;">
-      <div data-type="_mgwidget" data-widget-id="2087592"></div>
+      <div data-type="_mgwidget" data-widget-id="2089861"></div>
       <script>(function(w,q){w[q]=w[q]||[];w[q].push(["_mgc.load"])})(window,"_mgq");</script>
     </div>
 
@@ -172,6 +180,12 @@ a{color:#1a73e8;text-decoration:underline;}
     <p>Some of the most fun part of following a series is discussing plot twists and predictions with other fans. Whether it's a group chat, a comment section, or just a friend who watches the same show, sharing theories makes each new episode more exciting to wait for.</p>
 
     <p>None of these habits require any special effort, but together they make binge-watching a much richer experience. Enjoy the show!</p>
+
+    <!-- AD SLOT (end of article - Notification widget) -->
+    <div class="gl-adslot" style="min-height:100px;">
+      <div data-type="_mgwidget" data-widget-id="2089858"></div>
+      <script>(function(w,q){w[q]=w[q]||[];w[q].push(["_mgc.load"])})(window,"_mgq");</script>
+    </div>
   </div>
 
   <div class="gl-tags">
