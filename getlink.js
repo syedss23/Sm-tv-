@@ -1,10 +1,15 @@
-// getlink.js - Own shortlink interstitial page
+// getlink.js - PAGE 1 of the two-page getlink flow
 // Stage 1: mandatory ad-gate popup (must CLICK the ad, leave the tab, and return)
-// Stage 2: 10 second timer shown in a widget near the top of the page
-// Stage 3: real Get Link button at the bottom of the page unlocks -> episode.html
+// Stage 2: 10 second timer
+// Stage 3: "Continue" button unlocks -> getlink2.html (page 2), carrying the same params
 
 (function () {
   'use strict';
+
+  var PAGE_IMAGE = 'https://i.ibb.co/39LN7qL8/IMG-20260928-110900.png';
+  var DIRECT_A_URL = 'https://www.profitableratecpmnetwork.com/xz00sz75jz?key=4696a15a64a0b6e65f84c1bd7512bf0e';
+  var DIRECT_B_URL = 'https://omg10.com/4/11914764';
+  var MGID_POPUP_IDS = ['2090218', '2090220', '2090221'];
 
   var qs = new URLSearchParams(window.location.search);
   var series    = qs.get('series');
@@ -14,59 +19,77 @@
   var source    = qs.get('source');
   var movieSlug = qs.get('movie');
 
-  var adGate       = document.getElementById('adGate');
-  var timerWidget  = document.getElementById('timerWidget');
-  var getLinkBtn   = document.getElementById('getLinkBtn');
+  var adGate      = document.getElementById('adGate');
+  var gateSlot    = document.getElementById('gateAdSlot');
+  var timerWidget = document.getElementById('timerWidget');
+  var continueBtn = document.getElementById('continueBtn');
+  var articleSlot1 = document.getElementById('articleAdSlot1');
 
-  // Build the final destination URL up front
-  var finalUrl = null;
+  // Carry the same params forward to page 2
+  var carryQS = '';
   if (movieSlug) {
-    finalUrl = 'episode.html?movie=' + encodeURIComponent(movieSlug);
+    carryQS = 'movie=' + encodeURIComponent(movieSlug);
   } else if (series && ep) {
-    finalUrl = 'episode.html?series=' + encodeURIComponent(series) + '&ep=' + encodeURIComponent(ep);
-    if (season) finalUrl += '&season=' + encodeURIComponent(season);
-    if (lang)   finalUrl += '&lang=' + encodeURIComponent(lang);
-    if (source) finalUrl += '&source=' + encodeURIComponent(source);
+    carryQS = 'series=' + encodeURIComponent(series) + '&ep=' + encodeURIComponent(ep);
+    if (season) carryQS += '&season=' + encodeURIComponent(season);
+    if (lang)   carryQS += '&lang=' + encodeURIComponent(lang);
+    if (source) carryQS += '&source=' + encodeURIComponent(source);
   }
 
-  if (!finalUrl) {
-    // Broken/incomplete link - don't lock the user behind a gate for nothing
+  if (!carryQS) {
     if (adGate) adGate.classList.add('gl-hidden');
     document.body.classList.remove('gl-locked');
     if (timerWidget) timerWidget.textContent = '⚠️ Invalid Link';
     return;
   }
 
+  var nextPageUrl = 'getlink2.html?' + carryQS;
   var trackLabel = movieSlug ? ('movie_' + movieSlug) : (series + '_s' + (season || '0') + 'e' + ep);
 
   var timerDone = false;
 
-  // ── POPUP AD ALTERNATION ──────────────────────────
-  // Odd visits show ad network 1, even visits show ad network 2, so the
-  // same user doesn't see the same popup ad every single episode.
-  (function alternatePopupAd() {
-    var KEY = 'gl_popup_ad_count';
+  // ── SHARED POPUP AD ROTATION (5-ad cycle, synced across page 1 & 2) ──
+  // 1: direct link A | 2: direct link B | 3,4,5: MGID popup ads 1,2,3 - then repeats.
+  function pushMgidLoad() {
+    try { window._mgq = window._mgq || []; window._mgq.push(['_mgc.load']); } catch (e) {}
+  }
+
+  function renderPopupAd() {
+    if (!gateSlot) return;
     var count = 1;
     try {
-      count = parseInt(localStorage.getItem(KEY) || '0', 10) + 1;
-      localStorage.setItem(KEY, String(count));
+      count = parseInt(localStorage.getItem('gl_popup_ad_seq') || '0', 10) + 1;
+      localStorage.setItem('gl_popup_ad_seq', String(count));
     } catch (e) {}
 
-    var opt1 = document.getElementById('gateAdOption1');
-    var opt2 = document.getElementById('gateAdOption2');
-    if (!opt1 || !opt2) return;
+    var idx = ((count - 1) % 5) + 1;
+    var html = '';
 
-    var showFirst = (count % 2 === 1);
-    opt1.style.display = showFirst ? 'block' : 'none';
-    opt2.style.display = showFirst ? 'none' : 'block';
-  })();
+    if (idx === 1) {
+      html = '<a href="' + DIRECT_A_URL + '" target="_blank" rel="noopener" style="display:block;">' +
+             '<img src="' + PAGE_IMAGE + '" alt="Verify and Continue" style="width:100%;height:auto;display:block;border-radius:10px;"></a>';
+    } else if (idx === 2) {
+      html = '<a href="' + DIRECT_B_URL + '" target="_blank" rel="noopener" style="display:block;">' +
+             '<img src="' + PAGE_IMAGE + '" alt="Verify and Continue" style="width:100%;height:auto;display:block;border-radius:10px;"></a>';
+    } else {
+      var widgetId = MGID_POPUP_IDS[idx - 3];
+      html = '<div data-type="_mgwidget" data-widget-id="' + widgetId + '"></div>';
+    }
+
+    gateSlot.innerHTML = html;
+    if (idx >= 3) pushMgidLoad();
+  }
+
+  renderPopupAd();
+
+  // ── RANDOM IN-ARTICLE AD (independent random pick, each page load) ──
+  if (articleSlot1) {
+    var randomId = MGID_POPUP_IDS[Math.floor(Math.random() * MGID_POPUP_IDS.length)];
+    articleSlot1.innerHTML = '<div data-type="_mgwidget" data-widget-id="' + randomId + '"></div>';
+    pushMgidLoad();
+  }
 
   // ── STAGE 1: AD GATE ─────────────────────────────
-  // The popup only unlocks when BOTH are true:
-  //   1) the user actually clicked the ad inside the popup, AND
-  //   2) they then left this tab and came back.
-  // Just minimizing/reopening the browser does NOT unlock it.
-  var gateSlot = document.getElementById('gateAdSlot');
   var adClicked = false;
   var hasLeft = false;
   var gateResolved = false;
@@ -78,9 +101,7 @@
     document.body.classList.remove('gl-locked');
 
     if (typeof gtag !== 'undefined') {
-      gtag('event', 'getlink_gate_verified', {
-        episode: trackLabel
-      });
+      gtag('event', 'getlink_gate_verified', { episode: trackLabel, page: 1 });
     }
 
     startTimer();
@@ -91,15 +112,12 @@
     adClicked = true;
   }
 
-  // Works for our own <a> link/image AND for third-party ad widgets
-  // (capture phase, so it fires even if the widget stops propagation).
   if (gateSlot) {
     gateSlot.addEventListener('click', markAdClicked, true);
     gateSlot.addEventListener('touchend', markAdClicked, true);
   }
 
   function markLeft() {
-    // Only counts as "leaving via the ad" if the ad was clicked first
     if (!gateResolved && adClicked) {
       hasLeft = true;
     }
@@ -120,8 +138,6 @@
   });
 
   window.addEventListener('blur', function () {
-    // Ad widgets rendered in an <iframe> swallow the click event, but the
-    // window blurs and the iframe becomes the active element. Treat that as a click.
     try {
       var ae = document.activeElement;
       if (gateSlot && ae && ae.tagName === 'IFRAME' && gateSlot.contains(ae)) {
@@ -133,7 +149,7 @@
 
   window.addEventListener('focus', tryResolve);
 
-  // ── STAGE 2: 10 SECOND TIMER (top widget) ────────
+  // ── STAGE 2: 10 SECOND TIMER ──────────────────────
   function startTimer() {
     var seconds = 10;
     if (timerWidget) timerWidget.textContent = '⏳ Please wait ' + seconds + ' seconds...';
@@ -144,34 +160,32 @@
         clearInterval(interval);
         timerDone = true;
         if (timerWidget) {
-          timerWidget.textContent = '✅ Verified! Scroll down to get your link.';
+          timerWidget.textContent = '✅ Verified! Scroll down to continue.';
           timerWidget.classList.add('gl-timer-ready');
         }
-        unlockFinalButton();
+        unlockContinueButton();
       } else if (timerWidget) {
         timerWidget.textContent = '⏳ Please wait ' + seconds + ' seconds...';
       }
     }, 1000);
   }
 
-  // ── STAGE 3: UNLOCK THE REAL GET LINK BUTTON ─────
-  function unlockFinalButton() {
-    if (!getLinkBtn) return;
-    getLinkBtn.href = finalUrl;
-    getLinkBtn.textContent = '🔓 Get Link';
-    getLinkBtn.classList.add('gl-ready');
+  // ── STAGE 3: UNLOCK CONTINUE -> PAGE 2 ───────────
+  function unlockContinueButton() {
+    if (!continueBtn) return;
+    continueBtn.href = nextPageUrl;
+    continueBtn.textContent = '➡️ Continue';
+    continueBtn.classList.add('gl-ready');
   }
 
-  if (getLinkBtn) {
-    getLinkBtn.addEventListener('click', function (e) {
+  if (continueBtn) {
+    continueBtn.addEventListener('click', function (e) {
       if (!timerDone) {
         e.preventDefault();
         return;
       }
       if (typeof gtag !== 'undefined') {
-        gtag('event', 'getlink_click', {
-          episode: trackLabel
-        });
+        gtag('event', 'getlink_continue_click', { episode: trackLabel });
       }
     });
   }
