@@ -1,4 +1,4 @@
-// episode.js — SM-TV (sponsor popup removed, movie support + inline tutorial + internal premium links)
+// episode.js — SM-TV (sponsor popup removed, movie support + per-button inline tutorials + internal premium links)
 
 const params    = new URLSearchParams(window.location.search);
 const slug      = params.get('series');
@@ -33,8 +33,10 @@ if (isMovie) {
   backUrl  = `series.html?series=${slug}`;
 }
 
-const HOW_TO_DOWNLOAD_EMBED = 'https://rumble.com/embed/v7cmmn4/?pub=4qdqa6';
-const PREMIUM_PAGE_URL      = '/premium.html';
+// Tutorial videos (one per download button)
+const TUTORIAL_TG_EMBED  = 'https://rumble.com/embed/v7e40s0/?pub=4pcer0'; // Telegram Server 1
+const TUTORIAL_DL2_EMBED = 'https://rumble.com/embed/v7e40xu/?pub=4pcer0'; // Download Server 2
+const PREMIUM_PAGE_URL   = '/premium.html';
 
 let featureConfig = null;
 
@@ -90,7 +92,10 @@ function patchIframes(html) {
         <div class="smtv-skel" style="height:68px;border-radius:14px;"></div>
         <div class="smtv-skel" style="height:68px;border-radius:14px;"></div>
       </div>
-      <div class="smtv-skel" style="height:54px;border-radius:14px;margin-bottom:10px;"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div class="smtv-skel" style="height:40px;border-radius:14px;"></div>
+        <div class="smtv-skel" style="height:40px;border-radius:14px;"></div>
+      </div>
       <div class="smtv-skel" style="height:60px;border-radius:14px;"></div>
     </div>`;
 
@@ -184,27 +189,39 @@ function patchIframes(html) {
             Watch (Server 3)
           </button>
 
-          <!-- DL1 + DL2 side by side -->
+          <!-- DL1 + DL2 side by side, each with its own tutorial below -->
           <div class="smtv-pair">
-            <a href="${ep.download || '#'}"
-               ${ep.download ? 'target="_blank" rel="noopener"' : 'aria-disabled="true"'}
-               class="smtv-btn smtv-tg ${ep.download ? '' : 'smtv-off'}">
-              <span class="smtv-ic">📥</span>
-              <span>Telegram<br><small>Server 1</small></span>
-            </a>
-            <button id="dl2Btn"
-              class="smtv-btn smtv-dl2 ${ep.download2 ? '' : 'smtv-off'}"
-              ${ep.download2 ? '' : 'disabled aria-disabled="true"'}>
-              <span class="smtv-ic">📥</span>
-              <span>Download<br><small>Server 2</small></span>
-            </button>
+
+            <!-- Telegram Server 1 + its tutorial -->
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <a href="${ep.download || '#'}"
+                 ${ep.download ? 'target="_blank" rel="noopener"' : 'aria-disabled="true"'}
+                 class="smtv-btn smtv-tg ${ep.download ? '' : 'smtv-off'}">
+                <span class="smtv-ic">📥</span>
+                <span>Telegram<br><small>Server 1</small></span>
+              </a>
+              <button type="button" id="howTgBtn" class="smtv-btn smtv-how"
+                      style="padding:10px 8px;font-size:12.5px;">
+                <span class="smtv-ic">📘</span> Tutorial
+              </button>
+            </div>
+
+            <!-- Download Server 2 + its tutorial -->
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <button id="dl2Btn"
+                class="smtv-btn smtv-dl2 ${ep.download2 ? '' : 'smtv-off'}"
+                ${ep.download2 ? '' : 'disabled aria-disabled="true"'}>
+                <span class="smtv-ic">📥</span>
+                <span>Download<br><small>Server 2</small></span>
+              </button>
+              <button type="button" id="howDl2Btn" class="smtv-btn smtv-how"
+                      style="padding:10px 8px;font-size:12.5px;">
+                <span class="smtv-ic">📘</span> Tutorial
+              </button>
+            </div>
           </div>
 
-          <!-- Tutorial — toggles inline video -->
-          <button type="button" id="howToDownloadBtn" class="smtv-btn smtv-how">
-            <span class="smtv-ic">📘</span>
-            How to Download (Tutorial)
-          </button>
+          <!-- Shared tutorial video (opens under the buttons) -->
           <div id="howToDownloadWrap" style="display:none;margin-top:10px;position:relative;width:100%;height:0;padding-bottom:56.25%;border-radius:13px;overflow:hidden;background:#000;">
             <iframe id="howToDownloadFrame" style="position:absolute;inset:0;width:100%;height:100%;border:0;" src="" allowfullscreen loading="lazy"></iframe>
           </div>
@@ -243,24 +260,29 @@ function patchIframes(html) {
       dl2.addEventListener('click', () => { window.location.href = ep.download2; });
     }
 
-    // How to Download — toggle inline video
-    const howToBtn   = document.getElementById('howToDownloadBtn');
-    const howToWrap  = document.getElementById('howToDownloadWrap');
-    const howToFrame = document.getElementById('howToDownloadFrame');
+    // Tutorials — one shared player, switches by button
+    const howWrap  = document.getElementById('howToDownloadWrap');
+    const howFrame = document.getElementById('howToDownloadFrame');
+    let activeTut  = null;
 
-    if (howToBtn && howToWrap && howToFrame) {
-      howToBtn.addEventListener('click', () => {
-        const isOpen = howToWrap.style.display !== 'none';
-        if (isOpen) {
-          howToWrap.style.display = 'none';
-          howToFrame.src = '';
-        } else {
-          howToFrame.src = HOW_TO_DOWNLOAD_EMBED;
-          howToWrap.style.display = 'block';
-          howToWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-      });
+    function toggleTutorial(url) {
+      if (!howWrap || !howFrame) return;
+      if (activeTut === url) {            // same button again = close
+        howWrap.style.display = 'none';
+        howFrame.src = '';
+        activeTut = null;
+        return;
+      }
+      howFrame.src = url;
+      howWrap.style.display = 'block';
+      activeTut = url;
+      howWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
+
+    document.getElementById('howTgBtn')
+      ?.addEventListener('click', () => toggleTutorial(TUTORIAL_TG_EMBED));
+    document.getElementById('howDl2Btn')
+      ?.addEventListener('click', () => toggleTutorial(TUTORIAL_DL2_EMBED));
 
     // Watch 3 modal
     const w3Btn   = document.getElementById('watch3Btn');
