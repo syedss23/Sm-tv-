@@ -28,7 +28,6 @@ a{color:#1a73e8;text-decoration:underline;}
 
 .gl-wrap{max-width:680px;margin:0 auto;padding:20px 18px 50px;}
 
-/* ── ARTICLE HEADER ── */
 .gl-art-title{font-family:'Merriweather',serif;font-size:1.5rem;font-weight:900;line-height:1.3;color:#111;margin-bottom:10px;}
 .gl-art-meta{font-size:.85rem;color:#5f6368;margin-bottom:18px;}
 .gl-art-banner{
@@ -38,24 +37,20 @@ a{color:#1a73e8;text-decoration:underline;}
   text-transform:uppercase;letter-spacing:.03em;
 }
 
-/* ── TOP TIMER WIDGET ── */
 .gl-timer-widget{
   display:flex;align-items:center;gap:10px;background:#f0f7ff;border:1px solid #cfe4ff;
   border-radius:10px;padding:13px 16px;margin-bottom:22px;font-weight:700;font-size:.92rem;color:#0b57d0;
 }
 .gl-timer-widget.gl-timer-ready{background:#eafbee;border-color:#bfeccb;color:#1a7a34;}
 
-/* ── ARTICLE BODY ── */
 .gl-art p{font-size:1rem;color:#222;margin-bottom:16px;}
 .gl-art h2{font-family:'Merriweather',serif;font-size:1.15rem;font-weight:700;color:#111;margin:26px 0 12px;}
 
 .gl-tags{font-size:.88rem;color:#555;margin:22px 0 10px;padding-top:14px;border-top:1px solid #eee;}
 .gl-tags a{margin-right:4px;}
 
-/* ── AD SLOTS ── */
 .gl-adslot{margin:24px 0;min-height:100px;background:#fafafa;border:1px solid #eee;border-radius:8px;overflow:hidden;padding:6px;}
 
-/* ── RECENT POSTS / COMMENTS ── */
 .gl-section{border-top:1px solid #eee;padding-top:20px;margin-top:28px;}
 .gl-section h3{font-size:1.3rem;font-weight:800;color:#111;margin-bottom:14px;}
 .gl-section ul{list-style:none;}
@@ -64,7 +59,6 @@ a{color:#1a73e8;text-decoration:underline;}
 
 .gl-footer{text-align:center;color:#888;font-size:.85rem;margin-top:36px;padding-top:20px;border-top:1px solid #eee;}
 
-/* ── REAL GET LINK BUTTON (bottom of page content) ── */
 .gl-final-wrap{text-align:center;margin-top:34px;}
 .gl-final-btn{
   display:inline-flex;align-items:center;gap:9px;padding:16px 36px;border-radius:13px;
@@ -78,7 +72,6 @@ a{color:#1a73e8;text-decoration:underline;}
 @keyframes glFinalGlow{0%,100%{box-shadow:0 10px 28px rgba(0,205,235,.35)}50%{box-shadow:0 14px 40px rgba(0,205,235,.6)}}
 .gl-final-note{margin-top:12px;font-size:.78rem;color:#888;}
 
-/* ── AD-GATE POPUP ── */
 #adGate{
   position:fixed;inset:0;z-index:99999;
   background:rgba(10,12,18,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
@@ -100,37 +93,12 @@ a{color:#1a73e8;text-decoration:underline;}
 <body class="gl-locked">
 
 <!-- ═══════════════════════════════════════
-     MANDATORY AD GATE POPUP
+     MANDATORY AD GATE POPUP (page 1 of 2)
 ═══════════════════════════════════════ -->
 <div id="adGate">
   <div class="gl-gate-stack">
     <div class="gl-gate-card">
-      <div class="gl-gate-adslot" id="gateAdSlot">
-
-        <!-- ═══ Alternating direct-link ads — JS in getlink.js shows one
-             at a time, flipping between the two on every episode click ═══ -->
-        <a href="https://www.profitableratecpmnetwork.com/xz00sz75jz?key=4696a15a64a0b6e65f84c1bd7512bf0e"
-           target="_blank" rel="noopener" id="gateAdOption1" style="display:block;">
-          <img src="https://i.ibb.co/39LN7qL8/IMG-20260928-110900.png"
-               alt="Verify and Continue"
-               style="width:100%;height:auto;display:block;border-radius:10px;">
-        </a>
-        <a href="https://omg10.com/4/11914764"
-           target="_blank" rel="noopener" id="gateAdOption2" style="display:none;">
-          <img src="https://i.ibb.co/39LN7qL8/IMG-20260928-110900.png"
-               alt="Verify and Continue"
-               style="width:100%;height:auto;display:block;border-radius:10px;">
-        </a>
-        <!-- ═══ END alternating ads ═══ -->
-
-        <!-- ═══ WHEN MGID IS AVAILABLE AGAIN: delete the two <a> blocks above and
-             uncomment this MGID widget instead (loads from site 1113132) ═══
-        <script src="https://jsc.mgid.com/site/1113132.js" async></script>
-        <div data-type="_mgwidget" data-widget-id="2087675"></div>
-        <script>(function(w,q){w[q]=w[q]||[];w[q].push(["_mgc.load"])})(window,"_mgq");</script>
-        -->
-
-      </div>
+      <div class="gl-gate-adslot" id="gateAdSlot"><!-- filled by getlink.js --></div>
     </div>
     <div class="gl-gate-hintbar">👆 Tap the ad above, then come back here</div>
   </div>
@@ -146,7 +114,6 @@ a{color:#1a73e8;text-decoration:underline;}
 
   <div class="gl-art-banner">Entertainment &amp; Streaming Corner</div>
 
-  <!-- TOP TIMER WIDGET -->
   <div class="gl-timer-widget" id="timerWidget">🔒 Verifying access above...</div>
 
   <div class="gl-art">
@@ -158,11 +125,8 @@ a{color:#1a73e8;text-decoration:underline;}
     <h2>2. Take Breaks Between Intense Episodes</h2>
     <p>Heavy dramas with betrayal, war, and political intrigue can be emotionally exhausting if you watch too many episodes back to back. Many longtime fans recommend pacing yourself — a short break between episodes helps you actually absorb what happened instead of blurring one episode into the next.</p>
 
-    <!-- AD SLOT (in-article - Smart widget) -->
-    <div class="gl-adslot" style="min-height:300px;">
-      <div data-type="_mgwidget" data-widget-id="2089857"></div>
-      <script>(function(w,q){w[q]=w[q]||[];w[q].push(["_mgc.load"])})(window,"_mgq");</script>
-    </div>
+    <!-- AD SLOT - randomly picks one of the 3 rotating MGID widgets -->
+    <div class="gl-adslot" id="articleAdSlot1" style="min-height:300px;"></div>
 
     <h2>3. Read a Little Background First</h2>
     <p>Historical dramas in particular are often loosely based on real events, and knowing even a little bit of the actual history can make watching far more rewarding. You don't need a history degree — a quick summary of the era or the real figures involved is usually enough to appreciate the creative choices the writers made.</p>
@@ -170,7 +134,7 @@ a{color:#1a73e8;text-decoration:underline;}
     <h2>4. Use Subtitles Even If You Understand the Dialogue</h2>
     <p>Even fluent speakers often turn subtitles on for period dramas, since older or formal dialects used in historical settings can be tricky to follow by ear alone. It's a small habit that makes a noticeable difference in how much of the dialogue actually sticks with you.</p>
 
-    <!-- AD SLOT (in-article, second - Swipe Up widget) -->
+    <!-- AD SLOT (Swipe Up widget) -->
     <div class="gl-adslot" style="min-height:250px;">
       <div data-type="_mgwidget" data-widget-id="2089861"></div>
       <script>(function(w,q){w[q]=w[q]||[];w[q].push(["_mgc.load"])})(window,"_mgq");</script>
@@ -181,7 +145,7 @@ a{color:#1a73e8;text-decoration:underline;}
 
     <p>None of these habits require any special effort, but together they make binge-watching a much richer experience. Enjoy the show!</p>
 
-    <!-- AD SLOT (end of article - Notification widget) -->
+    <!-- AD SLOT (Notification widget) -->
     <div class="gl-adslot" style="min-height:100px;">
       <div data-type="_mgwidget" data-widget-id="2089858"></div>
       <script>(function(w,q){w[q]=w[q]||[];w[q].push(["_mgc.load"])})(window,"_mgq");</script>
@@ -206,9 +170,9 @@ a{color:#1a73e8;text-decoration:underline;}
     <p class="gl-no-comments">No comments yet — be the first to share your thoughts once you're watching!</p>
   </div>
 
-  <!-- REAL GET LINK BUTTON - lives at the very bottom of the page -->
+  <!-- CONTINUE BUTTON - leads to page 2 of the flow -->
   <div class="gl-final-wrap">
-    <a href="#" id="getLinkBtn" class="gl-final-btn">🔒 Get Link</a>
+    <a href="#" id="continueBtn" class="gl-final-btn">🔒 Continue</a>
     <div class="gl-final-note">Verify the ad above and wait for the timer to unlock this button.</div>
   </div>
 
