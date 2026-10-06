@@ -9,7 +9,7 @@
   var PAGE_IMAGE = 'https://i.ibb.co/8DrPvbH4/file-0000000022cc82068671104d1eea58c5.png';
   var DIRECT_A_URL = 'https://www.profitableratecpmnetwork.com/xz00sz75jz?key=4696a15a64a0b6e65f84c1bd7512bf0e';
   var DIRECT_B_URL = 'https://omg10.com/4/11914764';
-  var MGID_POPUP_IDS = ['2090218', '2090220', '2090221'];
+  var DIRECT_C_URL = 'https://idealistic-revenue.com/xautkb';
 
   var qs = new URLSearchParams(window.location.search);
   var series    = qs.get('series');
@@ -23,7 +23,6 @@
   var gateSlot    = document.getElementById('gateAdSlot');
   var timerWidget = document.getElementById('timerWidget');
   var getLinkBtn  = document.getElementById('getLinkBtn');
-  var articleSlot2 = document.getElementById('articleAdSlot2');
 
   var finalUrl = null;
   if (movieSlug) {
@@ -45,12 +44,8 @@
   var trackLabel = movieSlug ? ('movie_' + movieSlug) : (series + '_s' + (season || '0') + 'e' + ep);
   var timerDone = false;
 
-  // ── SHARED POPUP AD ROTATION (same counter as page 1, so the 5-ad
+  // ── SHARED POPUP AD ROTATION (same counter as page 1, so the 3-ad
   // cycle continues seamlessly between page 1 and page 2) ──
-  function pushMgidLoad() {
-    try { window._mgq = window._mgq || []; window._mgq.push(['_mgc.load']); } catch (e) {}
-  }
-
   function renderPopupAd() {
     if (!gateSlot) return;
     var count = 1;
@@ -59,32 +54,15 @@
       localStorage.setItem('gl_popup_ad_seq', String(count));
     } catch (e) {}
 
-    var idx = ((count - 1) % 5) + 1;
-    var html = '';
+    var idx = ((count - 1) % 3) + 1;
+    var url = idx === 1 ? DIRECT_A_URL : (idx === 2 ? DIRECT_B_URL : DIRECT_C_URL);
 
-    if (idx === 1) {
-      html = '<a href="' + DIRECT_A_URL + '" target="_blank" rel="noopener" style="display:block;">' +
-             '<img src="' + PAGE_IMAGE + '" alt="Verify and Continue" style="width:100%;height:auto;display:block;border-radius:10px;"></a>';
-    } else if (idx === 2) {
-      html = '<a href="' + DIRECT_B_URL + '" target="_blank" rel="noopener" style="display:block;">' +
-             '<img src="' + PAGE_IMAGE + '" alt="Verify and Continue" style="width:100%;height:auto;display:block;border-radius:10px;"></a>';
-    } else {
-      var widgetId = MGID_POPUP_IDS[idx - 3];
-      html = '<div data-type="_mgwidget" data-widget-id="' + widgetId + '"></div>';
-    }
-
-    gateSlot.innerHTML = html;
-    if (idx >= 3) pushMgidLoad();
+    gateSlot.innerHTML =
+      '<a href="' + url + '" target="_blank" rel="noopener" style="display:block;">' +
+      '<img src="' + PAGE_IMAGE + '" alt="Verify and Continue" style="width:100%;height:auto;display:block;border-radius:10px;"></a>';
   }
 
   renderPopupAd();
-
-  // ── RANDOM IN-ARTICLE AD (independent random pick, each page load) ──
-  if (articleSlot2) {
-    var randomId = MGID_POPUP_IDS[Math.floor(Math.random() * MGID_POPUP_IDS.length)];
-    articleSlot2.innerHTML = '<div data-type="_mgwidget" data-widget-id="' + randomId + '"></div>';
-    pushMgidLoad();
-  }
 
   // ── STAGE 1: AD GATE ─────────────────────────────
   var adClicked = false;
