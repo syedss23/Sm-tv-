@@ -9,7 +9,6 @@
   var PAGE_IMAGE = 'https://i.ibb.co/39LN7qL8/IMG-20260928-110900.png';
   var DIRECT_A_URL = 'https://www.profitableratecpmnetwork.com/xz00sz75jz?key=4696a15a64a0b6e65f84c1bd7512bf0e';
   var DIRECT_B_URL = 'https://omg10.com/4/11914764';
-  var DIRECT_C_URL = 'https://idealistic-revenue.com/xautkb';
 
   var qs = new URLSearchParams(window.location.search);
   var series    = qs.get('series');
@@ -57,8 +56,8 @@
       localStorage.setItem('gl_popup_ad_seq', String(count));
     } catch (e) {}
 
-    var idx = ((count - 1) % 3) + 1;
-    var url = idx === 1 ? DIRECT_A_URL : (idx === 2 ? DIRECT_B_URL : DIRECT_C_URL);
+    var idx = ((count - 1) % 2) + 1;
+    var url = idx === 1 ? DIRECT_A_URL : DIRECT_B_URL;
 
     gateSlot.innerHTML =
       '<a href="' + url + '" target="_blank" rel="noopener" style="display:block;">' +
