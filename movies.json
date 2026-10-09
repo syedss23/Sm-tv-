@@ -52,5 +52,23 @@
     "desc": "Saruhan is a historical detective thriller directed by Emre Konuk. The story centers on themes of justice, political conspiracy, and administrative corruption in the early 17th-century Ottoman Empire.",
     "track": "sub",
     "subLang": "sp"
+  },
+  {
+    "slug": "heaven-en-dub",
+    "movieId": "heaven",
+    "title": "Kingdom Of Heaven (English Dubbed)",
+    "poster": "https://i.ibb.co/CpCb6898/file-00000000864c81fa89f495dc05542409.png",
+    "desc": "Balian of Ibelin travels to Jerusalem during the Crusades of the 12th century, and there he finds himself as the defender of the city and its people.",
+    "track": "dubbed",
+    "subLang": "en"
+  },
+  {
+    "slug": "heaven-hi-dub",
+    "movieId": "heaven",
+    "title": "Kingdom Of Heaven (ur/hi Dubbed)",
+    "poster": "https://i.ibb.co/CpCb6898/file-00000000864c81fa89f495dc05542409.png",
+    "desc": "Balian of Ibelin travels to Jerusalem during the Crusades of the 12th century, and there he finds himself as the defender of the city and its people.",
+    "track": "dubbed",
+    "subLang": "hi"
   }
 ]
