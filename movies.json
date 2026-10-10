@@ -70,5 +70,32 @@
     "desc": "Balian of Ibelin travels to Jerusalem during the Crusades of the 12th century, and there he finds himself as the defender of the city and its people.",
     "track": "dubbed",
     "subLang": "hi"
+  },
+  {
+    "slug": "fetih-hi-dub",
+    "movieId": "fetih",
+    "title": "Mehmet The Conqueror 1453 (ur/hi Dubbed)",
+    "poster": "https://i.ibb.co/jvnBV820/file-00000000e2f481f4845010ffcb9d7274.png",
+    "desc": "After the death of his father Murat II, Mehmet II ascends to the Ottoman throne. After braving internal and external enemies, he decides to complete what he was destined to do - conquer Constantinople.",
+    "track": "dubbed",
+    "subLang": "hi"
+  },
+  {
+    "slug": "fetih-en-dub",
+    "movieId": "fetih",
+    "title": "Mehmet The Conqueror 1453 (English Dubbed)",
+    "poster": "https://i.ibb.co/p64HFf9R/file-00000000dc4881f48e9a758765c7f85d.png",
+    "desc": "After the death of his father Murat II, Mehmet II ascends to the Ottoman throne. After braving internal and external enemies, he decides to complete what he was destined to do - conquer Constantinople.",
+    "track": "dubbed",
+    "subLang": "en"
+  },
+  {
+    "slug": "fetih-ar-dub",
+    "movieId": "fetih",
+    "title": "Mehmet The Conqueror 1453 (Arabic Dubbed)",
+    "poster": "https://i.ibb.co/PsYtMZ0w/file-00000000644c82468de856f280e9fd42.png",
+    "desc": "After the death of his father Murat II, Mehmet II ascends to the Ottoman throne. After braving internal and external enemies, he decides to complete what he was destined to do - conquer Constantinople.",
+    "track": "dubbed",
+    "subLang": "ar"
   }
 ]
