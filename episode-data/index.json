@@ -51,5 +51,8 @@
   "episode-data/sultan-mehmet-fatih-hi-sub-s4.json",
   "episode-data/sultan-mehmet-fatih-en-sub-s4.json",
   "movie-data/heaven-en-dub.json",
-  "movie-data/heaven-hi-dub.json"
+  "movie-data/heaven-hi-dub.json",
+  "movie-data/fetih-ar-dub.json",
+  "movie-data/fetih-hi-dub.json",
+  "movie-data/fetih-en-dub.json"
 ]
