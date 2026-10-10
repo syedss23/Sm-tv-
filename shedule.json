@@ -1,20 +1,11 @@
 [
   {
-    "title": "Sultan Mehmet Fatih Bolum 87",
+    "title": "Sultan Mehmet Fatih Bolum 88",
     "poster": "assets/posters/mehmet_fatih.jpg",
     "day": "Wednesday",
     "time": false,
     "type": "💬 Subtitled",
     "live": false,
-    "countdown": "2026-10-07T23:30:00"
-  },
-   {
-    "title": "Ask ve Taht Bolum 5",
-    "poster": "https://i.ibb.co/zhvP2TXD/Screenshot-2026-09-04-16-30-47-68-1c337646f29875672b5a61192b9010f9.jpg",
-    "day": "Thursday",
-    "time": false,
-    "type": "💬 Subtitled",
-    "live": false,
-    "countdown": "2026-10-08T23:30:00"
+    "countdown": "2026-10-14T23:30:00"
   }
 ]
