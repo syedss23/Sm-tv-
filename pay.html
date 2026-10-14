@@ -593,6 +593,8 @@
       }
     }
 
+    if (params.get('region') === 'intl') { switchRegion('intl'); }
+
     function onPaid(details) {
       document.getElementById('orderIdText').textContent = details.id || '—';
       document.getElementById('pp-buttons').style.display = 'none';
