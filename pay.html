@@ -35,21 +35,16 @@
     }
     a { text-decoration: none; color: inherit; }
 
-    /* noise */
     body::before {
       content: '';
       position: fixed; inset: 0;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
       opacity: .025; pointer-events: none; z-index: 0;
     }
-    .blob {
-      position: fixed; border-radius: 50%;
-      filter: blur(120px); pointer-events: none; z-index: 0;
-    }
+    .blob { position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; }
     .blob-1 { width: 420px; height: 420px; background: #0e4d6e33; top: -100px; right: -80px; }
     .blob-2 { width: 350px; height: 350px; background: #92400e1a; bottom: 100px; left: -100px; }
 
-    /* ─── HEADER ─── */
     header {
       position: sticky; top: 0; z-index: 50;
       background: rgba(6,13,20,.85);
@@ -68,10 +63,7 @@
       transition: color .2s;
     }
     .btn-back:hover { color: var(--txt); }
-    .header-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.05em; font-weight: 800; color: #fff;
-    }
+    .header-title { font-family: 'Syne', sans-serif; font-size: 1.05em; font-weight: 800; color: #fff; }
     .plan-badge {
       margin-left: auto;
       background: rgba(251,191,36,.12); border: 1px solid rgba(251,191,36,.3);
@@ -79,24 +71,15 @@
       padding: 5px 12px; border-radius: 999px;
     }
 
-    /* ─── WRAP ─── */
     .wrap { max-width: 680px; margin: 0 auto; padding: 0 16px; position: relative; z-index: 1; }
 
-    /* ─── INTRO ─── */
-    .intro {
-      padding: 28px 0 20px; text-align: center;
-    }
+    .intro { padding: 28px 0 20px; text-align: center; }
     .intro-icon { font-size: 2.4em; margin-bottom: 10px; display: block; }
-    .intro h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.6em; font-weight: 800; color: #fff;
-      letter-spacing: -.02em; margin-bottom: 8px;
-    }
+    .intro h1 { font-family: 'Syne', sans-serif; font-size: 1.6em; font-weight: 800; color: #fff; letter-spacing: -.02em; margin-bottom: 8px; }
     .intro p { font-size: .92em; color: var(--txt-muted); max-width: 440px; margin: 0 auto; }
 
-    /* ─── STEPS INDICATOR ─── */
     .steps-indicator {
-      display: flex; align-items: center; gap: 0;
+      display: flex; align-items: center;
       background: var(--bg2); border: 1px solid var(--border);
       border-radius: 999px; padding: 6px 10px;
       margin: 16px 0 24px; justify-content: center; gap: 6px;
@@ -113,58 +96,46 @@
     .si.active { color: var(--txt); }
     .si-arrow { color: var(--txt-muted); font-size: .9em; }
 
-    /* ─── SECTION ─── */
-    .section-label {
-      font-size: .72em; font-weight: 700; letter-spacing: .1em;
-      color: var(--cyan); text-transform: uppercase; margin-bottom: 8px;
-    }
-    .section-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.2em; font-weight: 800; color: #fff;
-      letter-spacing: -.02em; margin-bottom: 14px;
-    }
+    .section-label { font-size: .72em; font-weight: 700; letter-spacing: .1em; color: var(--cyan); text-transform: uppercase; margin-bottom: 8px; }
+    .section-title { font-family: 'Syne', sans-serif; font-size: 1.2em; font-weight: 800; color: #fff; letter-spacing: -.02em; margin-bottom: 14px; }
 
-    /* ─── CARD ─── */
-    .card {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 20px 18px;
-      margin-bottom: 14px;
-    }
+    .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 18px; margin-bottom: 14px; }
     .card.gold-border { border-color: rgba(251,191,36,.3); }
 
-    /* ─── AMOUNT DISPLAY ─── */
     .amount-display {
       display: flex; align-items: center; justify-content: space-between;
       background: var(--bg3); border: 1px solid var(--border);
       border-radius: var(--rad-sm); padding: 14px 16px; margin-bottom: 16px;
     }
     .amount-label { font-size: .85em; color: var(--txt-muted); }
-    .amount-value {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.6em; font-weight: 800; color: var(--gold);
-    }
+    .amount-value { font-family: 'Syne', sans-serif; font-size: 1.6em; font-weight: 800; color: var(--gold); }
     .amount-plan { font-size: .8em; color: var(--txt-muted); margin-top: 2px; }
 
-    /* ─── OPTIONS TABS ─── */
-    .option-tabs {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 8px; margin-bottom: 20px;
+    /* ─── REGION SWITCH ─── */
+    .region-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+    .region-tab {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--rad-sm); padding: 12px 10px;
+      text-align: center; cursor: pointer;
+      transition: border-color .2s, background .2s;
     }
+    .region-tab.active { border-color: rgba(251,191,36,.45); background: rgba(251,191,36,.07); }
+    .region-tab .tab-icon { font-size: 1.4em; display: block; margin-bottom: 4px; }
+    .region-tab .tab-label { font-size: .82em; font-weight: 700; color: var(--txt); }
+    .region-tab .tab-sub { font-size: .72em; color: var(--txt-muted); }
+
+    .option-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
     .opt-tab {
       background: var(--bg3); border: 1px solid var(--border);
       border-radius: var(--rad-sm); padding: 12px;
       text-align: center; cursor: pointer;
       transition: border-color .2s, background .2s;
     }
-    .opt-tab.active {
-      border-color: rgba(251,191,36,.4);
-      background: rgba(251,191,36,.06);
-    }
+    .opt-tab.active { border-color: rgba(251,191,36,.4); background: rgba(251,191,36,.06); }
     .opt-tab .tab-icon { font-size: 1.4em; display: block; margin-bottom: 4px; }
     .opt-tab .tab-label { font-size: .82em; font-weight: 700; color: var(--txt); }
     .opt-tab .tab-sub { font-size: .74em; color: var(--txt-muted); }
 
-    /* ─── QR PANEL ─── */
     .qr-panel { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
     .qr-box {
       width: 150px; height: 150px; flex-shrink: 0;
@@ -175,13 +146,13 @@
     .qr-box img { width: 100%; height: 100%; object-fit: contain; }
     .qr-info { flex: 1; min-width: 160px; }
     .qr-steps { list-style: none; }
-    .qr-steps li {
+    .qr-steps li, .upi-steps li {
       display: flex; gap: 8px; align-items: flex-start;
       font-size: .85em; color: var(--txt-muted); padding: 5px 0;
       border-bottom: 1px solid var(--border);
     }
-    .qr-steps li:last-child { border-bottom: none; }
-    .qr-steps li .n {
+    .qr-steps li:last-child, .upi-steps li:last-child { border-bottom: none; }
+    .qr-steps li .n, .upi-steps li .n {
       width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0;
       background: var(--bg3); border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
@@ -196,55 +167,68 @@
     }
     .btn-download:hover { border-color: rgba(255,255,255,.2); }
 
-    /* ─── UPI PANEL ─── */
-    .upi-panel {}
     .upi-steps { margin-bottom: 14px; }
-    .upi-steps li {
-      display: flex; gap: 8px; align-items: flex-start;
-      font-size: .85em; color: var(--txt-muted); padding: 5px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .upi-steps li:last-child { border-bottom: none; }
-    .upi-steps li .n {
-      width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0;
-      background: var(--bg3); border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      font-size: .75em; font-weight: 700; color: var(--gold); margin-top: 1px;
-    }
     .upi-copy-row {
       display: flex; align-items: center; gap: 10px;
       background: var(--bg3); border: 1px solid var(--border);
       border-radius: var(--rad-sm); padding: 12px 14px;
     }
-    .upi-id {
-      flex: 1; font-weight: 700; color: var(--cyan);
-      font-size: .92em; word-break: break-all;
-    }
+    .upi-id { flex: 1; font-weight: 700; color: var(--cyan); font-size: .92em; word-break: break-all; }
     .btn-copy {
       background: rgba(34,211,238,.1); border: 1px solid rgba(34,211,238,.25);
       color: var(--cyan); font-weight: 700; font-size: .82em;
       padding: 7px 14px; border-radius: var(--rad-sm);
       cursor: pointer; transition: background .2s; white-space: nowrap;
+      font-family: inherit;
     }
     .btn-copy:hover { background: rgba(34,211,238,.18); }
     .btn-copy.copied { background: rgba(52,211,153,.1); border-color: rgba(52,211,153,.3); color: var(--good); }
-    .payee-note {
-      font-size: .8em; color: var(--txt-muted); margin-top: 10px;
-      display: flex; align-items: center; gap: 6px;
-    }
+    .payee-note { font-size: .8em; color: var(--txt-muted); margin-top: 10px; display: flex; align-items: center; gap: 6px; }
     .payee-note::before { content: 'ℹ️'; font-size: 1em; }
 
-    /* ─── ACTIVATE CTA ─── */
+    /* ─── PAYPAL PANEL ─── */
+    .fee-table { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--rad-sm); padding: 6px 14px; margin-bottom: 14px; }
+    .fee-row { display: flex; justify-content: space-between; gap: 10px; font-size: .86em; color: var(--txt-muted); padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .fee-row:last-child { border-bottom: none; color: var(--txt); font-weight: 700; }
+    .fee-row b { color: var(--txt); font-weight: 600; }
+    .fee-row:last-child b { color: var(--gold); font-weight: 800; }
+
+    .fee-why {
+      border-left: 3px solid var(--cyan);
+      background: rgba(34,211,238,.05);
+      border-radius: 0 var(--rad-sm) var(--rad-sm) 0;
+      padding: 12px 14px; margin-bottom: 16px;
+      font-size: .82em; color: var(--txt-muted); line-height: 1.7;
+    }
+    .fee-why strong { color: var(--txt); }
+
+    #pp-buttons { min-height: 60px; }
+    #pp-buttons > div { margin-bottom: 10px; }
+    .pp-msg { font-size: .84em; color: var(--txt-muted); text-align: center; padding: 14px 8px; }
+    .pp-error { color: #f87171; }
+    .pp-secure { font-size: .76em; color: var(--txt-muted); text-align: center; margin-top: 6px; }
+
+    .success-box {
+      display: none;
+      background: rgba(52,211,153,.07); border: 1px solid rgba(52,211,153,.3);
+      border-radius: var(--radius); padding: 22px 18px; text-align: center; margin-bottom: 14px;
+    }
+    .success-box h3 { font-family: 'Syne', sans-serif; font-size: 1.15em; font-weight: 800; color: var(--good); margin-bottom: 6px; }
+    .success-box p { font-size: .87em; color: var(--txt-muted); margin-bottom: 12px; }
+    .order-id-row {
+      display: flex; align-items: center; gap: 10px; justify-content: center;
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--rad-sm); padding: 10px 14px; margin-bottom: 14px;
+    }
+    .order-id-row span { font-weight: 700; color: var(--cyan); font-size: .9em; word-break: break-all; }
+
     .activate-card {
       background: linear-gradient(135deg, #0e2a3f, #132038);
       border: 1px solid rgba(251,191,36,.25);
       border-radius: var(--radius); padding: 22px 18px;
       text-align: center; margin-bottom: 14px;
     }
-    .activate-card h3 {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.15em; font-weight: 800; color: #fff; margin-bottom: 6px;
-    }
+    .activate-card h3 { font-family: 'Syne', sans-serif; font-size: 1.15em; font-weight: 800; color: #fff; margin-bottom: 6px; }
     .activate-card p { font-size: .88em; color: var(--txt-muted); margin-bottom: 16px; }
     .btn-activate {
       display: inline-flex; align-items: center; gap: 8px;
@@ -255,28 +239,10 @@
       transition: box-shadow .25s, transform .15s;
     }
     .btn-activate:active { transform: scale(.97); }
-    .support-note {
-      font-size: .8em; color: var(--txt-muted); margin-top: 10px;
-      display: flex; align-items: center; gap: 5px; justify-content: center;
-    }
+    .support-note { font-size: .8em; color: var(--txt-muted); margin-top: 10px; display: flex; align-items: center; gap: 5px; justify-content: center; }
 
-    /* ─── INTL CARD ─── */
-    .intl-card {
-      display: flex; gap: 12px; align-items: flex-start;
-      background: rgba(34,211,238,.05); border: 1px solid rgba(34,211,238,.18);
-      border-radius: var(--radius); padding: 14px 16px; margin-bottom: 14px;
-    }
-    .intl-icon { font-size: 1.5em; flex-shrink: 0; }
-    .intl-card h4 { font-weight: 700; color: var(--cyan); font-size: .9em; margin-bottom: 3px; }
-    .intl-card p { font-size: .83em; color: var(--txt-muted); }
-    .intl-card a { color: var(--cyan); font-weight: 600; }
-
-    /* ─── FAQ ─── */
     .faq-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; }
-    details {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: var(--radius); overflow: hidden;
-    }
+    details { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
     details[open] { border-color: rgba(34,211,238,.25); }
     summary {
       cursor: pointer; font-weight: 600; color: var(--txt);
@@ -291,9 +257,10 @@
 
     .divider { border: none; border-top: 1px solid var(--border); margin: 4px 0 20px; }
 
-    /* ─── hidden panels ─── */
     .pay-panel { display: none; }
     .pay-panel.active { display: block; }
+    .region-block { display: none; }
+    .region-block.active { display: block; }
   </style>
 </head>
 <body>
@@ -319,7 +286,7 @@
     <div class="intro">
       <span class="intro-icon">💳</span>
       <h1>Secure Payment</h1>
-      <p>Choose a payment method below, pay the plan amount, then tap "Activate" to send your screenshot on Telegram for instant access.</p>
+      <p>Choose where you are paying from, pay the plan amount, then send your screenshot on Telegram. After activation you will get all episodes on Telegram.</p>
     </div>
 
     <!-- STEP INDICATOR -->
@@ -343,57 +310,99 @@
           <div class="amount-value" id="planAmount">₹99</div>
         </div>
       </div>
-      <p style="font-size:.82em;color:var(--txt-muted);">⚠️ Enter this amount <strong style="color:var(--txt)">manually</strong> in your UPI app — the QR/ID may not auto-fill it.</p>
+      <p id="amountNote" style="font-size:.82em;color:var(--txt-muted);">⚠️ Enter this amount <strong style="color:var(--txt)">manually</strong> in your UPI app — the QR/ID may not auto-fill it.</p>
     </div>
 
-    <!-- PAYMENT OPTIONS TABS -->
-    <div class="section-label">Step 1 — Choose payment method</div>
-    <div class="option-tabs">
-      <div class="opt-tab active" id="tab-qr" onclick="switchTab('qr')">
-        <span class="tab-icon">📷</span>
-        <div class="tab-label">Scan QR Code</div>
-        <div class="tab-sub">Open camera in UPI app</div>
+    <!-- REGION SWITCH -->
+    <div class="section-label">Where are you paying from?</div>
+    <div class="region-tabs">
+      <div class="region-tab active" id="region-upi" onclick="switchRegion('upi')">
+        <span class="tab-icon">🇮🇳</span>
+        <div class="tab-label">India · UAE · Saudi · UK</div>
+        <div class="tab-sub">Pay with UPI</div>
       </div>
-      <div class="opt-tab" id="tab-upi" onclick="switchTab('upi')">
-        <span class="tab-icon">🔗</span>
-        <div class="tab-label">Pay by UPI ID</div>
-        <div class="tab-sub">Copy & paste ID</div>
+      <div class="region-tab" id="region-intl" onclick="switchRegion('intl')">
+        <span class="tab-icon">🌍</span>
+        <div class="tab-label">Other countries</div>
+        <div class="tab-sub">PayPal or Card</div>
       </div>
     </div>
 
-    <!-- QR PANEL -->
-    <div class="card pay-panel active" id="panel-qr">
-      <div class="qr-panel">
-        <div class="qr-box">
-          <img src="/assets/posters/upi-qr.png" alt="UPI QR Code" />
+    <!-- ═════════ UPI BLOCK ═════════ -->
+    <div class="region-block active" id="block-upi">
+      <div class="section-label">Step 1 — Choose payment method</div>
+      <div class="option-tabs">
+        <div class="opt-tab active" id="tab-qr" onclick="switchTab('qr')">
+          <span class="tab-icon">📷</span>
+          <div class="tab-label">Scan QR Code</div>
+          <div class="tab-sub">Open camera in UPI app</div>
         </div>
-        <div class="qr-info">
-          <ul class="qr-steps">
-            <li><span class="n">1</span> Open your UPI app (GPay, PhonePe, Paytm, etc.)</li>
-            <li><span class="n">2</span> Tap "Scan QR" and scan the code on the left</li>
-            <li><span class="n">3</span> Enter <strong style="color:var(--gold)" id="qrAmount">₹99</strong> manually as the amount</li>
-            <li><span class="n">4</span> Complete the payment and take a screenshot</li>
-          </ul>
-          <a class="btn-download" href="/assets/posters/upi-qr.png" download="SmTv-UPI-QR.png">
-            ⬇ Download QR
-          </a>
+        <div class="opt-tab" id="tab-upi" onclick="switchTab('upi')">
+          <span class="tab-icon">🔗</span>
+          <div class="tab-label">Pay by UPI ID</div>
+          <div class="tab-sub">Copy & paste ID</div>
         </div>
       </div>
+
+      <div class="card pay-panel active" id="panel-qr">
+        <div class="qr-panel">
+          <div class="qr-box">
+            <img src="/assets/posters/upi-qr.png" alt="UPI QR Code" />
+          </div>
+          <div class="qr-info">
+            <ul class="qr-steps">
+              <li><span class="n">1</span> Open your UPI app (GPay, PhonePe, Paytm, etc.)</li>
+              <li><span class="n">2</span> Tap "Scan QR" and scan the code on the left</li>
+              <li><span class="n">3</span> Enter <strong style="color:var(--gold)" id="qrAmount">₹99</strong> manually as the amount</li>
+              <li><span class="n">4</span> Complete the payment and take a screenshot</li>
+            </ul>
+            <a class="btn-download" href="/assets/posters/upi-qr.png" download="SmTv-UPI-QR.png">⬇ Download QR</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card pay-panel" id="panel-upi">
+        <ul class="upi-steps" style="list-style:none;margin-bottom:14px">
+          <li><span class="n">1</span> Open any UPI app and tap "Pay by UPI ID"</li>
+          <li><span class="n">2</span> Paste the UPI ID below into the search field</li>
+          <li><span class="n">3</span> Enter <strong style="color:var(--gold)" id="upiAmount">₹99</strong> manually as the amount</li>
+          <li><span class="n">4</span> Pay and take a screenshot of the success screen</li>
+        </ul>
+        <div class="upi-copy-row">
+          <span class="upi-id" id="upiText">dubbedseriespremiu@ybl</span>
+          <button class="btn-copy" id="copyBtn" type="button">Copy</button>
+        </div>
+        <div class="payee-note">Payee name should show as <strong style="color:var(--txt)">"Syed abuddin"</strong></div>
+      </div>
     </div>
 
-    <!-- UPI ID PANEL -->
-    <div class="card pay-panel" id="panel-upi">
-      <ul class="upi-steps" style="list-style:none;margin-bottom:14px">
-        <li><span class="n">1</span> Open any UPI app and tap "Pay by UPI ID"</li>
-        <li><span class="n">2</span> Paste the UPI ID below into the search field</li>
-        <li><span class="n">3</span> Enter <strong style="color:var(--gold)" id="upiAmount">₹99</strong> manually as the amount</li>
-        <li><span class="n">4</span> Pay and take a screenshot of the success screen</li>
-      </ul>
-      <div class="upi-copy-row">
-        <span class="upi-id" id="upiText">dubbedseriespremiu@ybl</span>
-        <button class="btn-copy" id="copyBtn">Copy</button>
+    <!-- ═════════ INTERNATIONAL (PAYPAL) BLOCK ═════════ -->
+    <div class="region-block" id="block-intl">
+      <div class="section-label">Step 1 — Pay securely online</div>
+      <div class="card">
+        <div class="fee-table">
+          <div class="fee-row"><span>Plan price (₹<span id="feeInr">99</span> in USD)</span><b id="feeBase">$0.00</b></div>
+          <div class="fee-row"><span>International processing &amp; currency charge (8%)</span><b id="feeFee">$0.00</b></div>
+          <div class="fee-row"><span>Total to pay</span><b id="feeTotal">$0.00</b></div>
+        </div>
+
+        <div class="fee-why">
+          <strong>Why is there an 8% charge?</strong><br>
+          Our plan prices are set in Indian rupees. For international payments, PayPal charges us a fee to receive your payment, and the money is converted from USD to INR before it reaches our Indian bank account. This 8% covers those two costs, so we receive the same value as UPI users. <strong>It is not extra profit</strong>, and UPI payments have no such charge.
+        </div>
+
+        <div id="pp-buttons"><div class="pp-msg">Loading secure payment options…</div></div>
+        <div class="pp-secure">🔒 Payments are processed by PayPal. We never see or store your card details.</div>
       </div>
-      <div class="payee-note">Payee name should show as <strong style="color:var(--txt)">"Syed abuddin"</strong></div>
+
+      <div class="success-box" id="successBox">
+        <h3>✅ Payment received!</h3>
+        <p>Now send your payment screenshot and this Order ID on Telegram. You will be activated and get all episodes on Telegram.</p>
+        <div class="order-id-row">
+          <span id="orderIdText">—</span>
+          <button class="btn-copy" id="copyOrderBtn" type="button">Copy</button>
+        </div>
+      </div>
     </div>
 
     <hr class="divider" />
@@ -401,21 +410,12 @@
     <!-- ACTIVATE CTA -->
     <div class="activate-card">
       <h3>Step 2 — Send Screenshot & Activate 🎬</h3>
-      <p>After payment, tap below to open Telegram and send your screenshot to get instant access.</p>
+      <p>After payment, tap below to open Telegram and send your screenshot. You will get all episodes on Telegram.</p>
       <a class="btn-activate" href="https://t.me/+SOIyvb_C9lk4Y2Rl" target="_blank" rel="noopener">
         ✈️ Activate on Telegram
       </a>
       <div class="support-note">
         🕙 Support: 10:00–22:00 IST · Usually instant
-      </div>
-    </div>
-
-    <!-- INTERNATIONAL -->
-    <div class="intl-card">
-      <div class="intl-icon">🌍</div>
-      <div>
-        <h4>Outside India?</h4>
-        <p>UPI may not work for international users. <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Contact on Telegram</a> to get a payment method available in your country.</p>
       </div>
     </div>
 
@@ -427,19 +427,23 @@
     <div class="faq-list">
       <details>
         <summary>How do I pay?</summary>
-        <p>Use Option 1 (scan QR) or Option 2 (copy UPI ID). Open your preferred UPI app, enter the plan amount manually, and complete payment.</p>
+        <p>If you are in India, UAE, Saudi Arabia or the UK, pay with UPI (scan the QR or copy the UPI ID) and enter the plan amount manually. In all other countries, choose "Other countries" and pay with PayPal or a debit/credit card.</p>
       </details>
       <details>
         <summary>What happens after payment?</summary>
-        <p>Tap "Activate on Telegram" and send your payment screenshot. Your access will be activated after quick verification — usually instant.</p>
+        <p>Tap "Activate on Telegram" and send your payment screenshot. Your access will be activated after quick verification — usually instant. You will get all episodes on Telegram.</p>
+      </details>
+      <details>
+        <summary>Why is there an 8% charge on international payments?</summary>
+        <p>PayPal charges a fee on international payments, and the money is converted from USD to INR. The 8% covers these costs so the plan value matches the Indian price. UPI payments have no extra charge.</p>
+      </details>
+      <details>
+        <summary>Can I pay by card?</summary>
+        <p>Yes. In "Other countries", choose the Debit or Credit Card button. You do not need a PayPal account.</p>
       </details>
       <details>
         <summary>Payment shows "risk" or fails?</summary>
-        <p>Try a different UPI app or scan the QR from inside your app instead. You can also retry after a few minutes. Contact on <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Telegram</a> if the issue persists.</p>
-      </details>
-      <details>
-        <summary>I'm outside India</summary>
-        <p>UPI works within India only. Please <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">contact on Telegram</a> and we'll arrange an alternative payment method for you.</p>
+        <p>For UPI, try a different UPI app or scan the QR from inside your app. For card or PayPal, try another card or retry after a few minutes. <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Contact us on Telegram</a> if the issue persists.</p>
       </details>
       <details>
         <summary>Refunds and cancellations</summary>
@@ -455,32 +459,42 @@
 
   <script>
     const VPA = 'dubbedseriespremiu@ybl';
+    const PAYPAL_CLIENT_ID = 'BAAbqp1ve8DE1-wAz9v3K17n5jCd60vBUUmF1A4n-BO6su-S8Wg2UsZ4C2wTQS4qQ0VoBeJtGsp184aTAE';
+    const INR_PER_USD = 96;      // approx. rate used for USD pricing
+    const FEE_RATE = 0.08;       // 8% international processing + conversion charge
 
     // Plan catalog — keep in sync with /premium page pricing
     const PLANS = {
-      'monthly':            { amount: 99,   name: 'Premium · Monthly (1 month)',    tier: 'Premium'  },
-      'quarterly':          { amount: 249,  name: 'Premium · Quarterly (3 months)', tier: 'Premium'  },
-      'yearly':             { amount: 849,  name: 'Premium · Yearly (12 months)',   tier: 'Premium'  },
+      'monthly':            { amount: 99,   name: 'Premium · Monthly (1 month)',     tier: 'Premium'  },
+      'quarterly':          { amount: 249,  name: 'Premium · Quarterly (3 months)',  tier: 'Premium'  },
       'premium+ monthly':   { amount: 169,  name: 'Premium+ · Monthly (1 month)',    tier: 'Premium+' },
       'premium+ quarterly': { amount: 449,  name: 'Premium+ · Quarterly (3 months)', tier: 'Premium+' },
       'premium+ yearly':    { amount: 1449, name: 'Premium+ · Yearly (12 months)',   tier: 'Premium+' }
     };
 
-    // Plan detection
     const params = new URLSearchParams(location.search);
     const rawLabel = (params.get('label') || 'Monthly').trim();
-    const key = rawLabel.toLowerCase();
-    const plan = PLANS[key] || PLANS['monthly'];
-    const amount = '₹' + plan.amount;
-    const planName = plan.name;
+    const plan = PLANS[rawLabel.toLowerCase()] || PLANS['monthly'];
+    const inrText = '₹' + plan.amount;
+
+    // USD total = (INR ÷ rate) ÷ (1 − 8%), rounded up to the next 5 cents
+    const baseUsd  = plan.amount / INR_PER_USD;
+    const totalUsd = Math.ceil((baseUsd / (1 - FEE_RATE)) * 20) / 20;
+    const baseShown = Math.round(baseUsd * 100) / 100;
+    const feeShown  = Math.round((totalUsd - baseShown) * 100) / 100;
+    const usd = n => '$' + n.toFixed(2);
 
     document.getElementById('headerBadge').textContent = plan.tier;
-    document.getElementById('planName').textContent = planName;
-    document.getElementById('planAmount').textContent = amount;
-    document.getElementById('qrAmount').textContent = amount;
-    document.getElementById('upiAmount').textContent = amount;
+    document.getElementById('planName').textContent = plan.name;
+    document.getElementById('planAmount').textContent = inrText;
+    document.getElementById('qrAmount').textContent = inrText;
+    document.getElementById('upiAmount').textContent = inrText;
+    document.getElementById('feeInr').textContent = plan.amount;
+    document.getElementById('feeBase').textContent = usd(baseShown);
+    document.getElementById('feeFee').textContent = usd(feeShown);
+    document.getElementById('feeTotal').textContent = usd(totalUsd);
 
-    // Tab switch
+    // UPI tab switch
     function switchTab(tab) {
       document.getElementById('tab-qr').classList.toggle('active', tab === 'qr');
       document.getElementById('tab-upi').classList.toggle('active', tab === 'upi');
@@ -488,18 +502,104 @@
       document.getElementById('panel-upi').classList.toggle('active', tab === 'upi');
     }
 
-    // Copy UPI ID
-    document.getElementById('copyBtn').addEventListener('click', async () => {
+    // Region switch
+    let paypalStarted = false;
+    function switchRegion(r) {
+      const isUpi = r === 'upi';
+      document.getElementById('region-upi').classList.toggle('active', isUpi);
+      document.getElementById('region-intl').classList.toggle('active', !isUpi);
+      document.getElementById('block-upi').classList.toggle('active', isUpi);
+      document.getElementById('block-intl').classList.toggle('active', !isUpi);
+      document.getElementById('planAmount').textContent = isUpi ? inrText : usd(totalUsd);
+      document.getElementById('amountNote').innerHTML = isUpi
+        ? '⚠️ Enter this amount <strong style="color:var(--txt)">manually</strong> in your UPI app — the QR/ID may not auto-fill it.'
+        : 'ℹ️ Total includes an 8% international processing &amp; currency charge (see breakdown below).';
+      if (!isUpi && !paypalStarted) { paypalStarted = true; startPayPal(); }
+    }
+
+    // Copy helpers
+    async function copyText(text, btn) {
       try {
-        await navigator.clipboard.writeText(VPA);
-        const btn = document.getElementById('copyBtn');
+        await navigator.clipboard.writeText(text);
+        const old = btn.textContent;
         btn.textContent = '✓ Copied';
         btn.classList.add('copied');
-        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
-      } catch(e) {
-        alert('Long-press to copy: ' + VPA);
+        setTimeout(() => { btn.textContent = old; btn.classList.remove('copied'); }, 1800);
+      } catch (e) {
+        alert('Long-press to copy: ' + text);
       }
-    });
+    }
+    document.getElementById('copyBtn').addEventListener('click', e => copyText(VPA, e.currentTarget));
+    document.getElementById('copyOrderBtn').addEventListener('click', e => copyText(document.getElementById('orderIdText').textContent, e.currentTarget));
+
+    // ── PayPal (PayPal button + Debit/Credit card button) ──
+    function showPpMessage(msg, isError) {
+      document.getElementById('pp-buttons').innerHTML = '<div class="pp-msg' + (isError ? ' pp-error' : '') + '">' + msg + '</div>';
+    }
+
+    function loadPayPalSdk() {
+      return new Promise((resolve, reject) => {
+        if (window.paypal) return resolve();
+        const s = document.createElement('script');
+        s.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(PAYPAL_CLIENT_ID) + '&currency=USD&intent=capture&components=buttons';
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+
+    async function startPayPal() {
+      try {
+        await loadPayPalSdk();
+      } catch (e) {
+        showPpMessage('Could not load PayPal. Please check your connection and refresh, or contact us on Telegram.', true);
+        return;
+      }
+
+      const box = document.getElementById('pp-buttons');
+      box.innerHTML = '<div id="pp-paypal"></div><div id="pp-card"></div>';
+
+      const common = {
+        createOrder: (data, actions) => actions.order.create({
+          purchase_units: [{
+            description: 'SmTv Urdu ' + plan.name,
+            amount: { currency_code: 'USD', value: totalUsd.toFixed(2) }
+          }]
+        }),
+        onApprove: (data, actions) => actions.order.capture().then(onPaid),
+        onError: () => {
+          const m = document.createElement('div');
+          m.className = 'pp-msg pp-error';
+          m.textContent = 'Payment could not be completed. Please try again or use another method.';
+          box.appendChild(m);
+        }
+      };
+
+      let rendered = 0;
+      const pp = paypal.Buttons(Object.assign({
+        fundingSource: paypal.FUNDING.PAYPAL,
+        style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'pay', height: 46 }
+      }, common));
+      if (pp.isEligible()) { pp.render('#pp-paypal'); rendered++; }
+
+      const card = paypal.Buttons(Object.assign({
+        fundingSource: paypal.FUNDING.CARD,
+        style: { layout: 'vertical', color: 'black', shape: 'rect', label: 'pay', height: 46 }
+      }, common));
+      if (card.isEligible()) { card.render('#pp-card'); rendered++; }
+
+      if (!rendered) {
+        showPpMessage('Online payment is not available right now. Please contact us on Telegram for another option.', true);
+      }
+    }
+
+    function onPaid(details) {
+      document.getElementById('orderIdText').textContent = details.id || '—';
+      document.getElementById('pp-buttons').style.display = 'none';
+      const box = document.getElementById('successBox');
+      box.style.display = 'block';
+      box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
   </script>
 </body>
 </html>
