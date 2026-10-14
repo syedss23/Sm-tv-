@@ -307,6 +307,10 @@
     .tier-switch-btn:not(.active):hover { color: var(--txt); }
     @media (max-width:420px) { .tier-switch { width: 100%; } .tier-switch-btn { flex: 1; padding: 9px 8px; } }
 
+    .switch-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+    .switch-row .tier-switch { margin-bottom: 0; }
+    .cur-note { font-size: .8em; color: var(--txt-muted); margin-bottom: 22px; max-width: 520px; line-height: 1.6; }
+    .cur-note strong { color: var(--txt); }
     .price-permonth { font-size: 12px; font-weight: 600; color: var(--txt-muted); vertical-align: middle; margin-left: 6px; }
 
     /* ★ NON-REFUNDABLE NOTICE ★ */
@@ -469,7 +473,7 @@
         SmTv Urdu Premium Membership
       </div>
       <h1>Watch More.<br><em>Enjoy Better.</em></h1>
-      <p class="hero-sub">Ad-free streaming and early episode access starting at ₹99 — or go Premium+ for fast, priority download links.</p>
+      <p class="hero-sub">Ad-free streaming and early episode access starting at <span class="cur" data-inr="₹99" data-usd="$1.15">₹99</span> — or go Premium+ for fast, priority download links.</p>
       <div class="hero-cta">
         <a class="btn-primary" href="/pay.html?label=Premium%2B%20Quarterly">🚀 Get Premium+ Now</a>
         <a class="btn-ghost" href="#plans">View Plans ↓</a>
@@ -512,10 +516,17 @@
       <div class="sec-heading">Choose Your Plan</div>
 
       <!-- Tier switch -->
-      <div class="tier-switch" role="tablist">
-        <button class="tier-switch-btn active" data-tier="plus" type="button">⚡ Premium+</button>
-        <button class="tier-switch-btn" data-tier="premium" type="button">Premium</button>
+      <div class="switch-row">
+        <div class="tier-switch" role="tablist">
+          <button class="tier-switch-btn active" data-tier="plus" type="button">⚡ Premium+</button>
+          <button class="tier-switch-btn" data-tier="premium" type="button">Premium</button>
+        </div>
+        <div class="tier-switch" role="tablist" aria-label="Currency">
+          <button class="tier-switch-btn cur-btn active" data-cur="inr" type="button">₹ INR</button>
+          <button class="tier-switch-btn cur-btn" data-cur="usd" type="button">$ USD</button>
+        </div>
       </div>
+      <p class="cur-note" id="curNote"></p>
 
       <!-- Premium+ Tier -->
       <div class="tier-block" id="tier-plus">
@@ -528,7 +539,7 @@
           <!-- Premium+ Monthly -->
           <div class="price-card">
             <div class="price-plan">Monthly</div>
-            <div class="price-amount">₹169</div>
+            <div class="price-amount"><span class="cur" data-inr="₹169" data-usd="$1.95">₹169</span></div>
             <div class="price-tenure">per month</div>
             <ul class="price-perks">
               <li><span class="perk-tick">✓</span> 1 month full access</li>
@@ -546,8 +557,8 @@
           <div class="price-card featured">
             <div class="best-badge">⭐ Best Value</div>
             <div class="price-plan">Quarterly</div>
-            <div class="price-amount">₹449</div>
-            <div class="price-strike"><s>₹507</s> <span class="price-save">Save ₹58</span></div>
+            <div class="price-amount"><span class="cur" data-inr="₹449" data-usd="$5.10">₹449</span></div>
+            <div class="price-strike"><s><span class="cur" data-inr="₹507" data-usd="$5.85">₹507</span></s> <span class="price-save">Save <span class="cur" data-inr="₹58" data-usd="$0.75">₹58</span></span></div>
             <div class="price-tenure">for 3 months</div>
             <ul class="price-perks">
               <li><span class="perk-tick">✓</span> 3 months full access</li>
@@ -565,8 +576,8 @@
           <div class="price-card featured">
             <div class="best-badge">🔥 Max Savings</div>
             <div class="price-plan">Yearly</div>
-            <div class="price-amount">₹1449 <span class="price-permonth">≈ ₹121/mo</span></div>
-            <div class="price-strike"><s>₹2028</s> <span class="price-save">Save ₹579</span></div>
+            <div class="price-amount"><span class="cur" data-inr="₹1449" data-usd="$16.45">₹1449</span> <span class="price-permonth"><span class="cur" data-inr="≈ ₹121/mo" data-usd="≈ $1.37/mo">≈ ₹121/mo</span></span></div>
+            <div class="price-strike"><s><span class="cur" data-inr="₹2028" data-usd="$23.40">₹2028</span></s> <span class="price-save">Save <span class="cur" data-inr="₹579" data-usd="$6.95">₹579</span></span></div>
             <div class="price-tenure">for 12 months</div>
             <ul class="price-perks">
               <li><span class="perk-tick">✓</span> 12 months full access</li>
@@ -594,7 +605,7 @@
           <!-- Premium Monthly -->
           <div class="price-card">
             <div class="price-plan">Monthly</div>
-            <div class="price-amount">₹99</div>
+            <div class="price-amount"><span class="cur" data-inr="₹99" data-usd="$1.15">₹99</span></div>
             <div class="price-tenure">per month</div>
             <ul class="price-perks">
               <li><span class="perk-tick">✓</span> 1 month full access</li>
@@ -609,8 +620,8 @@
           <!-- Premium Quarterly -->
           <div class="price-card">
             <div class="price-plan">Quarterly</div>
-            <div class="price-amount">₹249</div>
-            <div class="price-strike"><s>₹297</s> <span class="price-save">Save ₹48</span></div>
+            <div class="price-amount"><span class="cur" data-inr="₹249" data-usd="$2.85">₹249</span></div>
+            <div class="price-strike"><s><span class="cur" data-inr="₹297" data-usd="$3.45">₹297</span></s> <span class="price-save">Save <span class="cur" data-inr="₹48" data-usd="$0.60">₹48</span></span></div>
             <div class="price-tenure">for 3 months</div>
             <ul class="price-perks">
               <li><span class="perk-tick">✓</span> 3 months full access</li>
@@ -635,14 +646,14 @@
     <div class="intl-banner reveal">
       <div class="intl-globe">🌍</div>
       <div class="intl-body">
-        <h4>Are You Outside India?</h4>
+        <h4>Paying From Outside India?</h4>
         <p>
-          Our standard UPI payment works inside India only. But <strong>international members are fully welcome</strong> — whether you're in the UAE, UK, USA, Pakistan, Canada, or anywhere else in the world.
+          <strong>UPI works in India, UAE, Saudi Arabia and the UK.</strong> Everywhere else — USA, Canada, Pakistan, Europe, Australia and more — you can pay securely with <strong>PayPal or your debit/credit card</strong>. No PayPal account is needed for card payments.
           <br><br>
-          Just message us on Telegram and we will personally share the right payment option for your country. The process is simple, and we will guide you through every step. Many international viewers are already enjoying SmTv Urdu Premium.
+          International payments include an <strong>8% processing &amp; currency charge</strong>, because PayPal charges us a fee and the money is converted from USD to INR. UPI payments have no extra charge. After paying, send your screenshot on Telegram and you will get all episodes there.
         </p>
-        <a class="btn-intl" href="https://t.me/+SOIyvb_C9lk4Y2Rl" target="_blank" rel="noopener">
-          ✈️ Message on Telegram for International Payment
+        <a class="btn-intl" href="/pay.html?label=Premium%2B%20Quarterly&region=intl">
+          💳 Pay with PayPal / Card
         </a>
       </div>
     </div>
@@ -664,8 +675,8 @@
         <div class="step-row">
           <div class="step-badge">2</div>
           <div class="step-body">
-            <h4>Pay via UPI</h4>
-            <p>Use any UPI app (GPay, PhonePe, Paytm) or scan the QR code. Quick and secure.</p>
+            <h4>Pay Online</h4>
+            <p>India, UAE, Saudi Arabia &amp; UK: pay with any UPI app or scan the QR. Other countries: pay with PayPal or debit/credit card.</p>
           </div>
         </div>
         <div class="step-row">
@@ -679,7 +690,7 @@
           <div class="step-badge">4</div>
           <div class="step-body">
             <h4>Get Instant Access</h4>
-            <p>On Telegram, All Series You Will get on telegram — start watching ad-free immediately.</p>
+            <p>You will get all episodes on Telegram — start watching ad-free immediately.</p>
           </div>
         </div>
       </div>
@@ -743,11 +754,19 @@
         </details>
         <details>
           <summary>How do I pay?</summary>
-          <p>Go to the payment page and scan the UPI QR code or paste the UPI ID into your app. Enter the amount manually and complete payment, then send the screenshot on Telegram.</p>
+          <p>On the payment page, choose where you are paying from. In India, UAE, Saudi Arabia or the UK, scan the UPI QR code or paste the UPI ID into your app and enter the amount manually. In all other countries, pay with PayPal or a debit/credit card. Then send the screenshot on Telegram.</p>
         </details>
         <details>
           <summary>I'm outside India — can I still join?</summary>
-          <p>Absolutely! International members are welcome. UPI only works in India, so <a href="https://t.me/+SOIyvb_C9lk4Y2Rl" target="_blank" rel="noopener">message us on Telegram</a> and we'll share a payment method that works in your country. Many international users are already members.</p>
+          <p>Absolutely! International members are welcome. If you are in the UAE, Saudi Arabia or the UK, you can use UPI. In all other countries, choose "Other countries" on the <a href="/pay.html?label=Premium%2B%20Quarterly&region=intl">payment page</a> and pay with PayPal or a debit/credit card. Need help? <a href="https://t.me/+SOIyvb_C9lk4Y2Rl" target="_blank" rel="noopener">Message us on Telegram</a>.</p>
+        </details>
+        <details>
+          <summary>Why is there an 8% charge on international payments?</summary>
+          <p>Our prices are set in Indian rupees. PayPal charges us a fee to receive international payments, and the money is converted from USD to INR before it reaches our Indian bank account. The 8% covers these costs so the plan value matches the Indian price. UPI payments have no extra charge.</p>
+        </details>
+        <details>
+          <summary>Can I pay by card without a PayPal account?</summary>
+          <p>Yes. On the payment page, choose "Other countries" and tap the Debit or Credit Card button. No PayPal account is needed.</p>
         </details>
         <details>
           <summary>Is my subscription refundable?</summary>
@@ -764,10 +783,10 @@
     <div class="bottom-cta reveal">
       <h2>Ready to Go Premium? 🎬</h2>
       <p>Join viewers across the world enjoying ad-free, early-access streaming. Takes less than 2 minutes.</p>
-      <a class="btn-primary" href="/pay.html?label=Premium%2B%20Quarterly">⭐ Get Premium+ — ₹449 for 3 Months (Save ₹58)</a>
+      <a class="btn-primary" href="/pay.html?label=Premium%2B%20Quarterly">⭐ Get Premium+ — <span class="cur" data-inr="₹449" data-usd="$5.10">₹449</span> for 3 Months (Save <span class="cur" data-inr="₹58" data-usd="$0.75">₹58</span>)</a>
       <br>
-      <a class="btn-intl" href="https://t.me/+SOIyvb_C9lk4Y2Rl" target="_blank" rel="noopener">
-        🌍 Outside India? Message us for payment options
+      <a class="btn-intl" href="/pay.html?label=Premium%2B%20Quarterly&region=intl">
+        🌍 Outside India? Pay with PayPal or card
       </a>
     </div>
 
@@ -797,8 +816,27 @@
     }, { threshold: 0.07 });
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
+    // ₹ INR / $ USD switch (manual only — always starts in INR, no auto-detect)
+    const CUR_NOTES = {
+      inr: 'Paying from <strong>UPI countries</strong> (India, UAE, Saudi, UK) or living abroad with UPI? Pay in ₹. No UPI? Switch to <strong>$ USD</strong> to pay by PayPal or card.',
+      usd: 'USD prices include an <strong>8% international processing &amp; currency charge</strong> (PayPal fee + USD→INR conversion). UPI payments in ₹ have no extra charge.'
+    };
+    const curBtns = document.querySelectorAll('.cur-btn');
+    const payLinks = document.querySelectorAll('.btn-plan-gold, .btn-plan-outline, .hero-cta .btn-primary, .bottom-cta .btn-primary');
+    payLinks.forEach(a => a.dataset.h = a.getAttribute('href'));
+    function setCurrency(c) {
+      curBtns.forEach(b => b.classList.toggle('active', b.dataset.cur === c));
+      document.querySelectorAll('.cur').forEach(el => { el.textContent = el.dataset[c]; });
+      payLinks.forEach(a => {
+        a.setAttribute('href', c === 'usd' ? a.dataset.h + '&region=intl' : a.dataset.h);
+      });
+      document.getElementById('curNote').innerHTML = CUR_NOTES[c];
+    }
+    curBtns.forEach(b => b.addEventListener('click', () => setCurrency(b.dataset.cur)));
+    setCurrency('inr');
+
     // Premium / Premium+ tier switch
-    const tierBtns = document.querySelectorAll('.tier-switch-btn');
+    const tierBtns = document.querySelectorAll('.tier-switch-btn[data-tier]');
     const tierPlus = document.getElementById('tier-plus');
     const tierPremium = document.getElementById('tier-premium');
     tierBtns.forEach(btn => {
