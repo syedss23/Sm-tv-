@@ -397,7 +397,7 @@
 
       <div class="success-box" id="successBox">
         <h3>✅ Payment received!</h3>
-        <p>Now send your payment screenshot and this Order ID on Telegram. You will be activated and get all episodes on Telegram.</p>
+        <p id="successMsg">Now send your payment screenshot and this <strong style="color:var(--txt)">Transaction ID</strong> on Telegram. You will be activated and get all episodes on Telegram.</p>
         <div class="order-id-row">
           <span id="orderIdText">—</span>
           <button class="btn-copy" id="copyOrderBtn" type="button">Copy</button>
@@ -596,7 +596,18 @@
     if (params.get('region') === 'intl') { switchRegion('intl'); }
 
     function onPaid(details) {
-      document.getElementById('orderIdText').textContent = details.id || '—';
+      // Real PayPal Transaction ID (same ID shown in PayPal's email and Activity)
+      let txn = details.id || '—';
+      let status = details.status || '';
+      try {
+        const cap = details.purchase_units[0].payments.captures[0];
+        txn = cap.id;
+        status = cap.status;
+      } catch (e) {}
+      document.getElementById('orderIdText').textContent = txn;
+      if (status && status !== 'COMPLETED') {
+        document.getElementById('successMsg').textContent = 'Your payment is pending confirmation from PayPal. Send this Transaction ID on Telegram and we will activate you once it clears.';
+      }
       document.getElementById('pp-buttons').style.display = 'none';
       const box = document.getElementById('successBox');
       box.style.display = 'block';
