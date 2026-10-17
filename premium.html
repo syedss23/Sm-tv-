@@ -307,6 +307,9 @@
     .tier-switch-btn:not(.active):hover { color: var(--txt); }
     @media (max-width:420px) { .tier-switch { width: 100%; } .tier-switch-btn { flex: 1; padding: 9px 8px; } }
 
+    body.usd-mode .plan-monthly, body.usd-mode .price-strike { display: none; }
+    body.usd-mode .pricing-grid-3 { grid-template-columns: 1fr 1fr; }
+    @media (max-width:540px) { body.usd-mode .pricing-grid-3 { grid-template-columns: 1fr; } }
     .switch-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
     .switch-row .tier-switch { margin-bottom: 0; }
     .cur-note { font-size: .8em; color: var(--txt-muted); margin-bottom: 22px; max-width: 520px; line-height: 1.6; }
@@ -473,7 +476,7 @@
         SmTv Urdu Premium Membership
       </div>
       <h1>Watch More.<br><em>Enjoy Better.</em></h1>
-      <p class="hero-sub">Ad-free streaming and early episode access starting at <span class="cur" data-inr="₹99" data-usd="$1.15">₹99</span> — or go Premium+ for fast, priority download links.</p>
+      <p class="hero-sub">Ad-free streaming and early episode access starting at <span class="cur" data-inr="₹99" data-usd="$3.35">₹99</span> — or go Premium+ for fast, priority download links.</p>
       <div class="hero-cta">
         <a class="btn-primary" href="/pay.html?label=Premium%2B%20Quarterly">🚀 Get Premium+ Now</a>
         <a class="btn-ghost" href="#plans">View Plans ↓</a>
@@ -537,7 +540,7 @@
         <div class="pricing-grid pricing-grid-3">
 
           <!-- Premium+ Monthly -->
-          <div class="price-card">
+          <div class="price-card plan-monthly">
             <div class="price-plan">Monthly</div>
             <div class="price-amount"><span class="cur" data-inr="₹169" data-usd="$1.95">₹169</span></div>
             <div class="price-tenure">per month</div>
@@ -557,7 +560,7 @@
           <div class="price-card featured">
             <div class="best-badge">⭐ Best Value</div>
             <div class="price-plan">Quarterly</div>
-            <div class="price-amount"><span class="cur" data-inr="₹449" data-usd="$5.10">₹449</span></div>
+            <div class="price-amount"><span class="cur" data-inr="₹449" data-usd="$5.75">₹449</span></div>
             <div class="price-strike"><s><span class="cur" data-inr="₹507" data-usd="$5.85">₹507</span></s> <span class="price-save">Save <span class="cur" data-inr="₹58" data-usd="$0.75">₹58</span></span></div>
             <div class="price-tenure">for 3 months</div>
             <ul class="price-perks">
@@ -576,7 +579,7 @@
           <div class="price-card featured">
             <div class="best-badge">🔥 Max Savings</div>
             <div class="price-plan">Yearly</div>
-            <div class="price-amount"><span class="cur" data-inr="₹1449" data-usd="$16.45">₹1449</span> <span class="price-permonth"><span class="cur" data-inr="≈ ₹121/mo" data-usd="≈ $1.37/mo">≈ ₹121/mo</span></span></div>
+            <div class="price-amount"><span class="cur" data-inr="₹1449" data-usd="$17.75">₹1449</span> <span class="price-permonth"><span class="cur" data-inr="≈ ₹121/mo" data-usd="≈ $1.48/mo">≈ ₹121/mo</span></span></div>
             <div class="price-strike"><s><span class="cur" data-inr="₹2028" data-usd="$23.40">₹2028</span></s> <span class="price-save">Save <span class="cur" data-inr="₹579" data-usd="$6.95">₹579</span></span></div>
             <div class="price-tenure">for 12 months</div>
             <ul class="price-perks">
@@ -603,7 +606,7 @@
         <div class="pricing-grid">
 
           <!-- Premium Monthly -->
-          <div class="price-card">
+          <div class="price-card plan-monthly">
             <div class="price-plan">Monthly</div>
             <div class="price-amount"><span class="cur" data-inr="₹99" data-usd="$1.15">₹99</span></div>
             <div class="price-tenure">per month</div>
@@ -620,7 +623,7 @@
           <!-- Premium Quarterly -->
           <div class="price-card">
             <div class="price-plan">Quarterly</div>
-            <div class="price-amount"><span class="cur" data-inr="₹249" data-usd="$2.85">₹249</span></div>
+            <div class="price-amount"><span class="cur" data-inr="₹249" data-usd="$3.35">₹249</span></div>
             <div class="price-strike"><s><span class="cur" data-inr="₹297" data-usd="$3.45">₹297</span></s> <span class="price-save">Save <span class="cur" data-inr="₹48" data-usd="$0.60">₹48</span></span></div>
             <div class="price-tenure">for 3 months</div>
             <ul class="price-perks">
@@ -650,7 +653,7 @@
         <p>
           <strong>UPI works in India, UAE, Saudi Arabia and the UK.</strong> Everywhere else — USA, Canada, Pakistan, Europe, Australia and more — you can pay securely with <strong>PayPal or your debit/credit card</strong>. No PayPal account is needed for card payments.
           <br><br>
-          International payments include an <strong>8% processing &amp; currency charge</strong>, because PayPal charges us a fee and the money is converted from USD to INR. UPI payments have no extra charge. After paying, send your screenshot on Telegram and you will get all episodes there.
+          International payments include <strong>PayPal's fixed fee and a percentage fee</strong>, because PayPal charges us on every payment and the money is converted from USD to INR. <strong>Monthly plans are UPI only</strong>, so international members choose Quarterly or Yearly. UPI payments have no extra fees. After paying, send your screenshot on Telegram and you will get all episodes there.
         </p>
         <a class="btn-intl" href="/pay.html?label=Premium%2B%20Quarterly&region=intl">
           💳 Pay with PayPal / Card
@@ -761,8 +764,12 @@
           <p>Absolutely! International members are welcome. If you are in the UAE, Saudi Arabia or the UK, you can use UPI. In all other countries, choose "Other countries" on the <a href="/pay.html?label=Premium%2B%20Quarterly&region=intl">payment page</a> and pay with PayPal or a debit/credit card. Need help? <a href="https://t.me/+SOIyvb_C9lk4Y2Rl" target="_blank" rel="noopener">Message us on Telegram</a>.</p>
         </details>
         <details>
-          <summary>Why is there an 8% charge on international payments?</summary>
-          <p>Our prices are set in Indian rupees. PayPal charges us a fee to receive international payments, and the money is converted from USD to INR before it reaches our Indian bank account. The 8% covers these costs so the plan value matches the Indian price. UPI payments have no extra charge.</p>
+          <summary>Why do international payments cost more?</summary>
+          <p>Our prices are set in Indian rupees. PayPal charges us a fixed fee on every payment plus a percentage fee on international payments, and the money is converted from USD to INR before it reaches our Indian bank account. We show these fees in the payment breakdown so the plan value matches the Indian price. UPI payments have no extra fees.</p>
+        </details>
+        <details>
+          <summary>Why are monthly plans UPI only?</summary>
+          <p>PayPal's fixed fee on every payment is a large share of a small monthly payment. For PayPal or card payments, please choose the Quarterly or Yearly plan.</p>
         </details>
         <details>
           <summary>Can I pay by card without a PayPal account?</summary>
@@ -783,7 +790,7 @@
     <div class="bottom-cta reveal">
       <h2>Ready to Go Premium? 🎬</h2>
       <p>Join viewers across the world enjoying ad-free, early-access streaming. Takes less than 2 minutes.</p>
-      <a class="btn-primary" href="/pay.html?label=Premium%2B%20Quarterly">⭐ Get Premium+ — <span class="cur" data-inr="₹449" data-usd="$5.10">₹449</span> for 3 Months (Save <span class="cur" data-inr="₹58" data-usd="$0.75">₹58</span>)</a>
+      <a class="btn-primary" href="/pay.html?label=Premium%2B%20Quarterly">⭐ Get Premium+ — <span class="cur" data-inr="₹449" data-usd="$5.75">₹449</span> for 3 Months<span class="cur" data-inr=" (Save ₹58)" data-usd=""> (Save ₹58)</span></a>
       <br>
       <a class="btn-intl" href="/pay.html?label=Premium%2B%20Quarterly&region=intl">
         🌍 Outside India? Pay with PayPal or card
@@ -819,13 +826,14 @@
     // ₹ INR / $ USD switch (manual only — always starts in INR, no auto-detect)
     const CUR_NOTES = {
       inr: 'Paying from <strong>UPI countries</strong> (India, UAE, Saudi, UK) or living abroad with UPI? Pay in ₹. No UPI? Switch to <strong>$ USD</strong> to pay by PayPal or card.',
-      usd: 'USD prices include an <strong>8% international processing &amp; currency charge</strong> (PayPal fee + USD→INR conversion). UPI payments in ₹ have no extra charge.'
+      usd: 'USD prices include <strong>PayPal\'s fixed fee and percentage fee</strong> for international payments, plus currency conversion. <strong>Monthly plans are UPI (₹) only</strong>. UPI payments have no extra fees.'
     };
     const curBtns = document.querySelectorAll('.cur-btn');
     const payLinks = document.querySelectorAll('.btn-plan-gold, .btn-plan-outline, .hero-cta .btn-primary, .bottom-cta .btn-primary');
     payLinks.forEach(a => a.dataset.h = a.getAttribute('href'));
     function setCurrency(c) {
       curBtns.forEach(b => b.classList.toggle('active', b.dataset.cur === c));
+      document.body.classList.toggle('usd-mode', c === 'usd');
       document.querySelectorAll('.cur').forEach(el => { el.textContent = el.dataset[c]; });
       payLinks.forEach(a => {
         a.setAttribute('href', c === 'usd' ? a.dataset.h + '&region=intl' : a.dataset.h);
