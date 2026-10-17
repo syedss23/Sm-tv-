@@ -379,16 +379,22 @@
     <!-- ═════════ INTERNATIONAL (PAYPAL) BLOCK ═════════ -->
     <div class="region-block" id="block-intl">
       <div class="section-label">Step 1 — Pay securely online</div>
-      <div class="card">
+      <div class="card" id="intl-monthly" style="display:none">
+        <div class="section-title" style="font-size:1.05em;margin-bottom:8px">Monthly plans are UPI only</div>
+        <p style="font-size:.86em;color:var(--txt-muted);margin-bottom:14px">Because international payments have a fixed fee on every payment, <strong style="color:var(--txt)">monthly plans are not available with PayPal or card</strong>. Please choose a longer plan, or pay with UPI if you are in India, UAE, Saudi Arabia or the UK.</p>
+        <div id="intl-alt" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+      <div class="card" id="intl-card">
         <div class="fee-table">
-          <div class="fee-row"><span>Plan price (₹<span id="feeInr">99</span> in USD)</span><b id="feeBase">$0.00</b></div>
-          <div class="fee-row"><span>International processing &amp; currency charge (8%)</span><b id="feeFee">$0.00</b></div>
+          <div class="fee-row"><span>Plan price</span><b id="feeBase">$0.00</b></div>
+          <div class="fee-row"><span>PayPal fixed fee (per payment)</span><b id="feeFixed">$0.30</b></div>
+          <div class="fee-row"><span>International processing &amp; currency fee (<span id="feePctLabel">8.5</span>%)</span><b id="feeFee">$0.00</b></div>
           <div class="fee-row"><span>Total to pay</span><b id="feeTotal">$0.00</b></div>
         </div>
 
         <div class="fee-why">
-          <strong>Why is there an 8% charge?</strong><br>
-          Our plan prices are set in Indian rupees. For international payments, PayPal charges us a fee to receive your payment, and the money is converted from USD to INR before it reaches our Indian bank account. This 8% covers those two costs, so we receive the same value as UPI users. <strong>It is not extra profit</strong>, and UPI payments have no such charge.
+          <strong>Why are these fees added?</strong><br>
+          Our plan prices are set in Indian rupees. For international payments, PayPal charges us a <strong>fixed fee on every payment</strong> plus a <strong>percentage fee</strong>, and the money is converted from USD to INR before it reaches our Indian bank account. These fees are shown above so that we receive the same value as UPI users. <strong>It is not extra profit</strong>, and UPI payments have no such fees.
         </div>
 
         <div id="pp-buttons"><div class="pp-msg">Loading secure payment options…</div></div>
@@ -427,15 +433,19 @@
     <div class="faq-list">
       <details>
         <summary>How do I pay?</summary>
-        <p>If you are in India, UAE, Saudi Arabia or the UK, pay with UPI (scan the QR or copy the UPI ID) and enter the plan amount manually. In all other countries, choose "Other countries" and pay with PayPal or a debit/credit card.</p>
+        <p>If you are in India, UAE, Saudi Arabia or the UK, pay with UPI (scan the QR or copy the UPI ID) and enter the plan amount manually. In all other countries, choose "Other countries" and pay with PayPal or a debit/credit card (Quarterly and Yearly plans).</p>
       </details>
       <details>
         <summary>What happens after payment?</summary>
         <p>Tap "Activate on Telegram" and send your payment screenshot. Your access will be activated after quick verification — usually instant. You will get all episodes on Telegram.</p>
       </details>
       <details>
-        <summary>Why is there an 8% charge on international payments?</summary>
-        <p>PayPal charges a fee on international payments, and the money is converted from USD to INR. The 8% covers these costs so the plan value matches the Indian price. UPI payments have no extra charge.</p>
+        <summary>Why do international payments cost more?</summary>
+        <p>PayPal charges us a fixed fee on every payment plus a percentage fee on international payments, and the money is converted from USD to INR. We show these fees in the breakdown so the plan value matches the Indian price. UPI payments have no extra fees.</p>
+      </details>
+      <details>
+        <summary>Why are monthly plans UPI only?</summary>
+        <p>PayPal's fixed fee on every payment is a large share of a small monthly payment. For international payments, please choose the Quarterly or Yearly plan.</p>
       </details>
       <details>
         <summary>Can I pay by card?</summary>
@@ -460,14 +470,15 @@
   <script>
     const VPA = 'dubbedseriespremiu@ybl';
     const PAYPAL_CLIENT_ID = 'BAAbqp1ve8DE1-wAz9v3K17n5jCd60vBUUmF1A4n-BO6su-S8Wg2UsZ4C2wTQS4qQ0VoBeJtGsp184aTAE';
-    const INR_PER_USD = 96;      // approx. rate used for USD pricing
-    const FEE_RATE = 0.08;       // 8% international processing + conversion charge
+    const INR_PER_USD = 91;      // rate PayPal actually used when converting to INR (internal only, never shown)
+    const FIXED_FEE = 0.30;      // PayPal fixed fee per payment (USD)
+    const FEE_RATE = 0.085;      // percentage fee for international payments (8.5%)
 
     // Plan catalog — keep in sync with /premium page pricing
     const PLANS = {
-      'monthly':            { amount: 99,   name: 'Premium · Monthly (1 month)',     tier: 'Premium'  },
+      'monthly':            { amount: 99,   name: 'Premium · Monthly (1 month)',     tier: 'Premium',  monthlyOnly: true },
       'quarterly':          { amount: 249,  name: 'Premium · Quarterly (3 months)',  tier: 'Premium'  },
-      'premium+ monthly':   { amount: 169,  name: 'Premium+ · Monthly (1 month)',    tier: 'Premium+' },
+      'premium+ monthly':   { amount: 169,  name: 'Premium+ · Monthly (1 month)',    tier: 'Premium+', monthlyOnly: true },
       'premium+ quarterly': { amount: 449,  name: 'Premium+ · Quarterly (3 months)', tier: 'Premium+' },
       'premium+ yearly':    { amount: 1449, name: 'Premium+ · Yearly (12 months)',   tier: 'Premium+' }
     };
@@ -477,11 +488,10 @@
     const plan = PLANS[rawLabel.toLowerCase()] || PLANS['monthly'];
     const inrText = '₹' + plan.amount;
 
-    // USD total = (INR ÷ rate) ÷ (1 − 8%), rounded up to the next 5 cents
-    const baseUsd  = plan.amount / INR_PER_USD;
-    const totalUsd = Math.ceil((baseUsd / (1 - FEE_RATE)) * 20) / 20;
-    const baseShown = Math.round(baseUsd * 100) / 100;
-    const feeShown  = Math.round((totalUsd - baseShown) * 100) / 100;
+    // USD total = (INR ÷ rate + fixed fee) ÷ (1 − percentage), rounded up to the next 5 cents
+    const totalUsd = Math.ceil((((plan.amount / INR_PER_USD) + FIXED_FEE) / (1 - FEE_RATE)) * 20) / 20;
+    const pctFee   = Math.round(totalUsd * FEE_RATE * 100) / 100;
+    const planUsd  = Math.round((totalUsd - FIXED_FEE - pctFee) * 100) / 100;
     const usd = n => '$' + n.toFixed(2);
 
     document.getElementById('headerBadge').textContent = plan.tier;
@@ -489,9 +499,10 @@
     document.getElementById('planAmount').textContent = inrText;
     document.getElementById('qrAmount').textContent = inrText;
     document.getElementById('upiAmount').textContent = inrText;
-    document.getElementById('feeInr').textContent = plan.amount;
-    document.getElementById('feeBase').textContent = usd(baseShown);
-    document.getElementById('feeFee').textContent = usd(feeShown);
+    document.getElementById('feeBase').textContent = usd(planUsd);
+    document.getElementById('feeFixed').textContent = usd(FIXED_FEE);
+    document.getElementById('feePctLabel').textContent = (FEE_RATE * 100).toFixed(1).replace('.0', '');
+    document.getElementById('feeFee').textContent = usd(pctFee);
     document.getElementById('feeTotal').textContent = usd(totalUsd);
 
     // UPI tab switch
@@ -510,11 +521,25 @@
       document.getElementById('region-intl').classList.toggle('active', !isUpi);
       document.getElementById('block-upi').classList.toggle('active', isUpi);
       document.getElementById('block-intl').classList.toggle('active', !isUpi);
-      document.getElementById('planAmount').textContent = isUpi ? inrText : usd(totalUsd);
+      document.getElementById('planAmount').textContent = isUpi ? inrText : (plan.monthlyOnly ? 'UPI only' : usd(totalUsd));
       document.getElementById('amountNote').innerHTML = isUpi
         ? '⚠️ Enter this amount <strong style="color:var(--txt)">manually</strong> in your UPI app — the QR/ID may not auto-fill it.'
-        : 'ℹ️ Total includes an 8% international processing &amp; currency charge (see breakdown below).';
-      if (!isUpi && !paypalStarted) { paypalStarted = true; startPayPal(); }
+        : (plan.monthlyOnly ? 'ℹ️ Monthly plans are available with UPI only. Please choose a longer plan below.' : 'ℹ️ Total includes PayPal\'s fixed fee and percentage fee for international payments (see breakdown below).');
+      if (!isUpi) {
+        document.getElementById('intl-monthly').style.display = plan.monthlyOnly ? '' : 'none';
+        document.getElementById('intl-card').style.display = plan.monthlyOnly ? 'none' : '';
+        if (plan.monthlyOnly) { buildAlternatives(); }
+        else if (!paypalStarted) { paypalStarted = true; startPayPal(); }
+      }
+    }
+
+    // Suggest longer plans when a monthly plan is opened on the international tab
+    function buildAlternatives() {
+      const alts = plan.tier === 'Premium+'
+        ? [['Premium%2B%20Quarterly', 'Choose Premium+ Quarterly'], ['Premium%2B%20Yearly', 'Choose Premium+ Yearly']]
+        : [['Quarterly', 'Choose Premium Quarterly']];
+      document.getElementById('intl-alt').innerHTML = alts.map(a =>
+        '<a class="btn-download" style="margin-top:0;justify-content:center" href="/pay.html?label=' + a[0] + '&region=intl">' + a[1] + ' →</a>').join('');
     }
 
     // Copy helpers
