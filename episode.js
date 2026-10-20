@@ -1,10 +1,11 @@
-// episode.js — SM-TV (sponsor popup removed, movie support + per-button inline tutorials + internal premium links)
+// episode.js — SM-TV (sponsor popup removed, movie support + inline tutorial + internal premium links)
 
 const params    = new URLSearchParams(window.location.search);
 const slug      = params.get('series');
 const season    = params.get('season');
 const epNum     = params.get('ep');
 const source    = params.get('source');
+const lang      = params.get('lang');
 const movieSlug = params.get('movie');
 const isMovie   = !!movieSlug;
 const container = document.getElementById('episode-view') || document.body;
@@ -33,10 +34,8 @@ if (isMovie) {
   backUrl  = `series.html?series=${slug}`;
 }
 
-// Tutorial videos (one per download button)
-const TUTORIAL_TG_EMBED  = 'https://rumble.com/embed/v7e40s0/?pub=4pcer0'; // Telegram Server 1
-const TUTORIAL_DL2_EMBED = 'https://rumble.com/embed/v7e40xu/?pub=4pcer0'; // Download Server 2
-const PREMIUM_PAGE_URL   = '/premium.html';
+const HOW_TO_DOWNLOAD_EMBED = 'https://rumble.com/embed/v7cmmn4/?pub=4qdqa6';
+const PREMIUM_PAGE_URL      = '/premium.html';
 
 let featureConfig = null;
 
@@ -92,10 +91,7 @@ function patchIframes(html) {
         <div class="smtv-skel" style="height:68px;border-radius:14px;"></div>
         <div class="smtv-skel" style="height:68px;border-radius:14px;"></div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-        <div class="smtv-skel" style="height:40px;border-radius:14px;"></div>
-        <div class="smtv-skel" style="height:40px;border-radius:14px;"></div>
-      </div>
+      <div class="smtv-skel" style="height:54px;border-radius:14px;margin-bottom:10px;"></div>
       <div class="smtv-skel" style="height:60px;border-radius:14px;"></div>
     </div>`;
 
@@ -127,6 +123,10 @@ function patchIframes(html) {
         </div>`;
       return;
     }
+
+    const nextEp = (!isMovie && Array.isArray(episodes))
+      ? episodes.find(e => String(e.ep) === String((parseInt(epNum, 10) || 0) + 1))
+      : null;
 
     const rawSlug = isMovie ? movieSlug : slug;
     const seriesTitle = meta
@@ -178,6 +178,15 @@ function patchIframes(html) {
           <div class="smtv-embed">${embed2}</div>
         ` : ''}
 
+        <!-- NEXT EPISODE -->
+        ${nextEp ? `
+          <a href="#" id="nextEpBtn" class="smtv-btn"
+             style="background:linear-gradient(135deg,#1de8ff,#00a8d0);color:#021820;margin-bottom:10px;">
+            <span class="smtv-ic">⏭️</span>
+            Next Episode (${String(nextEp.ep)})
+          </a>
+        ` : ''}
+
         <!-- ACTION BUTTONS -->
         <div class="smtv-btns">
 
@@ -189,39 +198,27 @@ function patchIframes(html) {
             Watch (Server 3)
           </button>
 
-          <!-- DL1 + DL2 side by side, each with its own tutorial below -->
+          <!-- DL1 + DL2 side by side -->
           <div class="smtv-pair">
-
-            <!-- Telegram Server 1 + its tutorial -->
-            <div style="display:flex;flex-direction:column;gap:8px;">
-              <a href="${ep.download || '#'}"
-                 ${ep.download ? 'target="_blank" rel="noopener"' : 'aria-disabled="true"'}
-                 class="smtv-btn smtv-tg ${ep.download ? '' : 'smtv-off'}">
-                <span class="smtv-ic">📥</span>
-                <span>Telegram<br><small>Server 1</small></span>
-              </a>
-              <button type="button" id="howTgBtn" class="smtv-btn smtv-how"
-                      style="padding:10px 8px;font-size:12.5px;">
-                <span class="smtv-ic">📘</span> Tutorial
-              </button>
-            </div>
-
-            <!-- Download Server 2 + its tutorial -->
-            <div style="display:flex;flex-direction:column;gap:8px;">
-              <button id="dl2Btn"
-                class="smtv-btn smtv-dl2 ${ep.download2 ? '' : 'smtv-off'}"
-                ${ep.download2 ? '' : 'disabled aria-disabled="true"'}>
-                <span class="smtv-ic">📥</span>
-                <span>Download<br><small>Server 2</small></span>
-              </button>
-              <button type="button" id="howDl2Btn" class="smtv-btn smtv-how"
-                      style="padding:10px 8px;font-size:12.5px;">
-                <span class="smtv-ic">📘</span> Tutorial
-              </button>
-            </div>
+            <a href="${ep.download || '#'}"
+               ${ep.download ? 'target="_blank" rel="noopener"' : 'aria-disabled="true"'}
+               class="smtv-btn smtv-tg ${ep.download ? '' : 'smtv-off'}">
+              <span class="smtv-ic">📥</span>
+              <span>Telegram<br><small>Server 1</small></span>
+            </a>
+            <button id="dl2Btn"
+              class="smtv-btn smtv-dl2 ${ep.download2 ? '' : 'smtv-off'}"
+              ${ep.download2 ? '' : 'disabled aria-disabled="true"'}>
+              <span class="smtv-ic">📥</span>
+              <span>Download<br><small>Server 2</small></span>
+            </button>
           </div>
 
-          <!-- Shared tutorial video (opens under the buttons) -->
+          <!-- Tutorial — toggles inline video -->
+          <button type="button" id="howToDownloadBtn" class="smtv-btn smtv-how">
+            <span class="smtv-ic">📘</span>
+            How to Download (Tutorial)
+          </button>
           <div id="howToDownloadWrap" style="display:none;margin-top:10px;position:relative;width:100%;height:0;padding-bottom:56.25%;border-radius:13px;overflow:hidden;background:#000;">
             <iframe id="howToDownloadFrame" style="position:absolute;inset:0;width:100%;height:100%;border:0;" src="" allowfullscreen loading="lazy"></iframe>
           </div>
@@ -254,35 +251,70 @@ function patchIframes(html) {
       });
     });
 
+    // Next Episode — follows the same ownShortlink -> shortlink -> direct priority
+    // used on the series page and homepage.
+    const nextEpBtn = document.getElementById('nextEpBtn');
+    if (nextEpBtn && nextEp) {
+      nextEpBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const nextEpNum = String(nextEp.ep);
+
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'next_episode_click', {
+            episode: `${slug}_s${season || '0'}e${nextEpNum}`
+          });
+        }
+
+        // 1) OWN SHORTLINK MODE (ads + timer interstitial)
+        if (featureConfig && featureConfig.ownShortlink) {
+          let getlinkUrl = `getlink.html?series=${encodeURIComponent(slug)}&ep=${encodeURIComponent(nextEpNum)}`;
+          if (season) getlinkUrl += '&season=' + encodeURIComponent(season);
+          if (lang)   getlinkUrl += '&lang=' + encodeURIComponent(lang);
+          if (source) getlinkUrl += '&source=' + encodeURIComponent(source);
+          window.location.href = getlinkUrl;
+          return;
+        }
+
+        // 2) OLD THIRD-PARTY SHORTLINK MODE
+        if (featureConfig && featureConfig.shortlink && nextEp.shortlink) {
+          window.location.href = nextEp.shortlink;
+          return;
+        }
+
+        // 3) DEFAULT: go straight to episode.html
+        let nextUrl = `episode.html?series=${encodeURIComponent(slug)}&ep=${encodeURIComponent(nextEpNum)}`;
+        if (season) nextUrl += '&season=' + encodeURIComponent(season);
+        if (lang)   nextUrl += '&lang=' + encodeURIComponent(lang);
+        if (source) nextUrl += '&source=' + encodeURIComponent(source);
+        window.location.href = nextUrl;
+      });
+    }
+
     // DL2
     const dl2 = document.getElementById('dl2Btn');
     if (dl2 && ep.download2) {
       dl2.addEventListener('click', () => { window.location.href = ep.download2; });
     }
 
-    // Tutorials — one shared player, switches by button
-    const howWrap  = document.getElementById('howToDownloadWrap');
-    const howFrame = document.getElementById('howToDownloadFrame');
-    let activeTut  = null;
+    // How to Download — toggle inline video
+    const howToBtn   = document.getElementById('howToDownloadBtn');
+    const howToWrap  = document.getElementById('howToDownloadWrap');
+    const howToFrame = document.getElementById('howToDownloadFrame');
 
-    function toggleTutorial(url) {
-      if (!howWrap || !howFrame) return;
-      if (activeTut === url) {            // same button again = close
-        howWrap.style.display = 'none';
-        howFrame.src = '';
-        activeTut = null;
-        return;
-      }
-      howFrame.src = url;
-      howWrap.style.display = 'block';
-      activeTut = url;
-      howWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (howToBtn && howToWrap && howToFrame) {
+      howToBtn.addEventListener('click', () => {
+        const isOpen = howToWrap.style.display !== 'none';
+        if (isOpen) {
+          howToWrap.style.display = 'none';
+          howToFrame.src = '';
+        } else {
+          howToFrame.src = HOW_TO_DOWNLOAD_EMBED;
+          howToWrap.style.display = 'block';
+          howToWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      });
     }
-
-    document.getElementById('howTgBtn')
-      ?.addEventListener('click', () => toggleTutorial(TUTORIAL_TG_EMBED));
-    document.getElementById('howDl2Btn')
-      ?.addEventListener('click', () => toggleTutorial(TUTORIAL_DL2_EMBED));
 
     // Watch 3 modal
     const w3Btn   = document.getElementById('watch3Btn');
