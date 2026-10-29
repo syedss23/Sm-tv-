@@ -265,6 +265,10 @@
 </head>
 <body>
 
+  <!-- ★★★ TELEGRAM CONTACT LINK — change it ONLY here (this file) ★★★ -->
+  <script>const TELEGRAM_LINK = 'https://t.me/Shaikhyder7861';</script>
+
+
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
 
@@ -417,7 +421,7 @@
     <div class="activate-card">
       <h3>Step 2 — Send Screenshot & Activate 🎬</h3>
       <p>After payment, tap below to open Telegram and send your screenshot. You will get all episodes on Telegram.</p>
-      <a class="btn-activate" href="https://t.me/+SOIyvb_C9lk4Y2Rl" target="_blank" rel="noopener">
+      <a class="btn-activate" href="https://t.me/Shaikhyder7861" data-tg target="_blank" rel="noopener">
         ✈️ Activate on Telegram
       </a>
       <div class="support-note">
@@ -453,7 +457,7 @@
       </details>
       <details>
         <summary>Payment shows "risk" or fails?</summary>
-        <p>For UPI, try a different UPI app or scan the QR from inside your app. For card or PayPal, try another card or retry after a few minutes. <a href="https://t.me/Shaikhyder7861" target="_blank" rel="noopener">Contact us on Telegram</a> if the issue persists.</p>
+        <p>For UPI, try a different UPI app or scan the QR from inside your app. For card or PayPal, try another card or retry after a few minutes. <a href="https://t.me/Shaikhyder7861" data-tg target="_blank" rel="noopener">Contact us on Telegram</a> if the issue persists.</p>
       </details>
       <details>
         <summary>Refunds and cancellations</summary>
@@ -468,6 +472,13 @@
   </main>
 
   <script>
+    // Apply the Telegram link to every link marked data-tg (set once at the top of <body>)
+    document.querySelectorAll('[data-tg]').forEach(a => { a.href = TELEGRAM_LINK; });
+    document.querySelectorAll('[data-tg-name]').forEach(a => {
+      const handle = TELEGRAM_LINK.replace(/\/+$/, '').split('/').pop();
+      if (handle && handle[0] !== '+') a.textContent = '@' + handle;
+    });
+
     const VPA = 'dubbedseriespremiu@ybl';
     const PAYPAL_CLIENT_ID = 'BAAbqp1ve8DE1-wAz9v3K17n5jCd60vBUUmF1A4n-BO6su-S8Wg2UsZ4C2wTQS4qQ0VoBeJtGsp184aTAE';
     const INR_PER_USD = 91;      // rate PayPal actually used when converting to INR (internal only, never shown)
