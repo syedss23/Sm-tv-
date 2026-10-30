@@ -1,11 +1,11 @@
 [
   {
-    "title": "Sultan Mehmet Fatih Bolum 90",
+    "title": "Sultan Mehmet Fatih Bolum 91",
     "poster": "assets/posters/mehmet_fatih.jpg",
     "day": "Wednesday",
     "time": false,
     "type": "💬 Subtitled",
-    "live": true,
-    "countdown": "2026-10-21T23:30:00"
+    "live": false,
+    "countdown": "2026-11-04T23:30:00"
   }
 ]
