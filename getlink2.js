@@ -7,8 +7,8 @@
   'use strict';
 
   var PAGE_IMAGE = 'https://i.ibb.co/8DrPvbH4/file-0000000022cc82068671104d1eea58c5.png';
-  var DIRECT_A_URL = 'https://omg10.com/4/11914764';
-  var DIRECT_B_URL = 'https://www.profitableratecpmnetwork.com/xz00sz75jz?key=4696a15a64a0b6e65f84c1bd7512bf0e';
+  var DIRECT_A_URL = 'https://uplcm.com/4/11914764'';
+  var DIRECT_B_URL = 'https://asiafilm.org/4/4696a15a64a0b6e65f84c1bd7512bf0e';
 
   var qs = new URLSearchParams(window.location.search);
   var series    = qs.get('series');
