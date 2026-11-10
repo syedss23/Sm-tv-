@@ -7,7 +7,7 @@
   'use strict';
 
   var PAGE_IMAGE = 'https://i.ibb.co/39LN7qL8/IMG-20260928-110900.png';
-  var DIRECT_A_URL = 'https://uplcm.com/4/11914764'';
+  var DIRECT_A_URL = 'https://uplcm.com/4/11914764';
   var DIRECT_B_URL = 'https://asiafilm.org/4/4696a15a64a0b6e65f84c1bd7512bf0e';
 
   var qs = new URLSearchParams(window.location.search);
