@@ -155,6 +155,9 @@
     .srch-empty svg{opacity:.28}.srch-empty p{font-size:.92rem;text-align:center}
     @keyframes srchCardIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
+    /* MGID AD (home page) - light card so the widget's dark text stays readable on the dark theme */
+    .mgid-ad-wrap{margin:14px 12px 4px;padding:8px;background:#fff;border-radius:12px;min-height:250px;overflow:hidden}
+
     /* SPLASH SCREEN */
     #splash {
       position: fixed; inset: 0; z-index: 9999;
@@ -243,6 +246,9 @@
     });
   </script>
   <script defer src="index.js"></script>
+
+  <!-- MGID loader - only once per page -->
+  <script src="https://jsc.mgid.com/site/1114960.js" async></script>
 </head>
 <body>
 
@@ -358,6 +364,12 @@
 
   <div class="section-label">📅 Schedule</div>
   <div id="schedule-wrap"></div>
+
+  <!-- MGID AD (Under Article widget) - between Schedule and Recommended -->
+  <div class="mgid-ad-wrap">
+    <div data-type="_mgwidget" data-widget-id="2091651"></div>
+    <script>(function(w,q){w[q]=w[q]||[];w[q].push(["_mgc.load"])})(window,"_mgq");</script>
+  </div>
 
   <div class="section-label">⭐ Recommended</div>
   <div id="rec-scroll"></div>
