@@ -265,6 +265,15 @@
     @media(min-width:820px)  { .series-grid{grid-template-columns:repeat(4,1fr);} }
     @media(min-width:1060px) { .series-grid{grid-template-columns:repeat(5,1fr);} }
 
+    /* ══ MGID AD — light card so the widget's dark text stays readable on the dark theme ══ */
+    .mgid-ad-wrap {
+      margin:16px 0; padding:8px;
+      background:#fff; border-radius:12px;
+      min-height:250px; overflow:hidden;
+      transition:opacity 0.3s ease;
+    }
+    .mgid-ad-wrap.pending { height:0; min-height:0; padding:0; margin:0; opacity:0; pointer-events:none; }
+
     /* ══ MOVIE CARD ══ */
     .series-card {
       display:block; text-decoration:none;
@@ -430,6 +439,9 @@
       .filter-btn { font-size:13px; padding:10px 20px; }
     }
   </style>
+
+  <!-- MGID loader - only once per page -->
+  <script src="https://jsc.mgid.com/site/1114960.js" async></script>
 </head>
 
 <body>
@@ -500,8 +512,17 @@
       <div class="sk-card"><div class="sk-thumb"></div><div class="sk-label"></div></div>
     </div>
 
-    <!-- Grid -->
+    <!-- Grid: first posters (JS fills this) -->
     <div id="movies-list" class="series-grid" style="display:none;"></div>
+
+    <!-- MGID AD (Under Article widget) - stays in place; JS shows/hides it, never reloads it -->
+    <div class="mgid-ad-wrap pending" id="mgidAd">
+      <div data-type="_mgwidget" data-widget-id="2091651"></div>
+      <script>(function(w,q){w[q]=w[q]||[];w[q].push(["_mgc.load"])})(window,"_mgq");</script>
+    </div>
+
+    <!-- Grid: remaining posters (below the ad) -->
+    <div id="movies-list-more" class="series-grid" style="display:none;"></div>
 
     <!-- Empty state -->
     <div class="state-box" id="movies-empty">
@@ -517,6 +538,8 @@
   <script>
   (async function(){
     const grid       = document.getElementById('movies-list');
+    const gridMore   = document.getElementById('movies-list-more');
+    const adWrap     = document.getElementById('mgidAd');
     const skeleton   = document.getElementById('skeleton');
     const empty      = document.getElementById('movies-empty');
     const dubbedBtn  = document.getElementById('dubbedBtn');
@@ -550,6 +573,23 @@
     skeleton.style.display = 'none';
     grid.style.display = 'grid';
 
+    /* ── Ad placement helpers ──
+       The ad sits between two grids. The first grid holds the first row(s) of posters
+       (at least 4, rounded up to a full row), the second grid holds the rest.
+       If a list has 4 or fewer posters, the second grid is empty and the ad appears
+       right below the last poster. */
+    function gridCols() {
+      if (window.matchMedia('(min-width:1060px)').matches) return 5;
+      if (window.matchMedia('(min-width:820px)').matches)  return 4;
+      if (window.matchMedia('(min-width:560px)').matches)  return 3;
+      return 2;
+    }
+    function adAfterCount() {
+      const c = gridCols();
+      return Math.ceil(4 / c) * c;
+    }
+    function showAd(on) { adWrap.classList.toggle('pending', !on); }
+
     function langMatches(subLang, lang) {
       if (lang === 'hiur') return subLang === 'hi' || subLang === 'ur';
       return subLang === lang;
@@ -574,14 +614,18 @@
       if (filtered.length === 0) {
         grid.innerHTML = '';
         grid.style.display = 'none';
+        gridMore.innerHTML = '';
+        gridMore.style.display = 'none';
+        showAd(false);
         empty.classList.add('visible');
         return;
       }
 
       empty.classList.remove('visible');
       grid.style.display = 'grid';
+      showAd(true);
 
-      grid.innerHTML = filtered.map((m, i) => {
+      const cardHtml = (m, i) => {
         const badge = `<span class="lang-badge">${langLabel(m.subLang)}</span>`;
         return `
         <a class="series-card"
@@ -598,9 +642,20 @@
           </div>
           <div class="series-title">${m.title}</div>
         </a>`;
-      }).join('');
+      };
 
-      const cards = grid.querySelectorAll('.series-card');
+      const splitAt = adAfterCount();
+      const firstPart = filtered.slice(0, splitAt);
+      const restPart  = filtered.slice(splitAt);
+
+      grid.innerHTML = firstPart.map((m, i) => cardHtml(m, i)).join('');
+      gridMore.innerHTML = restPart.map((m, i) => cardHtml(m, i + splitAt)).join('');
+      gridMore.style.display = restPart.length ? 'grid' : 'none';
+
+      const cards = [
+        ...grid.querySelectorAll('.series-card'),
+        ...gridMore.querySelectorAll('.series-card')
+      ];
       if ('IntersectionObserver' in window) {
         const io = new IntersectionObserver(entries => {
           entries.forEach(e => {
@@ -614,6 +669,13 @@
     }
 
     render();
+
+    // If the number of columns changes (rotation / resize), re-split so the ad stays after a full row
+    let lastCols = gridCols();
+    window.addEventListener('resize', () => {
+      const c = gridCols();
+      if (c !== lastCols) { lastCols = c; render(); }
+    });
 
     dubbedBtn.onclick = () => {
       currentType = 'dubbed';
