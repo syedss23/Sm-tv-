@@ -87,10 +87,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
 
-/* ── FEATURE GRID ──
-   2×2 compact pills. Icon + full label — no truncation.
-   Font small enough to always fit on one line.
-═══════════════════════════════════════ */
+/* ── FEATURE GRID ── */
 .smtv-vip-feats{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -107,9 +104,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
   border:1px solid rgba(255,255,255,.08);
   position:relative;overflow:hidden;
   transition:background .2s,border-color .2s;
-  /* No min-width — let grid control the width */
 }
-/* Coloured left accent bar */
 .smtv-vip-feat::before{
   content:'';
   position:absolute;left:0;top:0;bottom:0;width:2.5px;
@@ -121,24 +116,21 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
 .smtv-vip-feat:nth-child(4)::before{background:#ffd84a;}
 .smtv-vip-feat:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.14);}
 
-/* Icon — small, fixed size, no shrink */
 .smtv-vip-feat-icon{
-  font-size:.78rem;   /* smaller so label gets more room */
+  font-size:.78rem;
   flex-shrink:0;
   line-height:1;
   width:16px;
   text-align:center;
 }
-/* Label — small font, full text, single line, no truncation */
 .smtv-vip-feat-label{
-  font-size:.68rem;   /* ← key fix: small enough to fit "Fast Download" */
+  font-size:.68rem;
   font-weight:700;
   color:#d0e8ff;
-  white-space:nowrap; /* keep on one line */
-  /* NO overflow:hidden, NO text-overflow:ellipsis */
+  white-space:nowrap;
   line-height:1.2;
-  min-width:0;        /* allow shrinking inside flex */
-  letter-spacing:-.01em; /* tighten slightly */
+  min-width:0;
+  letter-spacing:-.01em;
 }
 
 /* BECOME VIP */
@@ -226,7 +218,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
 .smtv-video-card{border-radius:13px;overflow:hidden;background:#080c18;border:1px solid rgba(255,255,255,.06);box-shadow:0 10px 28px rgba(0,0,0,.45);}
 .pro-video-frame-wrap{position:relative;width:100%;height:0;padding-bottom:56.25%;overflow:hidden;}
 .pro-video-frame-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:#000;}
-    .new-here-card{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:360px;margin:10px auto 0;padding:10px 12px;border-radius:12px;background:rgba(0,205,235,.05);border:1px solid rgba(0,205,235,.22);}
+.new-here-card{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:360px;margin:10px auto 0;padding:10px 12px;border-radius:12px;background:rgba(0,205,235,.05);border:1px solid rgba(0,205,235,.22);}
 .new-here-left{display:flex;flex-direction:column;gap:2px;min-width:0;}
 .new-here-badge{font-size:.62rem;font-weight:900;letter-spacing:.06em;color:#1de8ff;}
 .new-here-title{font-size:.74rem;font-weight:700;color:#c8dff0;margin:0;line-height:1.3;}
@@ -257,6 +249,33 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
 .wa-dismiss:hover{color:#ff7090;}
 
 @media(max-width:600px){body{padding-bottom:calc(114px + env(safe-area-inset-bottom));}}
+
+/* ═══════════════════════════════════════
+   TV ARROWS (only active when html has .smtv-tv)
+═══════════════════════════════════════ */
+.smtv-tv .pro-episodes-row-wrap-pro{position:relative;}
+.smtv-tv-arrow{display:none;}
+.smtv-tv .smtv-tv-arrow{
+  display:flex;align-items:center;justify-content:center;
+  position:absolute;top:58%;transform:translateY(-50%);z-index:20;
+  width:56px;height:56px;border-radius:50%;
+  background:rgba(4,7,18,.88);border:2px solid #1de8ff;color:#1de8ff;
+  font-size:1.2rem;box-shadow:0 0 18px rgba(0,205,235,.4);
+  transition:transform .2s,background .2s,box-shadow .2s;
+}
+.smtv-tv .smtv-tv-arrow.left{left:-6px;}
+.smtv-tv .smtv-tv-arrow.right{right:-6px;}
+.smtv-tv .smtv-tv-arrow:focus,
+.smtv-tv .smtv-tv-arrow:hover{
+  background:#1de8ff;color:#021820;
+  transform:translateY(-50%) scale(1.15);
+  box-shadow:0 0 28px rgba(0,205,235,.8);outline:none;
+}
+.smtv-tv .smtv-tv-arrow.hide{display:none;}
+.smtv-tv .pro-episode-card-pro:focus{
+  outline:3px solid #1de8ff;outline-offset:2px;
+  transform:translateY(-5px) scale(1.04);
+}
   </style>
 
   <script defer src="series.js"></script>
@@ -437,30 +456,6 @@ document.addEventListener('DOMContentLoaded',function(){
     if(m&&m.title){document.title=m.title+' – SmTv Urdu';var d=document.querySelector('meta[name="description"]');if(d)d.setAttribute('content',m.title+' - Watch all episodes in Urdu on SmTv Urdu.');}
   }).catch(function(){});
 });
-  /* ═══ TV ARROWS (only active when html has .smtv-tv) ═══ */
-.smtv-tv .pro-episodes-row-wrap-pro{position:relative;}
-.smtv-tv-arrow{display:none;}
-.smtv-tv .smtv-tv-arrow{
-  display:flex;align-items:center;justify-content:center;
-  position:absolute;top:58%;transform:translateY(-50%);z-index:20;
-  width:56px;height:56px;border-radius:50%;
-  background:rgba(4,7,18,.88);border:2px solid #1de8ff;color:#1de8ff;
-  font-size:1.2rem;box-shadow:0 0 18px rgba(0,205,235,.4);
-  transition:transform .2s,background .2s,box-shadow .2s;
-}
-.smtv-tv .smtv-tv-arrow.left{left:-6px;}
-.smtv-tv .smtv-tv-arrow.right{right:-6px;}
-.smtv-tv .smtv-tv-arrow:focus,
-.smtv-tv .smtv-tv-arrow:hover{
-  background:#1de8ff;color:#021820;
-  transform:translateY(-50%) scale(1.15);
-  box-shadow:0 0 28px rgba(0,205,235,.8);outline:none;
-}
-.smtv-tv .smtv-tv-arrow.hide{display:none;}
-.smtv-tv .pro-episode-card-pro:focus{
-  outline:3px solid #1de8ff;outline-offset:2px;
-  transform:translateY(-5px) scale(1.04);
-    }
 </script>
 
 <!-- WHATSAPP POPUP -->
@@ -519,7 +514,8 @@ window.addEventListener('DOMContentLoaded',function(){
   try{document.body.style.paddingBottom='calc(96px + env(safe-area-inset-bottom))';}catch(e){}
 })();
 </script>
-  <!-- TV ARROWS -->
+
+<!-- TV ARROWS -->
 <script>
 (function(){
   var ua = navigator.userAgent || '';
@@ -579,6 +575,10 @@ window.addEventListener('DOMContentLoaded',function(){
           if(card) card.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
         });
       }
+
+      // series.js sets tabindex="-1" on cards; make them focusable with the TV remote
+      row.querySelectorAll('.pro-episode-card-pro').forEach(function(c){ c.setAttribute('tabindex','0'); });
+
       updateArrows(wrap);
     });
   }
