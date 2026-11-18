@@ -253,11 +253,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
 /* ═══════════════════════════════════════
    TV ARROWS (only active when html has .smtv-tv)
 ═══════════════════════════════════════ */
-.smtv-tv .pro-episodes-row-wrap-pro{position:relative;}
+.smtv-tv .smtv-tv-rowhold{position:relative;}
 .smtv-tv-arrow{display:none;}
 .smtv-tv .smtv-tv-arrow{
   display:flex;align-items:center;justify-content:center;
-  position:absolute;top:58%;transform:translateY(-50%);z-index:20;
+  position:absolute;top:42%;transform:translateY(-50%);z-index:20;
   width:56px;height:56px;border-radius:50%;
   background:rgba(4,7,18,.88);border:2px solid #1de8ff;color:#1de8ff;
   font-size:1.2rem;box-shadow:0 0 18px rgba(0,205,235,.4);
@@ -276,6 +276,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
   outline:3px solid #1de8ff;outline-offset:2px;
   transform:translateY(-5px) scale(1.04);
 }
+/* TV only: force a normal stacked header so the VIP card isn't squeezed */
+.smtv-tv .pro-series-header-pro{display:block !important;}
+.smtv-tv .pro-series-poster-pro{width:100% !important;height:190px !important;}
+.smtv-tv .pro-series-meta-pro{width:100% !important;max-width:none !important;}
   </style>
 
   <script defer src="series.js"></script>
@@ -522,72 +526,55 @@ window.addEventListener('DOMContentLoaded',function(){
   var isTV = /SMART-TV|SmartTV|Tizen|Web0S|WebOS|NetCast|HbbTV|BRAVIA|AFTT|AFTM|AFTB|AFTS|Android TV|GoogleTV|CrKey|AppleTV|Roku|VIDAA|Hisense|\bTV\b/i.test(ua)
              || /[?&]tv=1/.test(location.search);
   if(!isTV) return;
-
   document.documentElement.classList.add('smtv-tv');
 
-  function getRow(wrap){ return wrap.querySelector('.pro-episodes-row-pro'); }
-
-  function updateArrows(wrap){
-    var row = getRow(wrap);
-    var l = wrap.querySelector('.smtv-tv-arrow.left');
-    var r = wrap.querySelector('.smtv-tv-arrow.right');
+  function updateArrows(hold){
+    var row = hold.querySelector('.pro-episodes-row-pro');
+    var l = hold.querySelector('.smtv-tv-arrow.left');
+    var r = hold.querySelector('.smtv-tv-arrow.right');
     if(!row || !l || !r) return;
     var max = row.scrollWidth - row.clientWidth;
     l.classList.toggle('hide', row.scrollLeft <= 4);
     r.classList.toggle('hide', row.scrollLeft >= max - 4);
   }
-
-  function scrollRow(wrap, dir){
-    var row = getRow(wrap);
-    if(!row) return;
-    row.scrollBy({ left: dir * row.clientWidth * 0.8, behavior: 'smooth' });
+  function scrollRow(hold, dir){
+    var row = hold.querySelector('.pro-episodes-row-pro');
+    if(row) row.scrollBy({ left: dir * row.clientWidth * 0.8, behavior: 'smooth' });
+  }
+  function makeBtn(cls, label, icon, hold, dir){
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'smtv-tv-arrow ' + cls;
+    b.setAttribute('aria-label', label);
+    b.innerHTML = '<i class="fa-solid fa-chevron-' + icon + '"></i>';
+    b.addEventListener('click', function(){ scrollRow(hold, dir); });
+    return b;
   }
 
   function setup(){
-    document.querySelectorAll('.pro-episodes-row-wrap-pro').forEach(function(wrap){
-      var row = getRow(wrap);
-      if(!row) return;
-
-      if(!wrap.querySelector('.smtv-tv-arrow')){
-        var l = document.createElement('button');
-        l.type = 'button'; l.className = 'smtv-tv-arrow left hide';
-        l.setAttribute('aria-label','Previous episodes');
-        l.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
-        l.addEventListener('click', function(){ scrollRow(wrap,-1); });
-
-        var r = document.createElement('button');
-        r.type = 'button'; r.className = 'smtv-tv-arrow right';
-        r.setAttribute('aria-label','Next episodes');
-        r.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
-        r.addEventListener('click', function(){ scrollRow(wrap,1); });
-
-        wrap.appendChild(l);
-        wrap.appendChild(r);
-      }
-
-      // Row may be re-rendered (season switch), so bind per row
-      if(!row._tvBound){
-        row._tvBound = true;
-        row.addEventListener('scroll', function(){ updateArrows(wrap); }, {passive:true});
-        // D-pad: when a card gets focus, bring it into view
+    document.querySelectorAll('.pro-episodes-row-pro').forEach(function(row){
+      var hold = row.parentNode;
+      if(!hold.classList.contains('smtv-tv-rowhold')){
+        hold = document.createElement('div');
+        hold.className = 'smtv-tv-rowhold';
+        row.parentNode.insertBefore(hold, row);
+        hold.appendChild(row);
+        var l = makeBtn('left hide', 'Previous episodes', 'left', hold, -1);
+        var r = makeBtn('right', 'Next episodes', 'right', hold, 1);
+        hold.appendChild(l); hold.appendChild(r);
+        row.addEventListener('scroll', function(){ updateArrows(hold); }, {passive:true});
         row.addEventListener('focusin', function(e){
           var card = e.target.closest && e.target.closest('.pro-episode-card-pro');
           if(card) card.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
         });
       }
-
-      // series.js sets tabindex="-1" on cards; make them focusable with the TV remote
       row.querySelectorAll('.pro-episode-card-pro').forEach(function(c){ c.setAttribute('tabindex','0'); });
-
-      updateArrows(wrap);
+      updateArrows(hold);
     });
   }
 
   var t;
-  new MutationObserver(function(){
-    clearTimeout(t); t = setTimeout(setup, 150);
-  }).observe(document.getElementById('series-details') || document.body, {childList:true, subtree:true});
-
+  new MutationObserver(function(){ clearTimeout(t); t = setTimeout(setup, 150); })
+    .observe(document.getElementById('series-details') || document.body, {childList:true, subtree:true});
   window.addEventListener('resize', setup);
   setup();
 })();
